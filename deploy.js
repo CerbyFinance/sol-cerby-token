@@ -10,7 +10,7 @@
     let account = accountInst.address;*/
 
     let defiFactoryJson = JSON.parse(await remix.call('fileManager', 'getFile', "sol-defifactory-token/artifacts/DefiFactoryToken.json"));
-    let noBotsTechJson = JSON.parse(await remix.call('fileManager', 'getFile', "sol-nobots-tech/artifacts/NoBotsTech.json"));
+    let noBotsTechJson = JSON.parse(await remix.call('fileManager', 'getFile', "sol-defifactory-token/artifacts/NoBotsTech.json"));
     let teamVestingJson = JSON.parse(await remix.call('fileManager', 'getFile', "sol-defifactory-token/artifacts/TeamVestingContract.json"));
     
     let [defiFactoryTokenContract, noBotsTechContract, teamVestingContract] = await Promise.all([
