@@ -1,0 +1,155 @@
+{
+	"compiler": {
+		"version": "0.8.1+commit.df193b15"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "desiredAmountToBurn",
+						"type": "uint256"
+					}
+				],
+				"name": "burnHumanAddress",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "realAmountBurn",
+						"type": "uint256"
+					}
+				],
+				"name": "burnUniswapContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "pos",
+						"type": "uint256"
+					}
+				],
+				"name": "getUtilsContractAtPos",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "desiredAmountToMint",
+						"type": "uint256"
+					}
+				],
+				"name": "mintHumanAddress",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "realAmountToMint",
+						"type": "uint256"
+					}
+				],
+				"name": "mintUniswapContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "transferFromTeamVestingContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"sol-defifactory-token/IDefiFactoryToken.sol": "IDefiFactoryToken"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"sol-defifactory-token/IDefiFactoryToken.sol": {
+			"keccak256": "0x96b2cbe6ca3a58e4221c10aff2053d296cab3b2ff89710e0a118f26b90a1e9aa",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c76b20d34786c7e22e59364b764c6e10790c49f5036c1f5273f9ce079d572deb",
+				"dweb:/ipfs/QmaMgkFbF9bD9ySvqCaFU4JC4E2EfAvxNk1EJckbzUSe8U"
+			]
+		}
+	},
+	"version": 1
+}

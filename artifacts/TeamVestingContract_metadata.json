@@ -1,0 +1,1059 @@
+{
+	"compiler": {
+		"version": "0.8.1+commit.df193b15"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "payable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "previousAdminRole",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "newAdminRole",
+						"type": "bytes32"
+					}
+				],
+				"name": "RoleAdminChanged",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					}
+				],
+				"name": "RoleGranted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					}
+				],
+				"name": "RoleRevoked",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "DEVELOPER_STARTING_LOCK_DELAY",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "DEVELOPER_STARTING_LOCK_FOR",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "MARKETING_STARTING_LOCK_DELAY",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "MARKETING_STARTING_LOCK_FOR",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "ROLE_ADMIN",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "ROLE_NOTAX",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "ROLE_WHITELIST",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "TEAM_STARTING_LOCK_DELAY",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "TEAM_STARTING_LOCK_FOR",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "TOTAL_SUPPLY_CAP",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "addLiquidity",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "burnVestingTokens",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "checkIfGoalIsReached",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "claimTeamVestingTokens",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "createPair",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "defiFactoryToken",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "developerAddress",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "developerCap",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "distributeTokens",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getClaimableTokenAmount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getInvestorByAddr",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "addr",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "wethValue",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "sentValue",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "startDelay",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "lockFor",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct TeamVestingContract.Investor",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "pos",
+						"type": "uint256"
+					}
+				],
+				"name": "getInvestorByPos",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "addr",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "wethValue",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "sentValue",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "startDelay",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "lockFor",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct TeamVestingContract.Investor",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getInvestorsCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getLeftTokenAmount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					}
+				],
+				"name": "getRoleAdmin",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					}
+				],
+				"name": "getRoleMember",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					}
+				],
+				"name": "getRoleMemberCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "grantRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "hasRole",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "offset",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "limit",
+						"type": "uint256"
+					}
+				],
+				"name": "listInvestors",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "addr",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "wethValue",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "sentValue",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "startDelay",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "lockFor",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct TeamVestingContract.Investor[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "marketingAddress",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "marketingCap",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "nativeToken",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "percentForTheTeam",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "percentForUniswap",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "prepareAddLiqudity",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "renounceRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "revokeRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "startedLocking",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "state",
+				"outputs": [
+					{
+						"internalType": "enum TeamVestingContract.States",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes4",
+						"name": "interfaceId",
+						"type": "bytes4"
+					}
+				],
+				"name": "supportsInterface",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "taxVestingTokens",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "teamAddress",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "teamCap",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalInvested",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalSent",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newContract",
+						"type": "address"
+					}
+				],
+				"name": "updateDefiFactoryContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_nativeToken",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_developerAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_developerCap",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "_teamAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_teamCap",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "_marketingAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_marketingCap",
+						"type": "uint256"
+					}
+				],
+				"name": "updateInvestmentSettings",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "wethAndTokenPairContract",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"getRoleAdmin(bytes32)": {
+					"details": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}."
+				},
+				"getRoleMember(bytes32,uint256)": {
+					"details": "Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information."
+				},
+				"getRoleMemberCount(bytes32)": {
+					"details": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role."
+				},
+				"grantRole(bytes32,address)": {
+					"details": "Overload {grantRole} to track enumerable memberships"
+				},
+				"hasRole(bytes32,address)": {
+					"details": "Returns `true` if `account` has been granted `role`."
+				},
+				"renounceRole(bytes32,address)": {
+					"details": "Overload {renounceRole} to track enumerable memberships"
+				},
+				"revokeRole(bytes32,address)": {
+					"details": "Overload {revokeRole} to track enumerable memberships"
+				},
+				"supportsInterface(bytes4)": {
+					"details": "See {IERC165-supportsInterface}."
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"sol-defifactory-token/TeamVestingContract.sol": "TeamVestingContract"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"sol-defifactory-token/IDefiFactoryToken.sol": {
+			"keccak256": "0x96b2cbe6ca3a58e4221c10aff2053d296cab3b2ff89710e0a118f26b90a1e9aa",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c76b20d34786c7e22e59364b764c6e10790c49f5036c1f5273f9ce079d572deb",
+				"dweb:/ipfs/QmaMgkFbF9bD9ySvqCaFU4JC4E2EfAvxNk1EJckbzUSe8U"
+			]
+		},
+		"sol-defifactory-token/INoBotsTech.sol": {
+			"keccak256": "0xc9e20598f1ac8dc88884ffd2744509cf9ab01ddcf389b89dbe041ee808c623d7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://016e729b6c73aa5724e4b9e93c8e8789bf06355336657032af7a1ba305a9e719",
+				"dweb:/ipfs/QmeV8BuMUgtHtRMpoQkkT5Q4tJYuji1kaUrFmcKwgKSQdr"
+			]
+		},
+		"sol-defifactory-token/IUniswapV2Factory.sol": {
+			"keccak256": "0x300ed20353a61d56c0a56e594ad1e4f3ce5220af1ed19431f5275c2482d14054",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ffa75a6db0301af6e45023ddf736ee8e674b6bef955830744fe4f222e67514e2",
+				"dweb:/ipfs/QmPDsmxWnkrECzL7Rnt6rbVbPkxBJ2oqiKk8whcw5Zkkzm"
+			]
+		},
+		"sol-defifactory-token/IUniswapV2Pair.sol": {
+			"keccak256": "0x1523ffe6f6afb442dbb7fd9a208a1e74c17a610b8d83c044ef5357d4ea9d0ccd",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://73f02e6d6c09a1469ff1f47736f76d1fd270e39c7fbc0567f91873f899cf08cd",
+				"dweb:/ipfs/QmVASX2HkwYgsjotNQ5TcLm28ku1yhh2MBwCSe3ftWXoGB"
+			]
+		},
+		"sol-defifactory-token/IWeth.sol": {
+			"keccak256": "0x55d776711ab487dbda19fb0cf0ce8e475057ae1767d31cc78f4333cea009d386",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f7cc6fe73e7cba0786198e5a3d3179270732a87600e8010cb72e3332d2f8f6bd",
+				"dweb:/ipfs/QmNpMwA4GLsM7DSTTLFFwRxGGQZDbT9EtfWhWATedZPSk8"
+			]
+		},
+		"sol-defifactory-token/TeamVestingContract.sol": {
+			"keccak256": "0xac6269b9e1f8dc1ac69dc9a93d0b6b5732147a498b8b3aa19fd9c5e6d5277ea9",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b08d0dc234f202dce17d9648f5f1dd6b8c23fdcb37c6ee940ff7de7128ab3c62",
+				"dweb:/ipfs/QmcKKgBkENCM4yE2YY3Nc5sLa6ue1zGWBGbim6ts1KjR8J"
+			]
+		},
+		"sol-openzeppelin/access/AccessControl.sol": {
+			"keccak256": "0xcaee6d75467a223ffd64f12451e6eaf4e4ffe89675b80dc9b327b24914a8f511",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e2606725c91f3598f35fa8bbd62fb5ea64001711b0d178b75e2e3204fb88f484",
+				"dweb:/ipfs/QmSuRoMR4afV3G4nEgrP6UuiwtxTVHBR3M3buTG2w8icAs"
+			]
+		},
+		"sol-openzeppelin/access/AccessControlEnumerable.sol": {
+			"keccak256": "0x0d616363c1a1e6f9f489303f94df0cbe606826ab4944d315c3801a07f9b8d4ee",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://976cf80d02556929369fc98196c4082f204e44e682e20d3f65cc61b31e29bf76",
+				"dweb:/ipfs/Qmeo1vvf7L3PLLDPNSVuVyirLB3FrCYKMFw3JZ7EXgC5YU"
+			]
+		},
+		"sol-openzeppelin/utils/Context.sol": {
+			"keccak256": "0xf930d2df426bfcfc1f7415be724f04081c96f4fb9ec8d0e3a521c07692dface0",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fc2bfdea0d2562c76fb3c4cf70a86c6ba25c5a30e8f8515c95aafdf8383f8395",
+				"dweb:/ipfs/QmTbFya18786ckJfLYUoWau9jBTKfmWnWm5XSViWvB7PXN"
+			]
+		},
+		"sol-openzeppelin/utils/Strings.sol": {
+			"keccak256": "0x456e9b3a2bfe189b5249857f624f4139e59331db518483b456c4e587a20552e0",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1123c9545decc48a011370ebab4bf53dda98524fa21f9498e68851ba8f0ffc0f",
+				"dweb:/ipfs/QmUpgMg8EFDnv87ePKUjXxXpJT3qwHRj9VDNSnRxu7T9sy"
+			]
+		},
+		"sol-openzeppelin/utils/introspection/ERC165.sol": {
+			"keccak256": "0x5718c5df9bd67ac68a796961df938821bb5dc0cd4c6118d77e9145afb187409b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d10e1d9b26042424789246603906ad06143bf9a928f4e99de8b5e3bdc662f549",
+				"dweb:/ipfs/Qmejonoaj5MLekPus229rJQHcC6E9dz2xorjHJR84fMfmn"
+			]
+		},
+		"sol-openzeppelin/utils/introspection/IERC165.sol": {
+			"keccak256": "0xa28007762d9da9db878dd421960c8cb9a10471f47ab5c1b3309bfe48e9e79ff4",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://796ab6e88af7bf0e78def0f059310c903af6a312b565344e0ff524a0f26e81c6",
+				"dweb:/ipfs/QmcsVgLgzWdor3UnAztUkXKNGcysm1MPneWksF72AvnwBx"
+			]
+		},
+		"sol-openzeppelin/utils/structs/EnumerableSet.sol": {
+			"keccak256": "0x641d1c42bddc802820044fc0297346d82411f1c86647c2994a5897199c7049c5",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a1a73b4d9b6065412e18d9e21e3ba6387d5dc6b69161d8527101c0041b62f762",
+				"dweb:/ipfs/QmQ51saPEQxKqbkLxfvpXz4x7uDzC49gyH4kVXK8exoAU2"
+			]
+		}
+	},
+	"version": 1
+}

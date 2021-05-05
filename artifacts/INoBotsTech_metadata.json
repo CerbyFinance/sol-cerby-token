@@ -1,0 +1,502 @@
+{
+	"compiler": {
+		"version": "0.8.1+commit.df193b15"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "BotTransactionDetected",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "newMultiplier",
+						"type": "uint256"
+					}
+				],
+				"name": "MultiplierUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "referral",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "referrer",
+						"type": "address"
+					}
+				],
+				"name": "ReferralDeleted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "referral",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "referrer",
+						"type": "address"
+					}
+				],
+				"name": "ReferralRegistered",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "referral",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "ReferralRewardUpdated",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taxAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "accountBalance",
+						"type": "uint256"
+					}
+				],
+				"name": "chargeCustomTax",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taxAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "chargeCustomTaxPreBurned",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "clearReferrerRewards",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "referrals",
+						"type": "address[]"
+					}
+				],
+				"name": "filterNonZeroReferrals",
+				"outputs": [
+					{
+						"internalType": "address[]",
+						"name": "",
+						"type": "address[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "accountBalance",
+						"type": "uint256"
+					}
+				],
+				"name": "getBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getCachedReferrerRewards",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "address[]",
+						"name": "referrals",
+						"type": "address[]"
+					}
+				],
+				"name": "getCalculatedReferrerRewards",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "accountBalance",
+						"type": "uint256"
+					}
+				],
+				"name": "getRealBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "accountBalance",
+						"type": "uint256"
+					}
+				],
+				"name": "getRealBalanceVestingContract",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getTotalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "grantRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "isMint",
+						"type": "bool"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "desiredAmountToMintOrBurn",
+						"type": "uint256"
+					}
+				],
+				"name": "prepareHumanAddressMintOrBurnRewardsAmounts",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "realAmountToMintOrBurn",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "sender",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "recipient",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "transferAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "senderBalance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "recipientBalance",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct TaxAmountsInput",
+						"name": "taxAmountsInput",
+						"type": "tuple"
+					}
+				],
+				"name": "prepareTaxAmounts",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "senderBalance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "recipientBalance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "burnAndRewardAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "recipientGetsAmount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct TaxAmountsOutput",
+						"name": "taxAmountsOutput",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "isMint",
+						"type": "bool"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "realAmountToMintOrBurn",
+						"type": "uint256"
+					}
+				],
+				"name": "prepareUniswapMintOrBurnRewardsAmounts",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "referral",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "referrer",
+						"type": "address"
+					}
+				],
+				"name": "registerReferral",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "referrals",
+						"type": "address[]"
+					}
+				],
+				"name": "updateReferrersRewards",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"sol-defifactory-token/INoBotsTech.sol": "INoBotsTech"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"sol-defifactory-token/INoBotsTech.sol": {
+			"keccak256": "0xc9e20598f1ac8dc88884ffd2744509cf9ab01ddcf389b89dbe041ee808c623d7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://016e729b6c73aa5724e4b9e93c8e8789bf06355336657032af7a1ba305a9e719",
+				"dweb:/ipfs/QmeV8BuMUgtHtRMpoQkkT5Q4tJYuji1kaUrFmcKwgKSQdr"
+			]
+		}
+	},
+	"version": 1
+}
