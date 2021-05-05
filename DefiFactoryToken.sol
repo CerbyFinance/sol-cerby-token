@@ -2,8 +2,8 @@
 
 pragma solidity ^0.8.0;
 
-import "../sol-openzeppelin/access/AccessControlEnumerable.sol";
-import "../sol-openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol";
+import "./openzeppelin/access/AccessControlEnumerable.sol";
+import "./openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "./INoBotsTech.sol";
 
 

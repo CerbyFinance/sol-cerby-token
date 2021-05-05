@@ -7,7 +7,7 @@ import "./INoBotsTech.sol";
 import "./IUniswapV2Factory.sol";
 import "./IUniswapV2Pair.sol";
 import "./IWeth.sol";
-import "../sol-openzeppelin/access/AccessControlEnumerable.sol";
+import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 
 contract TeamVestingContract is AccessControlEnumerable {

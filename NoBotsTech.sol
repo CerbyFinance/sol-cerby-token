@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 import "./INoBotsTech.sol";
-import "../sol-openzeppelin/access/AccessControlEnumerable.sol";
+import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 
 contract NoBotsTech is AccessControlEnumerable {
