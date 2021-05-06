@@ -639,6 +639,32 @@
 			},
 			{
 				"inputs": [],
+				"name": "howManyBlocksAgoReceived",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "howManyBlocksAgoSent",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "humanTaxPercent",
 				"outputs": [
 					{
@@ -925,6 +951,24 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "_howManyBlocksAgoReceived",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_howManyBlocksAgoSent",
+						"type": "uint256"
+					}
+				],
+				"name": "updateHowManyBlocksAgo",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "_secondsBetweenUpdates",
 						"type": "uint256"
 					}
@@ -1042,11 +1086,11 @@
 			]
 		},
 		"sol-defifactory-token/NoBotsTech.sol": {
-			"keccak256": "0xb993230b047ee0a7c9455083242ae57af98fac2553b198872b61fbca00501d48",
+			"keccak256": "0x35b212f482db18abec4fc7474a420ae7099415fce28b321e98e5c6d93415040d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://75a62ff681895de7f0e510bb6bf6aa008b3d175ce2c661921a11b2720e64f0be",
-				"dweb:/ipfs/QmNcVHBvkuujm2U4fhV7WEjTJhkVwMq18Xc6PHEjwqbnrZ"
+				"bzz-raw://03723e1b82d9637b61e7d64da6944f293288f1f8926f57f22dc4d87c4762194f",
+				"dweb:/ipfs/Qmf9Uw3A7mVSwSgZvkDdsU9Ud7ST7Qcg4Hi32p9qs78rw2"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

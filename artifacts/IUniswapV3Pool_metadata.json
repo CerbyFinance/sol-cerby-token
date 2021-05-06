@@ -1,0 +1,90 @@
+{
+	"compiler": {
+		"version": "0.8.1+commit.df193b15"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					},
+					{
+						"internalType": "int24",
+						"name": "tickLower",
+						"type": "int24"
+					},
+					{
+						"internalType": "int24",
+						"name": "tickUpper",
+						"type": "int24"
+					},
+					{
+						"internalType": "uint128",
+						"name": "amount",
+						"type": "uint128"
+					},
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "mint",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"sol-defifactory-token/IUniswapV3Pool.sol": "IUniswapV3Pool"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"sol-defifactory-token/IUniswapV3Pool.sol": {
+			"keccak256": "0xf82292045d0929a12be02376b508c513768ea683050ef2aa03e4dccd5ab49024",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://040449d8cc14434ef5646c5062825222bb5e42a61e999ff65af6c6012ef66a67",
+				"dweb:/ipfs/QmS4J4yMVZ5omV5oT6KRbUj6BaxerSXjRXir5cHeezwWVw"
+			]
+		}
+	},
+	"version": 1
+}

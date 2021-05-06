@@ -44,6 +44,8 @@ contract NoBotsTech is AccessControlEnumerable {
         uint sent;
     }
     mapping(address => LastBlock) lastBlock;
+    uint public howManyBlocksAgoReceived = 0;
+    uint public howManyBlocksAgoSent = 0;
     
     struct RoleAccess {
         bytes32 role;
@@ -78,14 +80,20 @@ contract NoBotsTech is AccessControlEnumerable {
     }
     
     modifier onlyParentContractOrAdmins {
-        
-        
         require(            
             hasRole(ROLE_PARENT, _msgSender()) || 
             hasRole(ROLE_ADMIN, _msgSender()), 
             "NoBotsTech: !ROLE_PARENT"
         );
         _;
+    }
+    
+    function updateHowManyBlocksAgo(uint _howManyBlocksAgoReceived, uint _howManyBlocksAgoSent)
+        public
+        onlyAdmins
+    {
+        howManyBlocksAgoReceived = _howManyBlocksAgoReceived;
+        howManyBlocksAgoSent = _howManyBlocksAgoSent;
     }
     
     function grantRolesBulk(RoleAccess[] calldata roles)
@@ -373,10 +381,12 @@ contract NoBotsTech is AccessControlEnumerable {
             
             // isHuman condition below
             (hasRole(ROLE_WHITELIST, taxAmountsInput.sender) || 
-                (lastBlock[taxAmountsInput.sender].received != block.number && isNotContract(taxAmountsInput.sender))) &&
+                (lastBlock[taxAmountsInput.sender].received + howManyBlocksAgoReceived < block.number && 
+                    isNotContract(taxAmountsInput.sender))) &&
                 
             (hasRole(ROLE_WHITELIST, taxAmountsInput.recipient) || 
-                (lastBlock[taxAmountsInput.recipient].sent != block.number && isNotContract(taxAmountsInput.recipient)))
+                (lastBlock[taxAmountsInput.recipient].sent + howManyBlocksAgoSent < block.number && 
+                    isNotContract(taxAmountsInput.recipient)))
         ) {
             burnAndRewardRealAmount = (realTransferAmount * humanTaxPercent) / TAX_PERCENT_DENORM;
         } else // isBot

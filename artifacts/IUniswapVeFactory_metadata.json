@@ -67,7 +67,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/IUniswapV2Factory.sol": "IUniswapV2Factory"
+			"sol-defifactory-token/IUniswapV3Factory.sol": "IUniswapVeFactory"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -81,12 +81,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/IUniswapV2Factory.sol": {
-			"keccak256": "0xb5ab73377aad2d4d2253ea1b198dd16d195b0820cc6376cebf579544cd89377e",
+		"sol-defifactory-token/IUniswapV3Factory.sol": {
+			"keccak256": "0x1b5fa1a651c2ba29d4896b65d0a037bd344504b062d4d8d47d925b0ab7fecae8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://913ae441b8a1bffd7dde47ac13aaa91c216c8c2a9fdb0df883a4775c3bbc367c",
-				"dweb:/ipfs/Qme8QKRGxdcyiFhoFh3RQ6zFxWT2iipXxKtvuXUsrwep21"
+				"bzz-raw://d3edc857d454484bf4c5e9bc1699a24e59d31d476228fb61da2b9d6c29176b9e",
+				"dweb:/ipfs/QmfDr7gV7vbxqU2Jg9kBEPMmYH4bzpB44p6kzWWNzYsQch"
 			]
 		}
 	},

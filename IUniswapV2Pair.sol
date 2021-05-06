@@ -2,8 +2,6 @@
 
 pragma solidity ^0.8.0;
 
-import "./IUniswapV2Pair.sol";
-
 interface IUniswapV2Pair {
     
     function sync()

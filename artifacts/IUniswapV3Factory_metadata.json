@@ -16,9 +16,14 @@
 						"internalType": "address",
 						"name": "tokenB",
 						"type": "address"
+					},
+					{
+						"internalType": "uint24",
+						"name": "fee",
+						"type": "uint24"
 					}
 				],
-				"name": "createPair",
+				"name": "createPool",
 				"outputs": [
 					{
 						"internalType": "address",
@@ -40,9 +45,14 @@
 						"internalType": "address",
 						"name": "tokenB",
 						"type": "address"
+					},
+					{
+						"internalType": "uint24",
+						"name": "fee",
+						"type": "uint24"
 					}
 				],
-				"name": "getPair",
+				"name": "getPool",
 				"outputs": [
 					{
 						"internalType": "address",
@@ -67,7 +77,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/IUniswapV2Factory.sol": "IUniswapV2Factory"
+			"sol-defifactory-token/IUniswapV3Factory.sol": "IUniswapV3Factory"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -81,12 +91,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/IUniswapV2Factory.sol": {
-			"keccak256": "0xb5ab73377aad2d4d2253ea1b198dd16d195b0820cc6376cebf579544cd89377e",
+		"sol-defifactory-token/IUniswapV3Factory.sol": {
+			"keccak256": "0x3ce0278a8871afe3c5cfb35ffaa19cf1e28bf094461677ca4038921431bc72fb",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://913ae441b8a1bffd7dde47ac13aaa91c216c8c2a9fdb0df883a4775c3bbc367c",
-				"dweb:/ipfs/Qme8QKRGxdcyiFhoFh3RQ6zFxWT2iipXxKtvuXUsrwep21"
+				"bzz-raw://ef7a6712af1096908c61fe4673c7e48f9f6c5a907542a9eaf317538d439df5c8",
+				"dweb:/ipfs/QmSonYf4pR9cDWNf4GXYUAJHHxR3iJ4jJHt1iCKe1V51sn"
 			]
 		}
 	},

@@ -30,7 +30,8 @@
                 updateUtilsContracts([
                     [false, false, false, false, false, noBotsTechContract.options.address],
                     [true, true, true, true, true, teamVestingContract.options.address],
-                    [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"]
+                    [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"], //Uniswap factory v2
+                    [false, false, false, false, false, "0x1F98431c8aD98523631AE4a59f267346ea31F984"], //Uniswap factory v3
                 ]).send({
                     from: account, 
                     gas: 1e6,
