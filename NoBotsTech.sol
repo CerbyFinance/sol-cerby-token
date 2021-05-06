@@ -145,19 +145,22 @@ contract NoBotsTech is AccessControlEnumerable {
             if (temporaryReferralAmounts[referrals[i]] == 0) continue;
             
             temporaryReferrer = referralToReferrer[referrals[i]]; // Finding first-level referrer on top of current referrals[i]
-            referrerBalances[temporaryReferrer] += 
-                (temporaryReferralAmounts[referrals[i]] * firstLevelRefPercent) / TAX_PERCENT_DENORM; // 1.00%
-            emit ReferralRewardUpdated(temporaryReferrer, referrerBalances[temporaryReferrer]);
-            
-            temporaryReferrer = referralToReferrer[temporaryReferrer]; // Finding second-level referrer on top of first-level referrer
             if (temporaryReferrer != BURN_ADDRESS)
             {
                 referrerBalances[temporaryReferrer] += 
-                    (temporaryReferralAmounts[referrals[i]] * secondLevelRefPercent) / TAX_PERCENT_DENORM; // 0.25%
+                    (temporaryReferralAmounts[referrals[i]] * firstLevelRefPercent) / TAX_PERCENT_DENORM; // 1.00%
                 emit ReferralRewardUpdated(temporaryReferrer, referrerBalances[temporaryReferrer]);
+                
+                temporaryReferrer = referralToReferrer[temporaryReferrer]; // Finding second-level referrer on top of first-level referrer
+                if (temporaryReferrer != BURN_ADDRESS)
+                {
+                    referrerBalances[temporaryReferrer] += 
+                        (temporaryReferralAmounts[referrals[i]] * secondLevelRefPercent) / TAX_PERCENT_DENORM; // 0.25%
+                    emit ReferralRewardUpdated(temporaryReferrer, referrerBalances[temporaryReferrer]);
+                }
+                
+                temporaryReferralAmounts[referrals[i]] = 0;
             }
-            
-            temporaryReferralAmounts[referrals[i]] = 0;
         }
     }
     

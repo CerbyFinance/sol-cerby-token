@@ -212,10 +212,12 @@ contract TeamVestingContract is AccessControlEnumerable {
         iPair.mint(_msgSender()); // LP keys sent to admin, later on will be unicrypt locked for 100 years
 
         state = States.AddedLiquidity;
+        
+        distributeTokens();
     }
 
     function distributeTokens()
-        external
+        public
         onlyAdmins
     {
         require(state == States.AddedLiquidity, "VestingContract: Tokens have already been distributed!");
