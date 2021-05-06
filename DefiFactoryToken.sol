@@ -120,6 +120,10 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
             recipient != BURN_ADDRESS,
             "DefiFactoryToken: !burn"
         );
+        require(
+            sender != recipient,
+            "DefiFactoryToken: !self"
+        );
         
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
         TaxAmountsOutput memory taxAmountsOutput = iNoBotsTech.prepareTaxAmounts(

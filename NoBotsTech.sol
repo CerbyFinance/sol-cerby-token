@@ -345,11 +345,6 @@ contract NoBotsTech is AccessControlEnumerable {
         onlyParentContractOrAdmins
         returns(TaxAmountsOutput memory taxAmountsOutput)
     {
-        require(
-            taxAmountsInput.sender != taxAmountsInput.recipient,
-            "NoBotsTech: !self"
-        );
-        
         uint realTransferAmount = 
             (taxAmountsInput.transferAmount * BALANCE_MULTIPLIER_DENORM) / cachedMultiplier;
         
