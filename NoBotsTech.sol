@@ -65,6 +65,8 @@ contract NoBotsTech is AccessControlEnumerable {
                     "0x8323bf1837567d0c5af5bF72E9001cDB6220e7D7"
                 ]
         */
+
+        // TODO: remove on production
         registerReferral(0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6, 0xE019B37896f129354cf0b8f1Cf33936b86913A34);
         registerReferral(0xE019B37896f129354cf0b8f1Cf33936b86913A34, 0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6);
         registerReferral(0x8323bf1837567d0c5af5bF72E9001cDB6220e7D7, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
@@ -78,9 +80,7 @@ contract NoBotsTech is AccessControlEnumerable {
     modifier onlyParentContractOrAdmins {
         
         
-        require(
-            // TODO: remove true on production!!!!!!!!!!!!!!!!!!!!!!!
-            
+        require(            
             hasRole(ROLE_PARENT, _msgSender()) || 
             hasRole(ROLE_ADMIN, _msgSender()), 
             "NoBotsTech: !ROLE_PARENT"
@@ -111,22 +111,22 @@ contract NoBotsTech is AccessControlEnumerable {
         {
             if (temporaryReferralAmounts[referrals[i]] == 0) continue;
             
-            temporaryReferrer = referralToReferrer[referrals[i]];
+            temporaryReferrer = referralToReferrer[referrals[i]]; // Finding first-level referrer on top of current referrals[i]
             if (temporaryReferrer != BURN_ADDRESS)
             {
                 if (temporaryReferrer == referrer)
                 {
                     referrerBalance += 
-                        (temporaryReferralAmounts[referrals[i]] * firstLevelRefPercent) / TAX_PERCENT_DENORM; // 0.25%
+                        (temporaryReferralAmounts[referrals[i]] * firstLevelRefPercent) / TAX_PERCENT_DENORM; // 1.00%
                 }
                 
-                temporaryReferrer = referralToReferrer[temporaryReferrer]; // ref lvl2
+                temporaryReferrer = referralToReferrer[temporaryReferrer]; // Finding second-level referrer on top of first-level referrer
                 if (temporaryReferrer != BURN_ADDRESS)
                 {
                     if (temporaryReferrer == referrer)
                     {
                         referrerBalance += 
-                            (temporaryReferralAmounts[referrals[i]] * secondLevelRefPercent) / TAX_PERCENT_DENORM; // 1.00%
+                            (temporaryReferralAmounts[referrals[i]] * secondLevelRefPercent) / TAX_PERCENT_DENORM; // 0.25%
                     }
                 }
             }
@@ -140,15 +140,16 @@ contract NoBotsTech is AccessControlEnumerable {
         public
     {
         address temporaryReferrer;
-        for (uint i = 0; i < referrals.length; i++) // ref lvl1
+        for (uint i = 0; i < referrals.length; i++)
         {
             if (temporaryReferralAmounts[referrals[i]] == 0) continue;
             
+            temporaryReferrer = referralToReferrer[referrals[i]]; // Finding first-level referrer on top of current referrals[i]
             referrerBalances[temporaryReferrer] += 
                 (temporaryReferralAmounts[referrals[i]] * firstLevelRefPercent) / TAX_PERCENT_DENORM; // 1.00%
             emit ReferralRewardUpdated(temporaryReferrer, referrerBalances[temporaryReferrer]);
             
-            temporaryReferrer = referralToReferrer[temporaryReferrer]; // ref lvl2
+            temporaryReferrer = referralToReferrer[temporaryReferrer]; // Finding second-level referrer on top of first-level referrer
             if (temporaryReferrer != BURN_ADDRESS)
             {
                 referrerBalances[temporaryReferrer] += 
