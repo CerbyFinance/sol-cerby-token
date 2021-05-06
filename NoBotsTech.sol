@@ -37,7 +37,7 @@ contract NoBotsTech is AccessControlEnumerable {
     address constant BURN_ADDRESS = address(0x0);
     
     uint rewardsBalance;
-    uint totalSupply;
+    uint realTotalSupply;
     
     struct LastBlock {
         uint received;
@@ -272,7 +272,7 @@ contract NoBotsTech is AccessControlEnumerable {
         onlyParentContractOrAdmins
         returns (uint)
     {
-        return totalSupply + rewardsBalance;
+        return realTotalSupply + rewardsBalance;
     }
     
     function getRewardsBalance()
@@ -289,12 +289,12 @@ contract NoBotsTech is AccessControlEnumerable {
     {   
         lastCachedTimestamp = block.timestamp;
     
-        totalSupply -= batchBurnAndReward;
-        rewardsBalance += batchBurnAndReward/2;
+        realTotalSupply -= batchBurnAndReward;
+        rewardsBalance += batchBurnAndReward/2; // Half of burned amount goes to rewards to all DEFT holders
         batchBurnAndReward = 0;
         
         cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
-            (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / totalSupply;
+            (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
             
         emit MultiplierUpdated(cachedMultiplier);
     }
@@ -324,19 +324,6 @@ contract NoBotsTech is AccessControlEnumerable {
         
         return accountBalance;
     }
-    
-    function chargeCustomTaxPreBurned(uint taxAmount)
-        public
-        onlyParentContractOrAdmins
-    {
-        uint realTaxAmount = 
-            (taxAmount * BALANCE_MULTIPLIER_DENORM) / cachedMultiplier;
-        
-        batchBurnAndReward += realTaxAmount;
-        totalSupply += realTaxAmount; // because we substracted while burning and substracting again in delayedUpdateCacheMultiplier
-        
-        delayedUpdateCacheMultiplier();
-    }
  
     function prepareTaxAmounts(
         TaxAmountsInput calldata taxAmountsInput
@@ -358,12 +345,12 @@ contract NoBotsTech is AccessControlEnumerable {
         );
         
         uint burnAndRewardRealAmount;
-        if (referralToReferrer[taxAmountsInput.sender] != BURN_ADDRESS)
+        if (referralToReferrer[taxAmountsInput.sender] != BURN_ADDRESS) // If sender is referral under referralToReferrer[taxAmountsInput.sender] referrer
         {
             burnAndRewardRealAmount = (realTransferAmount * refTaxPercent) / TAX_PERCENT_DENORM;
             
             temporaryReferralAmounts[taxAmountsInput.sender] += realTransferAmount;
-        } else if (
+        } else if ( // For example for binance wallet I can set custom tax = 0%
             hasRole(ROLE_CUSTOM_TAX, taxAmountsInput.sender) ||
             hasRole(ROLE_CUSTOM_TAX, taxAmountsInput.recipient)
         ) {
@@ -380,7 +367,7 @@ contract NoBotsTech is AccessControlEnumerable {
                 isHuman = !isBot = (A || (!B && !C)) && (D || (!E && !F))
             */
             
-            
+            // isHuman condition below
             (hasRole(ROLE_WHITELIST, taxAmountsInput.sender) || 
                 (lastBlock[taxAmountsInput.sender].received != block.number && isNotContract(taxAmountsInput.sender))) &&
                 
@@ -388,7 +375,7 @@ contract NoBotsTech is AccessControlEnumerable {
                 (lastBlock[taxAmountsInput.recipient].sent != block.number && isNotContract(taxAmountsInput.recipient)))
         ) {
             burnAndRewardRealAmount = (realTransferAmount * humanTaxPercent) / TAX_PERCENT_DENORM;
-        } else
+        } else // isBot
         {
             burnAndRewardRealAmount = (realTransferAmount * botTaxPercent) / TAX_PERCENT_DENORM;
             
@@ -401,17 +388,17 @@ contract NoBotsTech is AccessControlEnumerable {
         
         uint recipientGetsRealAmount = realTransferAmount - burnAndRewardRealAmount;
         taxAmountsOutput.burnAndRewardAmount = 
-            (burnAndRewardRealAmount * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
+            (burnAndRewardRealAmount * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM; // Actual amount we burned and have to shown in event
         taxAmountsOutput.recipientGetsAmount = 
-            taxAmountsInput.transferAmount - taxAmountsOutput.burnAndRewardAmount;
+            taxAmountsInput.transferAmount - taxAmountsOutput.burnAndRewardAmount; // Actual amount recipient got and have to shown in event
         
+        // Saving when sender or receiver made last transaction for anti bot system
         lastBlock[taxAmountsInput.recipient].received = block.number;
         lastBlock[taxAmountsInput.sender].sent = block.number;
         
         taxAmountsOutput.senderBalance = taxAmountsInput.senderBalance - realTransferAmount;
         taxAmountsOutput.recipientBalance = taxAmountsInput.recipientBalance + recipientGetsRealAmount;
-        batchBurnAndReward += burnAndRewardRealAmount;
-        
+        batchBurnAndReward += burnAndRewardRealAmount;        
         
         delayedUpdateCacheMultiplier();
         
@@ -430,11 +417,11 @@ contract NoBotsTech is AccessControlEnumerable {
         if (isMint) 
         {
             rewardsBalance += realRewardToMintOrBurn;
-            totalSupply += realAmountToMintOrBurn;
+            realTotalSupply += realAmountToMintOrBurn;
         } else
         {
             rewardsBalance -= realRewardToMintOrBurn;
-            totalSupply -= realAmountToMintOrBurn;
+            realTotalSupply -= realAmountToMintOrBurn;
         }
         
         forcedUpdateCacheMultiplier();
