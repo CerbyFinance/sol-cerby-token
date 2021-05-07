@@ -6,8 +6,6 @@ import "./IDefiFactoryToken.sol";
 import "./INoBotsTech.sol";
 import "./IUniswapV2Factory.sol";
 import "./IUniswapV2Pair.sol";
-import "./IUniswapV3Factory.sol";
-import "./IUniswapV3Pool.sol";
 import "./IWeth.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 
@@ -18,7 +16,6 @@ contract TeamVestingContract is AccessControlEnumerable {
     
     uint constant NOBOTS_TECH_CONTRACT_ID = 0;
     uint constant UNISWAP_V2_FACTORY_CONTRACT_ID = 2;
-    uint constant UNISWAP_V3_FACTORY_CONTRACT_ID = 3;
 
     struct Investor {
         address addr;
@@ -38,7 +35,7 @@ contract TeamVestingContract is AccessControlEnumerable {
     
     address public defiFactoryToken = 0x2493e2D8a80d95AF4e4d2C1448a29c34Ba27ca30;
     
-    uint public constant TOTAL_SUPPLY_CAP = 100 * 1e9 * 1e18; // 100B
+    uint public constant TOTAL_SUPPLY_CAP = 1 * 1e9 * 1e18; // 1B
     
     uint public percentForTheTeam = 30;
     uint public percentForUniswap = 70;
@@ -64,7 +61,6 @@ contract TeamVestingContract is AccessControlEnumerable {
     uint public startedLocking;
     address public wethAndTokenPairContract;
     
-    uint24 constant UNISWAP_V3_FEE = 3000;
     
     uint amountOfTokensForInvestors;
     
@@ -173,34 +169,20 @@ contract TeamVestingContract is AccessControlEnumerable {
         state = States.PreparedAddLiqudity;
     }
     
-    function createPair(bool isV2)
+    function createPair()
         public
         onlyAdmins
     {
         require(state == States.PreparedAddLiqudity, "VestingContract: Pair is already created!");
 
-        if (isV2)
+        IUniswapV2Factory iUniswapV2Factory = IUniswapV2Factory(
+            IDefiFactoryToken(defiFactoryToken).
+                getUtilsContractAtPos(UNISWAP_V2_FACTORY_CONTRACT_ID)
+        );
+        wethAndTokenPairContract = iUniswapV2Factory.getPair(defiFactoryToken, nativeToken);
+        if (wethAndTokenPairContract == BURN_ADDRESS)
         {
-            IUniswapV2Factory iUniswapV2Factory = IUniswapV2Factory(
-                IDefiFactoryToken(defiFactoryToken).
-                    getUtilsContractAtPos(UNISWAP_V2_FACTORY_CONTRACT_ID)
-            );
-            wethAndTokenPairContract = iUniswapV2Factory.getPair(defiFactoryToken, nativeToken);
-            if (wethAndTokenPairContract == BURN_ADDRESS)
-            {
-                wethAndTokenPairContract = iUniswapV2Factory.createPair(defiFactoryToken, nativeToken);
-            }
-        } else {
-            IUniswapV3Factory iUniswapV3Factory = IUniswapV3Factory(
-                IDefiFactoryToken(defiFactoryToken).
-                    getUtilsContractAtPos(UNISWAP_V3_FACTORY_CONTRACT_ID)
-            );
-            
-            wethAndTokenPairContract = iUniswapV3Factory.getPool(defiFactoryToken, nativeToken, UNISWAP_V3_FEE);
-            if (wethAndTokenPairContract == BURN_ADDRESS)
-            {
-                wethAndTokenPairContract = iUniswapV3Factory.createPool(defiFactoryToken, nativeToken, UNISWAP_V3_FEE);
-            }
+            wethAndTokenPairContract = iUniswapV2Factory.createPair(defiFactoryToken, nativeToken);
         }
            
         INoBotsTech iNoBotsTech = INoBotsTech(
@@ -211,10 +193,10 @@ contract TeamVestingContract is AccessControlEnumerable {
         
         state = States.CreatedPair;
         
-        addLiquidity(isV2);
+        addLiquidity();
     }
     
-    function addLiquidity(bool isV2)
+    function addLiquidity()
         public
         onlyAdmins
     {
@@ -229,15 +211,8 @@ contract TeamVestingContract is AccessControlEnumerable {
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
         iDefiFactoryToken.mintHumanAddress(wethAndTokenPairContract, amountOfTokensForUniswap);
         
-        if (isV2)
-        {
-            IUniswapV2Pair iPair = IUniswapV2Pair(wethAndTokenPairContract);
-            iPair.mint(_msgSender());
-        } else
-        {
-            IUniswapV3Pool iPool = IUniswapV3Pool(wethAndTokenPairContract);
-            // TODO: figure out
-        }
+        IUniswapV2Pair iPair = IUniswapV2Pair(wethAndTokenPairContract);
+        iPair.mint(_msgSender());
     
         state = States.AddedLiquidity;
         

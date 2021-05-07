@@ -677,6 +677,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "lastCachedTimestamp",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "bool",
@@ -771,6 +784,19 @@
 					}
 				],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "realTotalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -876,6 +902,19 @@
 				"name": "revokeRole",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "rewardsBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -1086,11 +1125,11 @@
 			]
 		},
 		"sol-defifactory-token/NoBotsTech.sol": {
-			"keccak256": "0x35b212f482db18abec4fc7474a420ae7099415fce28b321e98e5c6d93415040d",
+			"keccak256": "0xc951ae4674e09423957f50fc6cbd03b3fdc65630bc1c28bc0c6a506547298d6c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://03723e1b82d9637b61e7d64da6944f293288f1f8926f57f22dc4d87c4762194f",
-				"dweb:/ipfs/Qmf9Uw3A7mVSwSgZvkDdsU9Ud7ST7Qcg4Hi32p9qs78rw2"
+				"bzz-raw://c75b7a6adfc92a4872134bf8c71e809f6041560837a5fa9b6684c38ce7bc15b2",
+				"dweb:/ipfs/Qmck2qtWQor4zsyyp1YkCSGnaamLYwUoYjArgDTHePVrtM"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

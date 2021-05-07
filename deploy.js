@@ -31,7 +31,6 @@
                     [false, false, false, false, false, noBotsTechContract.options.address],
                     [true, true, true, true, true, teamVestingContract.options.address],
                     [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"], //Uniswap factory v2
-                    [false, false, false, false, false, "0x1F98431c8aD98523631AE4a59f267346ea31F984"], //Uniswap factory v3
                 ]).send({
                     from: account, 
                     gas: 1e6,
@@ -136,7 +135,7 @@
             createPair(
             ).send({
                 from: account, 
-                gas: 5e6,
+                gas: 7e6,
                 gasPrice: 2e9 + 1,
                 value: 0
             })
@@ -147,7 +146,7 @@
     catch (error) { console.log(error.message); fail; }
     
     //console.log("TeamVestingContract.addLiquidity: " + new Date());
-    try {
+    /*try {
         await teamVestingContract.methods.
             addLiquidity(
             ).send({
@@ -176,7 +175,7 @@
             //console.log(result);
         });
     }
-    catch (error) { console.log(error.message);fail; }
+    catch (error) { console.log(error.message);fail; }*/
 
     console.log("Completed: " + new Date());
 })();

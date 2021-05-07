@@ -50,8 +50,8 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
      * See {ERC20-constructor}.
      */
     constructor() 
-        ERC20("Test VVV", "VVV") 
-        ERC20Permit("Test VVV")
+        ERC20("Test KDEFT", "TestKDEFT") 
+        ERC20Permit("Test KDEFT")
     {
         _setupRole(ROLE_ADMIN, _msgSender());
         _setupRole(ROLE_MINTER, _msgSender());

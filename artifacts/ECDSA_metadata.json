@@ -1,0 +1,46 @@
+{
+	"compiler": {
+		"version": "0.8.1+commit.df193b15"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"details": "Elliptic Curve Digital Signature Algorithm (ECDSA) operations. These functions can be used to verify that a message was signed by the holder of the private keys of a given address.",
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"sol-defifactory-token/Flat_DefiFactoryToken.sol": "ECDSA"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"sol-defifactory-token/Flat_DefiFactoryToken.sol": {
+			"keccak256": "0x35f8d48debe5957d8ececf5f809afba7589e94abda9c2dfd06e373fcf9c754e6",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://dde8b1956b75ff6a7d3cae24d49ee36d3836c1d4058b234b6c1b22c895734733",
+				"dweb:/ipfs/QmQDe4jLUZFTPz58eBB4rgWPRNVx9xs8PdaS6wNDEW4p1q"
+			]
+		}
+	},
+	"version": 1
+}

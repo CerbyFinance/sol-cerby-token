@@ -216,13 +216,7 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "bool",
-						"name": "isV2",
-						"type": "bool"
-					}
-				],
+				"inputs": [],
 				"name": "addLiquidity",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -262,13 +256,7 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "bool",
-						"name": "isV2",
-						"type": "bool"
-					}
-				],
+				"inputs": [],
 				"name": "createPair",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -994,22 +982,6 @@
 				"dweb:/ipfs/QmdHa837WfthskgJE4c5qBxQC9j2wgiJeWhHhffr9ffVmY"
 			]
 		},
-		"sol-defifactory-token/IUniswapV3Factory.sol": {
-			"keccak256": "0x3ce0278a8871afe3c5cfb35ffaa19cf1e28bf094461677ca4038921431bc72fb",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://ef7a6712af1096908c61fe4673c7e48f9f6c5a907542a9eaf317538d439df5c8",
-				"dweb:/ipfs/QmSonYf4pR9cDWNf4GXYUAJHHxR3iJ4jJHt1iCKe1V51sn"
-			]
-		},
-		"sol-defifactory-token/IUniswapV3Pool.sol": {
-			"keccak256": "0xf82292045d0929a12be02376b508c513768ea683050ef2aa03e4dccd5ab49024",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://040449d8cc14434ef5646c5062825222bb5e42a61e999ff65af6c6012ef66a67",
-				"dweb:/ipfs/QmS4J4yMVZ5omV5oT6KRbUj6BaxerSXjRXir5cHeezwWVw"
-			]
-		},
 		"sol-defifactory-token/IWeth.sol": {
 			"keccak256": "0x55d776711ab487dbda19fb0cf0ce8e475057ae1767d31cc78f4333cea009d386",
 			"license": "MIT",
@@ -1019,11 +991,11 @@
 			]
 		},
 		"sol-defifactory-token/TeamVestingContract.sol": {
-			"keccak256": "0x84206de87e753916a5899c96fc1769e75b2389a272f1c8ec38554c3c70c30d71",
+			"keccak256": "0x7317546d4fcf57674ac40f41ceb0782a9cedb7291fb2c0d91377341dc832b820",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f8fa3af1173f418a48199469df6e2cdec89bebb761da9a5a716a80bed26602b0",
-				"dweb:/ipfs/QmWcyV9NTTHv3DvSr4xJ3CCmT8RiK4ooFZNcTuSrF3PPYG"
+				"bzz-raw://25f3518e451ea5294f47001c9c137675888d7f3f36d4287cd7cd7ae0ec72b339",
+				"dweb:/ipfs/QmQn8hNPcCpvR6R8uxZ1gJBku9YVds7XDMAyaMGkUSHZK2"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

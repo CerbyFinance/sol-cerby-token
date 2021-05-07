@@ -24,7 +24,7 @@ contract NoBotsTech is AccessControlEnumerable {
     mapping (address => uint) public customTaxPercents;
     
     uint public batchBurnAndReward;
-    uint lastCachedTimestamp = block.timestamp;
+    uint public lastCachedTimestamp = block.timestamp;
     uint secondsBetweenUpdates;
     
     uint public humanTaxPercent = 1e5; // 10.0%
@@ -36,8 +36,8 @@ contract NoBotsTech is AccessControlEnumerable {
     
     address constant BURN_ADDRESS = address(0x0);
     
-    uint rewardsBalance;
-    uint realTotalSupply;
+    uint public rewardsBalance;
+    uint public realTotalSupply;
     
     struct LastBlock {
         uint received;
@@ -237,6 +237,7 @@ contract NoBotsTech is AccessControlEnumerable {
         onlyAdmins
     {
         customTaxPercents[addr] = newCustomTaxPercent;
+        _setupRole(ROLE_CUSTOM_TAX, addr);
     }
 
     function updateTaxPercent(

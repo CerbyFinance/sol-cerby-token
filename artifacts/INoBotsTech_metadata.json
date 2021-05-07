@@ -475,7 +475,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/INoBotsTech.sol": "INoBotsTech"
+			"sol-defifactory-token/Flat_DefiFactoryToken.sol": "INoBotsTech"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -489,12 +489,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/INoBotsTech.sol": {
-			"keccak256": "0xc9e20598f1ac8dc88884ffd2744509cf9ab01ddcf389b89dbe041ee808c623d7",
+		"sol-defifactory-token/Flat_DefiFactoryToken.sol": {
+			"keccak256": "0x35f8d48debe5957d8ececf5f809afba7589e94abda9c2dfd06e373fcf9c754e6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://016e729b6c73aa5724e4b9e93c8e8789bf06355336657032af7a1ba305a9e719",
-				"dweb:/ipfs/QmeV8BuMUgtHtRMpoQkkT5Q4tJYuji1kaUrFmcKwgKSQdr"
+				"bzz-raw://dde8b1956b75ff6a7d3cae24d49ee36d3836c1d4058b234b6c1b22c895734733",
+				"dweb:/ipfs/QmQDe4jLUZFTPz58eBB4rgWPRNVx9xs8PdaS6wNDEW4p1q"
 			]
 		}
 	},
