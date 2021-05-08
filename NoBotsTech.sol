@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: BUSL-1.1
 
 pragma solidity ^0.8.0;
 
@@ -17,15 +17,16 @@ contract NoBotsTech is AccessControlEnumerable {
     
     // TODO: add option to extract all data for migration
     
-    mapping (address => uint) public temporaryReferralAmounts;
-    mapping (address => uint) public referrerBalances;
+    
+    mapping (address => uint) public temporaryReferralRealAmounts;
+    mapping (address => uint) public referrerRealBalances;
     mapping (address => address) public referralToReferrer;
     
     mapping (address => uint) public customTaxPercents;
     
     uint public batchBurnAndReward;
     uint public lastCachedTimestamp = block.timestamp;
-    uint secondsBetweenUpdates;
+    uint public secondsBetweenUpdates;
     
     uint public humanTaxPercent = 1e5; // 10.0%
     uint public botTaxPercent = 99e4; // 99.0%
@@ -53,7 +54,7 @@ contract NoBotsTech is AccessControlEnumerable {
     }
     
     event MultiplierUpdated(uint newMultiplier);
-    event BotTransactionDetected(address from, address to, uint amount);
+    event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);
     event ReferralRewardUpdated(address referral, uint amount);
     event ReferralRegistered(address referral, address referrer);
     event ReferralDeleted(address referral, address referrer);
@@ -61,17 +62,6 @@ contract NoBotsTech is AccessControlEnumerable {
     
     constructor () {
         _setupRole(ROLE_ADMIN, _msgSender());
-        
-        /*
-            "0x539FaA851D86781009EC30dF437D794bCd090c8F", [
-                    "0x8323bf1837567d0c5af5bF72E9001cDB6220e7D7"
-                ]
-        */
-
-        // TODO: remove on production
-        registerReferral(0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6, 0xE019B37896f129354cf0b8f1Cf33936b86913A34);
-        registerReferral(0xE019B37896f129354cf0b8f1Cf33936b86913A34, 0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6);
-        registerReferral(0x8323bf1837567d0c5af5bF72E9001cDB6220e7D7, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
     }
     
     modifier onlyAdmins {
@@ -83,13 +73,13 @@ contract NoBotsTech is AccessControlEnumerable {
         require(            
             hasRole(ROLE_PARENT, _msgSender()) || 
             hasRole(ROLE_ADMIN, _msgSender()), 
-            "NoBotsTech: !ROLE_PARENT"
+            "NoBotsTech: !ROLE_PARENT_OR_ADMIN"
         );
         _;
     }
     
     function updateHowManyBlocksAgo(uint _howManyBlocksAgoReceived, uint _howManyBlocksAgoSent)
-        public
+        external
         onlyAdmins
     {
         howManyBlocksAgoReceived = _howManyBlocksAgoReceived;
@@ -97,7 +87,7 @@ contract NoBotsTech is AccessControlEnumerable {
     }
     
     function grantRolesBulk(RoleAccess[] calldata roles)
-        public
+        external
         onlyAdmins
     {
         for(uint i = 0; i<roles.length; i++)
@@ -107,25 +97,25 @@ contract NoBotsTech is AccessControlEnumerable {
     }
     
     function getCalculatedReferrerRewards(address referrer, address[] calldata referrals)
-        public
+        external
         onlyParentContractOrAdmins
         view
         returns (uint)
     {
-        uint referrerBalance = referrerBalances[referrer];
+        uint referrerRealBalance = referrerRealBalances[referrer];
         
         address temporaryReferrer;
         for (uint i = 0; i < referrals.length; i++)
         {
-            if (temporaryReferralAmounts[referrals[i]] == 0) continue;
+            if (temporaryReferralRealAmounts[referrals[i]] == 0) continue;
             
             temporaryReferrer = referralToReferrer[referrals[i]]; // Finding first-level referrer on top of current referrals[i]
             if (temporaryReferrer != BURN_ADDRESS)
             {
                 if (temporaryReferrer == referrer)
                 {
-                    referrerBalance += 
-                        (temporaryReferralAmounts[referrals[i]] * firstLevelRefPercent) / TAX_PERCENT_DENORM; // 1.00%
+                    referrerRealBalance += 
+                        (temporaryReferralRealAmounts[referrals[i]] * firstLevelRefPercent) / TAX_PERCENT_DENORM; // 1.00%
                 }
                 
                 temporaryReferrer = referralToReferrer[temporaryReferrer]; // Finding second-level referrer on top of first-level referrer
@@ -133,57 +123,73 @@ contract NoBotsTech is AccessControlEnumerable {
                 {
                     if (temporaryReferrer == referrer)
                     {
-                        referrerBalance += 
-                            (temporaryReferralAmounts[referrals[i]] * secondLevelRefPercent) / TAX_PERCENT_DENORM; // 0.25%
+                        referrerRealBalance += 
+                            (temporaryReferralRealAmounts[referrals[i]] * secondLevelRefPercent) / TAX_PERCENT_DENORM; // 0.25%
                     }
                 }
             }
         }
         
-        return (referrerBalance * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
+        return (referrerRealBalance * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
     }
     
     function updateReferrersRewards(address[] calldata referrals)
+        external
         onlyParentContractOrAdmins
-        public
     {
         address temporaryReferrer;
         for (uint i = 0; i < referrals.length; i++)
         {
-            if (temporaryReferralAmounts[referrals[i]] == 0) continue;
+            if (temporaryReferralRealAmounts[referrals[i]] == 0) continue;
             
             temporaryReferrer = referralToReferrer[referrals[i]]; // Finding first-level referrer on top of current referrals[i]
             if (temporaryReferrer != BURN_ADDRESS)
             {
-                referrerBalances[temporaryReferrer] += 
-                    (temporaryReferralAmounts[referrals[i]] * firstLevelRefPercent) / TAX_PERCENT_DENORM; // 1.00%
-                emit ReferralRewardUpdated(temporaryReferrer, referrerBalances[temporaryReferrer]);
+                referrerRealBalances[temporaryReferrer] += 
+                    (temporaryReferralRealAmounts[referrals[i]] * firstLevelRefPercent) / TAX_PERCENT_DENORM; // 1.00%
+                emit ReferralRewardUpdated(temporaryReferrer, referrerRealBalances[temporaryReferrer]);
                 
                 temporaryReferrer = referralToReferrer[temporaryReferrer]; // Finding second-level referrer on top of first-level referrer
                 if (temporaryReferrer != BURN_ADDRESS)
                 {
-                    referrerBalances[temporaryReferrer] += 
-                        (temporaryReferralAmounts[referrals[i]] * secondLevelRefPercent) / TAX_PERCENT_DENORM; // 0.25%
-                    emit ReferralRewardUpdated(temporaryReferrer, referrerBalances[temporaryReferrer]);
+                    referrerRealBalances[temporaryReferrer] += 
+                        (temporaryReferralRealAmounts[referrals[i]] * secondLevelRefPercent) / TAX_PERCENT_DENORM; // 0.25%
+                    emit ReferralRewardUpdated(temporaryReferrer, referrerRealBalances[temporaryReferrer]);
                 }
                 
-                temporaryReferralAmounts[referrals[i]] = 0;
+                temporaryReferralRealAmounts[referrals[i]] = 0;
             }
         }
     }
     
-    // TODO: get temporary referrer balances bulk
+    function getTemporaryReferralRealAmountsBulk(address[] calldata addrs)
+        external
+        onlyParentContractOrAdmins
+        view
+        returns (TemporaryReferralRealAmountsBulk[] memory)
+    {
+        TemporaryReferralRealAmountsBulk[] memory output = new TemporaryReferralRealAmountsBulk[](addrs.length);
+        for(uint i = 0; i<addrs.length; i++)
+        {
+            output[i] = TemporaryReferralRealAmountsBulk(
+                addrs[i],
+                temporaryReferralRealAmounts[addrs[i]]
+            );
+        }
+        
+        return output;
+    }
     
     function filterNonZeroReferrals(address[] calldata referrals)
+        external
         onlyParentContractOrAdmins
-        public
         view
         returns (address[] memory)
     {
         address[] memory output = referrals;
         for(uint i = 0; i < referrals.length; i++)
         {
-            if (temporaryReferralAmounts[referrals[i]] == 0)
+            if (temporaryReferralRealAmounts[referrals[i]] == 0)
             {
                 output[i] = BURN_ADDRESS;
             }
@@ -193,23 +199,23 @@ contract NoBotsTech is AccessControlEnumerable {
     }
     
     function getCachedReferrerRewards(address referrer)
-        public
+        external
         onlyParentContractOrAdmins
         view
         returns (uint)
     {
-        return (referrerBalances[referrer] * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
+        return (referrerRealBalances[referrer] * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
     }
     
     function clearReferrerRewards(address addr)
-        public
+        external
         onlyParentContractOrAdmins
     {
-        referrerBalances[addr] = 0;
+        referrerRealBalances[addr] = 0;
     }
     
     function registerReferral(address referral, address referrer)
-        public
+        external
         onlyParentContractOrAdmins
     {
         require(referrer != BURN_ADDRESS && referral != BURN_ADDRESS, "NoBotsTech: !burn");
@@ -257,7 +263,11 @@ contract NoBotsTech is AccessControlEnumerable {
         secondLevelRefPercent = _secondLevelRefPercent;
     }
     
-    function isContract(address account) internal view returns (bool) {
+    function isContract(address account) 
+        private 
+        view 
+        returns (bool) 
+    {
         // This method relies on extcodesize, which returns 0 for contracts in
         // construction, since the code is only stored at the end of the
         // constructor execution.
@@ -268,7 +278,11 @@ contract NoBotsTech is AccessControlEnumerable {
         return size > 0;
     }
     
-    function isNotContract(address account) internal view returns (bool) {
+    function isNotContract(address account) 
+        private
+        view
+        returns (bool)
+    {
         // This method relies on extcodesize, which returns 0 for contracts in
         // construction, since the code is only stored at the end of the
         // constructor execution.
@@ -280,16 +294,16 @@ contract NoBotsTech is AccessControlEnumerable {
     }
     
     function getTotalSupply()
-        public
-        view
+        external
         onlyParentContractOrAdmins
+        view
         returns (uint)
     {
         return realTotalSupply + rewardsBalance;
     }
     
     function getRewardsBalance()
-        public
+        external
         view
         onlyParentContractOrAdmins
         returns (uint)
@@ -322,7 +336,7 @@ contract NoBotsTech is AccessControlEnumerable {
     }
     
     function chargeCustomTax(uint taxAmount, uint accountBalance)
-        public
+        external
         onlyParentContractOrAdmins
         returns(uint)
     {
@@ -362,20 +376,23 @@ contract NoBotsTech is AccessControlEnumerable {
         {
             burnAndRewardRealAmount = (realTransferAmount * refTaxPercent) / TAX_PERCENT_DENORM;
             
-            temporaryReferralAmounts[taxAmountsInput.sender] += realTransferAmount;
+            temporaryReferralRealAmounts[taxAmountsInput.sender] += realTransferAmount;
         } else if ( // For example for binance wallet I can set custom tax = 0%
             hasRole(ROLE_CUSTOM_TAX, taxAmountsInput.sender) ||
             hasRole(ROLE_CUSTOM_TAX, taxAmountsInput.recipient)
         ) {
+            // Getting minimum tax of sender or recipient
             uint customTax = customTaxPercents[taxAmountsInput.sender] < customTaxPercents[taxAmountsInput.recipient]?
                 customTaxPercents[taxAmountsInput.sender]: customTaxPercents[taxAmountsInput.recipient];
             burnAndRewardRealAmount = (realTransferAmount * customTax) / TAX_PERCENT_DENORM;
         } else if (
             /*
-                isBot = !whitelistContracts[sender].isWhitelisted &&
-                            (lastBlock[sender].received == block.number || isContract(sender)) || 
-                        !whitelistContracts[recipient].isWhitelisted &&
-                            (lastBlock[recipient].sent == block.number || isContract(recipient))
+                isBot = !hasRole(ROLE_WHITELIST, taxAmountsInput.sender) &&
+                            (lastBlock[taxAmountsInput.sender].received + howManyBlocksAgoReceived > block.number 
+                                || isContract(sender)) || 
+                        !hasRole(ROLE_WHITELIST, taxAmountsInput.recipient) &&
+                            (lastBlock[taxAmountsInput.recipient].sent + howManyBlocksAgoSent > block.number 
+                                || isContract(recipient))
                 isBot      = (!A && (B || C)) || (!D && (E || F))
                 isHuman = !isBot = (A || (!B && !C)) && (D || (!E && !F))
             */
@@ -394,20 +411,22 @@ contract NoBotsTech is AccessControlEnumerable {
         {
             burnAndRewardRealAmount = (realTransferAmount * botTaxPercent) / TAX_PERCENT_DENORM;
             
+            uint botTaxedAmount = (taxAmountsInput.transferAmount * botTaxPercent) / TAX_PERCENT_DENORM;
             emit BotTransactionDetected(
                 taxAmountsInput.sender, 
                 taxAmountsInput.recipient, 
-                taxAmountsInput.transferAmount
+                taxAmountsInput.transferAmount,
+                botTaxedAmount
             );
         }
         
         uint recipientGetsRealAmount = realTransferAmount - burnAndRewardRealAmount;
         taxAmountsOutput.burnAndRewardAmount = 
-            (burnAndRewardRealAmount * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM; // Actual amount we burned and have to shown in event
+            (burnAndRewardRealAmount * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM; // Actual amount we burned and have to show in event
         taxAmountsOutput.recipientGetsAmount = 
-            taxAmountsInput.transferAmount - taxAmountsOutput.burnAndRewardAmount; // Actual amount recipient got and have to shown in event
+            taxAmountsInput.transferAmount - taxAmountsOutput.burnAndRewardAmount; // Actual amount recipient got and have to show in event
         
-        // Saving when sender or receiver made last transaction for anti bot system
+        // Saving when sender or recipient made last transaction for anti bot system
         lastBlock[taxAmountsInput.recipient].received = block.number;
         lastBlock[taxAmountsInput.sender].sent = block.number;
         
@@ -423,19 +442,23 @@ contract NoBotsTech is AccessControlEnumerable {
     function prepareHumanAddressMintOrBurnRewardsAmounts(bool isMint, address account, uint desiredAmountToMintOrBurn)
         external
         onlyParentContractOrAdmins
-        returns (uint realAmountToMintOrBurn)
+        returns (uint)
     {
-        require(hasRole(ROLE_WHITELIST, account) || isNotContract(account), "NoBotsTech: !human");
+        require(
+            hasRole(ROLE_WHITELIST, account) || 
+            isNotContract(account), 
+            "NoBotsTech: !human"
+        );
         
-        realAmountToMintOrBurn = (BALANCE_MULTIPLIER_DENORM * desiredAmountToMintOrBurn) / cachedMultiplier;
-        uint realRewardToMintOrBurn = desiredAmountToMintOrBurn - realAmountToMintOrBurn;
+        uint realAmountToMintOrBurn = (BALANCE_MULTIPLIER_DENORM * desiredAmountToMintOrBurn) / cachedMultiplier;
+        uint rewardToMintOrBurn = desiredAmountToMintOrBurn - realAmountToMintOrBurn;
         if (isMint) 
         {
-            rewardsBalance += realRewardToMintOrBurn;
+            rewardsBalance += rewardToMintOrBurn;
             realTotalSupply += realAmountToMintOrBurn;
         } else
         {
-            rewardsBalance -= realRewardToMintOrBurn;
+            rewardsBalance -= rewardToMintOrBurn;
             realTotalSupply -= realAmountToMintOrBurn;
         }
         
@@ -446,18 +469,18 @@ contract NoBotsTech is AccessControlEnumerable {
     
     function getBalance(address account, uint accountBalance)
         external
-        view
         onlyParentContractOrAdmins
+        view
         returns(uint)
     {
         return hasRole(ROLE_EXCLUDE_FROM_BALANCE, account)? accountBalance:
             (accountBalance * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
     }
     
-    function getRealBalanceVestingContract(uint accountBalance)
+    function getRealBalanceTeamVestingContract(uint accountBalance)
         external
-        view
         onlyParentContractOrAdmins
+        view
         returns(uint)
     {
         return (accountBalance * BALANCE_MULTIPLIER_DENORM) / cachedMultiplier;
@@ -465,8 +488,8 @@ contract NoBotsTech is AccessControlEnumerable {
     
     function getRealBalance(address account, uint accountBalance)
         external
-        view
         onlyParentContractOrAdmins
+        view
         returns(uint)
     {
         return hasRole(ROLE_EXCLUDE_FROM_BALANCE, account)? accountBalance:

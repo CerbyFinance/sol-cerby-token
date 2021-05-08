@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: BUSL-1.1
 
 pragma solidity ^0.8.0;
 
@@ -66,7 +66,7 @@ contract TeamVestingContract is AccessControlEnumerable {
     
     address constant BURN_ADDRESS = address(0x0);
     
-    constructor () payable {
+    constructor () payable { // TODO: remove payable on production
         
         _setupRole(ROLE_ADMIN, _msgSender());
         
@@ -82,8 +82,7 @@ contract TeamVestingContract is AccessControlEnumerable {
         
         // TODO: remove on production
         addInvestor(msg.sender, msg.value);
-        checkIfGoalIsReached();
-        prepareAddLiqudity();
+        checkIfGoalIsReachedAndPrepareLiqudity();
     }
 
     receive() external payable {
@@ -149,15 +148,17 @@ contract TeamVestingContract is AccessControlEnumerable {
         totalInvested += wethValue;
     }
     
-    function checkIfGoalIsReached()
+    function checkIfGoalIsReachedAndPrepareLiqudity()
         public
         onlyAdmins
     {
         state = States.ReachedGoal;
+        
+        prepareAddLiqudity();
     }
     
     function prepareAddLiqudity()
-        public
+        internal
         onlyAdmins
     {
         require(state == States.ReachedGoal, "VestingContract: Preparing add liquidity is completed!");
@@ -169,7 +170,7 @@ contract TeamVestingContract is AccessControlEnumerable {
         state = States.PreparedAddLiqudity;
     }
     
-    function createPair()
+    function createPairAndAddLiqudity()
         public
         onlyAdmins
     {
@@ -197,7 +198,7 @@ contract TeamVestingContract is AccessControlEnumerable {
     }
     
     function addLiquidity()
-        public
+        internal
         onlyAdmins
     {
         require(state == States.CreatedPair, "VestingContract: Liquidity is already added!");
@@ -220,7 +221,7 @@ contract TeamVestingContract is AccessControlEnumerable {
     }
 
     function distributeTokens()
-        public
+        internal
         onlyAdmins
     {
         require(state == States.AddedLiquidity, "VestingContract: Tokens have already been distributed!");
@@ -276,7 +277,7 @@ contract TeamVestingContract is AccessControlEnumerable {
             IDefiFactoryToken(defiFactoryToken).
                 getUtilsContractAtPos(NOBOTS_TECH_CONTRACT_ID)
         );
-        amountOfTokensForInvestors -= iNoBotsTech.getRealBalanceVestingContract(amount);
+        amountOfTokensForInvestors -= iNoBotsTech.getRealBalanceTeamVestingContract(amount);
     }
     
     function taxVestingTokens(uint amount)

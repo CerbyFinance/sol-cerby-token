@@ -55,7 +55,8 @@
 			"getCachedReferrerRewards(address)": "4abd991d",
 			"getCalculatedReferrerRewards(address,address[])": "00245783",
 			"getRealBalance(address,uint256)": "5cdba003",
-			"getRealBalanceVestingContract(uint256)": "888651c2",
+			"getRealBalanceTeamVestingContract(uint256)": "cb123637",
+			"getTemporaryReferralRealAmountsBulk(address[])": "68a2972f",
 			"getTotalSupply()": "c4e41b22",
 			"grantRole(bytes32,address)": "2f2ff15d",
 			"prepareHumanAddressMintOrBurnRewardsAmounts(bool,address,uint256)": "42e58a63",
@@ -84,7 +85,13 @@
 				{
 					"indexed": false,
 					"internalType": "uint256",
-					"name": "amount",
+					"name": "transferAmount",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "taxedAmount",
 					"type": "uint256"
 				}
 			],
@@ -329,12 +336,43 @@
 					"type": "uint256"
 				}
 			],
-			"name": "getRealBalanceVestingContract",
+			"name": "getRealBalanceTeamVestingContract",
 			"outputs": [
 				{
 					"internalType": "uint256",
 					"name": "",
 					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address[]",
+					"name": "addrs",
+					"type": "address[]"
+				}
+			],
+			"name": "getTemporaryReferralRealAmountsBulk",
+			"outputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "addr",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "realBalance",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct TemporaryReferralRealAmountsBulk[]",
+					"name": "",
+					"type": "tuple[]"
 				}
 			],
 			"stateMutability": "view",

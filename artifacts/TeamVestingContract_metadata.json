@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.1+commit.df193b15"
+		"version": "0.8.0+commit.c7dfd78e"
 	},
 	"language": "Solidity",
 	"output": {
@@ -216,13 +216,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "addLiquidity",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -237,7 +230,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "checkIfGoalIsReached",
+				"name": "checkIfGoalIsReachedAndPrepareLiqudity",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -257,7 +250,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "createPair",
+				"name": "createPairAndAddLiqudity",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -299,13 +292,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "distributeTokens",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -672,13 +658,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "prepareAddLiqudity",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -959,11 +938,11 @@
 			]
 		},
 		"sol-defifactory-token/INoBotsTech.sol": {
-			"keccak256": "0xc9e20598f1ac8dc88884ffd2744509cf9ab01ddcf389b89dbe041ee808c623d7",
+			"keccak256": "0x9b69a3c452114ca030908479f34e381a509f4646b080ce893727280e2ef239b9",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://016e729b6c73aa5724e4b9e93c8e8789bf06355336657032af7a1ba305a9e719",
-				"dweb:/ipfs/QmeV8BuMUgtHtRMpoQkkT5Q4tJYuji1kaUrFmcKwgKSQdr"
+				"bzz-raw://f6ac0e6ad7c2ca898ab9022cafc51c463436dc5657bd7b438fcbe1f4645163df",
+				"dweb:/ipfs/QmbGgtiCgwLfkt3RSbdGK6KrcaivbzYpaN14YuUXKHpnC9"
 			]
 		},
 		"sol-defifactory-token/IUniswapV2Factory.sol": {
@@ -991,11 +970,11 @@
 			]
 		},
 		"sol-defifactory-token/TeamVestingContract.sol": {
-			"keccak256": "0x7317546d4fcf57674ac40f41ceb0782a9cedb7291fb2c0d91377341dc832b820",
-			"license": "MIT",
+			"keccak256": "0x51ea415433aac2093e5140d518b31dd48f1eeb5028a18f33d822e6b1b8f784dc",
+			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://25f3518e451ea5294f47001c9c137675888d7f3f36d4287cd7cd7ae0ec72b339",
-				"dweb:/ipfs/QmQn8hNPcCpvR6R8uxZ1gJBku9YVds7XDMAyaMGkUSHZK2"
+				"bzz-raw://c9d91ec0ce7aeed80590b8f36b5997a91196e98dfd91ac3197082914a21116e9",
+				"dweb:/ipfs/QmaDc9tjoxeu4eJxnjHseWVaVaEZg3YyZYJCU62x3iVw2T"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

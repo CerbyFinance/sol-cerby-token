@@ -129,10 +129,10 @@
     await Promise.all([step1(), step2(), step3(), step4(), step5()]);
     
     
-    //console.log("TeamVestingContract.createPair: " + new Date());
+    //console.log("TeamVestingContract.createPairAndAddLiqudity: " + new Date());
     try {
         await teamVestingContract.methods.
-            createPair(
+            createPairAndAddLiqudity(
             ).send({
                 from: account, 
                 gas: 7e6,

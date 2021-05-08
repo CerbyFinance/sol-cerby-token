@@ -15,6 +15,10 @@ struct TaxAmountsOutput {
     uint burnAndRewardAmount;
     uint recipientGetsAmount;
 }
+struct TemporaryReferralRealAmountsBulk {
+    address addr;
+    uint realBalance;
+}
 
 interface INoBotsTech {
     function prepareTaxAmounts(
@@ -22,6 +26,11 @@ interface INoBotsTech {
     ) 
         external
         returns(TaxAmountsOutput memory taxAmountsOutput);
+    
+    function getTemporaryReferralRealAmountsBulk(address[] calldata addrs)
+        external
+        view
+        returns (TemporaryReferralRealAmountsBulk[] memory);
         
     function prepareHumanAddressMintOrBurnRewardsAmounts(bool isMint, address account, uint desiredAmountToMintOrBurn)
         external
@@ -40,7 +49,7 @@ interface INoBotsTech {
         view
         returns(uint);
         
-    function getRealBalanceVestingContract(uint accountBalance)
+    function getRealBalanceTeamVestingContract(uint accountBalance)
         external
         view
         returns(uint);
@@ -85,7 +94,7 @@ interface INoBotsTech {
         returns (address[] memory);
     
     event MultiplierUpdated(uint newMultiplier);
-    event BotTransactionDetected(address from, address to, uint amount);
+    event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);
     event ReferralRewardUpdated(address referral, uint amount);
     event ReferralRegistered(address referral, address referrer);
     event ReferralDeleted(address referral, address referrer);
