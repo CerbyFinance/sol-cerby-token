@@ -1243,14 +1243,14 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DefiFactoryToken.sol": {
-			"keccak256": "0xdaa759aa0f0461176e191d690bdd7c70bd37c085d265e64641dd0427a77ba7db",
+			"keccak256": "0xf3ebd72457316052e6ec8f00934c3be0f027da0976529371086f1c4941483ef4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://cb9264f8cf102eb15defa56797d8f13a0693ea7b0d1d07938f9b1fd1aac3ccd9",
-				"dweb:/ipfs/QmRR4cjz5iv1sqTcGedFbb82T7ngstXHQPaVxACDKXFEaP"
+				"bzz-raw://00606b3a63d344480fb34aa01d79cdf9f99707c9accfe57fe80f367851f24d50",
+				"dweb:/ipfs/QmXLqXL96Z3Jd9yY3T1G3vdpWT4uQ6bUHoToVoRPtmDpF8"
 			]
 		},
-		"sol-defifactory-token/INoBotsTech.sol": {
+		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
 			"keccak256": "0x9b69a3c452114ca030908479f34e381a509f4646b080ce893727280e2ef239b9",
 			"license": "MIT",
 			"urls": [

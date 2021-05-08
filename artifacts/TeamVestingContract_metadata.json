@@ -929,7 +929,15 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/IDefiFactoryToken.sol": {
+		"sol-defifactory-token/TeamVestingContract.sol": {
+			"keccak256": "0x2fb103217983e64a93b651fa20424575eb89b2d5725ad82b0a97693d2a801586",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://b692c9a81aba77c69a4edfb175c905e5582415ac0aae935ec8d4ece816caaa60",
+				"dweb:/ipfs/QmQ7p9qRTwEE4fixapMqaGYD9VpRLTgpeWAWPjjJQoHrCt"
+			]
+		},
+		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
 			"keccak256": "0x96b2cbe6ca3a58e4221c10aff2053d296cab3b2ff89710e0a118f26b90a1e9aa",
 			"license": "MIT",
 			"urls": [
@@ -937,7 +945,7 @@
 				"dweb:/ipfs/QmaMgkFbF9bD9ySvqCaFU4JC4E2EfAvxNk1EJckbzUSe8U"
 			]
 		},
-		"sol-defifactory-token/INoBotsTech.sol": {
+		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
 			"keccak256": "0x9b69a3c452114ca030908479f34e381a509f4646b080ce893727280e2ef239b9",
 			"license": "MIT",
 			"urls": [
@@ -945,7 +953,7 @@
 				"dweb:/ipfs/QmbGgtiCgwLfkt3RSbdGK6KrcaivbzYpaN14YuUXKHpnC9"
 			]
 		},
-		"sol-defifactory-token/IUniswapV2Factory.sol": {
+		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {
 			"keccak256": "0xb5ab73377aad2d4d2253ea1b198dd16d195b0820cc6376cebf579544cd89377e",
 			"license": "MIT",
 			"urls": [
@@ -953,7 +961,7 @@
 				"dweb:/ipfs/Qme8QKRGxdcyiFhoFh3RQ6zFxWT2iipXxKtvuXUsrwep21"
 			]
 		},
-		"sol-defifactory-token/IUniswapV2Pair.sol": {
+		"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
 			"keccak256": "0xb0c6cf8fff27b074e19aa64daa47870cfa0e74e42321512cfd350766e2437ea4",
 			"license": "MIT",
 			"urls": [
@@ -961,20 +969,12 @@
 				"dweb:/ipfs/QmdHa837WfthskgJE4c5qBxQC9j2wgiJeWhHhffr9ffVmY"
 			]
 		},
-		"sol-defifactory-token/IWeth.sol": {
+		"sol-defifactory-token/interfaces/IWeth.sol": {
 			"keccak256": "0x55d776711ab487dbda19fb0cf0ce8e475057ae1767d31cc78f4333cea009d386",
 			"license": "MIT",
 			"urls": [
 				"bzz-raw://f7cc6fe73e7cba0786198e5a3d3179270732a87600e8010cb72e3332d2f8f6bd",
 				"dweb:/ipfs/QmNpMwA4GLsM7DSTTLFFwRxGGQZDbT9EtfWhWATedZPSk8"
-			]
-		},
-		"sol-defifactory-token/TeamVestingContract.sol": {
-			"keccak256": "0x51ea415433aac2093e5140d518b31dd48f1eeb5028a18f33d822e6b1b8f784dc",
-			"license": "BUSL-1.1",
-			"urls": [
-				"bzz-raw://c9d91ec0ce7aeed80590b8f36b5997a91196e98dfd91ac3197082914a21116e9",
-				"dweb:/ipfs/QmaDc9tjoxeu4eJxnjHseWVaVaEZg3YyZYJCU62x3iVw2T"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

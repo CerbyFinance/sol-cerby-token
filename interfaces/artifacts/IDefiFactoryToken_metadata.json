@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.1+commit.df193b15"
+		"version": "0.8.0+commit.c7dfd78e"
 	},
 	"language": "Solidity",
 	"output": {
@@ -128,7 +128,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/IDefiFactoryToken.sol": "IDefiFactoryToken"
+			"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": "IDefiFactoryToken"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -142,7 +142,7 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/IDefiFactoryToken.sol": {
+		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
 			"keccak256": "0x96b2cbe6ca3a58e4221c10aff2053d296cab3b2ff89710e0a118f26b90a1e9aa",
 			"license": "MIT",
 			"urls": [

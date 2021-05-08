@@ -512,7 +512,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/INoBotsTech.sol": "INoBotsTech"
+			"sol-defifactory-token/interfaces/INoBotsTech.sol": "INoBotsTech"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -526,7 +526,7 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/INoBotsTech.sol": {
+		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
 			"keccak256": "0x9b69a3c452114ca030908479f34e381a509f4646b080ce893727280e2ef239b9",
 			"license": "MIT",
 			"urls": [

@@ -1166,20 +1166,20 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/INoBotsTech.sol": {
+		"sol-defifactory-token/NoBotsTech.sol": {
+			"keccak256": "0xfe41e4fd1dd9119599c2ee6dfb30ca5a253b9c252b7ae76b4a08bb0ce7ef5e14",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://1f3f3bf7a9d828b84001621cb9c1b78c16d405978af574446737f713056079bd",
+				"dweb:/ipfs/QmYzccJfUwimGNoE7JGmfkd4ZmrRNMVCWcZgLm3b189ZXq"
+			]
+		},
+		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
 			"keccak256": "0x9b69a3c452114ca030908479f34e381a509f4646b080ce893727280e2ef239b9",
 			"license": "MIT",
 			"urls": [
 				"bzz-raw://f6ac0e6ad7c2ca898ab9022cafc51c463436dc5657bd7b438fcbe1f4645163df",
 				"dweb:/ipfs/QmbGgtiCgwLfkt3RSbdGK6KrcaivbzYpaN14YuUXKHpnC9"
-			]
-		},
-		"sol-defifactory-token/NoBotsTech.sol": {
-			"keccak256": "0x31887e036189a635b84d371479bfe0af947880abccdd803d59268a4fc889045b",
-			"license": "BUSL-1.1",
-			"urls": [
-				"bzz-raw://bc9c44e41e6326819d5042486df3777d60ef2d89085864edde6e102f3edb7991",
-				"dweb:/ipfs/QmRaRKbU2KXyidgcJx6p649yuZiTmmgHLoQyPA9PZEyQ48"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

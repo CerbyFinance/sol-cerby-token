@@ -2,11 +2,11 @@
 
 pragma solidity ^0.8.0;
 
-import "./IDefiFactoryToken.sol";
-import "./INoBotsTech.sol";
-import "./IUniswapV2Factory.sol";
-import "./IUniswapV2Pair.sol";
-import "./IWeth.sol";
+import "./interfaces/IDefiFactoryToken.sol";
+import "./interfaces/INoBotsTech.sol";
+import "./interfaces/IUniswapV2Factory.sol";
+import "./interfaces/IUniswapV2Pair.sol";
+import "./interfaces/IWeth.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 

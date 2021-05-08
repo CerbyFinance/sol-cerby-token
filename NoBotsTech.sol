@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import "./INoBotsTech.sol";
+import "./interfaces/INoBotsTech.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 

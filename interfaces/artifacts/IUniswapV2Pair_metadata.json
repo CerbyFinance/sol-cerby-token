@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.1+commit.df193b15"
+		"version": "0.8.0+commit.c7dfd78e"
 	},
 	"language": "Solidity",
 	"output": {
@@ -122,7 +122,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/IUniswapV3Pool.sol": "IUniswapV3Poolr"
+			"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": "IUniswapV2Pair"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -136,12 +136,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/IUniswapV3Pool.sol": {
-			"keccak256": "0x24b913f694002ecd51e0db0164dd194efbc709e2da4df30fd5178057c73e744f",
+		"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
+			"keccak256": "0xb0c6cf8fff27b074e19aa64daa47870cfa0e74e42321512cfd350766e2437ea4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d40455ded1adcffdf7886bd2dda9cb2a92505f66a4ba2dcb8a35a5ade296b5c4",
-				"dweb:/ipfs/QmRwxtkB3AarS5bT8ttpE5btYKTifbCm2BxKU1rJe8griT"
+				"bzz-raw://61c4ab9a6e25960b077ee350b7bd28dcd9f59f1d657635f9506168a9afdf8ca0",
+				"dweb:/ipfs/QmdHa837WfthskgJE4c5qBxQC9j2wgiJeWhHhffr9ffVmY"
 			]
 		}
 	},
