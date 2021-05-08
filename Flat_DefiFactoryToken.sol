@@ -2,6 +2,16 @@
 
 pragma solidity ^0.8.0;
 
+// SPDX-License-Identifier: MIT
+
+
+
+// SPDX-License-Identifier: MIT
+
+
+
+// SPDX-License-Identifier: MIT
+
 
 
 /*
@@ -25,7 +35,7 @@ abstract contract Context {
     }
 }
 
-
+// SPDX-License-Identifier: MIT
 
 
 
@@ -93,11 +103,11 @@ library Strings {
 
 }
 
+// SPDX-License-Identifier: MIT
 
 
 
-
-
+// SPDX-License-Identifier: MIT
 
 
 
@@ -383,7 +393,7 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     }
 }
 
-
+// SPDX-License-Identifier: MIT
 
 
 
@@ -761,11 +771,11 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
     }
 }
 
+// SPDX-License-Identifier: MIT
 
 
 
-
-
+// SPDX-License-Identifier: MIT
 
 
 
@@ -817,11 +827,11 @@ interface IERC20Permit {
     function DOMAIN_SEPARATOR() external view returns (bytes32);
 }
 
+// SPDX-License-Identifier: MIT
 
 
 
-
-
+// SPDX-License-Identifier: MIT
 
 
 
@@ -899,7 +909,7 @@ interface IERC20 {
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
-
+// SPDX-License-Identifier: MIT
 
 
 
@@ -1155,11 +1165,11 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     }
 }
 
+// SPDX-License-Identifier: MIT
 
 
 
-
-
+// SPDX-License-Identifier: MIT
 
 
 
@@ -1370,7 +1380,7 @@ abstract contract EIP712 {
 }
 
 
-
+// SPDX-License-Identifier: MIT
 
 
 
@@ -1489,7 +1499,7 @@ abstract contract ERC20Permit is ERC20, IERC20Permit, EIP712 {
     }
 }
 
-
+// SPDX-License-Identifier: MIT
 
 
 
@@ -1506,6 +1516,10 @@ struct TaxAmountsOutput {
     uint burnAndRewardAmount;
     uint recipientGetsAmount;
 }
+struct TemporaryReferralRealAmountsBulk {
+    address addr;
+    uint realBalance;
+}
 
 interface INoBotsTech {
     function prepareTaxAmounts(
@@ -1513,6 +1527,11 @@ interface INoBotsTech {
     ) 
         external
         returns(TaxAmountsOutput memory taxAmountsOutput);
+    
+    function getTemporaryReferralRealAmountsBulk(address[] calldata addrs)
+        external
+        view
+        returns (TemporaryReferralRealAmountsBulk[] memory);
         
     function prepareHumanAddressMintOrBurnRewardsAmounts(bool isMint, address account, uint desiredAmountToMintOrBurn)
         external
@@ -1531,7 +1550,7 @@ interface INoBotsTech {
         view
         returns(uint);
         
-    function getRealBalanceVestingContract(uint accountBalance)
+    function getRealBalanceTeamVestingContract(uint accountBalance)
         external
         view
         returns(uint);
@@ -1576,7 +1595,7 @@ interface INoBotsTech {
         returns (address[] memory);
     
     event MultiplierUpdated(uint newMultiplier);
-    event BotTransactionDetected(address from, address to, uint amount);
+    event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);
     event ReferralRewardUpdated(address referral, uint amount);
     event ReferralRegistered(address referral, address referrer);
     event ReferralDeleted(address referral, address referrer);
@@ -1594,7 +1613,6 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     uint constant NOBOTS_TECH_CONTRACT_ID = 0;
     uint constant TEAM_VESTING_CONTRACT_ID = 1;
     
-    
     address[] utilsContracts;
     
     struct AccessSettings {
@@ -1607,7 +1625,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         address addr;
     }
     
-    bool isPaused;
+    bool public isPaused;
     address[] allowedToSend;
     
     address constant BURN_ADDRESS = address(0x0);
@@ -1633,6 +1651,8 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         _setupRole(ROLE_MINTER, _msgSender());
         _setupRole(ROLE_BURNER, _msgSender());
         _setupRole(ROLE_TRANSFERER, _msgSender());
+        _setupRole(ROLE_ALLOWED_TO_SEND_WHILE_PAUSED, _msgSender());
+        _setupRole(ROLE_TAXER, _msgSender());
     }
     
     modifier onlyAdmins {
@@ -1650,39 +1670,38 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         _;
     }
     
-    function balanceOf(address account) public virtual view override returns(uint) {
+    function balanceOf(address account) 
+        public 
+        view 
+        override 
+        returns(uint) 
+    {
         return INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]).
             getBalance(account, _balances[account]);
     }
     
-    function totalSupply() public virtual view override returns (uint) {
+    function totalSupply() 
+        public 
+        view 
+        override 
+        returns (uint) 
+    {
         return INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]).
             getTotalSupply();
     }
     
-    function pauseContract(address[] calldata _allowedToSend)
-        public
+    function pauseContract()
+        external
         onlyAdmins
     {
         isPaused = true;
-        allowedToSend = _allowedToSend;
-        
-        for(uint i = 0; i < _allowedToSend.length; i++)
-        {
-            _setupRole(ROLE_ALLOWED_TO_SEND_WHILE_PAUSED, _allowedToSend[i]);
-        }
     }
     
     function resumeContract()
-        public
+        external
         onlyAdmins
     {
         isPaused = false;
-        for(uint i = 0; i < allowedToSend.length; i++)
-        {
-            revokeRole(ROLE_ALLOWED_TO_SEND_WHILE_PAUSED, allowedToSend[i]);
-        }
-        delete allowedToSend;
     }
     
     function _transfer(address sender, address recipient, uint amount) 
@@ -1726,27 +1745,33 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         return iNoBotsTech.registerReferral(_msgSender(), referrer);
     }
     
-    // TODO: get temporary referrer balances bulk
-    
+    /*
+    // TODO: remove on production!!!!!!!!!
     struct Referrals {
         address referral;
         address referrer;
     }
-    
-    // TODO: remove on production!!!!!!!!!
-    
     function registerReferralsBulk(Referrals[] memory referrals)
-        public
+        external
     {
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
         for(uint i = 0; i<referrals.length; i++)
         {
             iNoBotsTech.registerReferral(referrals[i].referral, referrals[i].referrer);
         }
+    }*/
+    
+    function getTemporaryReferralRealAmountsBulk(address[] calldata addrs)
+        external
+        view
+        returns (TemporaryReferralRealAmountsBulk[] memory)
+    {
+        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
+        return iNoBotsTech.getTemporaryReferralRealAmountsBulk(addrs);
     }
     
     function getCachedReferrerRewards(address addr)
-        public
+        external
         view
         returns(uint)
     {
@@ -1755,7 +1780,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     }
     
     function getCalculatedReferrerRewards(address addr, address[] calldata referrals)
-        public
+        external
         view
         returns(uint)
     {
@@ -1764,7 +1789,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     }
     
     function filterNonZeroReferrals(address[] calldata referrals)
-        public
+        external
         view
         returns (address[] memory)
     {
@@ -1773,7 +1798,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     }
     
     function claimReferrerRewards(address[] calldata referrals)
-        public
+        external
         canBePaused
     {
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
@@ -1789,7 +1814,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     }
     
     function chargeCustomTax(address from, uint amount)
-        public
+        external
         canBePaused
     {
         require(hasRole(ROLE_TAXER, _msgSender()), "DefiFactoryToken: !ROLE_TAXER");
@@ -1799,7 +1824,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     }
     
     function updateUtilsContracts(AccessSettings[] calldata accessSettings)
-        public
+        external
         onlyAdmins
     {
         for(uint i = 0; i < utilsContracts.length; i++)
@@ -1842,9 +1867,8 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         return utilsContracts.length;
     }
     
-    // 0x539FaA851D86781009EC30dF437D794bCd090c8F,1000000000000000000000000
     function mintHumanAddress(address to, uint desiredAmountToMint) 
-        public
+        external
     {
         require(hasRole(ROLE_MINTER, _msgSender()), "DefiFactoryToken: !ROLE_MINTER");
         
@@ -1852,7 +1876,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     }
     
     function _mintHumanAddress(address to, uint desiredAmountToMint) 
-        internal
+        private
         canBePaused
     {
         uint realAmountToMint = 
@@ -1870,7 +1894,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     }
 
     function burnHumanAddress(address from, uint desiredAmountToBurn)
-        public
+        external
     {
         require(hasRole(ROLE_BURNER, _msgSender()), "DefiFactoryToken: !ROLE_BURNER");
         
@@ -1878,7 +1902,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     }
 
     function _burnHumanAddress(address from, uint desiredAmountToBurn)
-        internal
+        private
         canBePaused
     {
          uint realAmountToBurn = 
@@ -1898,7 +1922,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     }
     
     function transferFromTeamVestingContract(address recipient, uint256 amount)
-        public
+        external
         canBePaused
     {
         address vestingContract = utilsContracts[TEAM_VESTING_CONTRACT_ID];
@@ -1909,7 +1933,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         _balances[vestingContract] -= amount;
         _balances[recipient] += 
             INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]).
-                getRealBalanceVestingContract(amount);
+                getRealBalanceTeamVestingContract(amount);
         
         
         emit Transfer(vestingContract, recipient, amount);
@@ -1917,7 +1941,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     }
     
     function transferCustom(address sender, address recipient, uint256 amount)
-        public
+        external
         canBePaused
     {
         require(hasRole(ROLE_TRANSFERER, _msgSender()), "DefiFactoryToken: !ROLE_TRANSFERER");
@@ -1927,7 +1951,11 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         emit TransferCustom(sender, recipient, amount);
     }
     
-    function getChainId() external view returns (uint) {
+    function getChainId() 
+        external 
+        view 
+        returns (uint) 
+    {
         return block.chainid;
     }
 }
