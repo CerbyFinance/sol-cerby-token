@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.0+commit.c7dfd78e"
+		"version": "0.8.1+commit.df193b15"
 	},
 	"language": "Solidity",
 	"output": {
@@ -1167,11 +1167,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTech.sol": {
-			"keccak256": "0xfe41e4fd1dd9119599c2ee6dfb30ca5a253b9c252b7ae76b4a08bb0ce7ef5e14",
+			"keccak256": "0x7690f4b298a9dc2413662762864a00c7a692c9af472554bf3467b3abac07e635",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://1f3f3bf7a9d828b84001621cb9c1b78c16d405978af574446737f713056079bd",
-				"dweb:/ipfs/QmYzccJfUwimGNoE7JGmfkd4ZmrRNMVCWcZgLm3b189ZXq"
+				"bzz-raw://5dc18daf1fc6834f186889617deb61a7f30dcd495886028e861b341c304726a3",
+				"dweb:/ipfs/QmWYyskYUoJmK7fTvCwidQcd2krr5iFdW1ivQ3y6FF74AH"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

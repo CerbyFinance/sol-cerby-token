@@ -220,6 +220,11 @@ contract NoBotsTech is AccessControlEnumerable {
     {
         require(referrer != BURN_ADDRESS && referral != BURN_ADDRESS, "NoBotsTech: !burn");
         require(referrer != referral, "NoBotsTech: !self_ref");
+        require(
+            referrer != referralToReferrer[referral] && 
+            referral != referralToReferrer[referrer], 
+            "NoBotsTech: !mutual_ref"
+        );
         require(isNotContract(referral) && isNotContract(referrer), "NoBotsTech: !contract");
         
         if (referralToReferrer[referral] != BURN_ADDRESS) // referrer exists
