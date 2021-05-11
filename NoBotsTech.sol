@@ -55,9 +55,9 @@ contract NoBotsTech is AccessControlEnumerable {
     
     event MultiplierUpdated(uint newMultiplier);
     event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);
-    event ReferralRewardUpdated(address referral, uint amount);
+    event ReferrerRewardUpdated(address referrer, uint amount);
     event ReferralRegistered(address referral, address referrer);
-    event ReferralDeleted(address referral, address referrer);
+    event ReferrerReplaced(address referral, address referrerFrom, address referrerTo);
     
     
     constructor () {
@@ -147,14 +147,14 @@ contract NoBotsTech is AccessControlEnumerable {
             {
                 referrerRealBalances[temporaryReferrer] += 
                     (temporaryReferralRealAmounts[referrals[i]] * firstLevelRefPercent) / TAX_PERCENT_DENORM; // 1.00%
-                emit ReferralRewardUpdated(temporaryReferrer, referrerRealBalances[temporaryReferrer]);
+                emit ReferrerRewardUpdated(temporaryReferrer, referrerRealBalances[temporaryReferrer]);
                 
                 temporaryReferrer = referralToReferrer[temporaryReferrer]; // Finding second-level referrer on top of first-level referrer
                 if (temporaryReferrer != BURN_ADDRESS)
                 {
                     referrerRealBalances[temporaryReferrer] += 
                         (temporaryReferralRealAmounts[referrals[i]] * secondLevelRefPercent) / TAX_PERCENT_DENORM; // 0.25%
-                    emit ReferralRewardUpdated(temporaryReferrer, referrerRealBalances[temporaryReferrer]);
+                    emit ReferrerRewardUpdated(temporaryReferrer, referrerRealBalances[temporaryReferrer]);
                 }
                 
                 temporaryReferralRealAmounts[referrals[i]] = 0;
@@ -229,7 +229,7 @@ contract NoBotsTech is AccessControlEnumerable {
         
         if (referralToReferrer[referral] != BURN_ADDRESS) // referrer exists
         {
-            emit ReferralDeleted(referral, referralToReferrer[referral]);
+            emit ReferrerReplaced(referral, referralToReferrer[referral], referrer);
         }
         
         referralToReferrer[referral] = referrer;

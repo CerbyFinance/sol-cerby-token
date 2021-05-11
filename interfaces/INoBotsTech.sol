@@ -95,7 +95,7 @@ interface INoBotsTech {
     
     event MultiplierUpdated(uint newMultiplier);
     event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);
-    event ReferralRewardUpdated(address referral, uint amount);
+    event ReferrerRewardUpdated(address referrer, uint amount);
     event ReferralRegistered(address referral, address referrer);
-    event ReferralDeleted(address referral, address referrer);
+    event ReferrerReplaced(address referral, address referrerFrom, address referrerTo);
 }

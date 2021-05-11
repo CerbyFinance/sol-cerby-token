@@ -75,6 +75,14 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         _;
     }
     
+    function updateNameAndSymbol(string calldata __name, string calldata __symbol)
+        external
+        onlyAdmins
+    {
+        _name = __name;
+        _symbol = __symbol;
+    }
+    
     function balanceOf(address account) 
         public 
         view 
@@ -150,7 +158,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         return iNoBotsTech.registerReferral(_msgSender(), referrer);
     }
     
-    /*
+    
     // TODO: remove on production!!!!!!!!!
     struct Referrals {
         address referral;
@@ -164,7 +172,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         {
             iNoBotsTech.registerReferral(referrals[i].referral, referrals[i].referrer);
         }
-    }*/
+    }
     
     function getTemporaryReferralRealAmountsBulk(address[] calldata addrs)
         external

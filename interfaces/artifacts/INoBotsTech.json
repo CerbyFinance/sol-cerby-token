@@ -127,25 +127,6 @@
 					"type": "address"
 				}
 			],
-			"name": "ReferralDeleted",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": false,
-					"internalType": "address",
-					"name": "referral",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"internalType": "address",
-					"name": "referrer",
-					"type": "address"
-				}
-			],
 			"name": "ReferralRegistered",
 			"type": "event"
 		},
@@ -160,12 +141,37 @@
 				},
 				{
 					"indexed": false,
+					"internalType": "address",
+					"name": "referrerFrom",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "referrerTo",
+					"type": "address"
+				}
+			],
+			"name": "ReferrerReplaced",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "referrer",
+					"type": "address"
+				},
+				{
+					"indexed": false,
 					"internalType": "uint256",
 					"name": "amount",
 					"type": "uint256"
 				}
 			],
-			"name": "ReferralRewardUpdated",
+			"name": "ReferrerRewardUpdated",
 			"type": "event"
 		},
 		{

@@ -36,8 +36,8 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     mapping (address => mapping (address => uint256)) internal _allowances;
 
 
-    string private _name;
-    string private _symbol;
+    string internal _name;
+    string internal _symbol;
 
     /**
      * @dev Sets the values for {name} and {symbol}.

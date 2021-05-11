@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.0+commit.c7dfd78e"
+		"version": "0.8.1+commit.df193b15"
 	},
 	"language": "Solidity",
 	"output": {
@@ -920,6 +920,31 @@
 			{
 				"inputs": [
 					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "referral",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "referrer",
+								"type": "address"
+							}
+						],
+						"internalType": "struct DefiFactoryToken.Referrals[]",
+						"name": "referrals",
+						"type": "tuple[]"
+					}
+				],
+				"name": "registerReferralsBulk",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -1102,6 +1127,24 @@
 			{
 				"inputs": [
 					{
+						"internalType": "string",
+						"name": "__name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "__symbol",
+						"type": "string"
+					}
+				],
+				"name": "updateNameAndSymbol",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"components": [
 							{
 								"internalType": "bool",
@@ -1243,11 +1286,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DefiFactoryToken.sol": {
-			"keccak256": "0xf3ebd72457316052e6ec8f00934c3be0f027da0976529371086f1c4941483ef4",
+			"keccak256": "0x5efee6963cef929bbd2c044939e261b68cc259d89f3bc60593d5f063eb50f9c8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://00606b3a63d344480fb34aa01d79cdf9f99707c9accfe57fe80f367851f24d50",
-				"dweb:/ipfs/QmXLqXL96Z3Jd9yY3T1G3vdpWT4uQ6bUHoToVoRPtmDpF8"
+				"bzz-raw://fa51e2caef657eec77d65b04216d2305250a57e0fe541c5403dd98ce932ea254",
+				"dweb:/ipfs/QmeeCJy8h3yjPrCVX2uXinCejuxiqbKJmitCvnbU2NeKvf"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
@@ -1275,11 +1318,11 @@
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20.sol": {
-			"keccak256": "0x6cbf7287b170777dd6fb4a66ae9cffe2fa749533ccfd0f4a708642eec9fff184",
+			"keccak256": "0x41cd0da0479c5e8632182e3043be8067fe225179555190c1077b64cb2f4dbe76",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://27be3d72f781165cbe45e8dae110908309db681da7f910cedf7253da76c6d9aa",
-				"dweb:/ipfs/QmbakrEttjAQUL527gEizsNvSzrJvfLpWG8HKswUm7AaNB"
+				"bzz-raw://1d7cbc7cdc230423ad5efb11bdca52e56de31b9e30c40b3203dd5bcfbee95d3d",
+				"dweb:/ipfs/QmXj6cRiRfo5hA44d128xDkokFvzPBXwoJmvziRLpDN92b"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {

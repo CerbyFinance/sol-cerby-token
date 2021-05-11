@@ -70,25 +70,6 @@
 						"type": "address"
 					}
 				],
-				"name": "ReferralDeleted",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "referral",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "referrer",
-						"type": "address"
-					}
-				],
 				"name": "ReferralRegistered",
 				"type": "event"
 			},
@@ -103,12 +84,37 @@
 					},
 					{
 						"indexed": false,
+						"internalType": "address",
+						"name": "referrerFrom",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "referrerTo",
+						"type": "address"
+					}
+				],
+				"name": "ReferrerReplaced",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "referrer",
+						"type": "address"
+					},
+					{
+						"indexed": false,
 						"internalType": "uint256",
 						"name": "amount",
 						"type": "uint256"
 					}
 				],
-				"name": "ReferralRewardUpdated",
+				"name": "ReferrerRewardUpdated",
 				"type": "event"
 			},
 			{
@@ -1167,11 +1173,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTech.sol": {
-			"keccak256": "0x7690f4b298a9dc2413662762864a00c7a692c9af472554bf3467b3abac07e635",
+			"keccak256": "0x0d3fb0096a42cac8a8ed74bb218bf33f9198911baa36432f0d042343050c1e3a",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://5dc18daf1fc6834f186889617deb61a7f30dcd495886028e861b341c304726a3",
-				"dweb:/ipfs/QmWYyskYUoJmK7fTvCwidQcd2krr5iFdW1ivQ3y6FF74AH"
+				"bzz-raw://cac557b001acf83d8b3e77f5bcee6d45e18623421959cbb32eae2e5c2ef9d538",
+				"dweb:/ipfs/QmZJ6TtW9YGFkZrvwSxCo267ULorVduNSbFfdaHUvZfxiD"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
