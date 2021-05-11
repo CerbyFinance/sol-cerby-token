@@ -61,7 +61,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     }
     
     modifier onlyAdmins {
-        require(hasRole(ROLE_ADMIN, _msgSender()), "DefiFactoryToken: !ROLE_ADMIN");
+        require(hasRole(ROLE_ADMIN, _msgSender()), "DEFT: !ROLE_ADMIN");
         _;
     }
     
@@ -70,7 +70,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
             !isPaused || 
             hasRole(ROLE_ALLOWED_TO_SEND_WHILE_PAUSED, _msgSender()) || 
             hasRole(ROLE_ADMIN, _msgSender()),
-            "DefiFactoryToken: !ROLE_ALLOWED_TO_SEND_WHILE_PAUSED"
+            "DEFT: !ROLE_ALLOWED_TO_SEND_WHILE_PAUSED"
         );
         _;
     }
@@ -126,11 +126,11 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         require(
             sender != BURN_ADDRESS &&
             recipient != BURN_ADDRESS,
-            "DefiFactoryToken: !burn"
+            "DEFT: !burn"
         );
         require(
             sender != recipient,
-            "DefiFactoryToken: !self"
+            "DEFT: !self"
         );
         
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
@@ -218,7 +218,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         iNoBotsTech.updateReferrersRewards(referrals);
         
         uint rewards = iNoBotsTech.getCachedReferrerRewards(_msgSender());
-        require(rewards > 0, "DefiFactoryToken: !rewards");
+        require(rewards > 0, "DEFT: !rewards");
         
         iNoBotsTech.clearReferrerRewards(_msgSender());
         _mintHumanAddress(_msgSender(), rewards);
@@ -230,7 +230,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         external
         canBePaused
     {
-        require(hasRole(ROLE_TAXER, _msgSender()), "DefiFactoryToken: !ROLE_TAXER");
+        require(hasRole(ROLE_TAXER, _msgSender()), "DEFT: !ROLE_TAXER");
         
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
         _balances[from] = iNoBotsTech.chargeCustomTax(amount, _balances[from]);
@@ -283,7 +283,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     function mintHumanAddress(address to, uint desiredAmountToMint) 
         external
     {
-        require(hasRole(ROLE_MINTER, _msgSender()), "DefiFactoryToken: !ROLE_MINTER");
+        require(hasRole(ROLE_MINTER, _msgSender()), "DEFT: !ROLE_MINTER");
         
         _mintHumanAddress(to, desiredAmountToMint);
     }
@@ -309,7 +309,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     function burnHumanAddress(address from, uint desiredAmountToBurn)
         external
     {
-        require(hasRole(ROLE_BURNER, _msgSender()), "DefiFactoryToken: !ROLE_BURNER");
+        require(hasRole(ROLE_BURNER, _msgSender()), "DEFT: !ROLE_BURNER");
         
         _burnHumanAddress(from, desiredAmountToBurn);
     }
@@ -326,7 +326,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
                     desiredAmountToBurn
                 );
         
-        require(_balances[from] >= realAmountToBurn, "DefiFactoryToken: amount gt balance");
+        require(_balances[from] >= realAmountToBurn, "DEFT: amount gt balance");
         
         _balances[from] -= realAmountToBurn;
         emit Transfer(from, address(0), desiredAmountToBurn);
@@ -339,9 +339,9 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         canBePaused
     {
         address vestingContract = utilsContracts[TEAM_VESTING_CONTRACT_ID];
-        require(vestingContract == _msgSender(), "DefiFactoryToken: !VESTING_CONTRACT");
+        require(vestingContract == _msgSender(), "DEFT: !VESTING_CONTRACT");
         
-        require(_balances[vestingContract] >= amount, "DefiFactoryToken: !amount");
+        require(_balances[vestingContract] >= amount, "DEFT: !amount");
         
         _balances[vestingContract] -= amount;
         _balances[recipient] += 
@@ -357,7 +357,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         external
         canBePaused
     {
-        require(hasRole(ROLE_TRANSFERER, _msgSender()), "DefiFactoryToken: !ROLE_TRANSFERER");
+        require(hasRole(ROLE_TRANSFERER, _msgSender()), "DEFT: !ROLE_TRANSFERER");
         
         _transfer(sender, recipient, amount);
         

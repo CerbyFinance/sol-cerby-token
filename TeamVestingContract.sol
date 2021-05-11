@@ -86,13 +86,13 @@ contract TeamVestingContract is AccessControlEnumerable {
     }
 
     receive() external payable {
-        require(state == States.AcceptingPayments, "VestingContract: Accepting payments has been stopped!");
+        require(state == States.AcceptingPayments, "TVC: Accepting payments has been stopped!");
         
         addInvestor(msg.sender, msg.value);
     }
     
     modifier onlyAdmins {
-        require(hasRole(ROLE_ADMIN, _msgSender()), "VestingContract: !ROLE_ADMIN");
+        require(hasRole(ROLE_ADMIN, _msgSender()), "TVC: !ROLE_ADMIN");
         _;
     }
 
@@ -142,7 +142,7 @@ contract TeamVestingContract is AccessControlEnumerable {
         }
         require(
             investors[cachedIndex[addr] - 1].wethValue <= updMaxInvestAmount,
-            "VestingContract: Requires Investor max amount less than maxInvestAmount!"
+            "TVC: Requires Investor max amount less than maxInvestAmount!"
         );
         
         totalInvested += wethValue;
@@ -161,8 +161,8 @@ contract TeamVestingContract is AccessControlEnumerable {
         internal
         onlyAdmins
     {
-        require(state == States.ReachedGoal, "VestingContract: Preparing add liquidity is completed!");
-        require(address(this).balance > 0, "VestingContract: Ether balance must be larger than zero!");
+        require(state == States.ReachedGoal, "TVC: Preparing add liquidity is completed!");
+        require(address(this).balance > 0, "TVC: Ether balance must be larger than zero!");
         
         IWeth iWeth = IWeth(nativeToken);
         iWeth.deposit{ value: address(this).balance }();
@@ -174,7 +174,7 @@ contract TeamVestingContract is AccessControlEnumerable {
         public
         onlyAdmins
     {
-        require(state == States.PreparedAddLiqudity, "VestingContract: Pair is already created!");
+        require(state == States.PreparedAddLiqudity, "TVC: Pair is already created!");
 
         IUniswapV2Factory iUniswapV2Factory = IUniswapV2Factory(
             IDefiFactoryToken(defiFactoryToken).
@@ -201,7 +201,7 @@ contract TeamVestingContract is AccessControlEnumerable {
         internal
         onlyAdmins
     {
-        require(state == States.CreatedPair, "VestingContract: Liquidity is already added!");
+        require(state == States.CreatedPair, "TVC: Liquidity is already added!");
         
         IWeth iWeth = IWeth(nativeToken);
         uint wethAmount = iWeth.balanceOf(address(this));
@@ -224,7 +224,7 @@ contract TeamVestingContract is AccessControlEnumerable {
         internal
         onlyAdmins
     {
-        require(state == States.AddedLiquidity, "VestingContract: Tokens have already been distributed!");
+        require(state == States.AddedLiquidity, "TVC: Tokens have already been distributed!");
         
         INoBotsTech iNoBotsTech = INoBotsTech(
             IDefiFactoryToken(defiFactoryToken).
@@ -249,7 +249,7 @@ contract TeamVestingContract is AccessControlEnumerable {
         address addr = msg.sender;
         
         uint claimableAmount = getClaimableTokenAmount(addr);
-        require(claimableAmount > 0, "VestingContract: !claimable_amount");
+        require(claimableAmount > 0, "TVC: !claimable_amount");
         
         if (
             amount == 0 || 
@@ -257,8 +257,8 @@ contract TeamVestingContract is AccessControlEnumerable {
         ) {
             amount = claimableAmount;
         }
-        require(amount <= claimableAmount, "VestingContract: !amount");
-        require(cachedIndex[addr] > 0, "VestingContract: !exists_addr");
+        require(amount <= claimableAmount, "TVC: !amount");
+        require(cachedIndex[addr] > 0, "TVC: !exists_addr");
         
         investors[cachedIndex[addr] - 1].sentValue += amount;
         
@@ -300,9 +300,9 @@ contract TeamVestingContract is AccessControlEnumerable {
         view
         returns(uint)
     {
-        require(state == States.DistributedTokens, "VestingContract: Tokens aren't distributed yet!");
+        require(state == States.DistributedTokens, "TVC: Tokens aren't distributed yet!");
         
-        require(cachedIndex[addr] > 0, "VestingContract: !exist");
+        require(cachedIndex[addr] > 0, "TVC: !exist");
         
         Investor memory investor = investors[cachedIndex[addr] - 1];
         
@@ -333,7 +333,7 @@ contract TeamVestingContract is AccessControlEnumerable {
         view
         returns(uint)
     {
-        require(state == States.DistributedTokens, "VestingContract: Tokens aren't distributed yet!");
+        require(state == States.DistributedTokens, "TVC: Tokens aren't distributed yet!");
         
         if (addr == BURN_ADDRESS) addr = msg.sender;
         Investor memory investor = investors[cachedIndex[msg.sender] - 1];

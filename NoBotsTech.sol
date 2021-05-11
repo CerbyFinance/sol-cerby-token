@@ -65,7 +65,7 @@ contract NoBotsTech is AccessControlEnumerable {
     }
     
     modifier onlyAdmins {
-        require(hasRole(ROLE_ADMIN, _msgSender()), "NoBotsTech: !ROLE_ADMIN");
+        require(hasRole(ROLE_ADMIN, _msgSender()), "NBT: !ROLE_ADMIN");
         _;
     }
     
@@ -73,9 +73,21 @@ contract NoBotsTech is AccessControlEnumerable {
         require(            
             hasRole(ROLE_PARENT, _msgSender()) || 
             hasRole(ROLE_ADMIN, _msgSender()), 
-            "NoBotsTech: !ROLE_PARENT_OR_ADMIN"
+            "NBT: !ROLE_PARENT_OR_ADMIN"
         );
         _;
+    }
+    
+    // TODO: remove on production
+    function fillTestReferralTemporaryBalances(address[] calldata referrals)
+        public
+        onlyAdmins
+    {
+        uint rnd = (block.number % 100) * 1e18;
+        for(uint i = 0; i<referrals.length; i++)
+        {
+            temporaryReferralRealAmounts[referrals[i]] = i * 1e18 + rnd;
+        }
     }
     
     function updateHowManyBlocksAgo(uint _howManyBlocksAgoReceived, uint _howManyBlocksAgoSent)
@@ -218,22 +230,25 @@ contract NoBotsTech is AccessControlEnumerable {
         external
         onlyParentContractOrAdmins
     {
-        require(referrer != BURN_ADDRESS && referral != BURN_ADDRESS, "NoBotsTech: !burn");
-        require(referrer != referral, "NoBotsTech: !self_ref");
+        require(referrer != BURN_ADDRESS && referral != BURN_ADDRESS, "NBT: !burn");
+        require(referrer != referral, "NBT: !self_ref");
         require(
             referrer != referralToReferrer[referral] && 
             referral != referralToReferrer[referrer], 
-            "NoBotsTech: !mutual_ref"
+            "NBT: !mutual_ref"
         );
-        require(isNotContract(referral) && isNotContract(referrer), "NoBotsTech: !contract");
+        require(isNotContract(referral) && isNotContract(referrer), "NBT: !contract");
         
+        
+        
+        referralToReferrer[referral] = referrer;
         if (referralToReferrer[referral] != BURN_ADDRESS) // referrer exists
         {
             emit ReferrerReplaced(referral, referralToReferrer[referral], referrer);
+        } else
+        {
+            emit ReferralRegistered(referral, referrer);
         }
-        
-        referralToReferrer[referral] = referrer;
-        emit ReferralRegistered(referral, referrer);
     }
     
     function updateReCachePeriod(uint _secondsBetweenUpdates)
@@ -347,7 +362,7 @@ contract NoBotsTech is AccessControlEnumerable {
     {
         uint realTaxAmount = 
             (taxAmount * BALANCE_MULTIPLIER_DENORM) / cachedMultiplier;
-        require(accountBalance >= realTaxAmount, "NoBotsTech: !accountBalance");
+        require(accountBalance >= realTaxAmount, "NBT: !accountBalance");
         
         batchBurnAndReward += realTaxAmount;
         accountBalance -= realTaxAmount;
@@ -369,11 +384,11 @@ contract NoBotsTech is AccessControlEnumerable {
         
         require(
             taxAmountsInput.senderBalance >= realTransferAmount,
-            "NoBotsTech: !balance"
+            "NBT: !balance"
         );
         require(
             realTransferAmount > 1,
-            "NoBotsTech: !amount"
+            "NBT: !amount"
         );
         
         uint burnAndRewardRealAmount;
@@ -452,7 +467,7 @@ contract NoBotsTech is AccessControlEnumerable {
         require(
             hasRole(ROLE_WHITELIST, account) || 
             isNotContract(account), 
-            "NoBotsTech: !human"
+            "NBT: !human"
         );
         
         uint realAmountToMintOrBurn = (BALANCE_MULTIPLIER_DENORM * desiredAmountToMintOrBurn) / cachedMultiplier;

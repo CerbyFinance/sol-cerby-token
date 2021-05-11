@@ -92,6 +92,9 @@ interface INoBotsTech {
         external
         view
         returns (address[] memory);
+        
+    function fillTestReferralTemporaryBalances(address[] calldata referrals)
+        external;
     
     event MultiplierUpdated(uint newMultiplier);
     event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);

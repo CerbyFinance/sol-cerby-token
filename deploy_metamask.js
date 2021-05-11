@@ -1,5 +1,6 @@
 (async () => {
     console.log("Deploying: " + new Date());
+    web3.eth.getBlockNumber().then(console.log);
     
     const account = (await web3.eth.getAccounts())[0];
     /*const ethNetwork = 'https://kovan.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33';
@@ -12,6 +13,7 @@
     let defiFactoryJson = JSON.parse(await remix.call('fileManager', 'getFile', "sol-defifactory-token/artifacts/DefiFactoryToken.json"));
     let noBotsTechJson = JSON.parse(await remix.call('fileManager', 'getFile', "sol-defifactory-token/artifacts/NoBotsTech.json"));
     let teamVestingJson = JSON.parse(await remix.call('fileManager', 'getFile', "sol-defifactory-token/artifacts/TeamVestingContract.json"));
+    
     
     let [defiFactoryTokenContract, noBotsTechContract, teamVestingContract] = await Promise.all([
         deployContract("DefiFactoryToken", defiFactoryJson, account, 0),
@@ -237,8 +239,44 @@
         }
         catch (error) { console.log(error.message);fail; }
     }
+    async function ref6() {
+        //console.log("NoBotsTech.updateReCachePeriod: " + new Date());
+        try {
+            await defiFactoryTokenContract.methods.
+                registerReferralsBulk(
+                    [["0x9EDcF65111C523e51A643F09e28c07b13dcbD7Df","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0x6827C32018b6FEaf79E6fcDec0c37B53a7d16E16","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0xb97B8b7290fE72CF94dD6A1Cf42827Dd8955e031","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0x87D7e7544Dcc945BeB9eabcfB2577282DAE2A800","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0x7b4348369963960F8797fCCc737Ca7c84908A3B8","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0xca20310F890c8D02334D6a63C68BA6Bf015b964c","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0xe5365047958Ef9F91f6B5FE8fed7D6a6E21ad4c6","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0x1Ab2dC0458b6a740429aaeEbaE54427920ECf8B9","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0x61a86C176364C6D5eD7069f30a867c4BdDfCB869","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0x2fb18e6BaB0F95415b8c8993024291E7640E0F06","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0x37041852B1055F7E71876af3763BDbd7580F1084","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0x040f6C256a6DF50DE4Bc49771C0BF238ffbb0bfd","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0x4c2e6E4B0F267a9Cb5a68C3717E1aeF345F09a35","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0xFA173e16030fcb6fe8Edcf4212347023F4cE329d","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0x65991b8Fd4169339BCe45d5c6A62cb59d010b87F","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0xE7BBD2E3D33469e3EbBd4B30052Cee823a0227f5","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0xc9648b726061d60E2Ddd373881e00236ca9f800C","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0x93ec6383775A19fAF5123e5504bc2cdCEE8b50c1","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0xFeBA41c8C2344Fd3B515b240f77aCF29e95Fd362","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],["0x4c2C3970042E8D8f213006D3646F1Bdd840667e2","0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f"],]
+                ).send({
+                    from: account, 
+                    gas: 123e5,
+                    gasPrice: 2e9 + 1,
+                    value: 0
+                })
+            .then(function (result) {
+                //console.log(result);
+            });
+        }
+        catch (error) { console.log(error.message);fail; }
+    }
+    async function fill1() {
+        //console.log("NoBotsTech.updateReCachePeriod: " + new Date());
+        try {
+            await noBotsTechContract.methods.
+                fillTestReferralTemporaryBalances(
+                    ["0xBbB6AE3051C5b486836a32193D8D191572C7cC1D","0x6827C32018b6FEaf79E6fcDec0c37B53a7d16E16","0xb97B8b7290fE72CF94dD6A1Cf42827Dd8955e031","0x87D7e7544Dcc945BeB9eabcfB2577282DAE2A800","0x7b4348369963960F8797fCCc737Ca7c84908A3B8","0xca20310F890c8D02334D6a63C68BA6Bf015b964c","0xe5365047958Ef9F91f6B5FE8fed7D6a6E21ad4c6","0x1Ab2dC0458b6a740429aaeEbaE54427920ECf8B9","0x61a86C176364C6D5eD7069f30a867c4BdDfCB869","0x2fb18e6BaB0F95415b8c8993024291E7640E0F06","0x37041852B1055F7E71876af3763BDbd7580F1084","0x040f6C256a6DF50DE4Bc49771C0BF238ffbb0bfd","0x4c2e6E4B0F267a9Cb5a68C3717E1aeF345F09a35","0xFA173e16030fcb6fe8Edcf4212347023F4cE329d","0x65991b8Fd4169339BCe45d5c6A62cb59d010b87F","0xE7BBD2E3D33469e3EbBd4B30052Cee823a0227f5","0xc9648b726061d60E2Ddd373881e00236ca9f800C","0x93ec6383775A19fAF5123e5504bc2cdCEE8b50c1","0xFeBA41c8C2344Fd3B515b240f77aCF29e95Fd362","0x4c2C3970042E8D8f213006D3646F1Bdd840667e2","0x7e8c47eb24D4C3f5AfFd185308f74C15cD8148d3","0x588EbeFE0bD03460CE345D5c25132B42de3f536d","0x6E41FE48700DAC4A2FaAD2f05629A99E006419F8","0xcB4b139877082829583E00cF52B52622deC96352","0x76a0A7267049e30Cd72E9657e36722b46286EEE3","0xcE3607F1aA909947239941f4c04C35B5F82BF225","0xC6C5BFc238e100e8fe786A87DED019503ADa2Fb9","0xa34b8d27246cdE2d7B2F09365CD1100AC9826f16","0xD0C39Cc3ec4e77856417e237733571a65A66912B","0xa3c2779f6E8dcc3D0dD6A0139dEf525d3eA1284E","0xC54FF6448635879B620D611B9B06525024B46352","0x2Df50d807E1213b899277B4C57344303632B735b","0xeEaA2D67A03CC016F170705eB8ee39b5E07B0f72","0x1FC1b12b7dAD1EEBc8838B0758e713f833eb3279","0xaC7dE0152153EF76dA64D5FBD8013083a8A15478","0x971be25d9ecC3ec9e56C0B1cA12d6FC4A03c0606","0x1d6702dfa5398e00b50B0284183db609b1F2421c","0xd555ae43ecdB636b182C74846E9f189736c18055","0x8CD16158a4615b5cb39f6aa8d464021E7401A1Bf","0xd68E73C5A92D41494cDD45bcD7306EeA39C8F608","0x5a63A00500f9A8F0a869296Cc7d32c9194c05283","0x17C6eb91E30748a3bf0525905E911553Ab0A77EF","0xCC4856AF9e30e55A51f1cFA5482F977021CF28FB","0x69DBB0E379EAe71661e1Ebc24374D5572361B41a","0x5e0d8b889aA4BFa138D6d32d58da343E387e9D63","0xebEEc06eDeC2EBb1f749B14820ec63E61Aa59825","0x177D16a887883472f721dC28fC9E0dCfAEd71956","0x82A36511285a66d915124908D93f4178D0E0b910","0xE39c54Ac11971479fD8Afc49f727c79cE41D7f80","0xAEA73777Cb87Eb2Be251318B016c9F567aEF215e"]
+                ).send({
+                    from: account, 
+                    gas: 123e5,
+                    gasPrice: 2e9 + 1,
+                    value: 0
+                })
+            .then(function (result) {
+                //console.log(result);
+            });
+        }
+        catch (error) { console.log(error.message);fail; }
+    }
     
-    await Promise.all([ref1(), ref2(), ref3(), ref4(), ref5()]);
+    await Promise.all([ref1(), ref2(), ref3(), ref4(), ref5(), ref6(), fill1()]);
     
     //console.log("TeamVestingContract.addLiquidity: " + new Date());
     /*try {
