@@ -26,7 +26,7 @@ contract NoBotsTech is AccessControlEnumerable {
     
     uint public batchBurnAndReward;
     uint public lastCachedTimestamp = block.timestamp;
-    uint public secondsBetweenUpdates;
+    uint public secondsBetweenUpdates = 600;
     
     uint public humanTaxPercent = 1e5; // 10.0%
     uint public botTaxPercent = 99e4; // 99.0%
@@ -40,11 +40,11 @@ contract NoBotsTech is AccessControlEnumerable {
     uint public rewardsBalance;
     uint public realTotalSupply;
     
-    struct LastBlock {
-        uint received;
-        uint sent;
+    struct SenderOrReciverStorage {
+        uint receivedAtBlock;
+        uint sentAtBlock;
     }
-    mapping(address => LastBlock) lastBlock;
+    mapping(address => SenderOrReciverStorage) senderOrReciverStorage;
     uint public howManyBlocksAgoReceived = 0;
     uint public howManyBlocksAgoSent = 0;
     
@@ -230,16 +230,32 @@ contract NoBotsTech is AccessControlEnumerable {
         external
         onlyParentContractOrAdmins
     {
-        require(referrer != BURN_ADDRESS && referral != BURN_ADDRESS, "NBT: !burn");
-        require(referrer != referral, "NBT: !self_ref");
+        require(
+            referrer != BURN_ADDRESS && 
+            referral != BURN_ADDRESS, 
+            "NBT: !burn"
+        );
+        require(
+            referrer != referral, 
+            "NBT: !self_ref"
+        );
         require(
             referrer != referralToReferrer[referral] && 
             referral != referralToReferrer[referrer], 
             "NBT: !mutual_ref"
         );
-        require(isNotContract(referral) && isNotContract(referrer), "NBT: !contract");
-        
-        
+        require(
+            isNotContract(referral) && 
+            isNotContract(referrer), 
+            "NBT: !contract"
+        );
+        require(
+            !hasRole(ROLE_WHITELIST, referral) && 
+            !hasRole(ROLE_WHITELIST, referrer) && 
+            !hasRole(ROLE_CUSTOM_TAX, referral) && 
+            !hasRole(ROLE_CUSTOM_TAX, referrer), 
+            "NBT: !w_ct"
+        );
         
         referralToReferrer[referral] = referrer;
         if (referralToReferrer[referral] != BURN_ADDRESS) // referrer exists
@@ -392,20 +408,7 @@ contract NoBotsTech is AccessControlEnumerable {
         );
         
         uint burnAndRewardRealAmount;
-        if (referralToReferrer[taxAmountsInput.sender] != BURN_ADDRESS) // If sender is referral under referralToReferrer[taxAmountsInput.sender] referrer
-        {
-            burnAndRewardRealAmount = (realTransferAmount * refTaxPercent) / TAX_PERCENT_DENORM;
-            
-            temporaryReferralRealAmounts[taxAmountsInput.sender] += realTransferAmount;
-        } else if ( // For example for binance wallet I can set custom tax = 0%
-            hasRole(ROLE_CUSTOM_TAX, taxAmountsInput.sender) ||
-            hasRole(ROLE_CUSTOM_TAX, taxAmountsInput.recipient)
-        ) {
-            // Getting minimum tax of sender or recipient
-            uint customTax = customTaxPercents[taxAmountsInput.sender] < customTaxPercents[taxAmountsInput.recipient]?
-                customTaxPercents[taxAmountsInput.sender]: customTaxPercents[taxAmountsInput.recipient];
-            burnAndRewardRealAmount = (realTransferAmount * customTax) / TAX_PERCENT_DENORM;
-        } else if (
+        if (
             /*
                 isBot = !hasRole(ROLE_WHITELIST, taxAmountsInput.sender) &&
                             (lastBlock[taxAmountsInput.sender].received + howManyBlocksAgoReceived > block.number 
@@ -419,16 +422,34 @@ contract NoBotsTech is AccessControlEnumerable {
             
             // isHuman condition below
             (hasRole(ROLE_WHITELIST, taxAmountsInput.sender) || 
-                (lastBlock[taxAmountsInput.sender].received + howManyBlocksAgoReceived < block.number && 
+                (senderOrReciverStorage[taxAmountsInput.sender].receivedAtBlock + howManyBlocksAgoReceived < block.number && 
                     isNotContract(taxAmountsInput.sender))) &&
                 
             (hasRole(ROLE_WHITELIST, taxAmountsInput.recipient) || 
-                (lastBlock[taxAmountsInput.recipient].sent + howManyBlocksAgoSent < block.number && 
+                (senderOrReciverStorage[taxAmountsInput.recipient].sentAtBlock + howManyBlocksAgoSent < block.number && 
                     isNotContract(taxAmountsInput.recipient)))
-        ) {
-            burnAndRewardRealAmount = (realTransferAmount * humanTaxPercent) / TAX_PERCENT_DENORM;
-        } else // isBot
-        {
+        ) { // isHuman
+            if ( // For example for binance wallet/contract I can set custom tax = 0%
+                hasRole(ROLE_CUSTOM_TAX, taxAmountsInput.sender) ||
+                hasRole(ROLE_CUSTOM_TAX, taxAmountsInput.recipient)
+            ) {
+                // Getting minimum tax of sender or recipient
+                uint customTax = customTaxPercents[taxAmountsInput.sender] < customTaxPercents[taxAmountsInput.recipient]?
+                    customTaxPercents[taxAmountsInput.sender]: customTaxPercents[taxAmountsInput.recipient];
+                burnAndRewardRealAmount = (realTransferAmount * customTax) / TAX_PERCENT_DENORM;
+                
+            } else if ( // If sender is referral under referralToReferrer[taxAmountsInput.sender] referrer
+                referralToReferrer[taxAmountsInput.sender] != BURN_ADDRESS
+            ) {
+                burnAndRewardRealAmount = (realTransferAmount * refTaxPercent) / TAX_PERCENT_DENORM;
+                
+                temporaryReferralRealAmounts[taxAmountsInput.sender] += realTransferAmount;
+                
+            } else // Doesn't have any referrals and no custom tax
+            {
+                burnAndRewardRealAmount = (realTransferAmount * humanTaxPercent) / TAX_PERCENT_DENORM;
+            }
+        } else { // isBot
             burnAndRewardRealAmount = (realTransferAmount * botTaxPercent) / TAX_PERCENT_DENORM;
             
             uint botTaxedAmount = (taxAmountsInput.transferAmount * botTaxPercent) / TAX_PERCENT_DENORM;
@@ -447,8 +468,8 @@ contract NoBotsTech is AccessControlEnumerable {
             taxAmountsInput.transferAmount - taxAmountsOutput.burnAndRewardAmount; // Actual amount recipient got and have to show in event
         
         // Saving when sender or recipient made last transaction for anti bot system
-        lastBlock[taxAmountsInput.recipient].received = block.number;
-        lastBlock[taxAmountsInput.sender].sent = block.number;
+        senderOrReciverStorage[taxAmountsInput.recipient].receivedAtBlock = block.number;
+        senderOrReciverStorage[taxAmountsInput.sender].sentAtBlock = block.number;
         
         taxAmountsOutput.senderBalance = taxAmountsInput.senderBalance - realTransferAmount;
         taxAmountsOutput.recipientBalance = taxAmountsInput.recipientBalance + recipientGetsRealAmount;
