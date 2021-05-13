@@ -8,7 +8,7 @@ const { PRIVATE_KEY } = process.env;
 
 const web3 = new Web3(
   new Web3.providers.HttpProvider(
-    "https://eth-kovan.alchemyapi.io/v2/_sbxowX_EtOIlyaDp7JEp_uO0IJRx6dN",
+    "https://data-seed-prebsc-1-s1.binance.org:8545/",
   ),
 );
 
@@ -128,7 +128,7 @@ const start = async () => {
       const transaction = await defiFactoryTokenContract.methods.updateUtilsContracts([
         [false, false, false, false, false, noBotsTechContract.options.address],
         [true, true, true, true, true, teamVestingContract.options.address],
-        [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"], 
+        [false, false, false, false, false, "0x6725F303b657a9451d8BA641348b6761A6CC7a17"], 
       ])
 
       const signed  = await web3.eth.accounts.signTransaction({
@@ -206,7 +206,7 @@ const start = async () => {
     try {
       const transaction = await teamVestingContract.methods
       .updateInvestmentSettings(
-        "0xd0A1E359811322d97991E03f863a0C30C2cF029C", // Native token: WETH kovan
+        "0xaa25Aa7a19f9c426E07dee59b12f944f4d9f1DD3", // Native token: WBNB kovan
         "0x539FaA851D86781009EC30dF437D794bCd090c8F", 150e13, // dev address & cap
         "0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6", 100e13, // team address & cap
         "0xE019B37896f129354cf0b8f1Cf33936b86913A34", 50e13 // marketing address & cap
