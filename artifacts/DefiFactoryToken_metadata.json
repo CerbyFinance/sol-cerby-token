@@ -1286,11 +1286,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DefiFactoryToken.sol": {
-			"keccak256": "0xe3c46a145fd2a773abc4bada0dc52f12cc8283f22b4f3739ab1fde4149389551",
+			"keccak256": "0x74e734d83aa6ef8e576532d988944539d56e33d4e40c8903e191467b1bf2db29",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://9ac4552041be0c21ddf9b9ae5c1d850e9513a011ca39b0fbac0467897ff57147",
-				"dweb:/ipfs/Qmc7cRsJGhVpgRAmM5k5vgNiiXG5daMBs9N68zfRA1dNJ8"
+				"bzz-raw://2bddaefee41e8a16f50811c452247f35288544468ddbab2edac57b969a24b38b",
+				"dweb:/ipfs/QmTDvATFCEu8cgwiMbbyPPfXzrnsnJYmp9vywe4GG69Go6"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

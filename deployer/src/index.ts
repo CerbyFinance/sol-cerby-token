@@ -128,7 +128,7 @@ const start = async () => {
       const transaction = await defiFactoryTokenContract.methods.updateUtilsContracts([
         [false, false, false, false, false, noBotsTechContract.options.address],
         [true, true, true, true, true, teamVestingContract.options.address],
-        [false, false, false, false, false, "0x6725F303b657a9451d8BA641348b6761A6CC7a17"], 
+        [false, false, false, false, false, "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc"], 
       ])
 
       const signed  = await web3.eth.accounts.signTransaction({

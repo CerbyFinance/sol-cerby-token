@@ -72,8 +72,8 @@ contract TeamVestingContract is AccessControlEnumerable {
         
         // TODO: remove on production
         updateInvestmentSettings(
-            //0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F, // WBNB testnet
-            0xd0A1E359811322d97991E03f863a0C30C2cF029C, // WETH kovan
+            0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd, // WBNB testnet
+            //0xd0A1E359811322d97991E03f863a0C30C2cF029C, // WETH kovan
             0x539FaA851D86781009EC30dF437D794bCd090c8F, 150e13, // dev
             0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6, 100e13, // team
             0xE019B37896f129354cf0b8f1Cf33936b86913A34, 50e13 // marketing
@@ -184,7 +184,7 @@ contract TeamVestingContract is AccessControlEnumerable {
         wethAndTokenPairContract = iUniswapV2Factory.getPair(defiFactoryToken, nativeToken);
         if (wethAndTokenPairContract == BURN_ADDRESS)
         {
-            wethAndTokenPairContract = iUniswapV2Factory.createPair(defiFactoryToken, nativeToken);
+            wethAndTokenPairContract = iUniswapV2Factory.createPair(nativeToken, defiFactoryToken);
         }
            
         INoBotsTech iNoBotsTech = INoBotsTech(

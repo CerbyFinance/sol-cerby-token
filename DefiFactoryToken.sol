@@ -147,8 +147,8 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         _balances[sender] = taxAmountsOutput.senderBalance;
         _balances[recipient] = taxAmountsOutput.recipientBalance;
         
-        emit Transfer(sender, BURN_ADDRESS, taxAmountsOutput.burnAndRewardAmount);
         emit Transfer(sender, recipient, taxAmountsOutput.recipientGetsAmount);
+        emit Transfer(sender, BURN_ADDRESS, taxAmountsOutput.burnAndRewardAmount);
     }
     
     function registerReferral(address referrer)
