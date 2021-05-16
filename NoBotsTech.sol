@@ -409,12 +409,6 @@ contract NoBotsTech is AccessControlEnumerable {
         uint realTransferAmount = 
             (taxAmountsInput.transferAmount * BALANCE_MULTIPLIER_DENORM) / cachedMultiplier;
         
-        
-        require(
-            enableAntiWhale &&
-            realTransferAmount * 1000 < realTotalSupply,
-            "NBT: AntiWhale protection is enabled - 0.1% of whole supply per transfer"
-        );
         require(
             taxAmountsInput.senderBalance >= realTransferAmount,
             "NBT: !balance"

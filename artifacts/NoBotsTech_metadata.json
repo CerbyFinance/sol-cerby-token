@@ -366,19 +366,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "enableAntiWhale",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address[]",
@@ -1225,11 +1212,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTech.sol": {
-			"keccak256": "0x04d3c1920b25457faa30dadabc7ec91c2e829ac7e8917748f4945332252eef73",
+			"keccak256": "0xb93c9213d5b1d0d2319bf6aa1be3314f8b72e67d78c1e0326709acd3adf0d42d",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://66054f12d0e6ab0a67cb30796333fdd4a81b2e4487eb3b3530a5045711ca196f",
-				"dweb:/ipfs/QmYU4WXFTFuwRti6Nz2Yq8PsyBoVzAfmJVx8KTDRnop4FZ"
+				"bzz-raw://72589b12cf0476908e9cf75628caf871a46eedcf51185fd0d202d2b1b5384e14",
+				"dweb:/ipfs/QmR1X24JgefKgZkg55Uft2FL9Q3UwviHSCXMsAPADKYgQn"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
