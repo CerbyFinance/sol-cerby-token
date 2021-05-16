@@ -353,6 +353,32 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "enableAntiBot",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "enableAntiWhale",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address[]",
@@ -1040,6 +1066,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "bool",
+						"name": "antiBot",
+						"type": "bool"
+					}
+				],
+				"name": "updateAntiBot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "addr",
 						"type": "address"
@@ -1186,11 +1225,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTech.sol": {
-			"keccak256": "0x7d833ccadb24444bb1955b896277862838ac892cd6ccbd15d8b9c763f44d94d7",
+			"keccak256": "0x04d3c1920b25457faa30dadabc7ec91c2e829ac7e8917748f4945332252eef73",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://abbe6fd2d219fad1a79356a754022a66b410528adbd449f5c1febf7d83e9a1b1",
-				"dweb:/ipfs/QmeDy9zrWocFbu3AZkH42dgQvCbYKuHzTnLG55wLnbtiHw"
+				"bzz-raw://66054f12d0e6ab0a67cb30796333fdd4a81b2e4487eb3b3530a5045711ca196f",
+				"dweb:/ipfs/QmYU4WXFTFuwRti6Nz2Yq8PsyBoVzAfmJVx8KTDRnop4FZ"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

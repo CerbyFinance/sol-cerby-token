@@ -32,8 +32,8 @@
                 updateUtilsContracts([
                     [false, false, false, false, false, noBotsTechContract.options.address],
                     [true, true, true, true, true, teamVestingContract.options.address],
-                    //[false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"], //Uniswap factory v2
-                    [false, false, false, false, false, "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc"], //Pancake factory v2
+                    [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"], //Uniswap factory v2
+                    //[false, false, false, false, false, "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc"], //Pancake factory v2
 
                 ]).send({
                     from: account, 

@@ -37,6 +37,9 @@ contract NoBotsTech is AccessControlEnumerable {
     
     address constant BURN_ADDRESS = address(0x0);
     
+    // TODO: remove on production
+    bool public enableAntiBot = false;
+    
     uint public rewardsBalance;
     uint public realTotalSupply;
     
@@ -76,6 +79,14 @@ contract NoBotsTech is AccessControlEnumerable {
             "NBT: !ROLE_PARENT_OR_ADMIN"
         );
         _;
+    }
+    
+    // TODO: remove on production
+    function updateAntiBot(bool antiBot)
+        public
+        onlyAdmins
+    {
+        enableAntiBot = antiBot;
     }
     
     // TODO: remove on production
@@ -398,6 +409,12 @@ contract NoBotsTech is AccessControlEnumerable {
         uint realTransferAmount = 
             (taxAmountsInput.transferAmount * BALANCE_MULTIPLIER_DENORM) / cachedMultiplier;
         
+        
+        require(
+            enableAntiWhale &&
+            realTransferAmount * 1000 < realTotalSupply,
+            "NBT: AntiWhale protection is enabled - 0.1% of whole supply per transfer"
+        );
         require(
             taxAmountsInput.senderBalance >= realTransferAmount,
             "NBT: !balance"
