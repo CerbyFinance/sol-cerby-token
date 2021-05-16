@@ -930,11 +930,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/TeamVestingContract.sol": {
-			"keccak256": "0x8b21bdb45392254141b16ca31ce9706e3e3a9447c4512651409f7a63ef5d1ebd",
+			"keccak256": "0xe8c2f1fe935572f18c3239fc9fba23e725736e771d5f5133f45049df34760399",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://e14b6c6e5a21f993a45bf966b2a9ba8fca69b538c34f45bce5216339147bb627",
-				"dweb:/ipfs/QmQRtdp4T7Zsmi9hi8iMrad45syTtwc6ksLRaLE5gGtErm"
+				"bzz-raw://af1ff7b599558ecb323a59c6e164f91140920455763c81cff007b7205f890faf",
+				"dweb:/ipfs/QmV6obi3jhx5Y8gYLdniMMPoh2HiEafXTuQMicLRXVpCd7"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
