@@ -353,19 +353,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "enableAntiBot",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address[]",
@@ -1053,19 +1040,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bool",
-						"name": "antiBot",
-						"type": "bool"
-					}
-				],
-				"name": "updateAntiBot",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "address",
 						"name": "addr",
 						"type": "address"
@@ -1212,11 +1186,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTech.sol": {
-			"keccak256": "0xb93c9213d5b1d0d2319bf6aa1be3314f8b72e67d78c1e0326709acd3adf0d42d",
+			"keccak256": "0xa9acfb9f6bd4acdcee3b24bae654d98c720f3b24e9b13209a299cfa249dc2089",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://72589b12cf0476908e9cf75628caf871a46eedcf51185fd0d202d2b1b5384e14",
-				"dweb:/ipfs/QmR1X24JgefKgZkg55Uft2FL9Q3UwviHSCXMsAPADKYgQn"
+				"bzz-raw://8f10dc8020adb39cc13ccfa8c26a13a08c5e8511d44d187a47ea8c74f9b94f02",
+				"dweb:/ipfs/QmebeuaubVbTB7NbYvodCvXsrXbFTmJ89brKJVz4Q8ANGz"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

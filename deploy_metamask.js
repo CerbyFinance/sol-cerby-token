@@ -151,7 +151,7 @@
     catch (error) { console.log(error.message); fail; }
     
     
-    
+    /*
     async function ref1() {
         //console.log("NoBotsTech.updateReCachePeriod: " + new Date());
         try {
@@ -280,6 +280,9 @@
     }
     
     await Promise.all([ref1(), ref2(), ref3(), ref4(), ref5(), ref6(), fill1()]);
+    
+    */
+    
     
     //console.log("TeamVestingContract.addLiquidity: " + new Date());
     /*try {

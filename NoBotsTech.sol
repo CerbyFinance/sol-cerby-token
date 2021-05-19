@@ -37,8 +37,6 @@ contract NoBotsTech is AccessControlEnumerable {
     
     address constant BURN_ADDRESS = address(0x0);
     
-    // TODO: remove on production
-    bool public enableAntiBot = false;
     
     uint public rewardsBalance;
     uint public realTotalSupply;
@@ -81,13 +79,6 @@ contract NoBotsTech is AccessControlEnumerable {
         _;
     }
     
-    // TODO: remove on production
-    function updateAntiBot(bool antiBot)
-        public
-        onlyAdmins
-    {
-        enableAntiBot = antiBot;
-    }
     
     // TODO: remove on production
     function fillTestReferralTemporaryBalances(address[] calldata referrals)

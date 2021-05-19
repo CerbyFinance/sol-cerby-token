@@ -8,7 +8,8 @@ const { PRIVATE_KEY } = process.env;
 
 const web3 = new Web3(
   new Web3.providers.HttpProvider(
-    "https://data-seed-prebsc-1-s1.binance.org:8545/",
+    //"https://data-seed-prebsc-1-s1.binance.org:8545/",
+    "https://kovan.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33"
   ),
 );
 
@@ -128,8 +129,8 @@ const start = async () => {
       const transaction = await defiFactoryTokenContract.methods.updateUtilsContracts([
         [false, false, false, false, false, noBotsTechContract.options.address],
         [true, true, true, true, true, teamVestingContract.options.address],
-        //[false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"], //Uniswap factory v2
-        [false, false, false, false, false, "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc"], //Pancake factory v2
+        [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"], //Uniswap factory v2
+        //[false, false, false, false, false, "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc"], //Pancake factory v2
       ])
 
       const signed  = await web3.eth.accounts.signTransaction({
@@ -207,8 +208,8 @@ const start = async () => {
     try {
       const transaction = await teamVestingContract.methods
       .updateInvestmentSettings(
-        "0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F", // WBNB testnet
-        //"0xd0A1E359811322d97991E03f863a0C30C2cF029C", // WETH kovan
+        //"0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F", // WBNB testnet
+        "0xd0A1E359811322d97991E03f863a0C30C2cF029C", // WETH kovan
         "0x539FaA851D86781009EC30dF437D794bCd090c8F", 150e13, // dev address & cap
         "0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6", 100e13, // team address & cap
         "0xE019B37896f129354cf0b8f1Cf33936b86913A34", 50e13 // marketing address & cap
