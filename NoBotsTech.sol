@@ -31,8 +31,8 @@ contract NoBotsTech is AccessControlEnumerable {
     uint public humanTaxPercent = 1e5; // 10.0%
     uint public botTaxPercent = 99e4; // 99.0%
     uint public refTaxPercent = 5e3; // 5.0%
-    uint public firstLevelRefPercent = 1e3; // 1.0%
-    uint public secondLevelRefPercent = 250; // 0.25%
+    uint public firstLevelRefPercent = 1e4; // 1.0%
+    uint public secondLevelRefPercent = 2500; // 0.25%
     uint constant TAX_PERCENT_DENORM = 1e6;
     
     address constant BURN_ADDRESS = address(0x0);

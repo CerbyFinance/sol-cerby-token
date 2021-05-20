@@ -1186,11 +1186,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTech.sol": {
-			"keccak256": "0xa9acfb9f6bd4acdcee3b24bae654d98c720f3b24e9b13209a299cfa249dc2089",
+			"keccak256": "0x3e2eb6b9b5c6024ec6bf5b9f946b21d6db089c7ad38f70a1b0e20e02757a8d5d",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://8f10dc8020adb39cc13ccfa8c26a13a08c5e8511d44d187a47ea8c74f9b94f02",
-				"dweb:/ipfs/QmebeuaubVbTB7NbYvodCvXsrXbFTmJ89brKJVz4Q8ANGz"
+				"bzz-raw://422146d29720edc4e71ba8ac9252f5c8b04099b16f8776f4da99fe27fec41e63",
+				"dweb:/ipfs/QmV4msRyk8x9UVgCKn4Uo5LfWEgaHhEgnZDhSd59PYntpf"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
