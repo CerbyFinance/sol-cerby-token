@@ -9,7 +9,8 @@ const { PRIVATE_KEY } = process.env;
 const web3 = new Web3(
   new Web3.providers.HttpProvider(
     //"https://data-seed-prebsc-1-s1.binance.org:8545/",
-    "https://kovan.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33"
+    //"https://kovan.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33"
+    "https://ropsten.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33"
   ),
 );
 
@@ -31,7 +32,7 @@ async function deployContract(
       from: account,
       gas: 6e6,
       // @ts-ignore
-      gasPrice: 10e9+1,
+      gasPrice: 3e9+1,
       value,
     });
 
@@ -138,7 +139,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 3e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -155,10 +156,10 @@ const start = async () => {
     //console.log("NoBotsTech.grantRolesBulk: " + new Date());
     try {
       const transaction = await noBotsTechContract.methods.grantRolesBulk([
-        ["0xc869e1d528fd91a06036810c7f025f082e044b8f0374c3d1d4b1fb5490dd90ae", defiFactoryTokenContract.options.address],
+        ["0x0000000000000000000000000000000000000000000000000000000000000000", defiFactoryTokenContract.options.address],
         ["0x0000000000000000000000000000000000000000000000000000000000000000", teamVestingContract.options.address],
         ["0xd27488087fca693adcf8b477ec0ca6cf5134d7f124fdc511eb258522c40fd72b", teamVestingContract.options.address],
-        ["0x2eb7a2681a755a3da9e842879bcbcac38d32d4567f8f95e32a00f74605b40993", teamVestingContract.options.address]
+        ["0xbd68ab95cda3c90ac0bffc2b3a3a97a564372fc3ca4a8e4575d3ce58179b7563", teamVestingContract.options.address]
       ])
 
       const signed  = await web3.eth.accounts.signTransaction({
@@ -166,7 +167,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 3e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -189,7 +190,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 3e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -206,10 +207,11 @@ const start = async () => {
     return
     //console.log("TeamVestingContract.updateInvestmentSettings: " + new Date());
     try {
-      const transaction = await teamVestingContract.methods
+      /*const transaction = await teamVestingContract.methods
       .updateInvestmentSettings(
         //"0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F", // WBNB testnet
-        "0xd0A1E359811322d97991E03f863a0C30C2cF029C", // WETH kovan
+        //"0xd0A1E359811322d97991E03f863a0C30C2cF029C", // WETH kovan
+        "0xc778417E063141139Fce010982780140Aa0cD5Ab", // WETH ropsten
         "0x539FaA851D86781009EC30dF437D794bCd090c8F", 150e13, // dev address & cap
         "0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6", 100e13, // team address & cap
         "0xE019B37896f129354cf0b8f1Cf33936b86913A34", 50e13 // marketing address & cap
@@ -220,12 +222,12 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 3e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('step4 ok')
+      console.log('step4 ok')*/
   
     } catch (error) {
       console.log(error.message);
@@ -246,7 +248,7 @@ const start = async () => {
           to: transaction._parent._address,
           data: transaction.encodeABI(),
           gas: await transaction.estimateGas({ from: account }),
-          gasPrice: 10e9+1,
+          gasPrice: 3e9+1,
         },
         _account.privateKey,
       );
@@ -265,19 +267,38 @@ const start = async () => {
 
   // prettier-ignore
   try {
-    const transaction = await teamVestingContract.methods.createPairAndAddLiqudity()
+    const transaction = await teamVestingContract.methods.createPair()
 
     const signed  = await web3.eth.accounts.signTransaction({
       nonce   : nonce++,
       to      : transaction._parent._address,
       data    : transaction.encodeABI(),
       gas: await transaction.estimateGas({from: account}),
-      gasPrice: 10e9+1,
+      gasPrice: 3e9+1,
     }, _account.privateKey);
 
     const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
     console.log('create pair ok')
+
+  } catch (error) {
+    console.log(error.message);
+  }
+  /*
+  try {
+    const transaction = await teamVestingContract.methods.addLiquidity()
+
+    const signed  = await web3.eth.accounts.signTransaction({
+      nonce   : nonce++,
+      to      : transaction._parent._address,
+      data    : transaction.encodeABI(),
+      gas: await transaction.estimateGas({from: account}),
+      gasPrice: 3e9+1,
+    }, _account.privateKey);
+
+    const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
+
+    console.log('add liquidity ok')
 
   } catch (error) {
     console.log(error.message);
@@ -294,7 +315,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 3e9+1,
       }, _account.privateKey);
   
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -317,7 +338,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 3e9+1,
       }, _account.privateKey);
   
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -336,7 +357,7 @@ const start = async () => {
     await Promise.all(items.map(item => refN(item)));
   }
 
-  await fill1();
+  await fill1();*/
 };
 
 start();

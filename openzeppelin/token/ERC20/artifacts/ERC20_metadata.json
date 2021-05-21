@@ -358,11 +358,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20.sol": {
-			"keccak256": "0x41cd0da0479c5e8632182e3043be8067fe225179555190c1077b64cb2f4dbe76",
+			"keccak256": "0xe3409265de200135136e0fad55fe92639e26fe0ca1bd83f4eff176d877d2e1de",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1d7cbc7cdc230423ad5efb11bdca52e56de31b9e30c40b3203dd5bcfbee95d3d",
-				"dweb:/ipfs/QmXj6cRiRfo5hA44d128xDkokFvzPBXwoJmvziRLpDN92b"
+				"bzz-raw://9883173bb4122c943b2401407423a676a74b9bfaaf23352a863fb7d7b2de8577",
+				"dweb:/ipfs/QmTY5MZN8ZjAA79nkfUQhMAmebfroLKtreDRXmDKd6g1Py"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {

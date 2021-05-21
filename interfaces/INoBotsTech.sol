@@ -6,12 +6,12 @@ struct TaxAmountsInput {
     address sender;
     address recipient;
     uint transferAmount;
-    uint senderBalance;
-    uint recipientBalance;
+    uint senderRealBalance;
+    uint recipientRealBalance;
 }
 struct TaxAmountsOutput {
-    uint senderBalance;
-    uint recipientBalance;
+    uint senderRealBalance;
+    uint recipientRealBalance;
     uint burnAndRewardAmount;
     uint recipientGetsAmount;
 }
@@ -78,12 +78,9 @@ interface INoBotsTech {
     function clearReferrerRewards(address addr)
         external;
     
-    function chargeCustomTax(uint taxAmount, uint accountBalance)
+    function chargeCustomTaxTeamVestingContract(uint taxAmount, uint accountBalance)
         external
         returns (uint);
-    
-    function chargeCustomTaxPreBurned(uint taxAmount)
-        external;
         
     function registerReferral(address referral, address referrer)
         external;
@@ -92,9 +89,6 @@ interface INoBotsTech {
         external
         view
         returns (address[] memory);
-        
-    function fillTestReferralTemporaryBalances(address[] calldata referrals)
-        external;
     
     event MultiplierUpdated(uint newMultiplier);
     event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);

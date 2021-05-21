@@ -239,7 +239,7 @@
 							},
 							{
 								"internalType": "bool",
-								"name": "isAllowedToSend",
+								"name": "isModerator",
 								"type": "bool"
 							},
 							{
@@ -309,19 +309,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "ROLE_ALLOWED_TO_SEND_WHILE_PAUSED",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "ROLE_BURNER",
 				"outputs": [
 					{
@@ -336,6 +323,19 @@
 			{
 				"inputs": [],
 				"name": "ROLE_MINTER",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "ROLE_MODERATOR",
 				"outputs": [
 					{
 						"internalType": "bytes32",
@@ -823,6 +823,35 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "moderatorTransferFromWhilePaused",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "name",
 				"outputs": [
@@ -913,31 +942,6 @@
 					}
 				],
 				"name": "registerReferral",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "referral",
-								"type": "address"
-							},
-							{
-								"internalType": "address",
-								"name": "referrer",
-								"type": "address"
-							}
-						],
-						"internalType": "struct DefiFactoryToken.Referrals[]",
-						"name": "referrals",
-						"type": "tuple[]"
-					}
-				],
-				"name": "registerReferralsBulk",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1163,7 +1167,7 @@
 							},
 							{
 								"internalType": "bool",
-								"name": "isAllowedToSend",
+								"name": "isModerator",
 								"type": "bool"
 							},
 							{
@@ -1286,19 +1290,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DefiFactoryToken.sol": {
-			"keccak256": "0x74e734d83aa6ef8e576532d988944539d56e33d4e40c8903e191467b1bf2db29",
+			"keccak256": "0x4e61d48733f8e31e48ce4624117957ff2395388853a1d8f75c7f66c43472d587",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2bddaefee41e8a16f50811c452247f35288544468ddbab2edac57b969a24b38b",
-				"dweb:/ipfs/QmTDvATFCEu8cgwiMbbyPPfXzrnsnJYmp9vywe4GG69Go6"
+				"bzz-raw://131fa4ed92780d8f351e330ba4225f17a92bb322a171b99e06f12f0962613e0c",
+				"dweb:/ipfs/QmfQsWEm3QGAFXFuTd96uCgFHvBaFzzXw9Jf3WYUUXbMaU"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
-			"keccak256": "0x78e902c189d81057a318a50b4d188514f12e06fd5a79e8cdb3dfb785e1487a7d",
+			"keccak256": "0xb80067595debf03eb9a7ebaba7f08872e65ac401301859a8f15bccc8d210ac77",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ac49fe5e23d846edd91632669dd0853102c387f1696991097bab4b616eef9a3a",
-				"dweb:/ipfs/QmPFP1PTzqibjSDEB9krq8RcuHYuAjgz6y46nWvHY9FKc9"
+				"bzz-raw://748234c76c0299ac95bbdcdce63d97aadee4e271df3c296fdee06c1dcf43f718",
+				"dweb:/ipfs/QmXRqsUuf38GuDWakC1X3uYXp4UemN3cnLYmwUhsXQeEmX"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
@@ -1318,11 +1322,11 @@
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20.sol": {
-			"keccak256": "0x41cd0da0479c5e8632182e3043be8067fe225179555190c1077b64cb2f4dbe76",
+			"keccak256": "0xe3409265de200135136e0fad55fe92639e26fe0ca1bd83f4eff176d877d2e1de",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1d7cbc7cdc230423ad5efb11bdca52e56de31b9e30c40b3203dd5bcfbee95d3d",
-				"dweb:/ipfs/QmXj6cRiRfo5hA44d128xDkokFvzPBXwoJmvziRLpDN92b"
+				"bzz-raw://9883173bb4122c943b2401407423a676a74b9bfaaf23352a863fb7d7b2de8577",
+				"dweb:/ipfs/QmTY5MZN8ZjAA79nkfUQhMAmebfroLKtreDRXmDKd6g1Py"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {

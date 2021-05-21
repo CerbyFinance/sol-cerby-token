@@ -7,7 +7,6 @@ import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 
 contract NoBotsTech is AccessControlEnumerable {
-    bytes32 public constant ROLE_PARENT = keccak256("ROLE_PARENT");
     bytes32 public constant ROLE_WHITELIST = keccak256("ROLE_WHITELIST");
     bytes32 public constant ROLE_CUSTOM_TAX = keccak256("ROLE_CUSTOM_TAX");
     bytes32 public constant ROLE_EXCLUDE_FROM_BALANCE = keccak256("ROLE_EXCLUDE_FROM_BALANCE");
@@ -41,11 +40,11 @@ contract NoBotsTech is AccessControlEnumerable {
     uint public rewardsBalance;
     uint public realTotalSupply;
     
-    struct SenderOrReciverStorage {
+    struct SentOrReceivedAtBlockStorage {
         uint receivedAtBlock;
         uint sentAtBlock;
     }
-    mapping(address => SenderOrReciverStorage) senderOrReciverStorage;
+    mapping(address => SentOrReceivedAtBlockStorage) sentOrReceivedAtBlockStorage;
     uint public howManyBlocksAgoReceived = 0;
     uint public howManyBlocksAgoSent = 0;
     
@@ -63,27 +62,15 @@ contract NoBotsTech is AccessControlEnumerable {
     
     constructor () {
         _setupRole(ROLE_ADMIN, _msgSender());
+        
+        
+        emit MultiplierUpdated(cachedMultiplier);
     }
-    
-    modifier onlyAdmins {
-        require(hasRole(ROLE_ADMIN, _msgSender()), "NBT: !ROLE_ADMIN");
-        _;
-    }
-    
-    modifier onlyParentContractOrAdmins {
-        require(            
-            hasRole(ROLE_PARENT, _msgSender()) || 
-            hasRole(ROLE_ADMIN, _msgSender()), 
-            "NBT: !ROLE_PARENT_OR_ADMIN"
-        );
-        _;
-    }
-    
     
     // TODO: remove on production
     function fillTestReferralTemporaryBalances(address[] calldata referrals)
         public
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         uint rnd = (block.number % 100) * 1e18;
         for(uint i = 0; i<referrals.length; i++)
@@ -94,7 +81,7 @@ contract NoBotsTech is AccessControlEnumerable {
     
     function updateHowManyBlocksAgo(uint _howManyBlocksAgoReceived, uint _howManyBlocksAgoSent)
         external
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         howManyBlocksAgoReceived = _howManyBlocksAgoReceived;
         howManyBlocksAgoSent = _howManyBlocksAgoSent;
@@ -102,7 +89,7 @@ contract NoBotsTech is AccessControlEnumerable {
     
     function grantRolesBulk(RoleAccess[] calldata roles)
         external
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         for(uint i = 0; i<roles.length; i++)
         {
@@ -112,7 +99,7 @@ contract NoBotsTech is AccessControlEnumerable {
     
     function getCalculatedReferrerRewards(address referrer, address[] calldata referrals)
         external
-        onlyParentContractOrAdmins
+        onlyRole(ROLE_ADMIN)
         view
         returns (uint)
     {
@@ -149,7 +136,7 @@ contract NoBotsTech is AccessControlEnumerable {
     
     function updateReferrersRewards(address[] calldata referrals)
         external
-        onlyParentContractOrAdmins
+        onlyRole(ROLE_ADMIN)
     {
         address temporaryReferrer;
         for (uint i = 0; i < referrals.length; i++)
@@ -178,7 +165,7 @@ contract NoBotsTech is AccessControlEnumerable {
     
     function getTemporaryReferralRealAmountsBulk(address[] calldata addrs)
         external
-        onlyParentContractOrAdmins
+        onlyRole(ROLE_ADMIN)
         view
         returns (TemporaryReferralRealAmountsBulk[] memory)
     {
@@ -196,7 +183,7 @@ contract NoBotsTech is AccessControlEnumerable {
     
     function filterNonZeroReferrals(address[] calldata referrals)
         external
-        onlyParentContractOrAdmins
+        onlyRole(ROLE_ADMIN)
         view
         returns (address[] memory)
     {
@@ -214,7 +201,7 @@ contract NoBotsTech is AccessControlEnumerable {
     
     function getCachedReferrerRewards(address referrer)
         external
-        onlyParentContractOrAdmins
+        onlyRole(ROLE_ADMIN)
         view
         returns (uint)
     {
@@ -223,14 +210,14 @@ contract NoBotsTech is AccessControlEnumerable {
     
     function clearReferrerRewards(address addr)
         external
-        onlyParentContractOrAdmins
+        onlyRole(ROLE_ADMIN)
     {
         referrerRealBalances[addr] = 0;
     }
     
     function registerReferral(address referral, address referrer)
         external
-        onlyParentContractOrAdmins
+        onlyRole(ROLE_ADMIN)
     {
         require(
             referrer != BURN_ADDRESS && 
@@ -271,14 +258,14 @@ contract NoBotsTech is AccessControlEnumerable {
     
     function updateReCachePeriod(uint _secondsBetweenUpdates)
         external
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         secondsBetweenUpdates = _secondsBetweenUpdates;
     }
     
     function updateCustomTaxForAddress(address addr, uint newCustomTaxPercent)
         external
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         customTaxPercents[addr] = newCustomTaxPercent;
         _setupRole(ROLE_CUSTOM_TAX, addr);
@@ -292,28 +279,13 @@ contract NoBotsTech is AccessControlEnumerable {
         uint _secondLevelRefPercent
     )
         external
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         refTaxPercent = _refTaxPercent;
         botTaxPercent = _botTaxPercent;
         humanTaxPercent = _humanTaxPercent;
         firstLevelRefPercent = _firstLevelRefPercent;
         secondLevelRefPercent = _secondLevelRefPercent;
-    }
-    
-    function isContract(address account) 
-        private 
-        view 
-        returns (bool) 
-    {
-        // This method relies on extcodesize, which returns 0 for contracts in
-        // construction, since the code is only stored at the end of the
-        // constructor execution.
-
-        uint256 size;
-        // solhint-disable-next-line no-inline-assembly
-        assembly { size := extcodesize(account) }
-        return size > 0;
     }
     
     function isNotContract(address account) 
@@ -333,7 +305,7 @@ contract NoBotsTech is AccessControlEnumerable {
     
     function getTotalSupply()
         external
-        onlyParentContractOrAdmins
+        onlyRole(ROLE_ADMIN)
         view
         returns (uint)
     {
@@ -343,10 +315,19 @@ contract NoBotsTech is AccessControlEnumerable {
     function getRewardsBalance()
         external
         view
-        onlyParentContractOrAdmins
+        onlyRole(ROLE_ADMIN)
         returns (uint)
     {
         return rewardsBalance;
+    }
+    
+    function delayedUpdateCacheMultiplier()
+        private
+    {   
+        if (block.timestamp > lastCachedTimestamp + secondsBetweenUpdates)
+        {
+            forcedUpdateCacheMultiplier();
+        }
     }
     
     function forcedUpdateCacheMultiplier()
@@ -364,26 +345,29 @@ contract NoBotsTech is AccessControlEnumerable {
         emit MultiplierUpdated(cachedMultiplier);
     }
     
-    function delayedUpdateCacheMultiplier()
-        private
-    {   
-        if (block.timestamp > lastCachedTimestamp + secondsBetweenUpdates)
-        {
-            forcedUpdateCacheMultiplier();
-        }
-    }
-    
     function chargeCustomTax(uint taxAmount, uint accountBalance)
         external
-        onlyParentContractOrAdmins
+        onlyRole(ROLE_ADMIN)
         returns(uint)
     {
         uint realTaxAmount = 
             (taxAmount * BALANCE_MULTIPLIER_DENORM) / cachedMultiplier;
-        require(accountBalance >= realTaxAmount, "NBT: !accountBalance");
         
-        batchBurnAndReward += realTaxAmount;
         accountBalance -= realTaxAmount;
+        batchBurnAndReward += realTaxAmount;
+        
+        delayedUpdateCacheMultiplier();
+        
+        return accountBalance;
+    }
+    
+    function chargeCustomTaxTeamVestingContract(uint taxAmount, uint accountBalance)
+        external
+        onlyRole(ROLE_ADMIN)
+        returns(uint)
+    {
+        accountBalance -= taxAmount;
+        batchBurnAndReward += taxAmount;
         
         delayedUpdateCacheMultiplier();
         
@@ -394,16 +378,12 @@ contract NoBotsTech is AccessControlEnumerable {
         TaxAmountsInput calldata taxAmountsInput
     ) 
         external
-        onlyParentContractOrAdmins
+        onlyRole(ROLE_ADMIN)
         returns(TaxAmountsOutput memory taxAmountsOutput)
     {
         uint realTransferAmount = 
             (taxAmountsInput.transferAmount * BALANCE_MULTIPLIER_DENORM) / cachedMultiplier;
         
-        require(
-            taxAmountsInput.senderBalance >= realTransferAmount,
-            "NBT: !balance"
-        );
         require(
             realTransferAmount > 1,
             "NBT: !amount"
@@ -424,11 +404,11 @@ contract NoBotsTech is AccessControlEnumerable {
             
             // isHuman condition below
             (hasRole(ROLE_WHITELIST, taxAmountsInput.sender) || 
-                (senderOrReciverStorage[taxAmountsInput.sender].receivedAtBlock + howManyBlocksAgoReceived < block.number && 
+                (sentOrReceivedAtBlockStorage[taxAmountsInput.sender].receivedAtBlock + howManyBlocksAgoReceived < block.number && 
                     isNotContract(taxAmountsInput.sender))) &&
                 
             (hasRole(ROLE_WHITELIST, taxAmountsInput.recipient) || 
-                (senderOrReciverStorage[taxAmountsInput.recipient].sentAtBlock + howManyBlocksAgoSent < block.number && 
+                (sentOrReceivedAtBlockStorage[taxAmountsInput.recipient].sentAtBlock + howManyBlocksAgoSent < block.number && 
                     isNotContract(taxAmountsInput.recipient)))
         ) { // isHuman
             if ( // For example for binance wallet/contract I can set custom tax = 0%
@@ -464,27 +444,27 @@ contract NoBotsTech is AccessControlEnumerable {
         }
         
         uint recipientGetsRealAmount = realTransferAmount - burnAndRewardRealAmount;
+        taxAmountsOutput.senderRealBalance = taxAmountsInput.senderRealBalance - realTransferAmount;
+        taxAmountsOutput.recipientRealBalance = taxAmountsInput.recipientRealBalance + recipientGetsRealAmount;
+        batchBurnAndReward += burnAndRewardRealAmount;       
+        
         taxAmountsOutput.burnAndRewardAmount = 
             (burnAndRewardRealAmount * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM; // Actual amount we burned and have to show in event
         taxAmountsOutput.recipientGetsAmount = 
             taxAmountsInput.transferAmount - taxAmountsOutput.burnAndRewardAmount; // Actual amount recipient got and have to show in event
         
-        // Saving when sender or recipient made last transaction for anti bot system
-        senderOrReciverStorage[taxAmountsInput.recipient].receivedAtBlock = block.number;
-        senderOrReciverStorage[taxAmountsInput.sender].sentAtBlock = block.number;
-        
-        taxAmountsOutput.senderBalance = taxAmountsInput.senderBalance - realTransferAmount;
-        taxAmountsOutput.recipientBalance = taxAmountsInput.recipientBalance + recipientGetsRealAmount;
-        batchBurnAndReward += burnAndRewardRealAmount;        
+        // Saving when sender (or recipient) made last transaction for anti bot system
+        sentOrReceivedAtBlockStorage[taxAmountsInput.recipient].receivedAtBlock = block.number;
+        sentOrReceivedAtBlockStorage[taxAmountsInput.sender].sentAtBlock = block.number;
         
         delayedUpdateCacheMultiplier();
         
-        return (taxAmountsOutput);
+        return taxAmountsOutput;
     }
     
     function prepareHumanAddressMintOrBurnRewardsAmounts(bool isMint, address account, uint desiredAmountToMintOrBurn)
         external
-        onlyParentContractOrAdmins
+        onlyRole(ROLE_ADMIN)
         returns (uint)
     {
         require(
@@ -512,7 +492,7 @@ contract NoBotsTech is AccessControlEnumerable {
     
     function getBalance(address account, uint accountBalance)
         external
-        onlyParentContractOrAdmins
+        onlyRole(ROLE_ADMIN)
         view
         returns(uint)
     {
@@ -522,7 +502,7 @@ contract NoBotsTech is AccessControlEnumerable {
     
     function getRealBalanceTeamVestingContract(uint accountBalance)
         external
-        onlyParentContractOrAdmins
+        onlyRole(ROLE_ADMIN)
         view
         returns(uint)
     {
@@ -531,7 +511,7 @@ contract NoBotsTech is AccessControlEnumerable {
     
     function getRealBalance(address account, uint accountBalance)
         external
-        onlyParentContractOrAdmins
+        onlyRole(ROLE_ADMIN)
         view
         returns(uint)
     {

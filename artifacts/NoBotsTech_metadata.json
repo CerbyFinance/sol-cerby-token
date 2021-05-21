@@ -233,19 +233,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "ROLE_PARENT",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "ROLE_WHITELIST",
 				"outputs": [
 					{
@@ -310,6 +297,30 @@
 					}
 				],
 				"name": "chargeCustomTax",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taxAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "accountBalance",
+						"type": "uint256"
+					}
+				],
+				"name": "chargeCustomTaxTeamVestingContract",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -795,12 +806,12 @@
 							},
 							{
 								"internalType": "uint256",
-								"name": "senderBalance",
+								"name": "senderRealBalance",
 								"type": "uint256"
 							},
 							{
 								"internalType": "uint256",
-								"name": "recipientBalance",
+								"name": "recipientRealBalance",
 								"type": "uint256"
 							}
 						],
@@ -815,12 +826,12 @@
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "senderBalance",
+								"name": "senderRealBalance",
 								"type": "uint256"
 							},
 							{
 								"internalType": "uint256",
-								"name": "recipientBalance",
+								"name": "recipientRealBalance",
 								"type": "uint256"
 							},
 							{
@@ -1186,19 +1197,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTech.sol": {
-			"keccak256": "0x3e2eb6b9b5c6024ec6bf5b9f946b21d6db089c7ad38f70a1b0e20e02757a8d5d",
+			"keccak256": "0xddf56c535832c76789980ca7f5b5411577a816fd93474d153cf39bf14e15bdbf",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://422146d29720edc4e71ba8ac9252f5c8b04099b16f8776f4da99fe27fec41e63",
-				"dweb:/ipfs/QmV4msRyk8x9UVgCKn4Uo5LfWEgaHhEgnZDhSd59PYntpf"
+				"bzz-raw://97e108a4b026f0b9ee984f0ec9665b74dd0028c65cd2e85c9ec6dd293609ca9d",
+				"dweb:/ipfs/QmbqmkZsfnFu9tnc4W5mBr1dDp2VQJicGujzdCJFZEjAAY"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
-			"keccak256": "0x78e902c189d81057a318a50b4d188514f12e06fd5a79e8cdb3dfb785e1487a7d",
+			"keccak256": "0xb126b0df36c1dd2d80b948753501ee3cd3a4bef18c37e2d4ae7e21cac78b73e8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ac49fe5e23d846edd91632669dd0853102c387f1696991097bab4b616eef9a3a",
-				"dweb:/ipfs/QmPFP1PTzqibjSDEB9krq8RcuHYuAjgz6y46nWvHY9FKc9"
+				"bzz-raw://a2ba45d6e991bd5c94443ad6ee6f09b67193e608d58ae44e59ee162b68ced2a3",
+				"dweb:/ipfs/QmRX5p6JX3xnh5CRCzUmhXqncyy4awwiGg5eVLAXafKCLx"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

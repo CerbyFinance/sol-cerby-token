@@ -35,7 +35,7 @@ contract TeamVestingContract is AccessControlEnumerable {
     
     address public defiFactoryToken = 0x2493e2D8a80d95AF4e4d2C1448a29c34Ba27ca30;
     
-    uint public constant TOTAL_SUPPLY_CAP = 1 * 1e9 * 1e18; // 1B
+    uint public constant TOTAL_SUPPLY_CAP = 100 * 1e9 * 1e18; // 100B
     
     uint public percentForTheTeam = 30;
     uint public percentForUniswap = 70;
@@ -73,7 +73,8 @@ contract TeamVestingContract is AccessControlEnumerable {
         // TODO: remove on production
         updateInvestmentSettings(
             //0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F, // WBNB testnet
-            0xd0A1E359811322d97991E03f863a0C30C2cF029C, // WETH kovan
+            //0xd0A1E359811322d97991E03f863a0C30C2cF029C, // WETH kovan
+            0xc778417E063141139Fce010982780140Aa0cD5Ab, // WETH ropsten
             0x539FaA851D86781009EC30dF437D794bCd090c8F, 150e13, // dev
             0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6, 100e13, // team
             0xE019B37896f129354cf0b8f1Cf33936b86913A34, 50e13 // marketing
@@ -83,18 +84,13 @@ contract TeamVestingContract is AccessControlEnumerable {
         
         // TODO: remove on production
         addInvestor(msg.sender, msg.value);
-        checkIfGoalIsReachedAndPrepareLiqudity();
+        markGoalAsReachedAndPrepareLiqudity();
     }
 
     receive() external payable {
         require(state == States.AcceptingPayments, "TVC: Accepting payments has been stopped!");
         
         addInvestor(msg.sender, msg.value);
-    }
-    
-    modifier onlyAdmins {
-        require(hasRole(ROLE_ADMIN, _msgSender()), "TVC: !ROLE_ADMIN");
-        _;
     }
 
     function addInvestor(address addr, uint wethValue)
@@ -149,9 +145,9 @@ contract TeamVestingContract is AccessControlEnumerable {
         totalInvested += wethValue;
     }
     
-    function checkIfGoalIsReachedAndPrepareLiqudity()
+    function markGoalAsReachedAndPrepareLiqudity()
         public
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         state = States.ReachedGoal;
         
@@ -160,7 +156,7 @@ contract TeamVestingContract is AccessControlEnumerable {
     
     function prepareAddLiqudity()
         internal
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         require(state == States.ReachedGoal, "TVC: Preparing add liquidity is completed!");
         require(address(this).balance > 0, "TVC: Ether balance must be larger than zero!");
@@ -171,9 +167,9 @@ contract TeamVestingContract is AccessControlEnumerable {
         state = States.PreparedAddLiqudity;
     }
     
-    function createPairAndAddLiqudity()
+    function createPair()
         public
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         require(state == States.PreparedAddLiqudity, "TVC: Pair is already created!");
 
@@ -194,13 +190,11 @@ contract TeamVestingContract is AccessControlEnumerable {
         iNoBotsTech.grantRole(ROLE_WHITELIST, wethAndTokenPairContract);
         
         state = States.CreatedPair;
-        
-        addLiquidity();
     }
     
-    function addLiquidity()
-        internal
-        onlyAdmins
+    function addLiquidity() // TODO: change function name on production
+        public
+        onlyRole(ROLE_ADMIN)
     {
         require(state == States.CreatedPair, "TVC: Liquidity is already added!");
         
@@ -223,7 +217,7 @@ contract TeamVestingContract is AccessControlEnumerable {
 
     function distributeTokens()
         internal
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         require(state == States.AddedLiquidity, "TVC: Tokens have already been distributed!");
         
@@ -269,28 +263,24 @@ contract TeamVestingContract is AccessControlEnumerable {
     
     function burnVestingTokens(uint amount)
         public
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
         iDefiFactoryToken.burnHumanAddress(address(this), amount);
         
-        INoBotsTech iNoBotsTech = INoBotsTech(
-            IDefiFactoryToken(defiFactoryToken).
-                getUtilsContractAtPos(NOBOTS_TECH_CONTRACT_ID)
-        );
-        amountOfTokensForInvestors -= iNoBotsTech.getRealBalanceTeamVestingContract(amount);
+        amountOfTokensForInvestors -= amount;
     }
     
     function taxVestingTokens(uint amount)
         public
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         INoBotsTech iNoBotsTech = INoBotsTech(
             IDefiFactoryToken(defiFactoryToken).
                 getUtilsContractAtPos(NOBOTS_TECH_CONTRACT_ID)
         );
         
-        amountOfTokensForInvestors = iNoBotsTech.chargeCustomTax(
+        amountOfTokensForInvestors = iNoBotsTech.chargeCustomTaxTeamVestingContract(
             amount, 
             amountOfTokensForInvestors
         );
@@ -393,7 +383,7 @@ contract TeamVestingContract is AccessControlEnumerable {
     
     function updateDefiFactoryContract(address newContract)
         external
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         defiFactoryToken = newContract;
     }
@@ -405,7 +395,7 @@ contract TeamVestingContract is AccessControlEnumerable {
         address _marketingAddress, uint _marketingCap
     )
         public
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         nativeToken = _nativeToken;
         developerAddress = _developerAddress;

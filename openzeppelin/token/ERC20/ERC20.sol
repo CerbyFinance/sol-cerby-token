@@ -31,7 +31,7 @@ import "../../utils/Context.sol";
  * allowances. See {IERC20-approve}.
  */
 contract ERC20 is Context, IERC20, IERC20Metadata {
-    mapping (address => uint256) internal _balances;
+    mapping (address => uint256) internal _RealBalances;
 
     mapping (address => mapping (address => uint256)) internal _allowances;
 
@@ -96,7 +96,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * @dev See {IERC20-balanceOf}.
      */
     function balanceOf(address account) public view virtual override returns (uint256) {
-        return _balances[account];
+        return _RealBalances[account];
     }
 
     /**
@@ -107,10 +107,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * - `recipient` cannot be the zero address.
      * - the caller must have a balance of at least `amount`.
      */
-    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
-        _transfer(_msgSender(), recipient, amount);
-        return true;
-    }
+    function transfer(address recipient, uint256 amount) public virtual override returns (bool) { }
 
     /**
      * @dev See {IERC20-allowance}.
@@ -144,15 +141,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * - the caller must have allowance for ``sender``'s tokens of at least
      * `amount`.
      */
-    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
-        _transfer(sender, recipient, amount);
-
-        uint256 currentAllowance = _allowances[sender][_msgSender()];
-        require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
-        _approve(sender, _msgSender(), currentAllowance - amount);
-
-        return true;
-    }
+    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) { }
 
     /**
      * @dev Atomically increases the allowance granted to `spender` by the caller.

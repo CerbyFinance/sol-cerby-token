@@ -47,10 +47,8 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"chargeCustomTax(uint256,uint256)": "36098758",
-			"chargeCustomTaxPreBurned(uint256)": "0ba2f5f9",
+			"chargeCustomTaxTeamVestingContract(uint256,uint256)": "a202bd52",
 			"clearReferrerRewards(address)": "e3556819",
-			"fillTestReferralTemporaryBalances(address[])": "a5c9b607",
 			"filterNonZeroReferrals(address[])": "82e17b65",
 			"getBalance(address,uint256)": "2b04e840",
 			"getCachedReferrerRewards(address)": "4abd991d",
@@ -188,7 +186,7 @@
 					"type": "uint256"
 				}
 			],
-			"name": "chargeCustomTax",
+			"name": "chargeCustomTaxTeamVestingContract",
 			"outputs": [
 				{
 					"internalType": "uint256",
@@ -202,38 +200,12 @@
 		{
 			"inputs": [
 				{
-					"internalType": "uint256",
-					"name": "taxAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "chargeCustomTaxPreBurned",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
 					"internalType": "address",
 					"name": "addr",
 					"type": "address"
 				}
 			],
 			"name": "clearReferrerRewards",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address[]",
-					"name": "referrals",
-					"type": "address[]"
-				}
-			],
-			"name": "fillTestReferralTemporaryBalances",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"
@@ -479,12 +451,12 @@
 						},
 						{
 							"internalType": "uint256",
-							"name": "senderBalance",
+							"name": "senderRealBalance",
 							"type": "uint256"
 						},
 						{
 							"internalType": "uint256",
-							"name": "recipientBalance",
+							"name": "recipientRealBalance",
 							"type": "uint256"
 						}
 					],
@@ -499,12 +471,12 @@
 					"components": [
 						{
 							"internalType": "uint256",
-							"name": "senderBalance",
+							"name": "senderRealBalance",
 							"type": "uint256"
 						},
 						{
 							"internalType": "uint256",
-							"name": "recipientBalance",
+							"name": "recipientRealBalance",
 							"type": "uint256"
 						},
 						{
