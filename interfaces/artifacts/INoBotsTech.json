@@ -47,6 +47,7 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
+			"chargeCustomTax(uint256,uint256)": "36098758",
 			"chargeCustomTaxTeamVestingContract(uint256,uint256)": "a202bd52",
 			"clearReferrerRewards(address)": "e3556819",
 			"filterNonZeroReferrals(address[])": "82e17b65",
@@ -172,6 +173,30 @@
 			],
 			"name": "ReferrerRewardUpdated",
 			"type": "event"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "taxAmount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "accountBalance",
+					"type": "uint256"
+				}
+			],
+			"name": "chargeCustomTax",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
 		},
 		{
 			"inputs": [

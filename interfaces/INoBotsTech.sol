@@ -78,6 +78,10 @@ interface INoBotsTech {
     function clearReferrerRewards(address addr)
         external;
     
+    function chargeCustomTax(uint taxAmount, uint accountBalance)
+        external
+        returns (uint);
+    
     function chargeCustomTaxTeamVestingContract(uint taxAmount, uint accountBalance)
         external
         returns (uint);

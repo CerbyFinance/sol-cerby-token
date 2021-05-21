@@ -125,6 +125,30 @@
 						"type": "uint256"
 					}
 				],
+				"name": "chargeCustomTax",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taxAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "accountBalance",
+						"type": "uint256"
+					}
+				],
 				"name": "chargeCustomTaxTeamVestingContract",
 				"outputs": [
 					{
@@ -520,11 +544,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
-			"keccak256": "0xb126b0df36c1dd2d80b948753501ee3cd3a4bef18c37e2d4ae7e21cac78b73e8",
+			"keccak256": "0xaa7859abdfe0cacf5a825328961232fe1174b2be05dbd78126f7bccca01b9b40",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://a2ba45d6e991bd5c94443ad6ee6f09b67193e608d58ae44e59ee162b68ced2a3",
-				"dweb:/ipfs/QmRX5p6JX3xnh5CRCzUmhXqncyy4awwiGg5eVLAXafKCLx"
+				"bzz-raw://d298b46233c0b859fa26b611d4e87931701458e97416622fdf9e10e3ceed9b9d",
+				"dweb:/ipfs/QmbhoP2JWFHU43mt4Aa96fNz54ykHA3WsnvUp3P9gLdujw"
 			]
 		}
 	},
