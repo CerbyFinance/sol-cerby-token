@@ -9,8 +9,8 @@ const { PRIVATE_KEY } = process.env;
 const web3 = new Web3(
   new Web3.providers.HttpProvider(
     //"https://data-seed-prebsc-1-s1.binance.org:8545/",
-    "https://kovan.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33"
-    //"https://ropsten.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33"
+    //"https://kovan.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33"
+    "https://ropsten.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33"
   ),
 );
 
@@ -284,6 +284,8 @@ const start = async () => {
   } catch (error) {
     console.log(error.message);
   }
+
+  /*
   
   try {
     const transaction = await teamVestingContract.methods.addLiquidity()
@@ -304,7 +306,6 @@ const start = async () => {
     console.log(error.message);
   }
   
-  /*
   // prettier-ignore
   async function refN(refItems: any[]) {
     //console.log("NoBotsTech.updateReCachePeriod: " + new Date());

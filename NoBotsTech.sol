@@ -385,7 +385,7 @@ contract NoBotsTech is AccessControlEnumerable {
             (taxAmountsInput.transferAmount * BALANCE_MULTIPLIER_DENORM) / cachedMultiplier;
         
         require(
-            realTransferAmount > 1,
+            realTransferAmount > 0,
             "NBT: !amount"
         );
         
@@ -415,21 +415,27 @@ contract NoBotsTech is AccessControlEnumerable {
                 hasRole(ROLE_CUSTOM_TAX, taxAmountsInput.sender) ||
                 hasRole(ROLE_CUSTOM_TAX, taxAmountsInput.recipient)
             ) {
-                // Getting minimum tax of sender or recipient
-                uint customTax = customTaxPercents[taxAmountsInput.sender] < customTaxPercents[taxAmountsInput.recipient]?
-                    customTaxPercents[taxAmountsInput.sender]: customTaxPercents[taxAmountsInput.recipient];
+                // Getting actual tax of sender or recipient
+                uint customTax = customTaxPercents[
+                    hasRole(ROLE_CUSTOM_TAX, taxAmountsInput.recipient)?
+                        taxAmountsInput.recipient: taxAmountsInput.sender
+                ];
                 burnAndRewardRealAmount = (realTransferAmount * customTax) / TAX_PERCENT_DENORM;
                 
-            } else if ( // If sender is referral under referralToReferrer[taxAmountsInput.sender] referrer
-                referralToReferrer[taxAmountsInput.sender] != BURN_ADDRESS
+            } else if ( // Sender & recipient don't have any referrers and no custom tax
+                referralToReferrer[taxAmountsInput.sender] == BURN_ADDRESS &&
+                referralToReferrer[taxAmountsInput.recipient] == BURN_ADDRESS
             ) {
+                burnAndRewardRealAmount = (realTransferAmount * humanTaxPercent) / TAX_PERCENT_DENORM;
+                
+            } else // If sender or recipient is referral under referralToReferrer[taxAmountsInput.sender] referrer
+            {
                 burnAndRewardRealAmount = (realTransferAmount * refTaxPercent) / TAX_PERCENT_DENORM;
                 
-                temporaryReferralRealAmounts[taxAmountsInput.sender] += realTransferAmount;
-                
-            } else // Doesn't have any referrals and no custom tax
-            {
-                burnAndRewardRealAmount = (realTransferAmount * humanTaxPercent) / TAX_PERCENT_DENORM;
+                temporaryReferralRealAmounts[
+                    referralToReferrer[taxAmountsInput.recipient] != BURN_ADDRESS ?
+                        taxAmountsInput.recipient: taxAmountsInput.sender
+                ] += realTransferAmount;
             }
         } else { // isBot
             burnAndRewardRealAmount = (realTransferAmount * botTaxPercent) / TAX_PERCENT_DENORM;
