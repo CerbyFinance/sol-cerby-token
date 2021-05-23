@@ -119,7 +119,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/IERC20.sol": "IWeth"
+			"sol-defifactory-token/interfaces/IERC20.sol": "IERC"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -134,11 +134,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/IERC20.sol": {
-			"keccak256": "0x55d776711ab487dbda19fb0cf0ce8e475057ae1767d31cc78f4333cea009d386",
+			"keccak256": "0x3b2cdb27d604dadb9fed737db2f5e7e8dac19d0e8eef132eb6ab19888b414ac1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f7cc6fe73e7cba0786198e5a3d3179270732a87600e8010cb72e3332d2f8f6bd",
-				"dweb:/ipfs/QmNpMwA4GLsM7DSTTLFFwRxGGQZDbT9EtfWhWATedZPSk8"
+				"bzz-raw://69e3c8e11fb1d94311b8245bb5636bace861aa4565597ad5e3098f12cdbac0df",
+				"dweb:/ipfs/QmRMsRJggRKYQJiEMuZzbHcdTme9Kf8R5kNYD2cnbG9f7V"
 			]
 		}
 	},

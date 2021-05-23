@@ -60,6 +60,25 @@
 					{
 						"indexed": false,
 						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "BurnedByBridge",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
 						"name": "recipient",
 						"type": "address"
 					},
@@ -90,6 +109,25 @@
 					}
 				],
 				"name": "MintHumanAddress",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "MintedByBridge",
 				"type": "event"
 			},
 			{
@@ -452,6 +490,24 @@
 						"type": "uint256"
 					}
 				],
+				"name": "burnByBridge",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "desiredAmountToBurn",
+						"type": "uint256"
+					}
+				],
 				"name": "burnHumanAddress",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -792,6 +848,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "__newOwner",
+						"type": "address"
+					}
+				],
+				"name": "initializeAfterCreate2",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "isPaused",
 				"outputs": [
@@ -802,6 +871,24 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "desiredAmountToMint",
+						"type": "uint256"
+					}
+				],
+				"name": "mintByBridge",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -1190,6 +1277,19 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "wasInitialized",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -1206,9 +1306,6 @@
 				},
 				"balanceOf(address)": {
 					"details": "See {IERC20-balanceOf}."
-				},
-				"constructor": {
-					"details": "Grants `DEFAULT_ADMIN_ROLE`, `MINTER_ROLE` and `BURNER_ROLE` to the account that deploys the contract. See {ERC20-constructor}."
 				},
 				"decimals()": {
 					"details": "Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5,05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the value {ERC20} uses, unless this function is overridden; NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}."
@@ -1290,19 +1387,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DefiFactoryToken.sol": {
-			"keccak256": "0x4e61d48733f8e31e48ce4624117957ff2395388853a1d8f75c7f66c43472d587",
+			"keccak256": "0x8ee6624cad24a75ab0b0034bde980e48ffa1e4c0e92dba04c2d191556e31f387",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://131fa4ed92780d8f351e330ba4225f17a92bb322a171b99e06f12f0962613e0c",
-				"dweb:/ipfs/QmfQsWEm3QGAFXFuTd96uCgFHvBaFzzXw9Jf3WYUUXbMaU"
+				"bzz-raw://cc2c77411f78f2909329b8d62b2022c2a87123cff06d76e5e10d1b8cf5bdaf20",
+				"dweb:/ipfs/QmNXVkKDhguWJYieZ1GBg2usPEUau3ugaHi4RccS59Wp7E"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
-			"keccak256": "0xaa7859abdfe0cacf5a825328961232fe1174b2be05dbd78126f7bccca01b9b40",
+			"keccak256": "0xf3e3c389b0cbf1e709c2bd90ecd896395240c25cee6db73bb29c4e569629fd55",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d298b46233c0b859fa26b611d4e87931701458e97416622fdf9e10e3ceed9b9d",
-				"dweb:/ipfs/QmbhoP2JWFHU43mt4Aa96fNz54ykHA3WsnvUp3P9gLdujw"
+				"bzz-raw://e1ff533d9ec6fb5b87e41fa4e157278eceae6b37b4644b7185dac42c27d1eeeb",
+				"dweb:/ipfs/QmNpFyh31rQiVMdeAxfGq7PAJYDJYxvPfFhSzTpHm3mUMx"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

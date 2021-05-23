@@ -62,6 +62,7 @@
 			"prepareHumanAddressMintOrBurnRewardsAmounts(bool,address,uint256)": "42e58a63",
 			"prepareTaxAmounts((address,address,uint256,uint256,uint256))": "815a61e0",
 			"prepareUniswapMintOrBurnRewardsAmounts(bool,address,uint256)": "8634e6ca",
+			"publicForcedUpdateCacheMultiplier()": "e8ac6e4e",
 			"registerReferral(address,address)": "5603b9f9",
 			"updateReferrersRewards(address[])": "3830551a"
 		}
@@ -542,6 +543,13 @@
 				}
 			],
 			"name": "prepareUniswapMintOrBurnRewardsAmounts",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "publicForcedUpdateCacheMultiplier",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"

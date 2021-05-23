@@ -6,11 +6,6 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"stateMutability": "nonpayable",
-				"type": "constructor"
-			},
-			{
 				"anonymous": false,
 				"inputs": [
 					{
@@ -361,19 +356,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address[]",
-						"name": "referrals",
-						"type": "address[]"
-					}
-				],
-				"name": "fillTestReferralTemporaryBalances",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -744,6 +726,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "__newOwner",
+						"type": "address"
+					}
+				],
+				"name": "initializeAfterCreate2",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "lastCachedTimestamp",
 				"outputs": [
@@ -850,6 +845,13 @@
 						"type": "tuple"
 					}
 				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "publicForcedUpdateCacheMultiplier",
+				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -1142,6 +1144,19 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "wasInitialized",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -1197,19 +1212,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTech.sol": {
-			"keccak256": "0x3de93e4328e33452dc03902c2275f7a72617211f8089306c1cc6dd6a5a9018c2",
+			"keccak256": "0x0b02790bd0b84337b812a7235aec1af798adab71ab4c24c79304d827965b2a8b",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://48f0cd58c673779da3709d0d3c66b1da75aa123279af4f313329af86f9963582",
-				"dweb:/ipfs/QmTdMBhhCRYfZ9pi6rFZUjPbzDPsUfDvgSwiGydpZzni6i"
+				"bzz-raw://4033c842718f2986d197b81af9a24bf710cf8ea9dc50a3231757d9d399d29bd4",
+				"dweb:/ipfs/QmYo7WnJg9WivNoU2cXrncjfQ2iNecPNmPJp6b3fcs6vQD"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
-			"keccak256": "0xaa7859abdfe0cacf5a825328961232fe1174b2be05dbd78126f7bccca01b9b40",
+			"keccak256": "0xf3e3c389b0cbf1e709c2bd90ecd896395240c25cee6db73bb29c4e569629fd55",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d298b46233c0b859fa26b611d4e87931701458e97416622fdf9e10e3ceed9b9d",
-				"dweb:/ipfs/QmbhoP2JWFHU43mt4Aa96fNz54ykHA3WsnvUp3P9gLdujw"
+				"bzz-raw://e1ff533d9ec6fb5b87e41fa4e157278eceae6b37b4644b7185dac42c27d1eeeb",
+				"dweb:/ipfs/QmNpFyh31rQiVMdeAxfGq7PAJYDJYxvPfFhSzTpHm3mUMx"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

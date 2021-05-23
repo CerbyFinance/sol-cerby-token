@@ -93,6 +93,9 @@ interface INoBotsTech {
         external
         view
         returns (address[] memory);
+        
+    function publicForcedUpdateCacheMultiplier()
+        external;
     
     event MultiplierUpdated(uint newMultiplier);
     event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);

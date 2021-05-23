@@ -31,6 +31,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     }
     
     bool public isPaused;
+    bool public wasInitialized;
     
     address constant BURN_ADDRESS = address(0x0);
     
@@ -40,23 +41,18 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     event MintHumanAddress(address recipient, uint amount);
     event BurnHumanAddress(address sender, uint amount);
     event ClaimedReferralRewards(address recipient, uint amount);
+    
+    event MintedByBridge(address recipient, uint amount);
+    event BurnedByBridge(address sender, uint amount);
 
-    /**
-     * @dev Grants `DEFAULT_ADMIN_ROLE`, `MINTER_ROLE` and `BURNER_ROLE` to the
-     * account that deploys the contract.
-     *
-     * See {ERC20-constructor}.
-     */
+
+
+
+
     constructor() 
-        ERC20("Test KDEFT", "TestKDEFT") 
-        ERC20Permit("Test KDEFT")
+        ERC20("Defi Factory Token", "DEFT") 
+        ERC20Permit("Defi Factory Token")
     {
-        _setupRole(ROLE_ADMIN, _msgSender());
-        _setupRole(ROLE_MINTER, _msgSender());
-        _setupRole(ROLE_BURNER, _msgSender());
-        _setupRole(ROLE_TRANSFERER, _msgSender());
-        _setupRole(ROLE_MODERATOR, _msgSender());
-        _setupRole(ROLE_TAXER, _msgSender());
     }
     
     modifier notPausedContract {
@@ -73,6 +69,25 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
             "DEFT: !paused"
         );
         _;
+    }
+    
+    function initializeAfterCreate2(
+        address __newOwner
+    )
+        external
+    {
+        require(
+            !wasInitialized,
+            "DEFT: Contract was already initialized!"
+        );
+        wasInitialized = true;
+        
+        _setupRole(ROLE_ADMIN, __newOwner);
+        _setupRole(ROLE_MINTER, __newOwner);
+        _setupRole(ROLE_BURNER, __newOwner);
+        _setupRole(ROLE_TRANSFERER, __newOwner);
+        _setupRole(ROLE_MODERATOR, __newOwner);
+        _setupRole(ROLE_TAXER, __newOwner);
     }
     
     function updateNameAndSymbol(string calldata __name, string calldata __symbol)
@@ -218,11 +233,12 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         address vestingContract = utilsContracts[TEAM_VESTING_CONTRACT_ID];
         require(vestingContract == _msgSender(), "DEFT: !VESTING_CONTRACT");
         
+        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
         _RealBalances[vestingContract] -= amount;
         _RealBalances[recipient] += 
-            INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]).
-                getRealBalanceTeamVestingContract(amount);
+            iNoBotsTech.getRealBalanceTeamVestingContract(amount);
         
+        iNoBotsTech.publicForcedUpdateCacheMultiplier();
         
         emit Transfer(vestingContract, recipient, amount);
         emit VestedAmountClaimed(recipient, amount);
@@ -340,19 +356,30 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         return utilsContracts.length;
     }
     
+    function mintByBridge(address to, uint desiredAmountToMint) 
+        external
+        notPausedContract
+        onlyRole(ROLE_MINTER)
+    {
+        _mintHumanAddress(to, desiredAmountToMint);
+        emit MintedByBridge(to, desiredAmountToMint);
+    }
+    
     function mintHumanAddress(address to, uint desiredAmountToMint) 
         external
         notPausedContract
         onlyRole(ROLE_MINTER)
     {
         _mintHumanAddress(to, desiredAmountToMint);
+        emit MintHumanAddress(to, desiredAmountToMint);
     }
     
     function _mintHumanAddress(address to, uint desiredAmountToMint) 
         private
     {
+        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
         uint realAmountToMint = 
-            INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]).
+            iNoBotsTech.
                 prepareHumanAddressMintOrBurnRewardsAmounts(
                     true,
                     to,
@@ -360,9 +387,18 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
                 );
         
         _RealBalances[to] += realAmountToMint;
-        emit Transfer(address(0), to, desiredAmountToMint);
+        iNoBotsTech.publicForcedUpdateCacheMultiplier();
         
-        emit MintHumanAddress(to, desiredAmountToMint);
+        emit Transfer(address(0), to, desiredAmountToMint);
+    }
+
+    function burnByBridge(address from, uint desiredAmountToBurn)
+        external
+        notPausedContract
+        onlyRole(ROLE_BURNER)
+    {
+        _burnHumanAddress(from, desiredAmountToBurn);
+        emit BurnedByBridge(from, desiredAmountToBurn);
     }
 
     function burnHumanAddress(address from, uint desiredAmountToBurn)
@@ -371,12 +407,14 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         onlyRole(ROLE_BURNER)
     {
         _burnHumanAddress(from, desiredAmountToBurn);
+        emit BurnHumanAddress(from, desiredAmountToBurn);
     }
 
     function _burnHumanAddress(address from, uint desiredAmountToBurn)
         private
     {
-         uint realAmountToBurn = 
+        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
+        uint realAmountToBurn = 
             INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]).
                 prepareHumanAddressMintOrBurnRewardsAmounts(
                     false,
@@ -384,12 +422,10 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
                     desiredAmountToBurn
                 );
         
-        require(_RealBalances[from] >= realAmountToBurn, "DEFT: amount gt balance");
-        
         _RealBalances[from] -= realAmountToBurn;
-        emit Transfer(from, address(0), desiredAmountToBurn);
+        iNoBotsTech.publicForcedUpdateCacheMultiplier();
         
-        emit BurnHumanAddress(from, desiredAmountToBurn);
+        emit Transfer(from, address(0), desiredAmountToBurn);
     }
     
     function getChainId() 

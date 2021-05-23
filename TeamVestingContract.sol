@@ -12,7 +12,6 @@ import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 contract TeamVestingContract is AccessControlEnumerable {
     bytes32 public constant ROLE_WHITELIST = keccak256("ROLE_WHITELIST");
-    bytes32 public constant ROLE_NOTAX = keccak256("ROLE_NOTAX");
     
     uint constant NOBOTS_TECH_CONTRACT_ID = 0;
     uint constant UNISWAP_V2_FACTORY_CONTRACT_ID = 2;
@@ -33,64 +32,61 @@ contract TeamVestingContract is AccessControlEnumerable {
     uint public totalInvested;
     uint public totalSent;
     
-    address public defiFactoryToken = 0x2493e2D8a80d95AF4e4d2C1448a29c34Ba27ca30;
+    address public defiFactoryToken;
     
-    uint public constant TOTAL_SUPPLY_CAP = 100 * 1e9 * 1e18; // 100B
+    uint public constant TOTAL_SUPPLY_CAP = 100 * 1e9 * 1e18; // 100B DEFT
     
-    uint public percentForTheTeam = 30;
+    uint public percentForTheTeam = 30; // 5% - marketing; 10% - team; 15% - developer
     uint public percentForUniswap = 70;
     uint constant PERCENT_DENORM = 100;
     
     address public nativeToken;
     
     address public developerAddress;
-    uint public developerCap = 150e13;
+    uint public developerCap;
     uint public constant DEVELOPER_STARTING_LOCK_DELAY = 0 days;
-    uint public constant DEVELOPER_STARTING_LOCK_FOR = 10 minutes; // TODO: Change on production
+    uint public constant DEVELOPER_STARTING_LOCK_FOR = 730 days;
     
     address public teamAddress;
-    uint public teamCap = 100e13;
+    uint public teamCap;
     uint public constant TEAM_STARTING_LOCK_DELAY = 0 days;
     uint public constant TEAM_STARTING_LOCK_FOR = 730 days;
     
     address public marketingAddress;
-    uint public marketingCap = 50e13;
+    uint public marketingCap;
     uint public constant MARKETING_STARTING_LOCK_DELAY = 0;
-    uint public constant MARKETING_STARTING_LOCK_FOR = 365;
+    uint public constant MARKETING_STARTING_LOCK_FOR = 365 days;
     
     uint public startedLocking;
     address public wethAndTokenPairContract;
     
+    bool public wasInitialized;
     
-    uint amountOfTokensForInvestors;
+    
+    uint public amountOfTokensForInvestors;
     
     address constant BURN_ADDRESS = address(0x0);
     
-    constructor () payable { // TODO: remove payable on production
-        
-        _setupRole(ROLE_ADMIN, _msgSender());
-        
-        // TODO: remove on production
-        updateInvestmentSettings(
-            //0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F, // WBNB testnet
-            0xd0A1E359811322d97991E03f863a0C30C2cF029C, // WETH kovan
-            //0xc778417E063141139Fce010982780140Aa0cD5Ab, // WETH ropsten
-            0x539FaA851D86781009EC30dF437D794bCd090c8F, 150e13, // dev
-            0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6, 100e13, // team
-            0xE019B37896f129354cf0b8f1Cf33936b86913A34, 50e13 // marketing
-        );
-        
-        state = States.AcceptingPayments;
-        
-        // TODO: remove on production
-        addInvestor(msg.sender, msg.value);
-        markGoalAsReachedAndPrepareLiqudity();
-    }
 
     receive() external payable {
         require(state == States.AcceptingPayments, "TVC: Accepting payments has been stopped!");
         
-        addInvestor(msg.sender, msg.value);
+        addInvestor(_msgSender(), msg.value);
+    }
+    
+    function initializeAfterCreate2(
+        address __newOwner
+    )
+        external
+    {
+        require(
+            !wasInitialized,
+            "DEFT: Contract was already initialized!"
+        );
+        wasInitialized = true;
+        
+        _setupRole(ROLE_ADMIN, __newOwner);
+        state = States.AcceptingPayments;
     }
 
     function addInvestor(address addr, uint wethValue)
@@ -116,9 +112,7 @@ contract TeamVestingContract is AccessControlEnumerable {
             startDelay = MARKETING_STARTING_LOCK_DELAY;
         } else
         {
-            updMaxInvestAmount = 0;
-            lockFor = 36500 days;
-            startDelay = 36500 days;
+            revert("TVC: Only team, dev and marketing addresses allowed!");
         }
         
         if (cachedIndex[addr] == 0)
@@ -156,7 +150,6 @@ contract TeamVestingContract is AccessControlEnumerable {
     
     function prepareAddLiqudity()
         internal
-        onlyRole(ROLE_ADMIN)
     {
         require(state == States.ReachedGoal, "TVC: Preparing add liquidity is completed!");
         require(address(this).balance > 0, "TVC: Ether balance must be larger than zero!");
@@ -167,7 +160,7 @@ contract TeamVestingContract is AccessControlEnumerable {
         state = States.PreparedAddLiqudity;
     }
     
-    function createPair()
+    function createPairOnUniswapV2()
         public
         onlyRole(ROLE_ADMIN)
     {
@@ -192,7 +185,7 @@ contract TeamVestingContract is AccessControlEnumerable {
         state = States.CreatedPair;
     }
     
-    function addLiquidity() // TODO: change function name on production
+    function addLiquidityOnUniswapV2()
         public
         onlyRole(ROLE_ADMIN)
     {
@@ -217,7 +210,6 @@ contract TeamVestingContract is AccessControlEnumerable {
 
     function distributeTokens()
         internal
-        onlyRole(ROLE_ADMIN)
     {
         require(state == States.AddedLiquidity, "TVC: Tokens have already been distributed!");
         
@@ -227,7 +219,6 @@ contract TeamVestingContract is AccessControlEnumerable {
         );
         
         iNoBotsTech.grantRole(ROLE_WHITELIST, address(this));
-        iNoBotsTech.grantRole(ROLE_NOTAX, address(this));
         
         amountOfTokensForInvestors = (TOTAL_SUPPLY_CAP * percentForTheTeam) / PERCENT_DENORM; // 30% for the team
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
@@ -241,7 +232,7 @@ contract TeamVestingContract is AccessControlEnumerable {
     function claimTeamVestingTokens(uint amount)
         public
     {
-        address addr = msg.sender;
+        address addr = _msgSender();
         
         uint claimableAmount = getClaimableTokenAmount(addr);
         require(claimableAmount > 0, "TVC: !claimable_amount");
@@ -252,8 +243,6 @@ contract TeamVestingContract is AccessControlEnumerable {
         ) {
             amount = claimableAmount;
         }
-        require(amount <= claimableAmount, "TVC: !amount");
-        require(cachedIndex[addr] > 0, "TVC: !exists_addr");
         
         investors[cachedIndex[addr] - 1].sentValue += amount;
         
@@ -326,8 +315,7 @@ contract TeamVestingContract is AccessControlEnumerable {
     {
         require(state == States.DistributedTokens, "TVC: Tokens aren't distributed yet!");
         
-        if (addr == BURN_ADDRESS) addr = msg.sender;
-        Investor memory investor = investors[cachedIndex[msg.sender] - 1];
+        Investor memory investor = investors[cachedIndex[addr] - 1];
         uint leftAmount = 
             (investor.wethValue * amountOfTokensForInvestors) / 
                 (totalInvested);

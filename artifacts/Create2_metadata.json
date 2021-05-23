@@ -1,0 +1,46 @@
+{
+	"compiler": {
+		"version": "0.8.1+commit.df193b15"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"details": "Helper to make usage of the `CREATE2` EVM opcode easier and safer. `CREATE2` can be used to compute in advance the address where a smart contract will be deployed, which allows for interesting new mechanisms known as 'counterfactual interactions'. See the https://eips.ethereum.org/EIPS/eip-1014#motivation[EIP] for more information.",
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"sol-defifactory-token/Create2.sol": "Create2"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"sol-defifactory-token/Create2.sol": {
+			"keccak256": "0xb92e208ece36404a27a914d3dbc032d440ab4cdfb8d322c53ca89952a6efb3d0",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://728b30ad4462ea669ae1c30bdfb5bb002622e992cfb5d7405ac0ee1707cca774",
+				"dweb:/ipfs/QmSSdFapFqYyEEEcDhX42S9iRKBCkXgCkvmhntkECmJjFE"
+			]
+		}
+	},
+	"version": 1
+}

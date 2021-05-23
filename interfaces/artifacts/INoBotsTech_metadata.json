@@ -485,6 +485,13 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "publicForcedUpdateCacheMultiplier",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -544,11 +551,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
-			"keccak256": "0xaa7859abdfe0cacf5a825328961232fe1174b2be05dbd78126f7bccca01b9b40",
+			"keccak256": "0xf3e3c389b0cbf1e709c2bd90ecd896395240c25cee6db73bb29c4e569629fd55",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d298b46233c0b859fa26b611d4e87931701458e97416622fdf9e10e3ceed9b9d",
-				"dweb:/ipfs/QmbhoP2JWFHU43mt4Aa96fNz54ykHA3WsnvUp3P9gLdujw"
+				"bzz-raw://e1ff533d9ec6fb5b87e41fa4e157278eceae6b37b4644b7185dac42c27d1eeeb",
+				"dweb:/ipfs/QmNpFyh31rQiVMdeAxfGq7PAJYDJYxvPfFhSzTpHm3mUMx"
 			]
 		}
 	},

@@ -6,6 +6,111 @@ pragma solidity ^0.8.0;
 
 
 
+struct TaxAmountsInput {
+    address sender;
+    address recipient;
+    uint transferAmount;
+    uint senderRealBalance;
+    uint recipientRealBalance;
+}
+struct TaxAmountsOutput {
+    uint senderRealBalance;
+    uint recipientRealBalance;
+    uint burnAndRewardAmount;
+    uint recipientGetsAmount;
+}
+struct TemporaryReferralRealAmountsBulk {
+    address addr;
+    uint realBalance;
+}
+
+interface INoBotsTech {
+    function prepareTaxAmounts(
+        TaxAmountsInput calldata taxAmountsInput
+    ) 
+        external
+        returns(TaxAmountsOutput memory taxAmountsOutput);
+    
+    function getTemporaryReferralRealAmountsBulk(address[] calldata addrs)
+        external
+        view
+        returns (TemporaryReferralRealAmountsBulk[] memory);
+        
+    function prepareHumanAddressMintOrBurnRewardsAmounts(bool isMint, address account, uint desiredAmountToMintOrBurn)
+        external
+        returns (uint realAmountToMintOrBurn);
+        
+    function prepareUniswapMintOrBurnRewardsAmounts(bool isMint, address account, uint realAmountToMintOrBurn)
+        external;
+        
+    function getBalance(address account, uint accountBalance)
+        external
+        view
+        returns(uint);
+        
+    function getRealBalance(address account, uint accountBalance)
+        external
+        view
+        returns(uint);
+        
+    function getRealBalanceTeamVestingContract(uint accountBalance)
+        external
+        view
+        returns(uint);
+        
+    function getTotalSupply()
+        external
+        view
+        returns (uint);
+        
+    function grantRole(bytes32 role, address account) 
+        external;
+        
+    function getCalculatedReferrerRewards(address addr, address[] calldata referrals)
+        external
+        view
+        returns (uint);
+        
+    function getCachedReferrerRewards(address addr)
+        external
+        view
+        returns (uint);
+    
+    function updateReferrersRewards(address[] calldata referrals)
+        external;
+    
+    function clearReferrerRewards(address addr)
+        external;
+    
+    function chargeCustomTax(uint taxAmount, uint accountBalance)
+        external
+        returns (uint);
+    
+    function chargeCustomTaxTeamVestingContract(uint taxAmount, uint accountBalance)
+        external
+        returns (uint);
+        
+    function registerReferral(address referral, address referrer)
+        external;
+        
+    function filterNonZeroReferrals(address[] calldata referrals)
+        external
+        view
+        returns (address[] memory);
+        
+    function publicForcedUpdateCacheMultiplier()
+        external;
+    
+    event MultiplierUpdated(uint newMultiplier);
+    event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);
+    event ReferrerRewardUpdated(address referrer, uint amount);
+    event ReferralRegistered(address referral, address referrer);
+    event ReferrerReplaced(address referral, address referrerFrom, address referrerTo);
+}
+// SPDX-License-Identifier: MIT
+
+
+
 // SPDX-License-Identifier: MIT
 
 
@@ -835,78 +940,15 @@ interface IERC20Permit {
 
 
 
-/**
- * @dev Interface of the ERC20 standard as defined in the EIP.
- */
+
 interface IERC20 {
-    /**
-     * @dev Returns the amount of tokens in existence.
-     */
-    function totalSupply() external view returns (uint256);
 
-    /**
-     * @dev Returns the amount of tokens owned by `account`.
-     */
-    function balanceOf(address account) external view returns (uint256);
-
-    /**
-     * @dev Moves `amount` tokens from the caller's account to `recipient`.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a {Transfer} event.
-     */
-    function transfer(address recipient, uint256 amount) external returns (bool);
-
-    /**
-     * @dev Returns the remaining number of tokens that `spender` will be
-     * allowed to spend on behalf of `owner` through {transferFrom}. This is
-     * zero by default.
-     *
-     * This value changes when {approve} or {transferFrom} are called.
-     */
-    function allowance(address owner, address spender) external view returns (uint256);
-
-    /**
-     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * IMPORTANT: Beware that changing an allowance with this method brings the risk
-     * that someone may use both the old and the new allowance by unfortunate
-     * transaction ordering. One possible solution to mitigate this race
-     * condition is to first reduce the spender's allowance to 0 and set the
-     * desired value afterwards:
-     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-     *
-     * Emits an {Approval} event.
-     */
-    function approve(address spender, uint256 amount) external returns (bool);
-
-    /**
-     * @dev Moves `amount` tokens from `sender` to `recipient` using the
-     * allowance mechanism. `amount` is then deducted from the caller's
-     * allowance.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a {Transfer} event.
-     */
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
-
-    /**
-     * @dev Emitted when `value` tokens are moved from one account (`from`) to
-     * another (`to`).
-     *
-     * Note that `value` may be zero.
-     */
-    event Transfer(address indexed from, address indexed to, uint256 value);
-
-    /**
-     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
-     * a call to {approve}. `value` is the new allowance.
-     */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    function balanceOf(
+        address account
+    )
+        external
+        view
+        returns (uint);
 }
 
 // SPDX-License-Identifier: MIT
@@ -964,13 +1006,13 @@ interface IERC20Metadata is IERC20 {
  * allowances. See {IERC20-approve}.
  */
 contract ERC20 is Context, IERC20, IERC20Metadata {
-    mapping (address => uint256) internal _balances;
+    mapping (address => uint256) internal _RealBalances;
 
     mapping (address => mapping (address => uint256)) internal _allowances;
 
 
-    string private _name;
-    string private _symbol;
+    string internal _name;
+    string internal _symbol;
 
     /**
      * @dev Sets the values for {name} and {symbol}.
@@ -1029,7 +1071,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * @dev See {IERC20-balanceOf}.
      */
     function balanceOf(address account) public view virtual override returns (uint256) {
-        return _balances[account];
+        return _RealBalances[account];
     }
 
     /**
@@ -1040,10 +1082,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * - `recipient` cannot be the zero address.
      * - the caller must have a balance of at least `amount`.
      */
-    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
-        _transfer(_msgSender(), recipient, amount);
-        return true;
-    }
+    function transfer(address recipient, uint256 amount) public virtual override returns (bool) { }
 
     /**
      * @dev See {IERC20-allowance}.
@@ -1077,15 +1116,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * - the caller must have allowance for ``sender``'s tokens of at least
      * `amount`.
      */
-    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
-        _transfer(sender, recipient, amount);
-
-        uint256 currentAllowance = _allowances[sender][_msgSender()];
-        require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
-        _approve(sender, _msgSender(), currentAllowance - amount);
-
-        return true;
-    }
+    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) { }
 
     /**
      * @dev Atomically increases the allowance granted to `spender` by the caller.
@@ -1499,107 +1530,6 @@ abstract contract ERC20Permit is ERC20, IERC20Permit, EIP712 {
     }
 }
 
-// SPDX-License-Identifier: MIT
-
-
-
-struct TaxAmountsInput {
-    address sender;
-    address recipient;
-    uint transferAmount;
-    uint senderBalance;
-    uint recipientBalance;
-}
-struct TaxAmountsOutput {
-    uint senderBalance;
-    uint recipientBalance;
-    uint burnAndRewardAmount;
-    uint recipientGetsAmount;
-}
-struct TemporaryReferralRealAmountsBulk {
-    address addr;
-    uint realBalance;
-}
-
-interface INoBotsTech {
-    function prepareTaxAmounts(
-        TaxAmountsInput calldata taxAmountsInput
-    ) 
-        external
-        returns(TaxAmountsOutput memory taxAmountsOutput);
-    
-    function getTemporaryReferralRealAmountsBulk(address[] calldata addrs)
-        external
-        view
-        returns (TemporaryReferralRealAmountsBulk[] memory);
-        
-    function prepareHumanAddressMintOrBurnRewardsAmounts(bool isMint, address account, uint desiredAmountToMintOrBurn)
-        external
-        returns (uint realAmountToMintOrBurn);
-        
-    function prepareUniswapMintOrBurnRewardsAmounts(bool isMint, address account, uint realAmountToMintOrBurn)
-        external;
-        
-    function getBalance(address account, uint accountBalance)
-        external
-        view
-        returns(uint);
-        
-    function getRealBalance(address account, uint accountBalance)
-        external
-        view
-        returns(uint);
-        
-    function getRealBalanceTeamVestingContract(uint accountBalance)
-        external
-        view
-        returns(uint);
-        
-    function getTotalSupply()
-        external
-        view
-        returns (uint);
-        
-    function grantRole(bytes32 role, address account) 
-        external;
-        
-    function getCalculatedReferrerRewards(address addr, address[] calldata referrals)
-        external
-        view
-        returns (uint);
-        
-    function getCachedReferrerRewards(address addr)
-        external
-        view
-        returns (uint);
-    
-    function updateReferrersRewards(address[] calldata referrals)
-        external;
-    
-    function clearReferrerRewards(address addr)
-        external;
-    
-    function chargeCustomTax(uint taxAmount, uint accountBalance)
-        external
-        returns (uint);
-    
-    function chargeCustomTaxPreBurned(uint taxAmount)
-        external;
-        
-    function registerReferral(address referral, address referrer)
-        external;
-        
-    function filterNonZeroReferrals(address[] calldata referrals)
-        external
-        view
-        returns (address[] memory);
-    
-    event MultiplierUpdated(uint newMultiplier);
-    event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);
-    event ReferralRewardUpdated(address referral, uint amount);
-    event ReferralRegistered(address referral, address referrer);
-    event ReferralDeleted(address referral, address referrer);
-}
 
 
 
@@ -1607,7 +1537,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     bytes32 public constant ROLE_MINTER = keccak256("ROLE_MINTER");
     bytes32 public constant ROLE_BURNER = keccak256("ROLE_BURNER");
     bytes32 public constant ROLE_TRANSFERER = keccak256("ROLE_TRANSFERER");
-    bytes32 public constant ROLE_ALLOWED_TO_SEND_WHILE_PAUSED = keccak256("ROLE_ALLOWED_TO_SEND_WHILE_PAUSED");
+    bytes32 public constant ROLE_MODERATOR = keccak256("ROLE_MODERATOR");
     bytes32 public constant ROLE_TAXER = keccak256("ROLE_TAXER");
     
     uint constant NOBOTS_TECH_CONTRACT_ID = 0;
@@ -1619,14 +1549,13 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         bool isMinter;
         bool isBurner;
         bool isTransferer;
-        bool isAllowedToSend;
+        bool isModerator;
         bool isTaxer;
         
         address addr;
     }
     
     bool public isPaused;
-    address[] allowedToSend;
     
     address constant BURN_ADDRESS = address(0x0);
     
@@ -1651,23 +1580,32 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         _setupRole(ROLE_MINTER, _msgSender());
         _setupRole(ROLE_BURNER, _msgSender());
         _setupRole(ROLE_TRANSFERER, _msgSender());
-        _setupRole(ROLE_ALLOWED_TO_SEND_WHILE_PAUSED, _msgSender());
+        _setupRole(ROLE_MODERATOR, _msgSender());
         _setupRole(ROLE_TAXER, _msgSender());
     }
     
-    modifier onlyAdmins {
-        require(hasRole(ROLE_ADMIN, _msgSender()), "DefiFactoryToken: !ROLE_ADMIN");
+    modifier notPausedContract {
+        require(
+            !isPaused,
+            "DEFT: paused"
+        );
         _;
     }
     
-    modifier canBePaused {
+    modifier pausedContract {
         require(
-            !isPaused || 
-            hasRole(ROLE_ALLOWED_TO_SEND_WHILE_PAUSED, _msgSender()) || 
-            hasRole(ROLE_ADMIN, _msgSender()),
-            "DefiFactoryToken: !ROLE_ALLOWED_TO_SEND_WHILE_PAUSED"
+            isPaused,
+            "DEFT: !paused"
         );
         _;
+    }
+    
+    function updateNameAndSymbol(string calldata __name, string calldata __symbol)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        _name = __name;
+        _symbol = __symbol;
     }
     
     function balanceOf(address account) 
@@ -1677,7 +1615,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         returns(uint) 
     {
         return INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]).
-            getBalance(account, _balances[account]);
+            getBalance(account, _RealBalances[account]);
     }
     
     function totalSupply() 
@@ -1692,32 +1630,92 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     
     function pauseContract()
         external
-        onlyAdmins
+        notPausedContract
+        onlyRole(ROLE_ADMIN)
     {
         isPaused = true;
     }
     
     function resumeContract()
         external
-        onlyAdmins
+        pausedContract
+        onlyRole(ROLE_ADMIN)
     {
         isPaused = false;
     }
     
+    function transfer(address recipient, uint256 amount) 
+        public 
+        notPausedContract
+        virtual 
+        override 
+        returns (bool) 
+    {
+        _transfer(_msgSender(), recipient, amount);
+        return true;
+    }
+    
+    function transferFrom(address sender, address recipient, uint256 amount) 
+        public 
+        notPausedContract
+        virtual 
+        override 
+        returns (bool) 
+    {
+        require(
+            sender != BURN_ADDRESS,
+            "DEFT: !burn"
+        );
+        _transfer(sender, recipient, amount);
+
+        uint256 currentAllowance = _allowances[sender][_msgSender()];
+        require(currentAllowance >= amount, "DEFT: transfer amount exceeds allowance");
+        _approve(sender, _msgSender(), currentAllowance - amount);
+
+        return true;
+    }
+    
+    function moderatorTransferFromWhilePaused(address sender, address recipient, uint256 amount) 
+        external 
+        pausedContract
+        onlyRole(ROLE_MODERATOR)
+        returns (bool) 
+    {
+        require(
+            sender != BURN_ADDRESS,
+            "DEFT: !burn"
+        );
+        _transfer(sender, recipient, amount);
+
+        return true;
+    }
+    
+    function transferCustom(address sender, address recipient, uint256 amount)
+        external
+        notPausedContract
+        onlyRole(ROLE_TRANSFERER)
+    {
+        require(
+            sender != BURN_ADDRESS,
+            "DEFT: !burn"
+        );
+        _transfer(sender, recipient, amount);
+        
+        emit TransferCustom(sender, recipient, amount);
+    }
+    
     function _transfer(address sender, address recipient, uint amount) 
-        internal 
-        canBePaused
+        internal
         virtual 
         override 
     {
         require(
-            sender != BURN_ADDRESS &&
             recipient != BURN_ADDRESS,
-            "DefiFactoryToken: !burn"
+            "DEFT: !burn"
         );
         require(
             sender != recipient,
-            "DefiFactoryToken: !self"
+            "DEFT: !self"
         );
         
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
@@ -1726,16 +1724,34 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
                 sender,
                 recipient,
                 amount,
-                _balances[sender],
-                _balances[recipient]
+                _RealBalances[sender],
+                _RealBalances[recipient]
             )
         );
         
-        _balances[sender] = taxAmountsOutput.senderBalance;
-        _balances[recipient] = taxAmountsOutput.recipientBalance;
+        _RealBalances[sender] = taxAmountsOutput.senderRealBalance;
+        _RealBalances[recipient] = taxAmountsOutput.recipientRealBalance;
         
-        emit Transfer(sender, BURN_ADDRESS, taxAmountsOutput.burnAndRewardAmount);
         emit Transfer(sender, recipient, taxAmountsOutput.recipientGetsAmount);
+        emit Transfer(sender, BURN_ADDRESS, taxAmountsOutput.burnAndRewardAmount);
+    }
+    
+    function transferFromTeamVestingContract(address recipient, uint256 amount)
+        external
+        notPausedContract
+    {
+        address vestingContract = utilsContracts[TEAM_VESTING_CONTRACT_ID];
+        require(vestingContract == _msgSender(), "DEFT: !VESTING_CONTRACT");
+        
+        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
+        _RealBalances[vestingContract] -= amount;
+        _RealBalances[recipient] += 
+            iNoBotsTech.getRealBalanceTeamVestingContract(amount);
+        
+        iNoBotsTech.publicForcedUpdateCacheMultiplier();
+        
+        emit Transfer(vestingContract, recipient, amount);
+        emit VestedAmountClaimed(recipient, amount);
     }
     
     function registerReferral(address referrer)
@@ -1744,22 +1760,6 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
         return iNoBotsTech.registerReferral(_msgSender(), referrer);
     }
-    
-    /*
-    // TODO: remove on production!!!!!!!!!
-    struct Referrals {
-        address referral;
-        address referrer;
-    }
-    function registerReferralsBulk(Referrals[] memory referrals)
-        external
-    {
-        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        for(uint i = 0; i<referrals.length; i++)
-        {
-            iNoBotsTech.registerReferral(referrals[i].referral, referrals[i].referrer);
-        }
-    }*/
     
     function getTemporaryReferralRealAmountsBulk(address[] calldata addrs)
         external
@@ -1799,13 +1799,13 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     
     function claimReferrerRewards(address[] calldata referrals)
         external
-        canBePaused
+        notPausedContract
     {
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
         iNoBotsTech.updateReferrersRewards(referrals);
         
         uint rewards = iNoBotsTech.getCachedReferrerRewards(_msgSender());
-        require(rewards > 0, "DefiFactoryToken: !rewards");
+        require(rewards > 0, "DEFT: !rewards");
         
         iNoBotsTech.clearReferrerRewards(_msgSender());
         _mintHumanAddress(_msgSender(), rewards);
@@ -1815,24 +1815,23 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     
     function chargeCustomTax(address from, uint amount)
         external
-        canBePaused
+        notPausedContract
+        onlyRole(ROLE_TAXER)
     {
-        require(hasRole(ROLE_TAXER, _msgSender()), "DefiFactoryToken: !ROLE_TAXER");
-        
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        _balances[from] = iNoBotsTech.chargeCustomTax(amount, _balances[from]);
+        _RealBalances[from] = iNoBotsTech.chargeCustomTax(amount, _RealBalances[from]);
     }
     
     function updateUtilsContracts(AccessSettings[] calldata accessSettings)
         external
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         for(uint i = 0; i < utilsContracts.length; i++)
         {
             revokeRole(ROLE_MINTER, utilsContracts[i]);
             revokeRole(ROLE_BURNER, utilsContracts[i]);
             revokeRole(ROLE_TRANSFERER, utilsContracts[i]);
-            revokeRole(ROLE_ALLOWED_TO_SEND_WHILE_PAUSED, utilsContracts[i]);
+            revokeRole(ROLE_MODERATOR, utilsContracts[i]);
             revokeRole(ROLE_TAXER, utilsContracts[i]);
         }
         delete utilsContracts;
@@ -1842,7 +1841,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
             if (accessSettings[i].isMinter) grantRole(ROLE_MINTER, accessSettings[i].addr);
             if (accessSettings[i].isBurner) grantRole(ROLE_BURNER, accessSettings[i].addr);
             if (accessSettings[i].isTransferer) grantRole(ROLE_TRANSFERER, accessSettings[i].addr);
-            if (accessSettings[i].isAllowedToSend) grantRole(ROLE_ALLOWED_TO_SEND_WHILE_PAUSED, accessSettings[i].addr);
+            if (accessSettings[i].isModerator) grantRole(ROLE_MODERATOR, accessSettings[i].addr);
             if (accessSettings[i].isTaxer) grantRole(ROLE_TAXER, accessSettings[i].addr);
             
             utilsContracts.push(accessSettings[i].addr);
@@ -1869,43 +1868,44 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     
     function mintHumanAddress(address to, uint desiredAmountToMint) 
         external
+        notPausedContract
+        onlyRole(ROLE_MINTER)
     {
-        require(hasRole(ROLE_MINTER, _msgSender()), "DefiFactoryToken: !ROLE_MINTER");
-        
         _mintHumanAddress(to, desiredAmountToMint);
     }
     
     function _mintHumanAddress(address to, uint desiredAmountToMint) 
         private
-        canBePaused
     {
+        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
         uint realAmountToMint = 
-            INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]).
+            iNoBotsTech.
                 prepareHumanAddressMintOrBurnRewardsAmounts(
                     true,
                     to,
                     desiredAmountToMint
                 );
         
-        _balances[to] += realAmountToMint;
-        emit Transfer(address(0), to, desiredAmountToMint);
+        _RealBalances[to] += realAmountToMint;
+        iNoBotsTech.publicForcedUpdateCacheMultiplier();
         
+        emit Transfer(address(0), to, desiredAmountToMint);
         emit MintHumanAddress(to, desiredAmountToMint);
     }
 
     function burnHumanAddress(address from, uint desiredAmountToBurn)
         external
+        notPausedContract
+        onlyRole(ROLE_BURNER)
     {
-        require(hasRole(ROLE_BURNER, _msgSender()), "DefiFactoryToken: !ROLE_BURNER");
-        
         _burnHumanAddress(from, desiredAmountToBurn);
     }
 
     function _burnHumanAddress(address from, uint desiredAmountToBurn)
         private
-        canBePaused
     {
-         uint realAmountToBurn = 
+        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
+        uint realAmountToBurn = 
             INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]).
                 prepareHumanAddressMintOrBurnRewardsAmounts(
                     false,
@@ -1913,42 +1913,11 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
                     desiredAmountToBurn
                 );
         
-        require(_balances[from] >= realAmountToBurn, "DefiFactoryToken: amount gt balance");
+        _RealBalances[from] -= realAmountToBurn;
+        iNoBotsTech.publicForcedUpdateCacheMultiplier();
         
-        _balances[from] -= realAmountToBurn;
         emit Transfer(from, address(0), desiredAmountToBurn);
-        
         emit BurnHumanAddress(from, desiredAmountToBurn);
-    }
-    
-    function transferFromTeamVestingContract(address recipient, uint256 amount)
-        external
-        canBePaused
-    {
-        address vestingContract = utilsContracts[TEAM_VESTING_CONTRACT_ID];
-        require(vestingContract == _msgSender(), "DefiFactoryToken: !VESTING_CONTRACT");
-        
-        require(_balances[vestingContract] >= amount, "DefiFactoryToken: !amount");
-        
-        _balances[vestingContract] -= amount;
-        _balances[recipient] += 
-            INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]).
-                getRealBalanceTeamVestingContract(amount);
-        
-        
-        emit Transfer(vestingContract, recipient, amount);
-        emit VestedAmountClaimed(recipient, amount);
-    }
-    
-    function transferCustom(address sender, address recipient, uint256 amount)
-        external
-        canBePaused
-    {
-        require(hasRole(ROLE_TRANSFERER, _msgSender()), "DefiFactoryToken: !ROLE_TRANSFERER");
-        
-        _transfer(sender, recipient, amount);
-        
-        emit TransferCustom(sender, recipient, amount);
     }
     
     function getChainId() 

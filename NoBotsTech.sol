@@ -25,7 +25,7 @@ contract NoBotsTech is AccessControlEnumerable {
     
     uint public batchBurnAndReward;
     uint public lastCachedTimestamp = block.timestamp;
-    uint public secondsBetweenUpdates = 600;
+    uint public secondsBetweenUpdates = 60;
     
     uint public humanTaxPercent = 1e5; // 10.0%
     uint public botTaxPercent = 99e4; // 99.0%
@@ -48,6 +48,8 @@ contract NoBotsTech is AccessControlEnumerable {
     uint public howManyBlocksAgoReceived = 0;
     uint public howManyBlocksAgoSent = 0;
     
+    bool public wasInitialized;
+    
     struct RoleAccess {
         bytes32 role;
         address addr;
@@ -60,23 +62,20 @@ contract NoBotsTech is AccessControlEnumerable {
     event ReferrerReplaced(address referral, address referrerFrom, address referrerTo);
     
     
-    constructor () {
-        _setupRole(ROLE_ADMIN, _msgSender());
+    function initializeAfterCreate2(
+        address __newOwner
+    )
+        external
+    {
+        require(
+            !wasInitialized,
+            "DEFT: Contract was already initialized!"
+        );
+        wasInitialized = true;
         
+        _setupRole(ROLE_ADMIN, __newOwner);
         
         emit MultiplierUpdated(cachedMultiplier);
-    }
-    
-    // TODO: remove on production
-    function fillTestReferralTemporaryBalances(address[] calldata referrals)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        uint rnd = (block.number % 100) * 1e18;
-        for(uint i = 0; i<referrals.length; i++)
-        {
-            temporaryReferralRealAmounts[referrals[i]] = i * 1e18 + rnd;
-        }
     }
     
     function updateHowManyBlocksAgo(uint _howManyBlocksAgoReceived, uint _howManyBlocksAgoSent)
@@ -343,6 +342,12 @@ contract NoBotsTech is AccessControlEnumerable {
             (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
             
         emit MultiplierUpdated(cachedMultiplier);
+    }
+    
+    function publicForcedUpdateCacheMultiplier()
+        public
+    {   
+        forcedUpdateCacheMultiplier();
     }
     
     function chargeCustomTax(uint taxAmount, uint accountBalance)
