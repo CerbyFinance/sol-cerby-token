@@ -1,0 +1,12 @@
+defiFactoryTokenContract.methods.updateUtilsContracts
+[
+[false, false, false, false, false, "0xDEF1Fa09538Ddd4CFe983d550D917Cd39D6ffE28"]
+]
+
+noBotsTechContract.methods.grantRolesBulk
+[
+["0x0000000000000000000000000000000000000000000000000000000000000000", "0xdef1fac7Bf08f173D286BbBDcBeeADe695129840"]
+]
+
+teamVestingContract.methods.updateDefiFactoryContract
+0xdef1fac7Bf08f173D286BbBDcBeeADe695129840
