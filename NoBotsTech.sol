@@ -14,8 +14,6 @@ contract NoBotsTech is AccessControlEnumerable {
     uint constant BALANCE_MULTIPLIER_DENORM = 1e18;
     uint public cachedMultiplier = BALANCE_MULTIPLIER_DENORM;
     
-    // TODO: add option to extract all data for migration
-    
     
     mapping (address => uint) public temporaryReferralRealAmounts;
     mapping (address => uint) public referrerRealBalances;
@@ -29,7 +27,7 @@ contract NoBotsTech is AccessControlEnumerable {
     
     uint public humanTaxPercent = 1e5; // 10.0%
     uint public botTaxPercent = 99e4; // 99.0%
-    uint public refTaxPercent = 5e3; // 5.0%
+    uint public refTaxPercent = 5e4; // 5.0%
     uint public firstLevelRefPercent = 1e4; // 1.0%
     uint public secondLevelRefPercent = 2500; // 0.25%
     uint constant TAX_PERCENT_DENORM = 1e6;
@@ -48,7 +46,6 @@ contract NoBotsTech is AccessControlEnumerable {
     uint public howManyBlocksAgoReceived = 0;
     uint public howManyBlocksAgoSent = 0;
     
-    bool public wasInitialized;
     
     struct RoleAccess {
         bytes32 role;
@@ -61,19 +58,8 @@ contract NoBotsTech is AccessControlEnumerable {
     event ReferralRegistered(address referral, address referrer);
     event ReferrerReplaced(address referral, address referrerFrom, address referrerTo);
     
-    
-    function initializeAfterCreate2(
-        address __newOwner
-    )
-        external
-    {
-        require(
-            !wasInitialized,
-            "DEFT: Contract was already initialized!"
-        );
-        wasInitialized = true;
-        
-        _setupRole(ROLE_ADMIN, __newOwner);
+    constructor() {
+        _setupRole(ROLE_ADMIN, _msgSender());
         
         emit MultiplierUpdated(cachedMultiplier);
     }

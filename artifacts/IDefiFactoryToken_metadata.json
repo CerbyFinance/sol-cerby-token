@@ -9,86 +9,35 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_spender",
+						"name": "from",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_value",
+						"name": "desiredAmountToBurn",
 						"type": "uint256"
 					}
 				],
-				"name": "approve",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "success",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "account",
-						"type": "address"
-					}
-				],
-				"name": "balanceOf",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "decimals",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "deposit",
+				"name": "burnHumanAddress",
 				"outputs": [],
-				"stateMutability": "payable",
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_to",
+						"name": "from",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_value",
+						"name": "realAmountBurn",
 						"type": "uint256"
 					}
 				],
-				"name": "transfer",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "success",
-						"type": "bool"
-					}
-				],
+				"name": "burnUniswapContract",
+				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -96,11 +45,71 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "wad",
+						"name": "pos",
 						"type": "uint256"
 					}
 				],
-				"name": "withdraw",
+				"name": "getUtilsContractAtPos",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "desiredAmountToMint",
+						"type": "uint256"
+					}
+				],
+				"name": "mintHumanAddress",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "realAmountToMint",
+						"type": "uint256"
+					}
+				],
+				"name": "mintUniswapContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "transferFromTeamVestingContract",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -119,7 +128,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/IERC20.sol": "IERC"
+			"sol-defifactory-token/Flat_TeamVestingContract.sol": "IDefiFactoryToken"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -128,17 +137,17 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 200
+			"runs": 1000
 		},
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/interfaces/IERC20.sol": {
-			"keccak256": "0x3b2cdb27d604dadb9fed737db2f5e7e8dac19d0e8eef132eb6ab19888b414ac1",
-			"license": "MIT",
+		"sol-defifactory-token/Flat_TeamVestingContract.sol": {
+			"keccak256": "0x0a2697229a1957e9ba8e9416d0bb599074e80a1a61332ecd30fba5612cace91d",
+			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://69e3c8e11fb1d94311b8245bb5636bace861aa4565597ad5e3098f12cdbac0df",
-				"dweb:/ipfs/QmRMsRJggRKYQJiEMuZzbHcdTme9Kf8R5kNYD2cnbG9f7V"
+				"bzz-raw://dcb7a80912c30579e53c39214618e07b136d347c79ee98b5682ab2270d21e5f0",
+				"dweb:/ipfs/QmaQBGs6DysiwgAcTKN3DfGn9LKa75367CnUQ7rtHSLCS1"
 			]
 		}
 	},

@@ -38,7 +38,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/IERC20.sol": "IERC20"
+			"sol-defifactory-token/interfaces/___IERC20.sol": "IERC20"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -52,7 +52,7 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/interfaces/IERC20.sol": {
+		"sol-defifactory-token/interfaces/___IERC20.sol": {
 			"keccak256": "0xf79a37db01a64e5b40a9087a06a40505653e94b2cda818c9de4a881242e8bd4f",
 			"license": "MIT",
 			"urls": [

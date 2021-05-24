@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.0+commit.c7dfd78e"
+		"version": "0.8.1+commit.df193b15"
 	},
 	"language": "Solidity",
 	"output": {
@@ -67,7 +67,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": "IUniswapV2Factory"
+			"sol-defifactory-token/Flat_TeamVestingContract.sol": "IUniswapV2Factory"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -76,17 +76,17 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 200
+			"runs": 1000
 		},
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {
-			"keccak256": "0xb5ab73377aad2d4d2253ea1b198dd16d195b0820cc6376cebf579544cd89377e",
-			"license": "MIT",
+		"sol-defifactory-token/Flat_TeamVestingContract.sol": {
+			"keccak256": "0x0a2697229a1957e9ba8e9416d0bb599074e80a1a61332ecd30fba5612cace91d",
+			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://913ae441b8a1bffd7dde47ac13aaa91c216c8c2a9fdb0df883a4775c3bbc367c",
-				"dweb:/ipfs/Qme8QKRGxdcyiFhoFh3RQ6zFxWT2iipXxKtvuXUsrwep21"
+				"bzz-raw://dcb7a80912c30579e53c39214618e07b136d347c79ee98b5682ab2270d21e5f0",
+				"dweb:/ipfs/QmaQBGs6DysiwgAcTKN3DfGn9LKa75367CnUQ7rtHSLCS1"
 			]
 		}
 	},

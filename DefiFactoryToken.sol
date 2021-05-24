@@ -31,7 +31,6 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     }
     
     bool public isPaused;
-    bool public wasInitialized;
     
     address constant BURN_ADDRESS = address(0x0);
     
@@ -53,6 +52,12 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         ERC20("Defi Factory Token", "DEFT") 
         ERC20Permit("Defi Factory Token")
     {
+        _setupRole(ROLE_ADMIN, _msgSender());
+        _setupRole(ROLE_MINTER, _msgSender());
+        _setupRole(ROLE_BURNER, _msgSender());
+        _setupRole(ROLE_TRANSFERER, _msgSender());
+        _setupRole(ROLE_MODERATOR, _msgSender());
+        _setupRole(ROLE_TAXER, _msgSender());
     }
     
     modifier notPausedContract {
@@ -69,25 +74,6 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
             "DEFT: !paused"
         );
         _;
-    }
-    
-    function initializeAfterCreate2(
-        address __newOwner
-    )
-        external
-    {
-        require(
-            !wasInitialized,
-            "DEFT: Contract was already initialized!"
-        );
-        wasInitialized = true;
-        
-        _setupRole(ROLE_ADMIN, __newOwner);
-        _setupRole(ROLE_MINTER, __newOwner);
-        _setupRole(ROLE_BURNER, __newOwner);
-        _setupRole(ROLE_TRANSFERER, __newOwner);
-        _setupRole(ROLE_MODERATOR, __newOwner);
-        _setupRole(ROLE_TAXER, __newOwner);
     }
     
     function updateNameAndSymbol(string calldata __name, string calldata __symbol)

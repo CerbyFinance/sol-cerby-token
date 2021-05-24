@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: BSD-2-Clause
 
 pragma solidity ^0.8.0;
 
@@ -37,7 +37,7 @@ contract TeamVestingContract is AccessControlEnumerable {
     uint public constant TOTAL_SUPPLY_CAP = 100 * 1e9 * 1e18; // 100B DEFT
     
     uint public percentForTheTeam = 30; // 5% - marketing; 10% - team; 15% - developer
-    uint public percentForUniswap = 70;
+    uint public percentForUniswap = 70; // 70% - to uniswap
     uint constant PERCENT_DENORM = 100;
     
     address public nativeToken;
@@ -60,33 +60,20 @@ contract TeamVestingContract is AccessControlEnumerable {
     uint public startedLocking;
     address public wethAndTokenPairContract;
     
-    bool public wasInitialized;
-    
     
     uint public amountOfTokensForInvestors;
     
     address constant BURN_ADDRESS = address(0x0);
     
+    constructor() {
+        _setupRole(ROLE_ADMIN, _msgSender());
+        state = States.AcceptingPayments;
+    }
 
     receive() external payable {
         require(state == States.AcceptingPayments, "TVC: Accepting payments has been stopped!");
         
         addInvestor(_msgSender(), msg.value);
-    }
-    
-    function initializeAfterCreate2(
-        address __newOwner
-    )
-        external
-    {
-        require(
-            !wasInitialized,
-            "DEFT: Contract was already initialized!"
-        );
-        wasInitialized = true;
-        
-        _setupRole(ROLE_ADMIN, __newOwner);
-        state = States.AcceptingPayments;
     }
 
     function addInvestor(address addr, uint wethValue)

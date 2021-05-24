@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
-
 pragma solidity ^0.8.0;
 
-// SPDX-License-Identifier: MIT
-
-
+/*
+🌎 Website: https://DefiFactory.finance
+💻 Dashboard: https://app.defifactory.fi
+👉 Telegram: https://t.me/DefiFactoryBot?start=info-join
+*/
 
 struct TaxAmountsInput {
     address sender;
@@ -39,9 +40,6 @@ interface INoBotsTech {
     function prepareHumanAddressMintOrBurnRewardsAmounts(bool isMint, address account, uint desiredAmountToMintOrBurn)
         external
         returns (uint realAmountToMintOrBurn);
-        
-    function prepareUniswapMintOrBurnRewardsAmounts(bool isMint, address account, uint realAmountToMintOrBurn)
-        external;
         
     function getBalance(address account, uint accountBalance)
         external
@@ -107,17 +105,6 @@ interface INoBotsTech {
     event ReferralRegistered(address referral, address referrer);
     event ReferrerReplaced(address referral, address referrerFrom, address referrerTo);
 }
-// SPDX-License-Identifier: MIT
-
-
-
-// SPDX-License-Identifier: MIT
-
-
-
-// SPDX-License-Identifier: MIT
-
-
 
 /*
  * @dev Provides information about the current execution context, including the
@@ -139,10 +126,6 @@ abstract contract Context {
         return msg.data;
     }
 }
-
-// SPDX-License-Identifier: MIT
-
-
 
 /**
  * @dev String operations.
@@ -208,14 +191,6 @@ library Strings {
 
 }
 
-// SPDX-License-Identifier: MIT
-
-
-
-// SPDX-License-Identifier: MIT
-
-
-
 /**
  * @dev Interface of the ERC165 standard, as defined in the
  * https://eips.ethereum.org/EIPS/eip-165[EIP].
@@ -236,7 +211,6 @@ interface IERC165 {
      */
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }
-
 
 /**
  * @dev Implementation of the {IERC165} interface.
@@ -260,7 +234,6 @@ abstract contract ERC165 is IERC165 {
         return interfaceId == type(IERC165).interfaceId;
     }
 }
-
 
 /**
  * @dev External interface of AccessControl declared to support ERC165 detection.
@@ -498,10 +471,6 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     }
 }
 
-// SPDX-License-Identifier: MIT
-
-
-
 /**
  * @dev Library for managing
  * https://en.wikipedia.org/wiki/Set_(abstract_data_type)[sets] of primitive
@@ -738,7 +707,6 @@ library EnumerableSet {
         return address(uint160(uint256(_at(set._inner, index))));
     }
 
-
     // UintSet
 
     struct UintSet {
@@ -793,7 +761,6 @@ library EnumerableSet {
         return uint256(_at(set._inner, index));
     }
 }
-
 
 /**
  * @dev External interface of AccessControlEnumerable declared to support ERC165 detection.
@@ -876,14 +843,6 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
     }
 }
 
-// SPDX-License-Identifier: MIT
-
-
-
-// SPDX-License-Identifier: MIT
-
-
-
 /**
  * @dev Interface of the ERC20 Permit extension allowing approvals to be made via signatures, as defined in
  * https://eips.ethereum.org/EIPS/eip-2612[EIP-2612].
@@ -932,30 +891,79 @@ interface IERC20Permit {
     function DOMAIN_SEPARATOR() external view returns (bytes32);
 }
 
-// SPDX-License-Identifier: MIT
-
-
-
-// SPDX-License-Identifier: MIT
-
-
-
-
+/**
+ * @dev Interface of the ERC20 standard as defined in the EIP.
+ */
 interface IERC20 {
+    /**
+     * @dev Returns the amount of tokens in existence.
+     */
+    function totalSupply() external view returns (uint256);
 
-    function balanceOf(
-        address account
-    )
-        external
-        view
-        returns (uint);
+    /**
+     * @dev Returns the amount of tokens owned by `account`.
+     */
+    function balanceOf(address account) external view returns (uint256);
+
+    /**
+     * @dev Moves `amount` tokens from the caller's account to `recipient`.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transfer(address recipient, uint256 amount) external returns (bool);
+
+    /**
+     * @dev Returns the remaining number of tokens that `spender` will be
+     * allowed to spend on behalf of `owner` through {transferFrom}. This is
+     * zero by default.
+     *
+     * This value changes when {approve} or {transferFrom} are called.
+     */
+    function allowance(address owner, address spender) external view returns (uint256);
+
+    /**
+     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * IMPORTANT: Beware that changing an allowance with this method brings the risk
+     * that someone may use both the old and the new allowance by unfortunate
+     * transaction ordering. One possible solution to mitigate this race
+     * condition is to first reduce the spender's allowance to 0 and set the
+     * desired value afterwards:
+     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+     *
+     * Emits an {Approval} event.
+     */
+    function approve(address spender, uint256 amount) external returns (bool);
+
+    /**
+     * @dev Moves `amount` tokens from `sender` to `recipient` using the
+     * allowance mechanism. `amount` is then deducted from the caller's
+     * allowance.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+
+    /**
+     * @dev Emitted when `value` tokens are moved from one account (`from`) to
+     * another (`to`).
+     *
+     * Note that `value` may be zero.
+     */
+    event Transfer(address indexed from, address indexed to, uint256 value);
+
+    /**
+     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
+     * a call to {approve}. `value` is the new allowance.
+     */
+    event Approval(address indexed owner, address indexed spender, uint256 value);
 }
-
-// SPDX-License-Identifier: MIT
-
-
-
-
 
 /**
  * @dev Interface for the optional metadata functions from the ERC20 standard.
@@ -978,8 +986,6 @@ interface IERC20Metadata is IERC20 {
      */
     function decimals() external view returns (uint8);
 }
-
-
 
 /**
  * @dev Implementation of the {IERC20} interface.
@@ -1196,14 +1202,6 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     }
 }
 
-// SPDX-License-Identifier: MIT
-
-
-
-// SPDX-License-Identifier: MIT
-
-
-
 /**
  * @dev Elliptic Curve Digital Signature Algorithm (ECDSA) operations.
  *
@@ -1312,7 +1310,6 @@ library ECDSA {
     }
 }
 
-
 /**
  * @dev https://eips.ethereum.org/EIPS/eip-712[EIP 712] is a standard for hashing and signing of typed structured data.
  *
@@ -1410,11 +1407,6 @@ abstract contract EIP712 {
     }
 }
 
-
-// SPDX-License-Identifier: MIT
-
-
-
 /**
  * @title Counters
  * @author Matt Condon (@shrugs)
@@ -1449,7 +1441,6 @@ library Counters {
         }
     }
 }
-
 
 /**
  * @dev Implementation of the ERC20 Permit extension allowing approvals to be made via signatures, as defined in
@@ -1530,9 +1521,6 @@ abstract contract ERC20Permit is ERC20, IERC20Permit, EIP712 {
     }
 }
 
-
-
-
 contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permit {
     bytes32 public constant ROLE_MINTER = keccak256("ROLE_MINTER");
     bytes32 public constant ROLE_BURNER = keccak256("ROLE_BURNER");
@@ -1565,16 +1553,13 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     event MintHumanAddress(address recipient, uint amount);
     event BurnHumanAddress(address sender, uint amount);
     event ClaimedReferralRewards(address recipient, uint amount);
+    
+    event MintedByBridge(address recipient, uint amount);
+    event BurnedByBridge(address sender, uint amount);
 
-    /**
-     * @dev Grants `DEFAULT_ADMIN_ROLE`, `MINTER_ROLE` and `BURNER_ROLE` to the
-     * account that deploys the contract.
-     *
-     * See {ERC20-constructor}.
-     */
     constructor() 
-        ERC20("Test KDEFT", "TestKDEFT") 
-        ERC20Permit("Test KDEFT")
+        ERC20("Defi Factory Token", "DEFT") 
+        ERC20Permit("Defi Factory Token")
     {
         _setupRole(ROLE_ADMIN, _msgSender());
         _setupRole(ROLE_MINTER, _msgSender());
@@ -1866,12 +1851,22 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         return utilsContracts.length;
     }
     
+    function mintByBridge(address to, uint desiredAmountToMint) 
+        external
+        notPausedContract
+        onlyRole(ROLE_MINTER)
+    {
+        _mintHumanAddress(to, desiredAmountToMint);
+        emit MintedByBridge(to, desiredAmountToMint);
+    }
+    
     function mintHumanAddress(address to, uint desiredAmountToMint) 
         external
         notPausedContract
         onlyRole(ROLE_MINTER)
     {
         _mintHumanAddress(to, desiredAmountToMint);
+        emit MintHumanAddress(to, desiredAmountToMint);
     }
     
     function _mintHumanAddress(address to, uint desiredAmountToMint) 
@@ -1890,7 +1885,15 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         iNoBotsTech.publicForcedUpdateCacheMultiplier();
         
         emit Transfer(address(0), to, desiredAmountToMint);
-        emit MintHumanAddress(to, desiredAmountToMint);
+    }
+
+    function burnByBridge(address from, uint desiredAmountToBurn)
+        external
+        notPausedContract
+        onlyRole(ROLE_BURNER)
+    {
+        _burnHumanAddress(from, desiredAmountToBurn);
+        emit BurnedByBridge(from, desiredAmountToBurn);
     }
 
     function burnHumanAddress(address from, uint desiredAmountToBurn)
@@ -1899,6 +1902,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         onlyRole(ROLE_BURNER)
     {
         _burnHumanAddress(from, desiredAmountToBurn);
+        emit BurnHumanAddress(from, desiredAmountToBurn);
     }
 
     function _burnHumanAddress(address from, uint desiredAmountToBurn)
@@ -1917,7 +1921,6 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         iNoBotsTech.publicForcedUpdateCacheMultiplier();
         
         emit Transfer(from, address(0), desiredAmountToBurn);
-        emit BurnHumanAddress(from, desiredAmountToBurn);
     }
     
     function getChainId() 

@@ -1,11 +1,11 @@
-// SPDX-License-Identifier: BUSL-1.1
-
+// SPDX-License-Identifier: BSD-2-Clause
 pragma solidity ^0.8.0;
 
-// SPDX-License-Identifier: MIT
-
-
-
+/*
+🌎 Website: https://DefiFactory.finance
+💻 Dashboard: https://app.defifactory.fi
+👉 Telegram: https://t.me/DefiFactoryBot?start=info-join
+*/
 
 interface IDefiFactoryToken {
     function mintHumanAddress(address to, uint desiredAmountToMint) external;
@@ -23,20 +23,17 @@ interface IDefiFactoryToken {
         
     function transferFromTeamVestingContract(address recipient, uint256 amount) external;
 }
-// SPDX-License-Identifier: MIT
-
-
 
 struct TaxAmountsInput {
     address sender;
     address recipient;
     uint transferAmount;
-    uint senderBalance;
-    uint recipientBalance;
+    uint senderRealBalance;
+    uint recipientRealBalance;
 }
 struct TaxAmountsOutput {
-    uint senderBalance;
-    uint recipientBalance;
+    uint senderRealBalance;
+    uint recipientRealBalance;
     uint burnAndRewardAmount;
     uint recipientGetsAmount;
 }
@@ -60,9 +57,6 @@ interface INoBotsTech {
     function prepareHumanAddressMintOrBurnRewardsAmounts(bool isMint, address account, uint desiredAmountToMintOrBurn)
         external
         returns (uint realAmountToMintOrBurn);
-        
-    function prepareUniswapMintOrBurnRewardsAmounts(bool isMint, address account, uint realAmountToMintOrBurn)
-        external;
         
     function getBalance(address account, uint accountBalance)
         external
@@ -107,8 +101,9 @@ interface INoBotsTech {
         external
         returns (uint);
     
-    function chargeCustomTaxPreBurned(uint taxAmount)
-        external;
+    function chargeCustomTaxTeamVestingContract(uint taxAmount, uint accountBalance)
+        external
+        returns (uint);
         
     function registerReferral(address referral, address referrer)
         external;
@@ -117,16 +112,16 @@ interface INoBotsTech {
         external
         view
         returns (address[] memory);
+        
+    function publicForcedUpdateCacheMultiplier()
+        external;
     
     event MultiplierUpdated(uint newMultiplier);
     event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);
-    event ReferralRewardUpdated(address referral, uint amount);
+    event ReferrerRewardUpdated(address referrer, uint amount);
     event ReferralRegistered(address referral, address referrer);
-    event ReferralDeleted(address referral, address referrer);
+    event ReferrerReplaced(address referral, address referrerFrom, address referrerTo);
 }
-// SPDX-License-Identifier: MIT
-
-
 
 interface IUniswapV2Factory {
     
@@ -146,10 +141,6 @@ interface IUniswapV2Factory {
         returns (address);
         
 }
-
-// SPDX-License-Identifier: MIT
-
-
 
 interface IUniswapV2Pair {
     
@@ -183,11 +174,6 @@ interface IUniswapV2Pair {
     ) external;
 }
 
-// SPDX-License-Identifier: MIT
-
-
-
-
 interface IWeth {
 
     function balanceOf(
@@ -209,7 +195,6 @@ interface IWeth {
         bool success
     );
         
-        
     function deposit()
         external
         payable;
@@ -225,18 +210,6 @@ interface IWeth {
         bool success
     );
 }
-
-// SPDX-License-Identifier: MIT
-
-
-
-// SPDX-License-Identifier: MIT
-
-
-
-// SPDX-License-Identifier: MIT
-
-
 
 /*
  * @dev Provides information about the current execution context, including the
@@ -258,10 +231,6 @@ abstract contract Context {
         return msg.data;
     }
 }
-
-// SPDX-License-Identifier: MIT
-
-
 
 /**
  * @dev String operations.
@@ -327,14 +296,6 @@ library Strings {
 
 }
 
-// SPDX-License-Identifier: MIT
-
-
-
-// SPDX-License-Identifier: MIT
-
-
-
 /**
  * @dev Interface of the ERC165 standard, as defined in the
  * https://eips.ethereum.org/EIPS/eip-165[EIP].
@@ -355,7 +316,6 @@ interface IERC165 {
      */
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }
-
 
 /**
  * @dev Implementation of the {IERC165} interface.
@@ -379,7 +339,6 @@ abstract contract ERC165 is IERC165 {
         return interfaceId == type(IERC165).interfaceId;
     }
 }
-
 
 /**
  * @dev External interface of AccessControl declared to support ERC165 detection.
@@ -616,10 +575,6 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
         }
     }
 }
-
-// SPDX-License-Identifier: MIT
-
-
 
 /**
  * @dev Library for managing
@@ -913,7 +868,6 @@ library EnumerableSet {
     }
 }
 
-
 /**
  * @dev External interface of AccessControlEnumerable declared to support ERC165 detection.
  */
@@ -995,11 +949,8 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
     }
 }
 
-
-
 contract TeamVestingContract is AccessControlEnumerable {
     bytes32 public constant ROLE_WHITELIST = keccak256("ROLE_WHITELIST");
-    bytes32 public constant ROLE_NOTAX = keccak256("ROLE_NOTAX");
     
     uint constant NOBOTS_TECH_CONTRACT_ID = 0;
     uint constant UNISWAP_V2_FACTORY_CONTRACT_ID = 2;
@@ -1020,67 +971,48 @@ contract TeamVestingContract is AccessControlEnumerable {
     uint public totalInvested;
     uint public totalSent;
     
-    address public defiFactoryToken = 0x2493e2D8a80d95AF4e4d2C1448a29c34Ba27ca30;
+    address public defiFactoryToken;
     
-    uint public constant TOTAL_SUPPLY_CAP = 1 * 1e9 * 1e18; // 1B
+    uint public constant TOTAL_SUPPLY_CAP = 100 * 1e9 * 1e18; // 100B DEFT
     
-    uint public percentForTheTeam = 30;
-    uint public percentForUniswap = 70;
+    uint public percentForTheTeam = 30; // 5% - marketing; 10% - team; 15% - developer
+    uint public percentForUniswap = 70; // 70% - to uniswap
     uint constant PERCENT_DENORM = 100;
     
     address public nativeToken;
     
     address public developerAddress;
-    uint public developerCap = 150e13;
+    uint public developerCap;
     uint public constant DEVELOPER_STARTING_LOCK_DELAY = 0 days;
-    uint public constant DEVELOPER_STARTING_LOCK_FOR = 10 minutes; // TODO: Change on production
+    uint public constant DEVELOPER_STARTING_LOCK_FOR = 730 days;
     
     address public teamAddress;
-    uint public teamCap = 100e13;
+    uint public teamCap;
     uint public constant TEAM_STARTING_LOCK_DELAY = 0 days;
     uint public constant TEAM_STARTING_LOCK_FOR = 730 days;
     
     address public marketingAddress;
-    uint public marketingCap = 50e13;
+    uint public marketingCap;
     uint public constant MARKETING_STARTING_LOCK_DELAY = 0;
-    uint public constant MARKETING_STARTING_LOCK_FOR = 365;
+    uint public constant MARKETING_STARTING_LOCK_FOR = 365 days;
     
     uint public startedLocking;
     address public wethAndTokenPairContract;
     
     
-    uint amountOfTokensForInvestors;
+    uint public amountOfTokensForInvestors;
     
     address constant BURN_ADDRESS = address(0x0);
     
-    constructor () payable { // TODO: remove payable on production
-        
+    constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
-        
-        // TODO: remove on production
-        updateInvestmentSettings(
-            0xd0A1E359811322d97991E03f863a0C30C2cF029C, // WETH kovan
-            0x539FaA851D86781009EC30dF437D794bCd090c8F, 150e13, // dev
-            0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6, 100e13, // team
-            0xE019B37896f129354cf0b8f1Cf33936b86913A34, 50e13 // marketing
-        );
-        
         state = States.AcceptingPayments;
-        
-        // TODO: remove on production
-        addInvestor(msg.sender, msg.value);
-        checkIfGoalIsReachedAndPrepareLiqudity();
     }
 
     receive() external payable {
-        require(state == States.AcceptingPayments, "VestingContract: Accepting payments has been stopped!");
+        require(state == States.AcceptingPayments, "TVC: Accepting payments has been stopped!");
         
-        addInvestor(msg.sender, msg.value);
-    }
-    
-    modifier onlyAdmins {
-        require(hasRole(ROLE_ADMIN, _msgSender()), "VestingContract: !ROLE_ADMIN");
-        _;
+        addInvestor(_msgSender(), msg.value);
     }
 
     function addInvestor(address addr, uint wethValue)
@@ -1106,9 +1038,7 @@ contract TeamVestingContract is AccessControlEnumerable {
             startDelay = MARKETING_STARTING_LOCK_DELAY;
         } else
         {
-            updMaxInvestAmount = 0;
-            lockFor = 36500 days;
-            startDelay = 36500 days;
+            revert("TVC: Only team, dev and marketing addresses allowed!");
         }
         
         if (cachedIndex[addr] == 0)
@@ -1129,15 +1059,15 @@ contract TeamVestingContract is AccessControlEnumerable {
         }
         require(
             investors[cachedIndex[addr] - 1].wethValue <= updMaxInvestAmount,
-            "VestingContract: Requires Investor max amount less than maxInvestAmount!"
+            "TVC: Requires Investor max amount less than maxInvestAmount!"
         );
         
         totalInvested += wethValue;
     }
     
-    function checkIfGoalIsReachedAndPrepareLiqudity()
+    function markGoalAsReachedAndPrepareLiqudity()
         public
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         state = States.ReachedGoal;
         
@@ -1146,10 +1076,9 @@ contract TeamVestingContract is AccessControlEnumerable {
     
     function prepareAddLiqudity()
         internal
-        onlyAdmins
     {
-        require(state == States.ReachedGoal, "VestingContract: Preparing add liquidity is completed!");
-        require(address(this).balance > 0, "VestingContract: Ether balance must be larger than zero!");
+        require(state == States.ReachedGoal, "TVC: Preparing add liquidity is completed!");
+        require(address(this).balance > 0, "TVC: Ether balance must be larger than zero!");
         
         IWeth iWeth = IWeth(nativeToken);
         iWeth.deposit{ value: address(this).balance }();
@@ -1157,11 +1086,11 @@ contract TeamVestingContract is AccessControlEnumerable {
         state = States.PreparedAddLiqudity;
     }
     
-    function createPairAndAddLiqudity()
+    function createPairOnUniswapV2()
         public
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
-        require(state == States.PreparedAddLiqudity, "VestingContract: Pair is already created!");
+        require(state == States.PreparedAddLiqudity, "TVC: Pair is already created!");
 
         IUniswapV2Factory iUniswapV2Factory = IUniswapV2Factory(
             IDefiFactoryToken(defiFactoryToken).
@@ -1170,7 +1099,7 @@ contract TeamVestingContract is AccessControlEnumerable {
         wethAndTokenPairContract = iUniswapV2Factory.getPair(defiFactoryToken, nativeToken);
         if (wethAndTokenPairContract == BURN_ADDRESS)
         {
-            wethAndTokenPairContract = iUniswapV2Factory.createPair(defiFactoryToken, nativeToken);
+            wethAndTokenPairContract = iUniswapV2Factory.createPair(nativeToken, defiFactoryToken);
         }
            
         INoBotsTech iNoBotsTech = INoBotsTech(
@@ -1180,15 +1109,13 @@ contract TeamVestingContract is AccessControlEnumerable {
         iNoBotsTech.grantRole(ROLE_WHITELIST, wethAndTokenPairContract);
         
         state = States.CreatedPair;
-        
-        addLiquidity();
     }
     
-    function addLiquidity()
-        internal
-        onlyAdmins
+    function addLiquidityOnUniswapV2()
+        public
+        onlyRole(ROLE_ADMIN)
     {
-        require(state == States.CreatedPair, "VestingContract: Liquidity is already added!");
+        require(state == States.CreatedPair, "TVC: Liquidity is already added!");
         
         IWeth iWeth = IWeth(nativeToken);
         uint wethAmount = iWeth.balanceOf(address(this));
@@ -1209,9 +1136,8 @@ contract TeamVestingContract is AccessControlEnumerable {
 
     function distributeTokens()
         internal
-        onlyAdmins
     {
-        require(state == States.AddedLiquidity, "VestingContract: Tokens have already been distributed!");
+        require(state == States.AddedLiquidity, "TVC: Tokens have already been distributed!");
         
         INoBotsTech iNoBotsTech = INoBotsTech(
             IDefiFactoryToken(defiFactoryToken).
@@ -1219,7 +1145,6 @@ contract TeamVestingContract is AccessControlEnumerable {
         );
         
         iNoBotsTech.grantRole(ROLE_WHITELIST, address(this));
-        iNoBotsTech.grantRole(ROLE_NOTAX, address(this));
         
         amountOfTokensForInvestors = (TOTAL_SUPPLY_CAP * percentForTheTeam) / PERCENT_DENORM; // 30% for the team
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
@@ -1233,10 +1158,10 @@ contract TeamVestingContract is AccessControlEnumerable {
     function claimTeamVestingTokens(uint amount)
         public
     {
-        address addr = msg.sender;
+        address addr = _msgSender();
         
         uint claimableAmount = getClaimableTokenAmount(addr);
-        require(claimableAmount > 0, "VestingContract: !claimable_amount");
+        require(claimableAmount > 0, "TVC: !claimable_amount");
         
         if (
             amount == 0 || 
@@ -1244,8 +1169,6 @@ contract TeamVestingContract is AccessControlEnumerable {
         ) {
             amount = claimableAmount;
         }
-        require(amount <= claimableAmount, "VestingContract: !amount");
-        require(cachedIndex[addr] > 0, "VestingContract: !exists_addr");
         
         investors[cachedIndex[addr] - 1].sentValue += amount;
         
@@ -1255,28 +1178,24 @@ contract TeamVestingContract is AccessControlEnumerable {
     
     function burnVestingTokens(uint amount)
         public
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
         iDefiFactoryToken.burnHumanAddress(address(this), amount);
         
-        INoBotsTech iNoBotsTech = INoBotsTech(
-            IDefiFactoryToken(defiFactoryToken).
-                getUtilsContractAtPos(NOBOTS_TECH_CONTRACT_ID)
-        );
-        amountOfTokensForInvestors -= iNoBotsTech.getRealBalanceTeamVestingContract(amount);
+        amountOfTokensForInvestors -= amount;
     }
     
     function taxVestingTokens(uint amount)
         public
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         INoBotsTech iNoBotsTech = INoBotsTech(
             IDefiFactoryToken(defiFactoryToken).
                 getUtilsContractAtPos(NOBOTS_TECH_CONTRACT_ID)
         );
         
-        amountOfTokensForInvestors = iNoBotsTech.chargeCustomTax(
+        amountOfTokensForInvestors = iNoBotsTech.chargeCustomTaxTeamVestingContract(
             amount, 
             amountOfTokensForInvestors
         );
@@ -1287,9 +1206,9 @@ contract TeamVestingContract is AccessControlEnumerable {
         view
         returns(uint)
     {
-        require(state == States.DistributedTokens, "VestingContract: Tokens aren't distributed yet!");
+        require(state == States.DistributedTokens, "TVC: Tokens aren't distributed yet!");
         
-        require(cachedIndex[addr] > 0, "VestingContract: !exist");
+        require(cachedIndex[addr] > 0, "TVC: !exist");
         
         Investor memory investor = investors[cachedIndex[addr] - 1];
         
@@ -1320,10 +1239,9 @@ contract TeamVestingContract is AccessControlEnumerable {
         view
         returns(uint)
     {
-        require(state == States.DistributedTokens, "VestingContract: Tokens aren't distributed yet!");
+        require(state == States.DistributedTokens, "TVC: Tokens aren't distributed yet!");
         
-        if (addr == BURN_ADDRESS) addr = msg.sender;
-        Investor memory investor = investors[cachedIndex[msg.sender] - 1];
+        Investor memory investor = investors[cachedIndex[addr] - 1];
         uint leftAmount = 
             (investor.wethValue * amountOfTokensForInvestors) / 
                 (totalInvested);
@@ -1379,7 +1297,7 @@ contract TeamVestingContract is AccessControlEnumerable {
     
     function updateDefiFactoryContract(address newContract)
         external
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         defiFactoryToken = newContract;
     }
@@ -1391,7 +1309,7 @@ contract TeamVestingContract is AccessControlEnumerable {
         address _marketingAddress, uint _marketingCap
     )
         public
-        onlyAdmins
+        onlyRole(ROLE_ADMIN)
     {
         nativeToken = _nativeToken;
         developerAddress = _developerAddress;

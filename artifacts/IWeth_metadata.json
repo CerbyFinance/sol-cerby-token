@@ -119,7 +119,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/IERC20.sol": "IWeth"
+			"sol-defifactory-token/Flat_TeamVestingContract.sol": "IWeth"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -128,17 +128,17 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 200
+			"runs": 1000
 		},
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/interfaces/IERC20.sol": {
-			"keccak256": "0x55d776711ab487dbda19fb0cf0ce8e475057ae1767d31cc78f4333cea009d386",
-			"license": "MIT",
+		"sol-defifactory-token/Flat_TeamVestingContract.sol": {
+			"keccak256": "0x0a2697229a1957e9ba8e9416d0bb599074e80a1a61332ecd30fba5612cace91d",
+			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://f7cc6fe73e7cba0786198e5a3d3179270732a87600e8010cb72e3332d2f8f6bd",
-				"dweb:/ipfs/QmNpMwA4GLsM7DSTTLFFwRxGGQZDbT9EtfWhWATedZPSk8"
+				"bzz-raw://dcb7a80912c30579e53c39214618e07b136d347c79ee98b5682ab2270d21e5f0",
+				"dweb:/ipfs/QmaQBGs6DysiwgAcTKN3DfGn9LKa75367CnUQ7rtHSLCS1"
 			]
 		}
 	},

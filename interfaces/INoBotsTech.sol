@@ -36,9 +36,6 @@ interface INoBotsTech {
         external
         returns (uint realAmountToMintOrBurn);
         
-    function prepareUniswapMintOrBurnRewardsAmounts(bool isMint, address account, uint realAmountToMintOrBurn)
-        external;
-        
     function getBalance(address account, uint accountBalance)
         external
         view

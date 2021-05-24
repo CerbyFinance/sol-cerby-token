@@ -513,7 +513,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/INoBotsTech.sol": "INoBotsTech"
+			"sol-defifactory-token/Flat_TeamVestingContract.sol": "INoBotsTech"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -527,12 +527,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
-			"keccak256": "0x2defcbe7fafbd423e57554cff11a5c097a5511952ba6523d9e896038ea57e8e0",
-			"license": "MIT",
+		"sol-defifactory-token/Flat_TeamVestingContract.sol": {
+			"keccak256": "0x0a2697229a1957e9ba8e9416d0bb599074e80a1a61332ecd30fba5612cace91d",
+			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://98c434869c260dc9e2fe6c94fbf892a358b89c99bac6e786445309504b823378",
-				"dweb:/ipfs/QmSXtKxUq6v3HKKdXsWhWKY74MyjEvMNAPCb4opKRUEqW1"
+				"bzz-raw://dcb7a80912c30579e53c39214618e07b136d347c79ee98b5682ab2270d21e5f0",
+				"dweb:/ipfs/QmaQBGs6DysiwgAcTKN3DfGn9LKa75367CnUQ7rtHSLCS1"
 			]
 		}
 	},
