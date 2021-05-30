@@ -11,14 +11,19 @@
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
 					}
 				],
-				"name": "getRoleAdmin",
+				"name": "getRoleMember",
 				"outputs": [
 					{
-						"internalType": "bytes32",
+						"internalType": "address",
 						"name": "",
-						"type": "bytes32"
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -30,81 +35,22 @@
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
-					},
-					{
-						"internalType": "address",
-						"name": "account",
-						"type": "address"
 					}
 				],
-				"name": "grantRole",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "role",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "address",
-						"name": "account",
-						"type": "address"
-					}
-				],
-				"name": "hasRole",
+				"name": "getRoleMemberCount",
 				"outputs": [
 					{
-						"internalType": "bool",
+						"internalType": "uint256",
 						"name": "",
-						"type": "bool"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "role",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "address",
-						"name": "account",
-						"type": "address"
-					}
-				],
-				"name": "renounceRole",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "role",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "address",
-						"name": "account",
-						"type": "address"
-					}
-				],
-				"name": "revokeRole",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			}
 		],
 		"devdoc": {
-			"details": "External interface of AccessControl declared to support ERC165 detection.",
+			"details": "External interface of AccessControlEnumerable declared to support ERC165 detection.",
 			"kind": "dev",
 			"methods": {},
 			"version": 1
@@ -117,7 +63,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/openzeppelin/access/AccessControl.sol": "IAccessControl"
+			"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": "IAccessControlEnumerable"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -137,6 +83,14 @@
 			"urls": [
 				"bzz-raw://e2606725c91f3598f35fa8bbd62fb5ea64001711b0d178b75e2e3204fb88f484",
 				"dweb:/ipfs/QmSuRoMR4afV3G4nEgrP6UuiwtxTVHBR3M3buTG2w8icAs"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {
+			"keccak256": "0x0d616363c1a1e6f9f489303f94df0cbe606826ab4944d315c3801a07f9b8d4ee",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://976cf80d02556929369fc98196c4082f204e44e682e20d3f65cc61b31e29bf76",
+				"dweb:/ipfs/Qmeo1vvf7L3PLLDPNSVuVyirLB3FrCYKMFw3JZ7EXgC5YU"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/utils/Context.sol": {
@@ -169,6 +123,14 @@
 			"urls": [
 				"bzz-raw://796ab6e88af7bf0e78def0f059310c903af6a312b565344e0ff524a0f26e81c6",
 				"dweb:/ipfs/QmcsVgLgzWdor3UnAztUkXKNGcysm1MPneWksF72AvnwBx"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/utils/structs/EnumerableSet.sol": {
+			"keccak256": "0x641d1c42bddc802820044fc0297346d82411f1c86647c2994a5897199c7049c5",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a1a73b4d9b6065412e18d9e21e3ba6387d5dc6b69161d8527101c0041b62f762",
+				"dweb:/ipfs/QmQ51saPEQxKqbkLxfvpXz4x7uDzC49gyH4kVXK8exoAU2"
 			]
 		}
 	},

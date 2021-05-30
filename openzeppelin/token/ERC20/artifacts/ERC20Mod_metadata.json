@@ -16,11 +16,6 @@
 						"internalType": "string",
 						"name": "symbol_",
 						"type": "string"
-					},
-					{
-						"internalType": "uint8",
-						"name": "decimals_",
-						"type": "uint8"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -348,7 +343,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/openzeppelin/token/ERC20/ERC20.sol": "ERC20"
+			"sol-defifactory-token/openzeppelin/token/ERC20/ERC20Mod.sol": "ERC20Mod"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -362,12 +357,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20.sol": {
-			"keccak256": "0xe9e1bdf7a9967be3653c53032bf55d2098b5c8610d497c4d62ef53baa9cbbd76",
+		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20Mod.sol": {
+			"keccak256": "0xa7eefbd52aa43b11b460ac8f3621899d65991e215f8d0958e2bd52c09eaf8270",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://81fbf84fac5869e255ea3e6da83982f62bd6f74e50f3d7e5ee5379070f76952b",
-				"dweb:/ipfs/Qmbxq7vNX4E5ZsRdZezcSbNBKcv4NuxGP2pR1UnbtNPxgJ"
+				"bzz-raw://d9e0a00d02eab012db7a17bb33919318431a3a2f5efc86e9579b49fc06b281d1",
+				"dweb:/ipfs/QmaAsEGiupJV4nbtEqLvZGUUVtJYfPzcSbsHA9kp6Apz4e"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {

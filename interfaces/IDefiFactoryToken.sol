@@ -8,9 +8,9 @@ interface IDefiFactoryToken {
 
     function burnHumanAddress(address from, uint desiredAmountToBurn) external;
 
-    function mintUniswapContract(address to, uint realAmountToMint) external;
+    function mintByBridge(address to, uint realAmountToMint) external;
 
-    function burnUniswapContract(address from, uint realAmountBurn) external;
+    function burnByBridge(address from, uint realAmountBurn) external;
     
     function getUtilsContractAtPos(uint pos)
         external

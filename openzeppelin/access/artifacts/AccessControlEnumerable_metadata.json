@@ -120,6 +120,49 @@
 						"type": "bytes32"
 					},
 					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					}
+				],
+				"name": "getRoleMember",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					}
+				],
+				"name": "getRoleMemberCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
 						"internalType": "address",
 						"name": "account",
 						"type": "address"
@@ -211,34 +254,29 @@
 			}
 		],
 		"devdoc": {
-			"details": "Contract module that allows children to implement role-based access control mechanisms. This is a lightweight version that doesn't allow enumerating role members except through off-chain means by accessing the contract event logs. Some applications may benefit from on-chain enumerability, for those cases see {AccessControlEnumerable}. Roles are referred to by their `bytes32` identifier. These should be exposed in the external API and be unique. The best way to achieve this is by using `public constant` hash digests: ``` bytes32 public constant MY_ROLE = keccak256(\"MY_ROLE\"); ``` Roles can be used to represent a set of permissions. To restrict access to a function call, use {hasRole}: ``` function foo() public {     require(hasRole(MY_ROLE, msg.sender));     ... } ``` Roles can be granted and revoked dynamically via the {grantRole} and {revokeRole} functions. Each role has an associated admin role, and only accounts that have a role's admin role can call {grantRole} and {revokeRole}. By default, the admin role for all roles is `ROLE_ADMIN`, which means that only accounts with this role will be able to grant or revoke other roles. More complex role relationships can be created by using {_setRoleAdmin}. WARNING: The `ROLE_ADMIN` is also its own admin: it has permission to grant and revoke this role. Extra precautions should be taken to secure accounts that have been granted it.",
-			"events": {
-				"RoleAdminChanged(bytes32,bytes32,bytes32)": {
-					"details": "Emitted when `newAdminRole` is set as ``role``'s admin role, replacing `previousAdminRole` `DEFAULT_ADMIN_ROLE` is the starting admin for all roles, despite {RoleAdminChanged} not being emitted signaling this. _Available since v3.1._"
-				},
-				"RoleGranted(bytes32,address,address)": {
-					"details": "Emitted when `account` is granted `role`. `sender` is the account that originated the contract call, an admin role bearer except when using {_setupRole}."
-				},
-				"RoleRevoked(bytes32,address,address)": {
-					"details": "Emitted when `account` is revoked `role`. `sender` is the account that originated the contract call:   - if using `revokeRole`, it is the admin role bearer   - if using `renounceRole`, it is the role bearer (i.e. `account`)"
-				}
-			},
+			"details": "Extension of {AccessControl} that allows enumerating the members of each role.",
 			"kind": "dev",
 			"methods": {
 				"getRoleAdmin(bytes32)": {
 					"details": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}."
 				},
+				"getRoleMember(bytes32,uint256)": {
+					"details": "Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information."
+				},
+				"getRoleMemberCount(bytes32)": {
+					"details": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role."
+				},
 				"grantRole(bytes32,address)": {
-					"details": "Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role."
+					"details": "Overload {grantRole} to track enumerable memberships"
 				},
 				"hasRole(bytes32,address)": {
 					"details": "Returns `true` if `account` has been granted `role`."
 				},
 				"renounceRole(bytes32,address)": {
-					"details": "Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`."
+					"details": "Overload {renounceRole} to track enumerable memberships"
 				},
 				"revokeRole(bytes32,address)": {
-					"details": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role."
+					"details": "Overload {revokeRole} to track enumerable memberships"
 				},
 				"supportsInterface(bytes4)": {
 					"details": "See {IERC165-supportsInterface}."
@@ -254,7 +292,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/openzeppelin/access/AccessControl.sol": "AccessControl"
+			"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": "AccessControlEnumerable"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -274,6 +312,14 @@
 			"urls": [
 				"bzz-raw://e2606725c91f3598f35fa8bbd62fb5ea64001711b0d178b75e2e3204fb88f484",
 				"dweb:/ipfs/QmSuRoMR4afV3G4nEgrP6UuiwtxTVHBR3M3buTG2w8icAs"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {
+			"keccak256": "0x0d616363c1a1e6f9f489303f94df0cbe606826ab4944d315c3801a07f9b8d4ee",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://976cf80d02556929369fc98196c4082f204e44e682e20d3f65cc61b31e29bf76",
+				"dweb:/ipfs/Qmeo1vvf7L3PLLDPNSVuVyirLB3FrCYKMFw3JZ7EXgC5YU"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/utils/Context.sol": {
@@ -306,6 +352,14 @@
 			"urls": [
 				"bzz-raw://796ab6e88af7bf0e78def0f059310c903af6a312b565344e0ff524a0f26e81c6",
 				"dweb:/ipfs/QmcsVgLgzWdor3UnAztUkXKNGcysm1MPneWksF72AvnwBx"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/utils/structs/EnumerableSet.sol": {
+			"keccak256": "0x641d1c42bddc802820044fc0297346d82411f1c86647c2994a5897199c7049c5",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a1a73b4d9b6065412e18d9e21e3ba6387d5dc6b69161d8527101c0041b62f762",
+				"dweb:/ipfs/QmQ51saPEQxKqbkLxfvpXz4x7uDzC49gyH4kVXK8exoAU2"
 			]
 		}
 	},
