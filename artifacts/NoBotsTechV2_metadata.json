@@ -183,19 +183,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "ROLE_WHITELISTED_CONTRACT",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "batchBurnAndReward",
 				"outputs": [
 					{
@@ -886,11 +873,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x447d14f0b42ae4dc85fda783afe98fd70f56a3908c36686a22123871f48d81e8",
+			"keccak256": "0x37e3e39ba917f0b7aede7a7f93d68318a50e48898fa5e21f5a268c13cb7fff0a",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://433e9bc650d39c27523cdd10f2ddc2cb810f6f3301e5a2010a5886a3e4287661",
-				"dweb:/ipfs/QmZ4uKv5aUpBgyesMFGKJPT4Ek3M1XNSwM335QPJgxh588"
+				"bzz-raw://c8cc73e73ae517b84c1c0aa717eb871ec724774af49d30cf0dbb457986f2df3a",
+				"dweb:/ipfs/QmaqucGytfTYsX6SHkfjfpSaqfxQ42XtLumBgpAmpsqmSQ"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

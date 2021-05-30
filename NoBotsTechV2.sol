@@ -9,7 +9,6 @@ import "./openzeppelin/access/AccessControlEnumerable.sol";
 contract NoBotsTechV2 is AccessControlEnumerable {
     bytes32 public constant ROLE_DEX = keccak256("ROLE_DEX");
     bytes32 public constant ROLE_BOT = keccak256("ROLE_BOT");
-    bytes32 public constant ROLE_WHITELISTED_CONTRACT = keccak256("ROLE_WHITELISTED_CONTRACT");
     bytes32 public constant ROLE_TEAM_BENEFICIARY = keccak256("ROLE_TEAM_BENEFICIARY");
     
     uint constant BALANCE_MULTIPLIER_DENORM = 1e18;
@@ -199,8 +198,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                 !hasRole(ROLE_BOT, taxAmountsInput.sender) &&
                     (
                         isNotContract(taxAmountsInput.sender) || 
-                        hasRole(ROLE_DEX, taxAmountsInput.sender) || 
-                        hasRole(ROLE_WHITELISTED_CONTRACT, taxAmountsInput.sender)
+                        hasRole(ROLE_DEX, taxAmountsInput.sender)
                     );
         
         uint burnAndRewardRealAmount;
