@@ -23,6 +23,8 @@ contract CrossChainBridge is AccessControlEnumerable {
     uint public currentNonce;
     address defiFactoryContract;
     
+    mapping (uint => bool) public isAllowedToBridgeToChainId;
+    
     struct SourceProofOfBurn {
         uint amount;
         uint sourceChainId;
@@ -35,11 +37,25 @@ contract CrossChainBridge is AccessControlEnumerable {
         _setupRole(ROLE_APPROVER, msg.sender);
         _setupRole(ROLE_BENEFICIARY, msg.sender);
         
-        chainIdToFee[3] = 5e4; // to ropsten
-        chainIdToFee[42] = 1e4; // to kovan
-        
-        defiFactoryContract = 0x3A1f0F8aFF439a2f103d926FBf2c2663aEE44315; // kovan
-        //defiFactoryContract = 0x3Dec41e3222a02918468Bba4A235E131d31D71b2; // ropsten
+        if (block.chainid == 3)
+        {
+            chainIdToFee[42] = 5e4; // from kovan 5% fee
+            isAllowedToBridgeToChainId[42] = true; // allow to bridge to kovan
+            defiFactoryContract = 0x3Dec41e3222a02918468Bba4A235E131d31D71b2; // ropsten mintable token
+        } else if (block.chainid == 42)
+        {
+            chainIdToFee[3] = 1e4; // from ropsten 1% fee
+            isAllowedToBridgeToChainId[3] = true; // allow to bridge to ropsten
+            defiFactoryContract = 0x3A1f0F8aFF439a2f103d926FBf2c2663aEE44315; // kovan mintable token
+        }
+    }
+    
+    function updateChains(uint chainId, uint chainFee, bool isAllowed)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        chainIdToFee[chainId] = chainFee;
+        isAllowedToBridgeToChainId[chainId] = isAllowed;
     }
     
     function updateSettings(uint newMinAmountToBurn, address newDefiFactoryContract) 
@@ -107,17 +123,24 @@ contract CrossChainBridge is AccessControlEnumerable {
         emit ProofOfMint(msg.sender, amountAsFee, finalAmount, transactionHash);
     }
     
-    function burnAndCreateProof(uint amount, uint destinationChain) 
+    function burnAndCreateProof(uint amount, uint destinationChainId) 
         external
     {
-        
+        require(
+            block.chainid != destinationChainId,
+            "CCB: Destination chain must be different from current chain"
+        );
+        require(
+            isAllowedToBridgeToChainId[destinationChainId],
+            "CCB: Destination chain is not allowed"
+        );
         require(
             amount > minAmountToBurn,
             "CCB: Amount is greater than minimum allowed"
         );
         
         bytes32 transactionHash = keccak256(abi.encodePacked(
-                msg.sender, amount, block.chainid, destinationChain, currentNonce
+                msg.sender, amount, block.chainid, destinationChainId, currentNonce
             ));
             
         transactionStorage[transactionHash] = States.Burned;
@@ -125,7 +148,7 @@ contract CrossChainBridge is AccessControlEnumerable {
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryContract);
         iDefiFactoryToken.burnByBridge(msg.sender, amount);
         
-        emit ProofOfBurn(msg.sender, amount, currentNonce, block.chainid, destinationChain, transactionHash);
+        emit ProofOfBurn(msg.sender, amount, currentNonce, block.chainid, destinationChainId, transactionHash);
         currentNonce++;
     }
 }

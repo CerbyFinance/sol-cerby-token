@@ -246,7 +246,7 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "destinationChain",
+						"name": "destinationChainId",
 						"type": "uint256"
 					}
 				],
@@ -381,6 +381,25 @@
 					}
 				],
 				"name": "hasRole",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "isAllowedToBridgeToChainId",
 				"outputs": [
 					{
 						"internalType": "bool",
@@ -530,6 +549,29 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "chainId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "chainFee",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isAllowed",
+						"type": "bool"
+					}
+				],
+				"name": "updateChains",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "newMinAmountToBurn",
 						"type": "uint256"
 					},
@@ -598,11 +640,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0xae7739d9b87d7d4ab91ea24a2f30b012e5729a0c364a50b5287cd40d0b98d624",
+			"keccak256": "0x25e2e36f9653e580332179558edf27d5022cfa00006602a8188af8cd3fd8ffa1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1774d282ecef994787433ce210c5f77bcfb668b5b4f88a5d9a185b2c076cac48",
-				"dweb:/ipfs/QmQgdjtUGVFWkonRZuVyTDgEGt3cmZcof7gqzc2ntYziei"
+				"bzz-raw://d867981b07e696cd0da764da2b264147fca27dbe0c726251340dfe7d8568b893",
+				"dweb:/ipfs/QmdQJ5twvgn4TybB3iv5XUr1JK4DSiimuyeerSiWcazEWH"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
