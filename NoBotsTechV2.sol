@@ -2,6 +2,7 @@
 
 pragma solidity ^0.8.0;
 
+import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/INoBotsTech.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 
@@ -19,6 +20,11 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public lastCachedTimestamp = block.timestamp;
     uint public secondsBetweenRecacheUpdates = 0;
     
+    
+    address defiFactoryTokenAddress;
+    
+    uint public teamPercentOfTax = 5e4;
+    
     uint public botTaxPercent = 99e4; // 99.0%
     uint public firstMinutesTaxPercent = 99e4; // 99.0%
     uint public howManyFirstMinutesIncreasedTax = 60 minutes;
@@ -34,12 +40,13 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public cycleThreeEnds = 360 days;
     uint public cycleThreeEndTaxPercent = 0; // 0%
     
+    
     address constant BURN_ADDRESS = address(0x0);
     
     uint public rewardsBalance;
     uint public realTotalSupply;
     
-    mapping(address => uint) buyTimestampStorage;
+    mapping(address => uint) public buyTimestampStorage;
     
     struct CurrectCycle {
         uint currentCycleTax;
@@ -53,6 +60,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     event MultiplierUpdated(uint newMultiplier);
     event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);
+    event TeamTaxRewardsSent(address to, uint transferAmount);
     
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
@@ -70,11 +78,68 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         }
     }
     
-    function updateSecondsBetweenReCacheUpdates(uint _secondsBetweenRecacheUpdates)
+    function grantOneRoleBulk(bytes32 role, address[] calldata addrs)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        for(uint i = 0; i<addrs.length; i++)
+        {
+            _setupRole(role, addrs[i]);
+        }
+    }
+    
+    function updateTeamPercentOfTax(uint _teamPercentOfTax)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        teamPercentOfTax = _teamPercentOfTax;
+    }
+    
+    function updateDefiFactoryTokenAddress(address _defiFactoryTokenAddress)
+        external
+    {
+        defiFactoryTokenAddress = _defiFactoryTokenAddress;
+    }
+    
+    function updateSecondsBetweenUpdates(uint _secondsBetweenRecacheUpdates)
         external
         onlyRole(ROLE_ADMIN)
     {
         secondsBetweenRecacheUpdates = _secondsBetweenRecacheUpdates;
+    }
+    
+    function updateBotTaxSettings(uint _botTaxPercent, uint _firstMinutesTaxPercent, uint _howManyFirstMinutesIncreasedTax)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        botTaxPercent = _botTaxPercent;
+        firstMinutesTaxPercent = _firstMinutesTaxPercent;
+        howManyFirstMinutesIncreasedTax = _howManyFirstMinutesIncreasedTax;
+    }
+    
+    function updateCycleOneSettings(uint _cycleOneStartTaxPercent, uint _cycleOneEnds)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        cycleOneStartTaxPercent = _cycleOneStartTaxPercent;
+        cycleOneEnds = _cycleOneEnds;
+    }
+    
+    function updateCycleTwoSettings(uint _cycleTwoStartTaxPercent, uint _cycleTwoEnds)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        cycleTwoStartTaxPercent = _cycleTwoStartTaxPercent;
+        cycleTwoEnds = _cycleTwoEnds;
+    }
+    
+    function updateCycleTwoSettings(uint _cycleThreeStartTaxPercent, uint _cycleThreeEnds, uint _cycleThreeEndTaxPercent)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        cycleThreeStartTaxPercent = _cycleThreeStartTaxPercent;
+        cycleThreeEnds = _cycleThreeEnds;
+        cycleThreeEndTaxPercent = _cycleThreeEndTaxPercent;
     }
     
     function isNotContract(address account) 
@@ -139,13 +204,20 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     {   
         lastCachedTimestamp = block.timestamp;
     
-        realTotalSupply -= batchBurnAndReward;
-        rewardsBalance += batchBurnAndReward/2; // Half of burned amount goes to rewards to all DEFT holders
+        uint teamRewards = (batchBurnAndReward * teamPercentOfTax) / TAX_PERCENT_DENORM;
+        uint distributeRewards = batchBurnAndReward - teamRewards;
+        rewardsBalance += distributeRewards; // 95% of amount goes to rewards to DEFT holders
+        realTotalSupply -= distributeRewards;
         batchBurnAndReward = 0;
+        
+        address teamAddress = getRoleMember(ROLE_TEAM_BENEFICIARY, 0);
+        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryTokenAddress);
+        iDefiFactoryToken.mintHumanAddress(teamAddress, teamRewards);
         
         cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
             (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
             
+        emit TeamTaxRewardsSent(teamAddress, teamRewards);
         emit MultiplierUpdated(cachedMultiplier);
     }
     
@@ -249,6 +321,11 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                     (taxAmountsInput.recipientRealBalance + realTransferAmount);
             
             buyTimestampStorage[taxAmountsInput.recipient] = cycleThreeEnds - newHowManyDaysLeft;
+        }
+        
+        if (isBuy)
+        {
+            // TODO: buy limit based on liquidity
         }
         
         uint recipientGetsRealAmount = realTransferAmount - burnAndRewardRealAmount;
