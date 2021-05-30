@@ -14,6 +14,50 @@
 				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "transferAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "taxedAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "BotTransactionDetected",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "newMultiplier",
+						"type": "uint256"
+					}
+				],
+				"name": "MultiplierUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
 						"indexed": true,
 						"internalType": "bytes32",
 						"name": "role",
@@ -87,58 +131,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "DEVELOPER_STARTING_LOCK_DELAY",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "DEVELOPER_STARTING_LOCK_FOR",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "MARKETING_STARTING_LOCK_DELAY",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "MARKETING_STARTING_LOCK_FOR",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "ROLE_ADMIN",
 				"outputs": [
 					{
@@ -152,7 +144,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "ROLE_WHITELIST",
+				"name": "ROLE_BOT",
 				"outputs": [
 					{
 						"internalType": "bytes32",
@@ -165,7 +157,46 @@
 			},
 			{
 				"inputs": [],
-				"name": "TEAM_STARTING_LOCK_DELAY",
+				"name": "ROLE_DEX",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "ROLE_TEAM_BENEFICIARY",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "ROLE_WHITELISTED_CONTRACT",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "batchBurnAndReward",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -178,7 +209,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "TEAM_STARTING_LOCK_FOR",
+				"name": "botTaxPercent",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -191,7 +222,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "TOTAL_SUPPLY_CAP",
+				"name": "cachedMultiplier",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -203,66 +234,37 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "addLiquidityOnUniswapV2",
-				"outputs": [],
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taxAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "accountBalance",
+						"type": "uint256"
+					}
+				],
+				"name": "chargeCustomTax",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "amountOfTokensForInvestors",
+				"name": "cycleOneEnds",
 				"outputs": [
 					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "burnVestingTokens",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "claimTeamVestingTokens",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "createPairOnUniswapV2",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "defiFactoryToken",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -270,12 +272,12 @@
 			},
 			{
 				"inputs": [],
-				"name": "developerAddress",
+				"name": "cycleOneStartTaxPercent",
 				"outputs": [
 					{
-						"internalType": "address",
+						"internalType": "uint256",
 						"name": "",
-						"type": "address"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -283,123 +285,12 @@
 			},
 			{
 				"inputs": [],
-				"name": "developerCap",
+				"name": "cycleThreeEndTaxPercent",
 				"outputs": [
 					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "getClaimableTokenAmount",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "getInvestorByAddr",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "addr",
-								"type": "address"
-							},
-							{
-								"internalType": "uint256",
-								"name": "wethValue",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "sentValue",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "startDelay",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "lockFor",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct TeamVestingContract.Investor",
-						"name": "",
-						"type": "tuple"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "pos",
-						"type": "uint256"
-					}
-				],
-				"name": "getInvestorByPos",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "addr",
-								"type": "address"
-							},
-							{
-								"internalType": "uint256",
-								"name": "wethValue",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "sentValue",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "startDelay",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "lockFor",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct TeamVestingContract.Investor",
-						"name": "",
-						"type": "tuple"
 					}
 				],
 				"stateMutability": "view",
@@ -407,7 +298,59 @@
 			},
 			{
 				"inputs": [],
-				"name": "getInvestorsCount",
+				"name": "cycleThreeEnds",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "cycleThreeStartTaxPercent",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "cycleTwoEnds",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "cycleTwoStartTaxPercent",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "firstMinutesTaxPercent",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -422,11 +365,53 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "account",
 						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "accountBalance",
+						"type": "uint256"
 					}
 				],
-				"name": "getLeftTokenAmount",
+				"name": "getBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "accountBalance",
+						"type": "uint256"
+					}
+				],
+				"name": "getRealBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getRewardsBalance",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -500,6 +485,50 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "getTotalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getWalletCurrentCycle",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "currentCycleTax",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "howMuchTimeLeftTillEndOfCycleThree",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct NoBotsTechV2.CurrectCycle",
+						"name": "currentCycle",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -513,6 +542,31 @@
 					}
 				],
 				"name": "grantRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "role",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "address",
+								"name": "addr",
+								"type": "address"
+							}
+						],
+						"internalType": "struct NoBotsTechV2.RoleAccess[]",
+						"name": "roles",
+						"type": "tuple[]"
+					}
+				],
+				"name": "grantRolesBulk",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -542,51 +596,13 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "offset",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "limit",
-						"type": "uint256"
-					}
-				],
-				"name": "listInvestors",
+				"inputs": [],
+				"name": "howManyFirstMinutesIncreasedTax",
 				"outputs": [
 					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "addr",
-								"type": "address"
-							},
-							{
-								"internalType": "uint256",
-								"name": "wethValue",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "sentValue",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "startDelay",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "lockFor",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct TeamVestingContract.Investor[]",
+						"internalType": "uint256",
 						"name": "",
-						"type": "tuple[]"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -594,66 +610,124 @@
 			},
 			{
 				"inputs": [],
-				"name": "markGoalAsReachedAndPrepareLiqudity",
+				"name": "lastCachedTimestamp",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "isMint",
+						"type": "bool"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "desiredAmountToMintOrBurn",
+						"type": "uint256"
+					}
+				],
+				"name": "prepareHumanAddressMintOrBurnRewardsAmounts",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "sender",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "recipient",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "transferAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "senderRealBalance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "recipientRealBalance",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct TaxAmountsInput",
+						"name": "taxAmountsInput",
+						"type": "tuple"
+					}
+				],
+				"name": "prepareTaxAmounts",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "senderRealBalance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "recipientRealBalance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "burnAndRewardAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "recipientGetsAmount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct TaxAmountsOutput",
+						"name": "taxAmountsOutput",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "publicForcedUpdateCacheMultiplier",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "marketingAddress",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "marketingCap",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "nativeToken",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "percentForTheTeam",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "percentForUniswap",
+				"name": "realTotalSupply",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -702,7 +776,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "startedLocking",
+				"name": "rewardsBalance",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -715,12 +789,12 @@
 			},
 			{
 				"inputs": [],
-				"name": "state",
+				"name": "secondsBetweenRecacheUpdates",
 				"outputs": [
 					{
-						"internalType": "enum TeamVestingContract.States",
+						"internalType": "uint256",
 						"name": "",
-						"type": "uint8"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -749,139 +823,14 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "amount",
+						"name": "_secondsBetweenRecacheUpdates",
 						"type": "uint256"
 					}
 				],
-				"name": "taxVestingTokens",
+				"name": "updateSecondsBetweenReCacheUpdates",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "teamAddress",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "teamCap",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "totalInvested",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "totalSent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "newContract",
-						"type": "address"
-					}
-				],
-				"name": "updateDefiFactoryContract",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_nativeToken",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "_developerAddress",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_developerCap",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "_teamAddress",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_teamCap",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "_marketingAddress",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_marketingCap",
-						"type": "uint256"
-					}
-				],
-				"name": "updateInvestmentSettings",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "wethAndTokenPairContract",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"stateMutability": "payable",
-				"type": "receive"
 			}
 		],
 		"devdoc": {
@@ -922,7 +871,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/DEFT/LiquidityAddingEvent.sol": "TeamVestingContract"
+			"sol-defifactory-token/NoBotsTechV2.sol": "NoBotsTechV2"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -936,20 +885,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/DEFT/LiquidityAddingEvent.sol": {
-			"keccak256": "0xfb4c1da3c9c989583b581f166c36721b8e15c950c05ff452981ba4e0f49c19b0",
-			"license": "BSD-2-Clause",
+		"sol-defifactory-token/NoBotsTechV2.sol": {
+			"keccak256": "0x447d14f0b42ae4dc85fda783afe98fd70f56a3908c36686a22123871f48d81e8",
+			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://fa1d1dad292817dc8d03b8a1bb8f82457684d4d02e167d22111a025d79cb2cea",
-				"dweb:/ipfs/QmZtaTapu3dwZL66GveHKHKhjykSwJnqNKDpnKbGGjSVSM"
-			]
-		},
-		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x9ecb6295cec766d560e678fa77fdf08dd9061229652c5089965ded2ed814a0ae",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://ac2132ef97c889ecb57c0b58710e89e25ce3b295ef4d25b21efdabc5e7f778da",
-				"dweb:/ipfs/QmWgZB8bphD6JVw8SFu11HsW28msR7hZXTvbyupq9khVAB"
+				"bzz-raw://433e9bc650d39c27523cdd10f2ddc2cb810f6f3301e5a2010a5886a3e4287661",
+				"dweb:/ipfs/QmZ4uKv5aUpBgyesMFGKJPT4Ek3M1XNSwM335QPJgxh588"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
@@ -958,30 +899,6 @@
 			"urls": [
 				"bzz-raw://98c434869c260dc9e2fe6c94fbf892a358b89c99bac6e786445309504b823378",
 				"dweb:/ipfs/QmSXtKxUq6v3HKKdXsWhWKY74MyjEvMNAPCb4opKRUEqW1"
-			]
-		},
-		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {
-			"keccak256": "0xb5ab73377aad2d4d2253ea1b198dd16d195b0820cc6376cebf579544cd89377e",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://913ae441b8a1bffd7dde47ac13aaa91c216c8c2a9fdb0df883a4775c3bbc367c",
-				"dweb:/ipfs/Qme8QKRGxdcyiFhoFh3RQ6zFxWT2iipXxKtvuXUsrwep21"
-			]
-		},
-		"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
-			"keccak256": "0xb0c6cf8fff27b074e19aa64daa47870cfa0e74e42321512cfd350766e2437ea4",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://61c4ab9a6e25960b077ee350b7bd28dcd9f59f1d657635f9506168a9afdf8ca0",
-				"dweb:/ipfs/QmdHa837WfthskgJE4c5qBxQC9j2wgiJeWhHhffr9ffVmY"
-			]
-		},
-		"sol-defifactory-token/interfaces/IWeth.sol": {
-			"keccak256": "0x55d776711ab487dbda19fb0cf0ce8e475057ae1767d31cc78f4333cea009d386",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://f7cc6fe73e7cba0786198e5a3d3179270732a87600e8010cb72e3332d2f8f6bd",
-				"dweb:/ipfs/QmNpMwA4GLsM7DSTTLFFwRxGGQZDbT9EtfWhWATedZPSk8"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

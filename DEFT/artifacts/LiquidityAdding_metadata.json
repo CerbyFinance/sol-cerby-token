@@ -351,7 +351,7 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct TeamVestingContract.Investor",
+						"internalType": "struct LiquidityAdding.Investor",
 						"name": "",
 						"type": "tuple"
 					}
@@ -397,7 +397,7 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct TeamVestingContract.Investor",
+						"internalType": "struct LiquidityAdding.Investor",
 						"name": "",
 						"type": "tuple"
 					}
@@ -584,7 +584,7 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct TeamVestingContract.Investor[]",
+						"internalType": "struct LiquidityAdding.Investor[]",
 						"name": "",
 						"type": "tuple[]"
 					}
@@ -718,7 +718,7 @@
 				"name": "state",
 				"outputs": [
 					{
-						"internalType": "enum TeamVestingContract.States",
+						"internalType": "enum LiquidityAdding.States",
 						"name": "",
 						"type": "uint8"
 					}
@@ -922,7 +922,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/DEFT/LiquidityAddingEvent.sol": "TeamVestingContract"
+			"sol-defifactory-token/DEFT/LiquidityAddingEvent.sol": "LiquidityAdding"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -937,11 +937,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DEFT/LiquidityAddingEvent.sol": {
-			"keccak256": "0xfb4c1da3c9c989583b581f166c36721b8e15c950c05ff452981ba4e0f49c19b0",
+			"keccak256": "0x2c67a3516d486878c76801549642a8e5bcbe0bf9dfc6df61d20be70f6e0a2246",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://fa1d1dad292817dc8d03b8a1bb8f82457684d4d02e167d22111a025d79cb2cea",
-				"dweb:/ipfs/QmZtaTapu3dwZL66GveHKHKhjykSwJnqNKDpnKbGGjSVSM"
+				"bzz-raw://e0fc08f162c8a1a03d392b67cbcb97c9857f53a4ef18b88c1633e147f6598ff8",
+				"dweb:/ipfs/QmdqcUBZdaDbBKEH8SqPGL2GAC55bBEDZTdpVNzUYvC4kN"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
