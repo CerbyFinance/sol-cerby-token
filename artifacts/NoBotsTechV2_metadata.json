@@ -375,7 +375,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "firstMinutesTaxPercent",
+				"name": "deployedContractAtTimestamp",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -550,7 +550,7 @@
 						"type": "tuple"
 					}
 				],
-				"stateMutability": "nonpayable",
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -884,11 +884,6 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "_firstMinutesTaxPercent",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
 						"name": "_howManyFirstMinutesIncreasedTax",
 						"type": "uint256"
 					}
@@ -1050,19 +1045,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x7e4a6f77d88cc310e083caa09ec509b4157fabf2497ab154147a582f2ae8c824",
+			"keccak256": "0x3a3f546e3040f6da1b794af8ace194ad56f599b9b07d65a5ec8c659f5185ef38",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://28f2f1c29ee35f9756107f16f4809daa4fa9adb02463adb261e0f3e691ea7f1a",
-				"dweb:/ipfs/QmeJiUReXc9Qg4gTxcozk2pFnpXhjhW5i3wcbBxTDgQ1Nq"
+				"bzz-raw://9a6216235e9963209eb8947875765fbc107fb3bcb218fb9d52fe917252c40ebb",
+				"dweb:/ipfs/QmTGRoNG1qZAYqVCXMR61BVkRWoAXTocVcBHBQCEHwp2kv"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x9ecb6295cec766d560e678fa77fdf08dd9061229652c5089965ded2ed814a0ae",
+			"keccak256": "0xbf89ad6881bd95da637513a6a0d377563c1a3ecc531bbb77bbde57870834ffcb",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ac2132ef97c889ecb57c0b58710e89e25ce3b295ef4d25b21efdabc5e7f778da",
-				"dweb:/ipfs/QmWgZB8bphD6JVw8SFu11HsW28msR7hZXTvbyupq9khVAB"
+				"bzz-raw://b02159a7ca07ce6c939bae5c49758d298cf4a7d3721dd096012bb687be3d517f",
+				"dweb:/ipfs/Qmd8qcnUtZ2524gGrrKRnprdaoYeLd7JfVjLLMzYm4ENT6"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

@@ -49,8 +49,8 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
 
 
     constructor() 
-        ERC20Mod("Defi Factory Token", "DEFT") 
-        ERC20Permit("Defi Factory Token")
+        ERC20Mod("tDefi Factory Token", "tDEFT") 
+        ERC20Permit("tDefi Factory Token")
     {
         _setupRole(ROLE_ADMIN, _msgSender());
         _setupRole(ROLE_MINTER, _msgSender());
@@ -209,7 +209,10 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         _RealBalances[recipient] = taxAmountsOutput.recipientRealBalance;
         
         emit Transfer(sender, recipient, taxAmountsOutput.recipientGetsAmount);
-        emit Transfer(sender, BURN_ADDRESS, taxAmountsOutput.burnAndRewardAmount);
+        if (taxAmountsOutput.burnAndRewardAmount > 0)
+        {
+            emit Transfer(sender, BURN_ADDRESS, taxAmountsOutput.burnAndRewardAmount);
+        }
     }
     
     function transferFromTeamVestingContract(address recipient, uint256 amount)

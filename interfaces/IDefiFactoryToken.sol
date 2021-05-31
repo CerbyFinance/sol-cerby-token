@@ -4,6 +4,13 @@ pragma solidity ^0.8.0;
 
 
 interface IDefiFactoryToken {
+    function balanceOf(
+        address account
+    )
+        external
+        view
+        returns (uint);
+        
     function mintHumanAddress(address to, uint desiredAmountToMint) external;
 
     function burnHumanAddress(address from, uint desiredAmountToBurn) external;

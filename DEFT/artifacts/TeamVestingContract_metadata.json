@@ -922,7 +922,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/DEFT/LiquidityAddingEvent.sol": "TeamVestingContract"
+			"sol-defifactory-token/DEFT/TeamVestingContract.sol": "TeamVestingContract"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -936,7 +936,7 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/DEFT/LiquidityAddingEvent.sol": {
+		"sol-defifactory-token/DEFT/TeamVestingContract.sol": {
 			"keccak256": "0xfb4c1da3c9c989583b581f166c36721b8e15c950c05ff452981ba4e0f49c19b0",
 			"license": "BSD-2-Clause",
 			"urls": [

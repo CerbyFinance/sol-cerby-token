@@ -10,28 +10,25 @@
     web3.eth.accounts.wallet.add(accountInst);
     let account = accountInst.address;*/
 
-    let defiFactoryJson = JSON.parse(await remix.call('fileManager', 'getFile', "sol-defifactory-token/artifacts/DefiFactoryToken.json"));
-    let noBotsTechJson = JSON.parse(await remix.call('fileManager', 'getFile', "sol-defifactory-token/artifacts/NoBotsTech.json"));
-    let teamVestingJson = JSON.parse(await remix.call('fileManager', 'getFile', "sol-defifactory-token/artifacts/TeamVestingContract.json"));
+    let defiFactoryJson = JSON.parse(await remix.call('fileManager', 'getFile', "sol-defifactory-token/artifacts/DEFT/DefiFactoryToken.json"));
+    let noBotsTechJson = JSON.parse(await remix.call('fileManager', 'getFile', "sol-defifactory-token/artifacts/NoBotsTechV2.json"));
     
     
     let [defiFactoryTokenContract, noBotsTechContract, teamVestingContract] = await Promise.all([
         deployContract("DefiFactoryToken", defiFactoryJson, account, 0),
-        deployContract("NoBotsTech", noBotsTechJson, account, 0),
-        deployContract("TeamVestingContract", teamVestingJson, account, 15e14)
+        deployContract("NoBotsTechV2", noBotsTechJson, account, 0)
     ]);
     
     console.log("DefiFactoryToken: ", defiFactoryTokenContract.options.address);
-    console.log("NoBotsTech: ", noBotsTechContract.options.address);
-    console.log("TeamVestingContract: ", teamVestingContract.options.address);
+    console.log("NoBotsTechV2: ", noBotsTechContract.options.address);
     
     async function step1() {
         //console.log("DefiFactoryToken.updateUtilsContracts: " + new Date());
         try {
             await defiFactoryTokenContract.methods.
                 updateUtilsContracts([
-                    [false, false, false, false, false, noBotsTechContract.options.address],
-                    [true, true, true, true, true, teamVestingContract.options.address],
+                    [true, true, false, false, false, noBotsTechContract.options.address],
+                    [false, false, false, false, false, "0x000000000000000000000000000000000000dead"],
                     [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"], //Uniswap factory v2
                     //[false, false, false, false, false, "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc"], //Pancake factory v2
 
@@ -53,10 +50,7 @@
         try {
             await noBotsTechContract.methods.
                 grantRolesBulk([
-                    ["0x0000000000000000000000000000000000000000000000000000000000000000", defiFactoryTokenContract.options.address],
-                    ["0x0000000000000000000000000000000000000000000000000000000000000000", teamVestingContract.options.address],
-                    ["0xd27488087fca693adcf8b477ec0ca6cf5134d7f124fdc511eb258522c40fd72b", teamVestingContract.options.address],
-                    ["0xbd68ab95cda3c90ac0bffc2b3a3a97a564372fc3ca4a8e4575d3ce58179b7563", teamVestingContract.options.address]
+                    ["0x0000000000000000000000000000000000000000000000000000000000000000", defiFactoryTokenContract.options.address]
                 ]).send({
                     from: account, 
                     gas: 7e5,
@@ -73,8 +67,8 @@
     async function step3() {
         //console.log("TeamVestingContract.updateDefiFactoryContract: " + new Date());
         try {
-            await teamVestingContract.methods.
-                updateDefiFactoryContract(
+            await noBotsTechContract.methods.
+                updateDefiFactoryTokenAddress(
                     defiFactoryTokenContract.options.address
                 ).send({
                     from: account, 
