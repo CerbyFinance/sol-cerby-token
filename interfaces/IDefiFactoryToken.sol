@@ -25,4 +25,16 @@ interface IDefiFactoryToken {
         returns (address);
         
     function transferFromTeamVestingContract(address recipient, uint256 amount) external;
+    
+    struct AccessSettings {
+        bool isMinter;
+        bool isBurner;
+        bool isTransferer;
+        bool isModerator;
+        bool isTaxer;
+        
+        address addr;
+    }
+    function updateUtilsContracts(AccessSettings[] calldata accessSettings)
+        external;
 }

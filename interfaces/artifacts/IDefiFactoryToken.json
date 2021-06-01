@@ -53,7 +53,8 @@
 			"getUtilsContractAtPos(uint256)": "06fb1a07",
 			"mintByBridge(address,uint256)": "1f2eba24",
 			"mintHumanAddress(address,uint256)": "0bb9ff5d",
-			"transferFromTeamVestingContract(address,uint256)": "8cbfeb0c"
+			"transferFromTeamVestingContract(address,uint256)": "8cbfeb0c",
+			"updateUtilsContracts((bool,bool,bool,bool,bool,address)[])": "789210b3"
 		}
 	},
 	"abi": [
@@ -181,6 +182,51 @@
 				}
 			],
 			"name": "transferFromTeamVestingContract",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "bool",
+							"name": "isMinter",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isBurner",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isTransferer",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isModerator",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isTaxer",
+							"type": "bool"
+						},
+						{
+							"internalType": "address",
+							"name": "addr",
+							"type": "address"
+						}
+					],
+					"internalType": "struct IDefiFactoryToken.AccessSettings[]",
+					"name": "accessSettings",
+					"type": "tuple[]"
+				}
+			],
+			"name": "updateUtilsContracts",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"

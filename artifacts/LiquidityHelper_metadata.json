@@ -114,6 +114,19 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "wethAndTokenPairContract",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -144,19 +157,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/LiquidityHelper.sol": {
-			"keccak256": "0xf6c703a5d169a9d1e2394683c7d7cc277d4589390851b25c7a6ae169ac4a92ea",
+			"keccak256": "0x0badcbd54bac3a8e433e28761740904d9b287ec007dd6d2eaf9d11c21d9040ef",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://121a33803bf3630911b70bc270654108133da0ce10af6ed15ceac1777e205552",
-				"dweb:/ipfs/QmYy9F3ao7ee8btnzn3nYXXFDXBFpKJN2e4mVFWxkNjB3Y"
+				"bzz-raw://2390d4c1109339112805eb32a7bf6874924b79c1799b6e5fbefd5b860bab0e14",
+				"dweb:/ipfs/QmWA3sUyDnzi63GzFFGGDrpeNJ5zrdmEnXWanr1UUD8MPD"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0xbf89ad6881bd95da637513a6a0d377563c1a3ecc531bbb77bbde57870834ffcb",
+			"keccak256": "0x45ade6ffc204b800c9a457c4dad7947d91d5259e84df343c1ad248a504bcf9d7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b02159a7ca07ce6c939bae5c49758d298cf4a7d3721dd096012bb687be3d517f",
-				"dweb:/ipfs/Qmd8qcnUtZ2524gGrrKRnprdaoYeLd7JfVjLLMzYm4ENT6"
+				"bzz-raw://6cd7a725df5adb9ceacc8b08e8824c14dba6ac610159e85042589d431ec8edbc",
+				"dweb:/ipfs/QmbiFjtV3nmdFJietz2H6mvjQ571aVaeTAofN4T1fLKVB2"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

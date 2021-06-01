@@ -17,7 +17,7 @@ contract LiquidityHelper {
 
     
     address public defiFactoryToken;
-    address wethAndTokenPairContract;
+    address public wethAndTokenPairContract;
     
     uint public constant TOTAL_SUPPLY_CAP = 100 * 1e9 * 1e18; // 100B DEFT
     
@@ -58,6 +58,7 @@ contract LiquidityHelper {
                 getUtilsContractAtPos(NOBOTS_TECH_CONTRACT_ID)
         ); 
         iNoBotsTech.grantRole(ROLE_DEX, wethAndTokenPairContract);
+        
     }
     
     function addLiquidityOnUniswapV2()

@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 
 import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/INoBotsTech.sol";
+import "./interfaces/IUniswapV2Factory.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 
@@ -11,6 +12,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     bytes32 public constant ROLE_DEX = keccak256("ROLE_DEX");
     bytes32 public constant ROLE_BOT = keccak256("ROLE_BOT");
     bytes32 public constant ROLE_TEAM_BENEFICIARY = keccak256("ROLE_TEAM_BENEFICIARY");
+    
+    uint constant UNISWAP_V2_PAIR_ADDRESS = 3;
     
     uint constant BALANCE_MULTIPLIER_DENORM = 1e18;
     uint public cachedMultiplier = BALANCE_MULTIPLIER_DENORM;
@@ -38,6 +41,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public cycleThreeStartTaxPercent = 8e4; // 10.0%
     uint public cycleThreeEnds = 360 days;
     uint public cycleThreeEndTaxPercent = 0; // 0%
+    
+    uint public buyLimitAmount;
     
     
     address constant BURN_ADDRESS = address(0x0);
@@ -159,21 +164,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         return size == 0;
     }
     
-    function isContract(address account) 
-        private
-        view
-        returns (bool)
-    {
-        // This method relies on extcodesize, which returns 0 for contracts in
-        // construction, since the code is only stored at the end of the
-        // constructor execution.
-
-        uint256 size;
-        // solhint-disable-next-line no-inline-assembly
-        assembly { size := extcodesize(account) }
-        return size > 0;
-    }
-    
     function getTotalSupply()
         external
         onlyRole(ROLE_ADMIN)
@@ -228,6 +218,12 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                 
             emit MultiplierUpdated(cachedMultiplier);
         }
+        
+        IUniswapV2Factory iUniswapV2Factory = IUniswapV2Factory(
+            IDefiFactoryToken(defiFactoryToken).
+                getUtilsContractAtPos(UNISWAP_V2_FACTORY_CONTRACT_ID)
+        );
+        
     }
     
     function publicForcedUpdateCacheMultiplier()
@@ -270,12 +266,20 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             "NBT: !amount"
         );
         
-        uint timePassedSinceLastBuy = block.timestamp > buyTimestampStorage[taxAmountsInput.sender]?
-                                        block.timestamp - buyTimestampStorage[taxAmountsInput.sender]: 0;
                                         
         bool isBuy = hasRole(ROLE_DEX, taxAmountsInput.sender);
+        
+        require (
+            isBuy &&
+            buyLimitAmount > 0 &&
+            taxAmountsInput.transferAmount > buyLimitAmount,
+            "NBT: !buy"
+        );
+        
         bool isSell = hasRole(ROLE_DEX, taxAmountsInput.recipient);
         
+        uint timePassedSinceLastBuy = block.timestamp > buyTimestampStorage[taxAmountsInput.sender]?
+                                        block.timestamp - buyTimestampStorage[taxAmountsInput.sender]: 0;
         bool isSenderHuman =    
                 !(isSell && (timePassedSinceLastBuy < howManyFirstMinutesIncreasedTax)) && //!isEarlySell
                 !hasRole(ROLE_BOT, taxAmountsInput.sender) &&
@@ -343,10 +347,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             buyTimestampStorage[taxAmountsInput.recipient] -= weightedAverageHowManyDaysLeft - howManyDaysLeft;
         }
         
-        if (isBuy)
-        {
-            // TODO: buy limit based on liquidity
-        }
         
         uint recipientGetsRealAmount = realTransferAmount - burnAndRewardRealAmount;
         taxAmountsOutput.senderRealBalance = taxAmountsInput.senderRealBalance - realTransferAmount;

@@ -227,6 +227,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "buyLimitAmount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -1045,11 +1058,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x3a3f546e3040f6da1b794af8ace194ad56f599b9b07d65a5ec8c659f5185ef38",
+			"keccak256": "0x120f087dae793be773a936db54e371ee3f8dd37da53700343b1d6fb9de52be08",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://9a6216235e9963209eb8947875765fbc107fb3bcb218fb9d52fe917252c40ebb",
-				"dweb:/ipfs/QmTGRoNG1qZAYqVCXMR61BVkRWoAXTocVcBHBQCEHwp2kv"
+				"bzz-raw://ca403b13f188d9278d37f4742b4ed1f82a966ed407b9775965397a7f222e8f16",
+				"dweb:/ipfs/QmZF3omLnQbAWTFkbeQfnzUzrWAfEXTwvXmiAWHfvrarUw"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

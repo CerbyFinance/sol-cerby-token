@@ -132,6 +132,51 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bool",
+								"name": "isMinter",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isBurner",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isTransferer",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isModerator",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isTaxer",
+								"type": "bool"
+							},
+							{
+								"internalType": "address",
+								"name": "addr",
+								"type": "address"
+							}
+						],
+						"internalType": "struct IDefiFactoryToken.AccessSettings[]",
+						"name": "accessSettings",
+						"type": "tuple[]"
+					}
+				],
+				"name": "updateUtilsContracts",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -162,11 +207,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0xbf89ad6881bd95da637513a6a0d377563c1a3ecc531bbb77bbde57870834ffcb",
+			"keccak256": "0x45ade6ffc204b800c9a457c4dad7947d91d5259e84df343c1ad248a504bcf9d7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b02159a7ca07ce6c939bae5c49758d298cf4a7d3721dd096012bb687be3d517f",
-				"dweb:/ipfs/Qmd8qcnUtZ2524gGrrKRnprdaoYeLd7JfVjLLMzYm4ENT6"
+				"bzz-raw://6cd7a725df5adb9ceacc8b08e8824c14dba6ac610159e85042589d431ec8edbc",
+				"dweb:/ipfs/QmbiFjtV3nmdFJietz2H6mvjQ571aVaeTAofN4T1fLKVB2"
 			]
 		}
 	},
