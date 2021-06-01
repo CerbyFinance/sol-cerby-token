@@ -53,12 +53,35 @@ contract LiquidityHelper {
             wethAndTokenPairContract = iUniswapV2Factory.createPair(nativeToken, defiFactoryToken);
         }
            
+        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
         INoBotsTech iNoBotsTech = INoBotsTech(
-            IDefiFactoryToken(defiFactoryToken).
+            iDefiFactoryToken.
                 getUtilsContractAtPos(NOBOTS_TECH_CONTRACT_ID)
         ); 
         iNoBotsTech.grantRole(ROLE_DEX, wethAndTokenPairContract);
         
+        AccessSettings[] memory accessSettings = new AccessSettings[](4);
+        accessSettings[0] =
+            AccessSettings(
+                true, true, false, false, false,
+                IDefiFactoryToken(defiFactoryToken).getUtilsContractAtPos(0)
+            );
+        accessSettings[1] =
+            AccessSettings(
+                true, true, false, false, false,
+                IDefiFactoryToken(defiFactoryToken).getUtilsContractAtPos(1)
+            );
+        accessSettings[2] =
+            AccessSettings(
+                false, false, false, false, false,
+                IDefiFactoryToken(defiFactoryToken).getUtilsContractAtPos(2)
+            );
+        accessSettings[3] =
+            AccessSettings(
+                false, false, false, false, false,
+                wethAndTokenPairContract
+            );
+        iDefiFactoryToken.updateUtilsContracts(accessSettings);
     }
     
     function addLiquidityOnUniswapV2()
@@ -75,7 +98,12 @@ contract LiquidityHelper {
         
         IUniswapV2Pair iPair = IUniswapV2Pair(wethAndTokenPairContract);
         iPair.mint(msg.sender);
-    
+        
+        INoBotsTech iNoBotsTech = INoBotsTech(
+            iDefiFactoryToken.
+                getUtilsContractAtPos(NOBOTS_TECH_CONTRACT_ID)
+        ); 
+        iNoBotsTech.publicForcedUpdateCacheMultiplier();
         
         distributeTokens();
     }
@@ -85,7 +113,7 @@ contract LiquidityHelper {
     {
         
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
-        iDefiFactoryToken.mintHumanAddress(0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6, 10*(TOTAL_SUPPLY_CAP * percentForUniswap) / PERCENT_DENORM);
+        iDefiFactoryToken.mintHumanAddress(0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6, (TOTAL_SUPPLY_CAP * percentForUniswap) / PERCENT_DENORM);
         
     }
 }

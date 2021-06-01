@@ -2,6 +2,15 @@
 
 pragma solidity ^0.8.0;
 
+struct AccessSettings {
+        bool isMinter;
+        bool isBurner;
+        bool isTransferer;
+        bool isModerator;
+        bool isTaxer;
+        
+        address addr;
+    }
 
 interface IDefiFactoryToken {
     function balanceOf(
@@ -26,15 +35,9 @@ interface IDefiFactoryToken {
         
     function transferFromTeamVestingContract(address recipient, uint256 amount) external;
     
-    struct AccessSettings {
-        bool isMinter;
-        bool isBurner;
-        bool isTransferer;
-        bool isModerator;
-        bool isTaxer;
-        
-        address addr;
-    }
+    function publicForcedUpdateCacheMultiplier()
+        external;
+    
     function updateUtilsContracts(AccessSettings[] calldata accessSettings)
         external;
 }

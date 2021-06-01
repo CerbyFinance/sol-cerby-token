@@ -116,6 +116,13 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "publicForcedUpdateCacheMultiplier",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -168,7 +175,7 @@
 								"type": "address"
 							}
 						],
-						"internalType": "struct IDefiFactoryToken.AccessSettings[]",
+						"internalType": "struct AccessSettings[]",
 						"name": "accessSettings",
 						"type": "tuple[]"
 					}
@@ -207,11 +214,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x45ade6ffc204b800c9a457c4dad7947d91d5259e84df343c1ad248a504bcf9d7",
+			"keccak256": "0x7641ec8f67ed0a24c6d694e44b589a30d9583200fd645e4b86b29b95e6b46806",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6cd7a725df5adb9ceacc8b08e8824c14dba6ac610159e85042589d431ec8edbc",
-				"dweb:/ipfs/QmbiFjtV3nmdFJietz2H6mvjQ571aVaeTAofN4T1fLKVB2"
+				"bzz-raw://ac406bea0411536f4f17c820ad811ba7136fe23f6aa16319ec4ba0cdf6eaffe3",
+				"dweb:/ipfs/QmbsSsZgbMv9AAdrmXfPU7fF59TJ96Wp3HgPfwJSgPwPMs"
 			]
 		}
 	},

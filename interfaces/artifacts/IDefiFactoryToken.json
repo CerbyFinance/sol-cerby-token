@@ -53,6 +53,7 @@
 			"getUtilsContractAtPos(uint256)": "06fb1a07",
 			"mintByBridge(address,uint256)": "1f2eba24",
 			"mintHumanAddress(address,uint256)": "0bb9ff5d",
+			"publicForcedUpdateCacheMultiplier()": "e8ac6e4e",
 			"transferFromTeamVestingContract(address,uint256)": "8cbfeb0c",
 			"updateUtilsContracts((bool,bool,bool,bool,bool,address)[])": "789210b3"
 		}
@@ -169,6 +170,13 @@
 			"type": "function"
 		},
 		{
+			"inputs": [],
+			"name": "publicForcedUpdateCacheMultiplier",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"inputs": [
 				{
 					"internalType": "address",
@@ -221,7 +229,7 @@
 							"type": "address"
 						}
 					],
-					"internalType": "struct IDefiFactoryToken.AccessSettings[]",
+					"internalType": "struct AccessSettings[]",
 					"name": "accessSettings",
 					"type": "tuple[]"
 				}

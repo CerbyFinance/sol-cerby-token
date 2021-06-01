@@ -47,6 +47,19 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
+						"name": "newBuyLimitAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "BuyLimitAmountUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
 						"name": "newMultiplier",
 						"type": "uint256"
 					}
@@ -229,6 +242,19 @@
 			{
 				"inputs": [],
 				"name": "buyLimitAmount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "buyLimitPercent",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -910,6 +936,19 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "_buyLimitPercent",
+						"type": "uint256"
+					}
+				],
+				"name": "updateBuyLimitPercent",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "_cycleOneStartTaxPercent",
 						"type": "uint256"
 					},
@@ -1058,19 +1097,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x120f087dae793be773a936db54e371ee3f8dd37da53700343b1d6fb9de52be08",
+			"keccak256": "0x970828cac99de92b747b0f2b3a2b593d50f5cb7351e659bc1f19cc0ec40e4205",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://ca403b13f188d9278d37f4742b4ed1f82a966ed407b9775965397a7f222e8f16",
-				"dweb:/ipfs/QmZF3omLnQbAWTFkbeQfnzUzrWAfEXTwvXmiAWHfvrarUw"
+				"bzz-raw://4815d363fd6306ca7eb719424a6a1c082c045bb3767aeada7e4b7d272fe2b0be",
+				"dweb:/ipfs/QmNiCj6ix46BWvGGAHyFXy1QUzWi3Q1BuKCe4ZwVcPGTwZ"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0xbf89ad6881bd95da637513a6a0d377563c1a3ecc531bbb77bbde57870834ffcb",
+			"keccak256": "0x7641ec8f67ed0a24c6d694e44b589a30d9583200fd645e4b86b29b95e6b46806",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b02159a7ca07ce6c939bae5c49758d298cf4a7d3721dd096012bb687be3d517f",
-				"dweb:/ipfs/Qmd8qcnUtZ2524gGrrKRnprdaoYeLd7JfVjLLMzYm4ENT6"
+				"bzz-raw://ac406bea0411536f4f17c820ad811ba7136fe23f6aa16319ec4ba0cdf6eaffe3",
+				"dweb:/ipfs/QmbsSsZgbMv9AAdrmXfPU7fF59TJ96Wp3HgPfwJSgPwPMs"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
@@ -1079,6 +1118,22 @@
 			"urls": [
 				"bzz-raw://98c434869c260dc9e2fe6c94fbf892a358b89c99bac6e786445309504b823378",
 				"dweb:/ipfs/QmSXtKxUq6v3HKKdXsWhWKY74MyjEvMNAPCb4opKRUEqW1"
+			]
+		},
+		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {
+			"keccak256": "0xb5ab73377aad2d4d2253ea1b198dd16d195b0820cc6376cebf579544cd89377e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://913ae441b8a1bffd7dde47ac13aaa91c216c8c2a9fdb0df883a4775c3bbc367c",
+				"dweb:/ipfs/Qme8QKRGxdcyiFhoFh3RQ6zFxWT2iipXxKtvuXUsrwep21"
+			]
+		},
+		"sol-defifactory-token/interfaces/IWeth.sol": {
+			"keccak256": "0x55d776711ab487dbda19fb0cf0ce8e475057ae1767d31cc78f4333cea009d386",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f7cc6fe73e7cba0786198e5a3d3179270732a87600e8010cb72e3332d2f8f6bd",
+				"dweb:/ipfs/QmNpMwA4GLsM7DSTTLFFwRxGGQZDbT9EtfWhWATedZPSk8"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

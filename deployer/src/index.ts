@@ -196,10 +196,33 @@ const start = async () => {
       console.log(error.message);
     }
   }
+  // prettier-ignore
+  async function step5() {
+    try {
+      const transaction = await defiFactoryTokenContract.methods.grantRole(
+        "0x0000000000000000000000000000000000000000000000000000000000000000", liquidityHelperContract.options.address
+      )
+
+      const signed  = await web3.eth.accounts.signTransaction({
+        nonce   : nonce++,
+        to      : transaction._parent._address,
+        data    : transaction.encodeABI(),
+        gas: await transaction.estimateGas({from: account}),
+        gasPrice: 2e9+1,
+      }, _account.privateKey);
+
+      const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
+
+      console.log('step5 ok')
+  
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
   
 
-  await Promise.all([step1(), step2(), step3(), step4()]);
+  await Promise.all([step1(), step2(), step3(), step4(), step5()]);
 
 
 

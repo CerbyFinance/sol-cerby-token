@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 
 import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/INoBotsTech.sol";
+import "./interfaces/IWeth.sol";
 import "./interfaces/IUniswapV2Factory.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 
@@ -13,7 +14,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     bytes32 public constant ROLE_BOT = keccak256("ROLE_BOT");
     bytes32 public constant ROLE_TEAM_BENEFICIARY = keccak256("ROLE_TEAM_BENEFICIARY");
     
-    uint constant UNISWAP_V2_PAIR_ADDRESS = 3;
+    uint constant UNISWAP_V2_PAIR_ADDRESS_ID = 3;
+    uint constant NATIVE_TOKEN_ADDRESS_ID = 4;
     
     uint constant BALANCE_MULTIPLIER_DENORM = 1e18;
     uint public cachedMultiplier = BALANCE_MULTIPLIER_DENORM;
@@ -29,7 +31,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public teamPercentOfTax = 5e4;
     
     uint public botTaxPercent = 99e4; // 99.0%
-    uint public howManyFirstMinutesIncreasedTax = 60 minutes;
+    uint public howManyFirstMinutesIncreasedTax = 0 minutes;
     uint constant TAX_PERCENT_DENORM = 1e6;
     
     uint public cycleOneStartTaxPercent = 35e4; // 35.0%
@@ -43,6 +45,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public cycleThreeEndTaxPercent = 0; // 0%
     
     uint public buyLimitAmount;
+    uint public buyLimitPercent = 1e4; // 1%
     
     
     address constant BURN_ADDRESS = address(0x0);
@@ -66,6 +69,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     event MultiplierUpdated(uint newMultiplier);
     event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);
     event TeamTaxRewardsSent(address to, uint transferAmount);
+    event BuyLimitAmountUpdated(uint newBuyLimitAmount);
     
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
@@ -94,6 +98,13 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         {
             _setupRole(role, addrs[i]);
         }
+    }
+    
+    function updateBuyLimitPercent(uint _buyLimitPercent)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        buyLimitPercent = _buyLimitPercent;
     }
     
     function updateTeamPercentOfTax(uint _teamPercentOfTax)
@@ -201,29 +212,41 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             uint teamRewards = (batchBurnAndReward * teamPercentOfTax) / TAX_PERCENT_DENORM;
             uint distributeRewards = batchBurnAndReward - teamRewards;
             rewardsBalance += distributeRewards; // 95% of amount goes to rewards to DEFT holders
-            realTotalSupply -= distributeRewards;
+            realTotalSupply -= batchBurnAndReward;
             batchBurnAndReward = 0;
+            
+            uint oldRewardsBalance = rewardsBalance; 
+            
             
             if (teamRewards > 0)
             {
                 address teamAddress = getRoleMember(ROLE_TEAM_BENEFICIARY, 0);
                 IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryTokenAddress);
-                iDefiFactoryToken.mintHumanAddress(teamAddress, teamRewards);
+                iDefiFactoryToken.mintHumanAddress(
+                    teamAddress, 
+                    (teamRewards * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM
+                );
+                
+                rewardsBalance = oldRewardsBalance;
                 
                 emit TeamTaxRewardsSent(teamAddress, teamRewards);
             }
             
             cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
                 (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
-                
+            
             emit MultiplierUpdated(cachedMultiplier);
         }
         
-        IUniswapV2Factory iUniswapV2Factory = IUniswapV2Factory(
-            IDefiFactoryToken(defiFactoryToken).
-                getUtilsContractAtPos(UNISWAP_V2_FACTORY_CONTRACT_ID)
-        );
-        
+        if (buyLimitPercent < TAX_PERCENT_DENORM)
+        {
+            address pairAddress = IDefiFactoryToken(defiFactoryTokenAddress).
+                    getUtilsContractAtPos(UNISWAP_V2_PAIR_ADDRESS_ID);
+            uint deftBalance = IWeth(defiFactoryTokenAddress).balanceOf(pairAddress);
+            buyLimitAmount = (deftBalance * buyLimitPercent) / TAX_PERCENT_DENORM;
+            
+            emit BuyLimitAmountUpdated(buyLimitAmount);
+        }
     }
     
     function publicForcedUpdateCacheMultiplier()
@@ -266,14 +289,14 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             "NBT: !amount"
         );
         
-                                        
         bool isBuy = hasRole(ROLE_DEX, taxAmountsInput.sender);
         
         require (
+            !isBuy ||
             isBuy &&
-            buyLimitAmount > 0 &&
-            taxAmountsInput.transferAmount > buyLimitAmount,
-            "NBT: !buy"
+            buyLimitPercent < TAX_PERCENT_DENORM &&
+            taxAmountsInput.transferAmount < buyLimitAmount,
+            "NBT: !buy_limit"
         );
         
         bool isSell = hasRole(ROLE_DEX, taxAmountsInput.recipient);
