@@ -162,6 +162,44 @@
 				"type": "event"
 			},
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "teamAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "teamRewards",
+						"type": "uint256"
+					}
+				],
+				"name": "TeamTaxRewardsUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "wallet",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "buyTimestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "WalletBuyTimestampUpdated",
+				"type": "event"
+			},
+			{
 				"inputs": [],
 				"name": "ROLE_ADMIN",
 				"outputs": [
@@ -202,7 +240,20 @@
 			},
 			{
 				"inputs": [],
-				"name": "ROLE_TEAM_BENEFICIARY",
+				"name": "ROLE_TEAM_DEVELOPING",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "ROLE_TEAM_MARKETING",
 				"outputs": [
 					{
 						"internalType": "bytes32",
@@ -903,7 +954,46 @@
 			},
 			{
 				"inputs": [],
+				"name": "teamDevelopingSplit",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "teamMarketingSplit",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "teamPercentOfTax",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "teamRewards",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -1042,6 +1132,24 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_teamMarketingSplit",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_teamDevelopingSplit",
+						"type": "uint256"
+					}
+				],
+				"name": "updateTeamSplit",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -1097,11 +1205,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x970828cac99de92b747b0f2b3a2b593d50f5cb7351e659bc1f19cc0ec40e4205",
+			"keccak256": "0xf02027c36fcc6838b25014e6aff33143d3800d0849fc2329742bc06dd53c8d26",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://4815d363fd6306ca7eb719424a6a1c082c045bb3767aeada7e4b7d272fe2b0be",
-				"dweb:/ipfs/QmNiCj6ix46BWvGGAHyFXy1QUzWi3Q1BuKCe4ZwVcPGTwZ"
+				"bzz-raw://8d7ea8cac50ac75ca70cc0e143edaf7d72060e3706edc6bb0a69c712da7d3f51",
+				"dweb:/ipfs/QmWpH65ajYayiCTS5SM2aZGaXb9gbmN4qqJ5fbDrPo9hFP"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
