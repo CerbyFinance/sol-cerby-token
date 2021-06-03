@@ -465,7 +465,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "deployedContractAtTimestamp",
+				"name": "earlyInvestorTimestamp",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -1205,11 +1205,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0xf02027c36fcc6838b25014e6aff33143d3800d0849fc2329742bc06dd53c8d26",
+			"keccak256": "0x3c8a22d26bb319edec7b0965663674aaa33eb82b3097f145918d2aae4a161de5",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://8d7ea8cac50ac75ca70cc0e143edaf7d72060e3706edc6bb0a69c712da7d3f51",
-				"dweb:/ipfs/QmWpH65ajYayiCTS5SM2aZGaXb9gbmN4qqJ5fbDrPo9hFP"
+				"bzz-raw://c475078ea94316fb624dc45d33224e9a1b40bf95aede0c0242d439d430f4285f",
+				"dweb:/ipfs/QmYzNmRY2u1koUZtF6giSwAWdD1MgWyznHkq1SZyTHgweu"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

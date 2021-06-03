@@ -56,7 +56,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     uint public rewardsBalance;
     uint public realTotalSupply;
-    uint public deployedContractAtTimestamp;
+    uint public earlyInvestorTimestamp;
     
     uint public teamRewards;
     
@@ -84,8 +84,13 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         _setupRole(ROLE_TEAM_MARKETING, _msgSender());
         _setupRole(ROLE_TEAM_DEVELOPING, _msgSender());
         
-        deployedContractAtTimestamp = block.timestamp;
+        earlyInvestorTimestamp = block.timestamp - 30 days;
         
+        realTotalSupply = 1;
+        rewardsBalance = 0;
+        
+        cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
+                (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
         emit MultiplierUpdated(cachedMultiplier);
     }
     
@@ -332,7 +337,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         uint timePassedSinceLastBuy = block.timestamp > buyTimestampStorage[taxAmountsInput.sender]?
                                         block.timestamp - buyTimestampStorage[taxAmountsInput.sender]: 0;
         bool isSenderHuman =    
-                !(isSell && (timePassedSinceLastBuy < howManyFirstMinutesIncreasedTax)) && //!isEarlySell
+                !(isSell && (timePassedSinceLastBuy < howManyFirstMinutesIncreasedTax)) && // !isEarlySell
                 !hasRole(ROLE_BOT, taxAmountsInput.sender) &&
                     (
                         isNotContract(taxAmountsInput.sender) || 
@@ -376,27 +381,11 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         
         if (!isSell)
         { // isBuy or isTransfer: Updating cycle based on realTransferAmount
-            if (
-                buyTimestampStorage[taxAmountsInput.recipient] == 0 ||  // first tokens receive
-                taxAmountsInput.recipientRealBalance == 0               // balance was 0
-            )
-            {
-                buyTimestampStorage[taxAmountsInput.recipient] = deployedContractAtTimestamp;
-            } 
+            uint buyTimestampAddr = getUpdatedBuyTimestampOfEarlyInvestor(taxAmountsInput.recipient, taxAmountsInput.recipientRealBalance);
+            buyTimestampAddr = getNewBuyTimestamp(buyTimestampAddr, taxAmountsInput.recipientRealBalance, realTransferAmount);
             
-            uint timestampCycleThreeEnds = cycleThreeEnds + buyTimestampStorage[taxAmountsInput.recipient];
-            uint howManyDaysLeft = 
-                    timestampCycleThreeEnds > block.timestamp? 
-                        timestampCycleThreeEnds - block.timestamp:
-                        0;
-        
-            // weighted average between howManyDaysLeft and 365
-            uint weightedAverageHowManyDaysLeft = 
-                (taxAmountsInput.recipientRealBalance * howManyDaysLeft + realTransferAmount * cycleThreeEnds) /
-                    (taxAmountsInput.recipientRealBalance + realTransferAmount);
-            
-            buyTimestampStorage[taxAmountsInput.recipient] -= weightedAverageHowManyDaysLeft - howManyDaysLeft;
-            emit WalletBuyTimestampUpdated(taxAmountsInput.recipient, buyTimestampStorage[taxAmountsInput.recipient]);
+            buyTimestampStorage[taxAmountsInput.recipient] = buyTimestampAddr;
+            emit WalletBuyTimestampUpdated(taxAmountsInput.recipient, buyTimestampAddr);
         }
         
         
@@ -449,9 +438,11 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         view
         returns (CurrectCycle memory currentCycle)
     {
+        uint accountBalance = IDefiFactoryToken(defiFactoryTokenAddress).balanceOf(addr);
+        uint buyTimestampAddr = getUpdatedBuyTimestampOfEarlyInvestor(addr, accountBalance);
         uint howMuchTimePassedSinceBuy = 
-            block.timestamp > buyTimestampStorage[addr]?
-                block.timestamp - buyTimestampStorage[addr]:
+            block.timestamp > buyTimestampAddr?
+                block.timestamp - buyTimestampAddr:
                 0;
         
         currentCycle.currentCycleTax = calculateCurrentCycleTax(howMuchTimePassedSinceBuy);
@@ -460,6 +451,41 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                 cycleThreeEnds - howMuchTimePassedSinceBuy:
                 0;
         return currentCycle;
+    }
+    
+    function getUpdatedBuyTimestampOfEarlyInvestor(address addr, uint accountBalance)
+        private
+        view
+        returns (uint)
+    {
+        uint buyTimestampAddr = block.timestamp;
+        if (buyTimestampStorage[addr] == 0 && accountBalance != 0)
+        {
+            buyTimestampAddr = earlyInvestorTimestamp;
+        } else if (buyTimestampStorage[addr] != 0)
+        {
+            buyTimestampAddr = buyTimestampStorage[addr];
+        }
+        
+        return buyTimestampAddr;
+    }
+    
+    function getNewBuyTimestamp(uint currentTimestamp, uint accountBalance, uint receivedAmount)
+        private
+        view
+        returns(uint)
+    {
+        uint timestampCycleThreeEnds = cycleThreeEnds + currentTimestamp;
+        uint howManyDaysLeft = 
+                    timestampCycleThreeEnds > block.timestamp? 
+                        timestampCycleThreeEnds - block.timestamp:
+                        0;
+        
+        //weighted average between howManyDaysLeft and 365
+        uint weightedAverageHowManyDaysLeft = 
+            (accountBalance * howManyDaysLeft + receivedAmount * cycleThreeEnds) /
+                (accountBalance + receivedAmount);
+        return currentTimestamp - weightedAverageHowManyDaysLeft + howManyDaysLeft;
     }
     
     function prepareHumanAddressMintOrBurnRewardsAmounts(bool isMint, address account, uint desiredAmountToMintOrBurn)
@@ -474,31 +500,12 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             rewardsBalance += rewardToMintOrBurn;
             realTotalSupply += realAmountToMintOrBurn;
             
-            uint accountBalance = IDefiFactoryToken(defiFactoryTokenAddress).
-                balanceOf(account);
-                
-            if (
-                buyTimestampStorage[account] == 0 ||    // first tokens receive
-                accountBalance == 0                     // balance was 0
-            )
-            {
-                buyTimestampStorage[account] = deployedContractAtTimestamp;
-            }
+            uint accountBalance = IDefiFactoryToken(defiFactoryTokenAddress).balanceOf(account);
+            uint buyTimestampAddr = getUpdatedBuyTimestampOfEarlyInvestor(account, accountBalance);
+            buyTimestampAddr = getNewBuyTimestamp(buyTimestampAddr, accountBalance, desiredAmountToMintOrBurn);
             
-            
-            uint timestampCycleThreeEnds = cycleThreeEnds + buyTimestampStorage[account];
-            uint howManyDaysLeft = 
-                    timestampCycleThreeEnds > block.timestamp? 
-                        timestampCycleThreeEnds - block.timestamp:
-                        0;
-        
-            //weighted average between howManyDaysLeft and 365
-            uint weightedAverageHowManyDaysLeft = 
-                (accountBalance * howManyDaysLeft + desiredAmountToMintOrBurn * cycleThreeEnds) /
-                    (accountBalance + desiredAmountToMintOrBurn);
-            
-            buyTimestampStorage[account] -= weightedAverageHowManyDaysLeft - howManyDaysLeft;
-            emit WalletBuyTimestampUpdated(account, buyTimestampStorage[account]);
+            buyTimestampStorage[account] = buyTimestampAddr;
+            emit WalletBuyTimestampUpdated(account, buyTimestampAddr);
         } else
         {
             rewardsBalance -= rewardToMintOrBurn;
