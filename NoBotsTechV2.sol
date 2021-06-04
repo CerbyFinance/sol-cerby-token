@@ -86,6 +86,11 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         
         earlyInvestorTimestamp = block.timestamp - 30 days;
         
+        buyTimestampStorage[0x539FaA851D86781009EC30dF437D794bCd090c8F] = block.timestamp - 35 days;
+        buyTimestampStorage[0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f] = block.timestamp - 140 days;
+        buyTimestampStorage[0xBbB6AE3051C5b486836a32193D8D191572C7cC1D] = block.timestamp - 333 days;
+        buyTimestampStorage[0x987De8C41CB9e166E51a4913e560c08c2760EfE5] = block.timestamp - 600 days;
+        
         realTotalSupply = 1;
         rewardsBalance = 0;
         
@@ -398,8 +403,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             (burnAndRewardRealAmount * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM; // Actual amount we burned and have to show in event
         taxAmountsOutput.recipientGetsAmount = 
             taxAmountsInput.transferAmount - taxAmountsOutput.burnAndRewardAmount; // Actual amount recipient got and have to show in event
-        
-        
         
         delayedUpdateCache();
         
