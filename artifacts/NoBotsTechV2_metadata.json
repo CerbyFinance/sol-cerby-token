@@ -46,12 +46,51 @@
 				"inputs": [
 					{
 						"indexed": false,
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					}
+				],
+				"name": "BulkMarkedAsBot",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
 						"internalType": "uint256",
 						"name": "newBuyLimitAmount",
 						"type": "uint256"
 					}
 				],
 				"name": "BuyLimitAmountUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "MarkedAsBot",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "MarkedAsNotBot",
 				"type": "event"
 			},
 			{
@@ -214,19 +253,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "ROLE_BOT",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "ROLE_DEX",
 				"outputs": [
 					{
@@ -288,6 +314,19 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					}
+				],
+				"name": "bulkMarkAddressAsBot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -651,24 +690,6 @@
 						"type": "bytes32"
 					},
 					{
-						"internalType": "address[]",
-						"name": "addrs",
-						"type": "address[]"
-					}
-				],
-				"name": "grantOneRoleBulk",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "role",
-						"type": "bytes32"
-					},
-					{
 						"internalType": "address",
 						"name": "account",
 						"type": "address"
@@ -742,6 +763,25 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "isBotStorage",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "lastCachedTimestamp",
 				"outputs": [
@@ -752,6 +792,32 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "markAddressAsBot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "markAddressAsNotBot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -1205,11 +1271,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0xa593d0a9e31d4daab7663207e7261f02e42a16987ee554051cf1ccd5bfb4cbc2",
+			"keccak256": "0x097fa512983045eea6b7036b0818de68d7d6f17b2580d62bc3a0c3216c26f26e",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://7b4f18ddeae5319fe96111f10000faa1d701562a646b267e7a566bc0ae12a763",
-				"dweb:/ipfs/QmZkoZhzs91uXajAtLbRydYmvDAhTrvGj7B8rDUW7FVHpe"
+				"bzz-raw://b5386d30601b2269e4e0ef442d2e54734bb1846a1861c5dacdd550319d667ddd",
+				"dweb:/ipfs/QmSu9FPGhU23poeFM3sg5U7k2N9nfA9qbStC1gta4LDMMZ"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

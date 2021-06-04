@@ -11,7 +11,6 @@ import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 contract NoBotsTechV2 is AccessControlEnumerable {
     bytes32 public constant ROLE_DEX = keccak256("ROLE_DEX");
-    bytes32 public constant ROLE_BOT = keccak256("ROLE_BOT");
     bytes32 public constant ROLE_TEAM_MARKETING = keccak256("ROLE_TEAM_MARKETING");
     bytes32 public constant ROLE_TEAM_DEVELOPING = keccak256("ROLE_TEAM_DEVELOPING");
     
@@ -61,6 +60,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public teamRewards;
     
     mapping(address => uint) public buyTimestampStorage;
+    mapping(address => bool) public isBotStorage;
     
     struct CurrectCycle {
         uint currentCycleTax;
@@ -78,6 +78,9 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     event BuyLimitAmountUpdated(uint newBuyLimitAmount);
     event TeamTaxRewardsUpdated(address teamAddress, uint teamRewards);
     event WalletBuyTimestampUpdated(address wallet, uint buyTimestamp);
+    event BulkMarkedAsBot(address[] addrs);
+    event MarkedAsBot(address addr);
+    event MarkedAsNotBot(address addr);
     
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
@@ -109,14 +112,31 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         }
     }
     
-    function grantOneRoleBulk(bytes32 role, address[] calldata addrs)
+    function bulkMarkAddressAsBot(address[] calldata addrs)
         external
         onlyRole(ROLE_ADMIN)
     {
         for(uint i = 0; i<addrs.length; i++)
         {
-            _setupRole(role, addrs[i]);
+            isBotStorage[addrs[i]] = true;
         }
+        emit BulkMarkedAsBot(addrs);
+    }
+    
+    function markAddressAsBot(address addr)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        isBotStorage[addr] = true;
+        emit MarkedAsBot(addr);
+    }
+    
+    function markAddressAsNotBot(address addr)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        isBotStorage[addr] = false;
+        emit MarkedAsNotBot(addr);
     }
     
     function updateTeamSplit(uint _teamMarketingSplit, uint _teamDevelopingSplit)
@@ -343,7 +363,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                                         block.timestamp - buyTimestampStorage[taxAmountsInput.sender]: 0;
         bool isSenderHuman =    
                 !(isSell && (timePassedSinceLastBuy < howManyFirstMinutesIncreasedTax)) && // !isEarlySell
-                !hasRole(ROLE_BOT, taxAmountsInput.sender) &&
+                !isBotStorage[taxAmountsInput.sender] &&
                     (
                         isNotContract(taxAmountsInput.sender) || 
                         hasRole(ROLE_DEX, taxAmountsInput.sender)
@@ -441,18 +461,25 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         view
         returns (CurrectCycle memory currentCycle)
     {
-        uint accountBalance = IDefiFactoryToken(defiFactoryTokenAddress).balanceOf(addr);
-        uint buyTimestampAddr = getUpdatedBuyTimestampOfEarlyInvestor(addr, accountBalance);
-        uint howMuchTimePassedSinceBuy = 
-            block.timestamp > buyTimestampAddr?
-                block.timestamp - buyTimestampAddr:
-                0;
-        
-        currentCycle.currentCycleTax = calculateCurrentCycleTax(howMuchTimePassedSinceBuy);
-        currentCycle.howMuchTimeLeftTillEndOfCycleThree = 
-            howMuchTimePassedSinceBuy < cycleThreeEnds?
-                cycleThreeEnds - howMuchTimePassedSinceBuy:
-                0;
+        if (isBotStorage[addr])
+        {
+            currentCycle.currentCycleTax = botTaxPercent;
+            currentCycle.howMuchTimeLeftTillEndOfCycleThree = cycleThreeEnds;
+        } else
+        {
+            uint accountBalance = IDefiFactoryToken(defiFactoryTokenAddress).balanceOf(addr);
+            uint buyTimestampAddr = getUpdatedBuyTimestampOfEarlyInvestor(addr, accountBalance);
+            uint howMuchTimePassedSinceBuy = 
+                block.timestamp > buyTimestampAddr?
+                    block.timestamp - buyTimestampAddr:
+                    0;
+            
+            currentCycle.currentCycleTax = calculateCurrentCycleTax(howMuchTimePassedSinceBuy);
+            currentCycle.howMuchTimeLeftTillEndOfCycleThree = 
+                howMuchTimePassedSinceBuy < cycleThreeEnds?
+                    cycleThreeEnds - howMuchTimePassedSinceBuy:
+                    0;
+        }
         return currentCycle;
     }
     
