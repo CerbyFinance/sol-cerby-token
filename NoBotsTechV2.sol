@@ -6,7 +6,9 @@ import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/INoBotsTech.sol";
 import "./interfaces/IWeth.sol";
 import "./interfaces/IUniswapV2Factory.sol";
+import "./interfaces/IBotsStorage.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
+
 
 
 contract NoBotsTechV2 is AccessControlEnumerable {
@@ -30,6 +32,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     
     address defiFactoryTokenAddress;
+    address botsStorageAddress;
     
     uint public teamPercentOfTax = 5e4;
     
@@ -60,7 +63,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public teamRewards;
     
     mapping(address => uint) public buyTimestampStorage;
-    mapping(address => bool) public isBotStorage;
     
     struct CurrectCycle {
         uint currentCycleTax;
@@ -78,9 +80,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     event BuyLimitAmountUpdated(uint newBuyLimitAmount);
     event TeamTaxRewardsUpdated(address teamAddress, uint teamRewards);
     event WalletBuyTimestampUpdated(address wallet, uint buyTimestamp);
-    event BulkMarkedAsBot(address[] addrs);
-    event MarkedAsBot(address addr);
-    event MarkedAsNotBot(address addr);
     
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
@@ -112,33 +111,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         }
     }
     
-    function bulkMarkAddressAsBot(address[] calldata addrs)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        for(uint i = 0; i<addrs.length; i++)
-        {
-            isBotStorage[addrs[i]] = true;
-        }
-        emit BulkMarkedAsBot(addrs);
-    }
-    
-    function markAddressAsBot(address addr)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        isBotStorage[addr] = true;
-        emit MarkedAsBot(addr);
-    }
-    
-    function markAddressAsNotBot(address addr)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        isBotStorage[addr] = false;
-        emit MarkedAsNotBot(addr);
-    }
-    
     function updateTeamSplit(uint _teamMarketingSplit, uint _teamDevelopingSplit)
         external
         onlyRole(ROLE_ADMIN)
@@ -163,8 +135,16 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     function updateDefiFactoryTokenAddress(address _defiFactoryTokenAddress)
         external
+        onlyRole(ROLE_ADMIN)
     {
         defiFactoryTokenAddress = _defiFactoryTokenAddress;
+    }
+    
+    function updateBotStorageAddress(address _botsStorageAddress)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        botsStorageAddress = _botsStorageAddress;
     }
     
     function updateSecondsBetweenUpdates(uint _secondsBetweenRecacheUpdates)
@@ -363,7 +343,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                                         block.timestamp - buyTimestampStorage[taxAmountsInput.sender]: 0;
         bool isSenderHuman =    
                 !(isSell && (timePassedSinceLastBuy < howManyFirstMinutesIncreasedTax)) && // !isEarlySell
-                !isBotStorage[taxAmountsInput.sender] &&
+                !IBotsStorage(botsStorageAddress).isBotStorage(taxAmountsInput.sender) &&
                     (
                         isNotContract(taxAmountsInput.sender) || 
                         hasRole(ROLE_DEX, taxAmountsInput.sender)
@@ -461,7 +441,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         view
         returns (CurrectCycle memory currentCycle)
     {
-        if (isBotStorage[addr])
+        
+        if (IBotsStorage(botsStorageAddress).isBotStorage(addr))
         {
             currentCycle.currentCycleTax = botTaxPercent;
             currentCycle.howMuchTimeLeftTillEndOfCycleThree = cycleThreeEnds;

@@ -46,12 +46,51 @@
 				"inputs": [
 					{
 						"indexed": false,
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					}
+				],
+				"name": "BulkMarkedAsBot",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
 						"internalType": "uint256",
 						"name": "newBuyLimitAmount",
 						"type": "uint256"
 					}
 				],
 				"name": "BuyLimitAmountUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "MarkedAsBot",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "MarkedAsNotBot",
 				"type": "event"
 			},
 			{
@@ -275,6 +314,19 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					}
+				],
+				"name": "bulkMarkAddressAsBot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -622,7 +674,7 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct NoBotsTechV2.CurrectCycle",
+						"internalType": "struct Bots.CurrectCycle",
 						"name": "currentCycle",
 						"type": "tuple"
 					}
@@ -663,7 +715,7 @@
 								"type": "address"
 							}
 						],
-						"internalType": "struct NoBotsTechV2.RoleAccess[]",
+						"internalType": "struct Bots.RoleAccess[]",
 						"name": "roles",
 						"type": "tuple[]"
 					}
@@ -711,6 +763,25 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "isBotStorage",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "lastCachedTimestamp",
 				"outputs": [
@@ -721,6 +792,32 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "markAddressAsBot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "markAddressAsNotBot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -976,19 +1073,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "_botsStorageAddress",
-						"type": "address"
-					}
-				],
-				"name": "updateBotStorageAddress",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "uint256",
 						"name": "_botTaxPercent",
 						"type": "uint256"
@@ -1172,7 +1256,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/NoBotsTechV2.sol": "NoBotsTechV2"
+			"sol-defifactory-token/BotsStorage.sol": "Bots"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -1186,20 +1270,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x664ed4deda199108c8e50e3213c6eabc49ac6935cd2ef718a4cffc214d8e0b95",
+		"sol-defifactory-token/BotsStorage.sol": {
+			"keccak256": "0x1a58fa28f1d7e056c67bc825a53f74beadfe5645e6a97a8c6170c77bb4379ad9",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://e6d79b6761130f6ab0962da356edcb338e280bf8d1dcae0863da0b4ba9bb4247",
-				"dweb:/ipfs/QmYJhewhG22pk5DqnyeqdcanPKfPDXj1wtjGjaDWjTfBV9"
-			]
-		},
-		"sol-defifactory-token/interfaces/IBotsStorage.sol": {
-			"keccak256": "0x5db53619c984108fcca6310ec85118e0f12f0ccc45c1e198d817b629a465142f",
-			"license": "BUSL-1.1",
-			"urls": [
-				"bzz-raw://ca504d21089a2232d1ed3bb1d84f31b75a294ae4419924f20a566586f371d1ed",
-				"dweb:/ipfs/QmSomz8oREvb8m2tnDmzjMYR8HKL7o7tvJ5HDHyyw2wdwA"
+				"bzz-raw://b909f9a5639f14d49a0a77833a67aa1cff2706ebeb644ba8cc34ba582967f45b",
+				"dweb:/ipfs/QmfZYhM4U7wTeSkBtYxMyDR8ed7wbdrJD9VV2M9v9Fq6XY"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
