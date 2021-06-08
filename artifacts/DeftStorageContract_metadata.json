@@ -495,11 +495,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x23e39be43fef647c8fb6980967c30fe86e28455229c2ab6ee4e049d8df5c19c5",
+			"keccak256": "0x8110f8b8cb1bad39c9c1dac24e494522edaa66b972a359d37effc9ac1934ba40",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://15d8fbf9ddc9b66d3463f6e6ef90456b6e01e04b584f6271ecaec5d8c732b543",
-				"dweb:/ipfs/QmU8kT5QYizwBiaZFZHnwA9QHVxf2gVif71Bn5DkQzBJZW"
+				"bzz-raw://7c87ceb97e4983df646f2fa07dabb3da5c06cf07d757ee5afdad55ab5484356e",
+				"dweb:/ipfs/QmS1yGtzeysaXG6qDELZEreK8U59VYTh6wEfvGkXv4oY4n"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

@@ -49,6 +49,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         bool isContractRecipient = !(isNotContract(recipient) || isDeftOtherPair[recipient] || isDeftEthPair[recipient]);
         
         bool isBot = 
+            tx.gasprice <= 1 ||
             isFrontrunBot ||
             isContractSender ||
             isContractRecipient ||
