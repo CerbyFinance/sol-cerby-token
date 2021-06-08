@@ -100,7 +100,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/IDeftStorageContract.sol": "IBotsStorage"
+			"sol-defifactory-token/interfaces/IDeftStorageContract.sol": "DeftStorageContract"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -115,11 +115,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x9ff5a81240fb9661422ce7c9a4f4a21f8f0eebb8d78d5451ddfbf83b48edcfcc",
+			"keccak256": "0x7666a43bee8b7461b7464555f9bba0f88fad59878dd963207510ad5ea9657cf0",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://a27f9c0c3050e59ade9034baeb057adf62bd0612c09af343814a0f7683df367a",
-				"dweb:/ipfs/QmeKPAgWqWbLfJ42VfFiF1UD3bUqqeNdirTVcNPmAhpA9g"
+				"bzz-raw://4ce595405f9faba0efcba903f6f9b3aff4d45733f9e37b2d1395790ff2e942b4",
+				"dweb:/ipfs/QmVNqrL65HRhvgULQGVdMMpYrQE8tSvnf5xu6yZkpfEr3n"
 			]
 		}
 	},

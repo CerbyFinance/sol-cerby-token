@@ -48,7 +48,7 @@
 		"gasEstimates": null,
 		"methodIdentifiers": {
 			"bulkMarkAddressAsBot(address[])": "6a930a95",
-			"isBot(address,address)": "79f25e85",
+			"isHumanTransaction(address,address)": "67fd507e",
 			"markAddressAsBot(address)": "1093baa9",
 			"markAddressAsNotBot(address)": "a9a48824",
 			"updateTransaction(address,address)": "030b5b31"
@@ -81,7 +81,7 @@
 					"type": "address"
 				}
 			],
-			"name": "isBot",
+			"name": "isHumanTransaction",
 			"outputs": [
 				{
 					"internalType": "bool",

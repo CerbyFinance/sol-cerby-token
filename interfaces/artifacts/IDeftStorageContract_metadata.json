@@ -31,7 +31,7 @@
 						"type": "address"
 					}
 				],
-				"name": "isBot",
+				"name": "isHumanTransaction",
 				"outputs": [
 					{
 						"internalType": "bool",
@@ -100,7 +100,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/IDeftStorageContract.sol": "IBotsStorage"
+			"sol-defifactory-token/interfaces/IDeftStorageContract.sol": "IDeftStorageContract"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -115,11 +115,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x9ff5a81240fb9661422ce7c9a4f4a21f8f0eebb8d78d5451ddfbf83b48edcfcc",
+			"keccak256": "0x4cbe6beb870f8c2ff0606bd49893821c58bc75c6c26fcd2c6f8f80cd0fe29cfa",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://a27f9c0c3050e59ade9034baeb057adf62bd0612c09af343814a0f7683df367a",
-				"dweb:/ipfs/QmeKPAgWqWbLfJ42VfFiF1UD3bUqqeNdirTVcNPmAhpA9g"
+				"bzz-raw://e3b35194806ad83f1690d17c838cf754c780543db18cfd2a12bc514601620e68",
+				"dweb:/ipfs/QmWvFe9wexbpFHpmu2USrivvNuCNuaipxPwcBQjxNBb38a"
 			]
 		}
 	},

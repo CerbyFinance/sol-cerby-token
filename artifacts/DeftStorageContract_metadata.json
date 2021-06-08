@@ -267,7 +267,7 @@
 						"type": "address"
 					}
 				],
-				"name": "isBot",
+				"name": "isHumanTransaction",
 				"outputs": [
 					{
 						"internalType": "bool",
@@ -297,9 +297,63 @@
 						"internalType": "address",
 						"name": "addr",
 						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "markAddressAsHuman",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
 					}
 				],
 				"name": "markAddressAsNotBot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "markPairAsDeftEthPair",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "markPairAsDeftOtherPair",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -416,7 +470,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/BotsStorage.sol": "BotsStorage"
+			"sol-defifactory-token/DeftStorageContract.sol": "DeftStorageContract"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -430,12 +484,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/BotsStorage.sol": {
-			"keccak256": "0x83ae494726de860a625cea96060f92664151a0cde336a5d944f2e28624606897",
+		"sol-defifactory-token/DeftStorageContract.sol": {
+			"keccak256": "0x09b811f51afd3592f827d0e4f2f7df2840d562647b5c9647cb2d25d32be560f1",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://1089d45438467c35cd57dde918f6a6facb4ff748f55f0b07e5268095b062be87",
-				"dweb:/ipfs/QmSTjCx5qoRYuyvCYZ623KE7hj9ZdJLUCfjdVa3MLKnfgQ"
+				"bzz-raw://92f1dc5ee69670e0dad44affa502da8ddbdaba4335b1b27b9d462e0343a15c3e",
+				"dweb:/ipfs/QmenXgLQEMRsBhdj1QTovv6RVLkZroJe8vymvqvyv1PZRs"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

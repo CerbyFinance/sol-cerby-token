@@ -31,8 +31,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public secondsBetweenRecacheUpdates = 0;
     
     
-    address defiFactoryTokenAddress;
-    address botsStorageAddress;
+    address public defiFactoryTokenAddress;
+    address public botsStorageAddress;
     
     uint public teamPercentOfTax = 5e4;
     

@@ -416,7 +416,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/BotsStorage.sol": "BotsStorage"
+			"sol-defifactory-token/BotsStorage.sol": "DeftStorage"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -431,11 +431,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/BotsStorage.sol": {
-			"keccak256": "0x83ae494726de860a625cea96060f92664151a0cde336a5d944f2e28624606897",
+			"keccak256": "0x641c668aa83b6615bfdc6cc28052f4b87f9307d9be95bb430d40ff4685adf235",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://1089d45438467c35cd57dde918f6a6facb4ff748f55f0b07e5268095b062be87",
-				"dweb:/ipfs/QmSTjCx5qoRYuyvCYZ623KE7hj9ZdJLUCfjdVa3MLKnfgQ"
+				"bzz-raw://ae718250ea512a24a762e7557f089de3862dc4d4016c043f17516de3ed9cd2ab",
+				"dweb:/ipfs/QmckNhkMQNea8vB9MDv9rb3Y18AcfxpY7a21j8enUqJ5Gn"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
