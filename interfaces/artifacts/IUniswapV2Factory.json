@@ -47,24 +47,32 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"bulkMarkAddressAsBot(address[])": "6a930a95",
-			"isBot(address,address)": "79f25e85",
-			"markAddressAsBot(address)": "1093baa9",
-			"markAddressAsNotBot(address)": "a9a48824",
-			"updateTransaction(address,address)": "030b5b31"
+			"createPair(address,address)": "c9c65396",
+			"getPair(address,address)": "e6a43905"
 		}
 	},
 	"abi": [
 		{
 			"inputs": [
 				{
-					"internalType": "address[]",
-					"name": "addrs",
-					"type": "address[]"
+					"internalType": "address",
+					"name": "tokenA",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "tokenB",
+					"type": "address"
 				}
 			],
-			"name": "bulkMarkAddressAsBot",
-			"outputs": [],
+			"name": "createPair",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
 			"stateMutability": "nonpayable",
 			"type": "function"
 		},
@@ -72,68 +80,24 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "sender",
+					"name": "tokenA",
 					"type": "address"
 				},
 				{
 					"internalType": "address",
-					"name": "recipient",
+					"name": "tokenB",
 					"type": "address"
 				}
 			],
-			"name": "isBot",
+			"name": "getPair",
 			"outputs": [
 				{
-					"internalType": "bool",
+					"internalType": "address",
 					"name": "",
-					"type": "bool"
+					"type": "address"
 				}
 			],
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "addr",
-					"type": "address"
-				}
-			],
-			"name": "markAddressAsBot",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "addr",
-					"type": "address"
-				}
-			],
-			"name": "markAddressAsNotBot",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "sender",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "recipient",
-					"type": "address"
-				}
-			],
-			"name": "updateTransaction",
-			"outputs": [],
-			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	]

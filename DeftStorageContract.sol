@@ -9,8 +9,8 @@ contract DeftStorageContract is AccessControlEnumerable {
     mapping(address => bool) private isBotStorage;
     mapping(address => bool) private isHumanStorage;
     
-    mapping(address => uint) private sentAtBlock;
-    mapping(address => uint) private receivedAtBlock;
+    mapping(address => mapping(address => uint)) private sentAtBlock;
+    mapping(address => mapping(address => uint)) private receivedAtBlock;
     
     mapping(address => bool) private isDeftEthPair;
     mapping(address => bool) private isDeftOtherPair;
@@ -23,15 +23,15 @@ contract DeftStorageContract is AccessControlEnumerable {
         _setupRole(ROLE_ADMIN, _msgSender());
     }
     
-    function updateTransaction(address sender, address recipient)
+    function updateTransaction(address tokenAddr, address sender, address recipient)
         external
         onlyRole(ROLE_ADMIN)
     {
-        sentAtBlock[sender] = block.number;
-        receivedAtBlock[recipient] = block.number;
+        sentAtBlock[tokenAddr][sender] = block.number;
+        receivedAtBlock[tokenAddr][recipient] = block.number;
     }
     
-    function isHumanTransaction(address sender, address recipient)
+    function isHumanTransaction(address tokenAddr, address sender, address recipient)
         external
         view
         onlyRole(ROLE_ADMIN)
@@ -43,8 +43,8 @@ contract DeftStorageContract is AccessControlEnumerable {
         bool isSellOtherTokenThroughDeft = isDeftOtherPair[sender] && isDeftEthPair[recipient];
         bool isBlacklisted = isBotStorage[recipient] || isBotStorage[sender];
         bool isFrontrunBot = 
-            sentAtBlock[recipient] == block.number && !isHumanStorage[recipient] ||
-            receivedAtBlock[sender] == block.number && !isHumanStorage[sender];
+            sentAtBlock[tokenAddr][recipient] == block.number && !isHumanStorage[recipient] ||
+            receivedAtBlock[tokenAddr][sender] == block.number && !isHumanStorage[sender];
         bool isContractSender = !(isNotContract(sender) || isDeftOtherPair[sender] || isDeftEthPair[sender]);
         bool isContractRecipient = !(isNotContract(recipient) || isDeftOtherPair[recipient] || isDeftEthPair[recipient]);
         

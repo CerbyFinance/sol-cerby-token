@@ -258,6 +258,11 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
 						"name": "sender",
 						"type": "address"
 					},
@@ -417,6 +422,11 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
 						"name": "sender",
 						"type": "address"
 					},
@@ -485,11 +495,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x09b811f51afd3592f827d0e4f2f7df2840d562647b5c9647cb2d25d32be560f1",
+			"keccak256": "0x23e39be43fef647c8fb6980967c30fe86e28455229c2ab6ee4e049d8df5c19c5",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://92f1dc5ee69670e0dad44affa502da8ddbdaba4335b1b27b9d462e0343a15c3e",
-				"dweb:/ipfs/QmenXgLQEMRsBhdj1QTovv6RVLkZroJe8vymvqvyv1PZRs"
+				"bzz-raw://15d8fbf9ddc9b66d3463f6e6ef90456b6e01e04b584f6271ecaec5d8c732b543",
+				"dweb:/ipfs/QmU8kT5QYizwBiaZFZHnwA9QHVxf2gVif71Bn5DkQzBJZW"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

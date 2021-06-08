@@ -648,11 +648,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x9ecb6295cec766d560e678fa77fdf08dd9061229652c5089965ded2ed814a0ae",
+			"keccak256": "0x7641ec8f67ed0a24c6d694e44b589a30d9583200fd645e4b86b29b95e6b46806",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ac2132ef97c889ecb57c0b58710e89e25ce3b295ef4d25b21efdabc5e7f778da",
-				"dweb:/ipfs/QmWgZB8bphD6JVw8SFu11HsW28msR7hZXTvbyupq9khVAB"
+				"bzz-raw://ac406bea0411536f4f17c820ad811ba7136fe23f6aa16319ec4ba0cdf6eaffe3",
+				"dweb:/ipfs/QmbsSsZgbMv9AAdrmXfPU7fF59TJ96Wp3HgPfwJSgPwPMs"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

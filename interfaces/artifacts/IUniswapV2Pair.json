@@ -47,46 +47,33 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"bulkMarkAddressAsBot(address[])": "6a930a95",
-			"isBot(address,address)": "79f25e85",
-			"markAddressAsBot(address)": "1093baa9",
-			"markAddressAsNotBot(address)": "a9a48824",
-			"updateTransaction(address,address)": "030b5b31"
+			"getReserves()": "0902f1ac",
+			"mint(address)": "6a627842",
+			"swap(uint256,uint256,address,bytes)": "022c0d9f",
+			"sync()": "fff6cae9",
+			"token0()": "0dfe1681",
+			"token1()": "d21220a7"
 		}
 	},
 	"abi": [
 		{
-			"inputs": [
-				{
-					"internalType": "address[]",
-					"name": "addrs",
-					"type": "address[]"
-				}
-			],
-			"name": "bulkMarkAddressAsBot",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "sender",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "recipient",
-					"type": "address"
-				}
-			],
-			"name": "isBot",
+			"inputs": [],
+			"name": "getReserves",
 			"outputs": [
 				{
-					"internalType": "bool",
+					"internalType": "uint256",
 					"name": "",
-					"type": "bool"
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint32",
+					"name": "",
+					"type": "uint32"
 				}
 			],
 			"stateMutability": "view",
@@ -96,44 +83,80 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "addr",
+					"name": "to",
 					"type": "address"
 				}
 			],
-			"name": "markAddressAsBot",
-			"outputs": [],
+			"name": "mint",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
 			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
 			"inputs": [
 				{
-					"internalType": "address",
-					"name": "addr",
-					"type": "address"
-				}
-			],
-			"name": "markAddressAsNotBot",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
+					"internalType": "uint256",
+					"name": "amount0Out",
+					"type": "uint256"
+				},
 				{
-					"internalType": "address",
-					"name": "sender",
-					"type": "address"
+					"internalType": "uint256",
+					"name": "amount1Out",
+					"type": "uint256"
 				},
 				{
 					"internalType": "address",
-					"name": "recipient",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"internalType": "bytes",
+					"name": "data",
+					"type": "bytes"
+				}
+			],
+			"name": "swap",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "sync",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "token0",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
 					"type": "address"
 				}
 			],
-			"name": "updateTransaction",
-			"outputs": [],
-			"stateMutability": "nonpayable",
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "token1",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"stateMutability": "view",
 			"type": "function"
 		}
 	]
