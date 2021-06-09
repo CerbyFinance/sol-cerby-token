@@ -22,6 +22,30 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isBotAddress",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
 						"name": "sender",
 						"type": "address"
 					},
@@ -34,9 +58,36 @@
 				"name": "isHumanTransaction",
 				"outputs": [
 					{
-						"internalType": "bool",
+						"components": [
+							{
+								"internalType": "bool",
+								"name": "isHumanTransaction",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isBuy",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isSell",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isBuyOtherTokenThroughDeft",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isSellOtherTokenThroughDeft",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct IsHumanInfo",
 						"name": "",
-						"type": "bool"
+						"type": "tuple"
 					}
 				],
 				"stateMutability": "view",
@@ -115,11 +166,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x4cbe6beb870f8c2ff0606bd49893821c58bc75c6c26fcd2c6f8f80cd0fe29cfa",
+			"keccak256": "0xa68e1f3744d599b53519905c7ef086bf94623a4f39123bf7d2deb3658eaa1bf3",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://e3b35194806ad83f1690d17c838cf754c780543db18cfd2a12bc514601620e68",
-				"dweb:/ipfs/QmWvFe9wexbpFHpmu2USrivvNuCNuaipxPwcBQjxNBb38a"
+				"bzz-raw://e7e4ff8ce2f5b42ff31bcc620d196dbb44de9feda271d2dc3e3d622b28c486df",
+				"dweb:/ipfs/QmbdziHEy9uDzut3n85mMs9ZDJyHGZSpatASUNPjKtYrqJ"
 			]
 		}
 	},

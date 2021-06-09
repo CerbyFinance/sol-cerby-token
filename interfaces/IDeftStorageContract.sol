@@ -2,9 +2,22 @@
 
 pragma solidity ^0.8.0;
 
+struct IsHumanInfo {
+    bool isHumanTransaction;
+    bool isBuy;
+    bool isSell;
+    bool isBuyOtherTokenThroughDeft;
+    bool isSellOtherTokenThroughDeft;
+}
+
 interface IDeftStorageContract {
         
-    function isHumanTransaction(address sender, address recipient)
+    function isHumanTransaction(address tokenAddr, address sender, address recipient)
+        external
+        view
+        returns (IsHumanInfo memory);
+    
+    function isBotAddress(address addr)
         external
         view
         returns (bool);

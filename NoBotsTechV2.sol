@@ -6,7 +6,7 @@ import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/INoBotsTech.sol";
 import "./interfaces/IWeth.sol";
 import "./interfaces/IUniswapV2Factory.sol";
-import "./interfaces/IBotsStorage.sol";
+import "./interfaces/IDeftStorageContract.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 
@@ -32,7 +32,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     
     address public defiFactoryTokenAddress;
-    address public botsStorageAddress;
+    address public deftStorageAddress;
     
     uint public teamPercentOfTax = 5e4;
     
@@ -140,11 +140,11 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         defiFactoryTokenAddress = _defiFactoryTokenAddress;
     }
     
-    function updateBotStorageAddress(address _botsStorageAddress)
+    function updateBotStorageAddress(address _deftStorageAddress)
         external
         onlyRole(ROLE_ADMIN)
     {
-        botsStorageAddress = _botsStorageAddress;
+        deftStorageAddress = _deftStorageAddress;
     }
     
     function updateSecondsBetweenUpdates(uint _secondsBetweenRecacheUpdates)
@@ -242,8 +242,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             realTotalSupply -= batchBurnAndReward;
             batchBurnAndReward = 0;
             
-            uint oldRewardsBalance = rewardsBalance; 
-            
+            uint oldRewardsBalance = rewardsBalance;
             
             if (_teamRewards > 0)
             {
@@ -327,29 +326,27 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             "NBT: !amount"
         );
         
-        bool isBuy = hasRole(ROLE_DEX, taxAmountsInput.sender);
+        IsHumanInfo memory isHumanInfo = IDeftStorageContract(deftStorageAddress).
+            isHumanTransaction(defiFactoryTokenAddress, taxAmountsInput.sender, taxAmountsInput.recipient);
         
         require (
-            !isBuy ||
-            isBuy &&
+            !isHumanInfo.isBuy ||
+            isHumanInfo.isBuy &&
             buyLimitPercent < TAX_PERCENT_DENORM &&
             taxAmountsInput.transferAmount < buyLimitAmount,
             "NBT: !buy_limit"
         );
         
-        bool isHumanTransaction = IBotsStorage(botsStorageAddress).
-                    isBot(defiFactoryTokenAddress, taxAmountsInput.sender, taxAmountsInput.recipient);
-        
         uint timePassedSinceLastBuy = block.timestamp > buyTimestampStorage[taxAmountsInput.sender]?
                                         block.timestamp - buyTimestampStorage[taxAmountsInput.sender]: 0;
         bool isSenderHuman =    
-                !(isSell && (timePassedSinceLastBuy < howManyFirstMinutesIncreasedTax)) && // !isEarlySell
-                isHumanTransaction;
+                !(isHumanInfo.isSell && (timePassedSinceLastBuy < howManyFirstMinutesIncreasedTax)) && // !isEarlySell
+                isHumanInfo.isHumanTransaction;
         
         uint burnAndRewardRealAmount;
         if (isSenderHuman)
         {
-            if (isSell)
+            if (isHumanInfo.isSell)
             {
                 // human
                 // buys - 0% tax
@@ -361,7 +358,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             }
         } else
         {
-            if (!isBuy)
+            if (!isHumanInfo.isBuy)
             {
                 // bot
                 // buys - 0% tax
@@ -381,7 +378,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         }
         
         
-        if (!isSell)
+        if (!isHumanInfo.isSell)
         { // isBuy or isTransfer: Updating cycle based on realTransferAmount
             uint buyTimestampAddr = getUpdatedBuyTimestampOfEarlyInvestor(taxAmountsInput.recipient, taxAmountsInput.recipientRealBalance);
             buyTimestampAddr = getNewBuyTimestamp(buyTimestampAddr, taxAmountsInput.recipientRealBalance, realTransferAmount);
@@ -439,7 +436,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         returns (CurrectCycle memory currentCycle)
     {
         
-        if (IBotsStorage(botsStorageAddress).isBotStorage(addr))
+        if (IDeftStorageContract(deftStorageAddress).isBotAddress(addr))
         {
             currentCycle.currentCycleTax = botTaxPercent;
             currentCycle.howMuchTimeLeftTillEndOfCycleThree = cycleThreeEnds;

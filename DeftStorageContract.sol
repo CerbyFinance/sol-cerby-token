@@ -3,6 +3,7 @@
 pragma solidity ^0.8.0;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
+import "./interfaces/IDeftStorageContract.sol";
 
 contract DeftStorageContract is AccessControlEnumerable {
     
@@ -31,11 +32,21 @@ contract DeftStorageContract is AccessControlEnumerable {
         receivedAtBlock[tokenAddr][recipient] = block.number;
     }
     
+    function isBotAddress(address addr)
+        external
+        view
+        onlyRole(ROLE_ADMIN)
+        returns (bool)
+    {
+        return isBotStorage[addr] ||
+            !isNotContract(addr) && !isDeftOtherPair[addr] && !isDeftEthPair[addr];
+    }
+    
     function isHumanTransaction(address tokenAddr, address sender, address recipient)
         external
         view
         onlyRole(ROLE_ADMIN)
-        returns (bool, bool, bool, bool, bool)
+        returns (IsHumanInfo memory output)
     {
         /*bool isSell = isDeftEthPair[recipient];
         bool isBuy = isDeftEthPair[sender];
@@ -49,7 +60,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         bool isContractRecipient = !(isNotContract(recipient) || isDeftOtherPair[recipient] || isDeftEthPair[recipient]);*/
         
         
-        return (
+        return IsHumanInfo(
                 /* isHuman */
                 tx.gasprice > 1 && 
                 !( 

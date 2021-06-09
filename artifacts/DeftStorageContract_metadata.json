@@ -258,6 +258,25 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isBotAddress",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
 						"name": "tokenAddr",
 						"type": "address"
 					},
@@ -275,29 +294,36 @@
 				"name": "isHumanTransaction",
 				"outputs": [
 					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
+						"components": [
+							{
+								"internalType": "bool",
+								"name": "isHumanTransaction",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isBuy",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isSell",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isBuyOtherTokenThroughDeft",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isSellOtherTokenThroughDeft",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct IsHumanInfo",
+						"name": "output",
+						"type": "tuple"
 					}
 				],
 				"stateMutability": "view",
@@ -515,11 +541,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x5fbbe2f9fd9f9b04186ea788464f53e655cd656b3d6d115d4262f03364a50559",
+			"keccak256": "0x564df6ac4c3b4bd80ed27cfc0355c1f370f400459a09226946e02d092bf42f7d",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://b8de2565e1fb627588d6db0447cc2be3d5f66fc20b07a59778f372ef1eb9b882",
-				"dweb:/ipfs/QmeiKd6GtYKPty1GA87jbk8uxhrjAr7j8kz6cPKwyLrLpb"
+				"bzz-raw://0b95c09325ba56bb1040df5698931b869824dcc40e94b0a82e627be07a4d45bd",
+				"dweb:/ipfs/QmdVUbcrQYgyWbg2pcMrjLUjWnJc5MFNVVJtTEsdaPRmBu"
+			]
+		},
+		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
+			"keccak256": "0xa68e1f3744d599b53519905c7ef086bf94623a4f39123bf7d2deb3658eaa1bf3",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://e7e4ff8ce2f5b42ff31bcc620d196dbb44de9feda271d2dc3e3d622b28c486df",
+				"dweb:/ipfs/QmbdziHEy9uDzut3n85mMs9ZDJyHGZSpatASUNPjKtYrqJ"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

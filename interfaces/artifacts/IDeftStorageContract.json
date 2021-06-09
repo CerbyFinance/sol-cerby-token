@@ -48,7 +48,8 @@
 		"gasEstimates": null,
 		"methodIdentifiers": {
 			"bulkMarkAddressAsBot(address[])": "6a930a95",
-			"isHumanTransaction(address,address)": "67fd507e",
+			"isBotAddress(address)": "eaa8f7e3",
+			"isHumanTransaction(address,address,address)": "60623731",
 			"markAddressAsBot(address)": "1093baa9",
 			"markAddressAsNotBot(address)": "a9a48824",
 			"updateTransaction(address,address)": "030b5b31"
@@ -72,6 +73,30 @@
 			"inputs": [
 				{
 					"internalType": "address",
+					"name": "addr",
+					"type": "address"
+				}
+			],
+			"name": "isBotAddress",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "tokenAddr",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
 					"name": "sender",
 					"type": "address"
 				},
@@ -84,9 +109,36 @@
 			"name": "isHumanTransaction",
 			"outputs": [
 				{
-					"internalType": "bool",
+					"components": [
+						{
+							"internalType": "bool",
+							"name": "isHumanTransaction",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isBuy",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isSell",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isBuyOtherTokenThroughDeft",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isSellOtherTokenThroughDeft",
+							"type": "bool"
+						}
+					],
+					"internalType": "struct IsHumanInfo",
 					"name": "",
-					"type": "bool"
+					"type": "tuple"
 				}
 			],
 			"stateMutability": "view",
