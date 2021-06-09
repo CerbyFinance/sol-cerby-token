@@ -233,6 +233,31 @@
 			{
 				"inputs": [
 					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "role",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "address",
+								"name": "addr",
+								"type": "address"
+							}
+						],
+						"internalType": "struct RoleAccess[]",
+						"name": "roles",
+						"type": "tuple[]"
+					}
+				],
+				"name": "grantRolesBulk",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -322,7 +347,7 @@
 							}
 						],
 						"internalType": "struct IsHumanInfo",
-						"name": "output",
+						"name": "",
 						"type": "tuple"
 					}
 				],
@@ -541,27 +566,27 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x564df6ac4c3b4bd80ed27cfc0355c1f370f400459a09226946e02d092bf42f7d",
+			"keccak256": "0x9611be6843e96139d254f30494790ddb638a6f784649b3b5e2773032a27c2f5f",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://0b95c09325ba56bb1040df5698931b869824dcc40e94b0a82e627be07a4d45bd",
-				"dweb:/ipfs/QmdVUbcrQYgyWbg2pcMrjLUjWnJc5MFNVVJtTEsdaPRmBu"
+				"bzz-raw://30e389d9f812f6d00eb6cf8b073afd3e6724286f468c62383b95c4eb40bb7589",
+				"dweb:/ipfs/QmeVuwvCGiYPVNYepivMSZq4pY5DHbv5EBxjefjtKKb862"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0xa68e1f3744d599b53519905c7ef086bf94623a4f39123bf7d2deb3658eaa1bf3",
+			"keccak256": "0x26d0bc3f8e0446322cd526d8064b279c2f07add5b03db0dd4358289ae14ced94",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://e7e4ff8ce2f5b42ff31bcc620d196dbb44de9feda271d2dc3e3d622b28c486df",
-				"dweb:/ipfs/QmbdziHEy9uDzut3n85mMs9ZDJyHGZSpatASUNPjKtYrqJ"
+				"bzz-raw://214b08c847f69f93018c3392439fb8e5c1f2512603f5618fb372d8376222b852",
+				"dweb:/ipfs/QmWsKAvzNUzbHHm7pYLAYoP2UGUAe1t6PdYWDjneTixezp"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
-			"keccak256": "0xcaee6d75467a223ffd64f12451e6eaf4e4ffe89675b80dc9b327b24914a8f511",
+			"keccak256": "0x216169e68f87c4f54a41e18c8b62d4d41a438db352bb5103e07ece489d3409e1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e2606725c91f3598f35fa8bbd62fb5ea64001711b0d178b75e2e3204fb88f484",
-				"dweb:/ipfs/QmSuRoMR4afV3G4nEgrP6UuiwtxTVHBR3M3buTG2w8icAs"
+				"bzz-raw://0a31be9f4c3c67f99b833f476c76a2b9d58efc75d24f5a150fc9e43d82e241d0",
+				"dweb:/ipfs/QmXCT1p75AnsZ5LexnBZFNbkBeisG2KjAoh8TMSSQdNeqz"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {

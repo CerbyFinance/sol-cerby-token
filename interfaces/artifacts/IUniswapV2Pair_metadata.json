@@ -137,11 +137,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
-			"keccak256": "0xb0c6cf8fff27b074e19aa64daa47870cfa0e74e42321512cfd350766e2437ea4",
+			"keccak256": "0x5ac9e85c81d3a7217e735872c50d9642081405235816ff845a3d12f436a276a0",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://61c4ab9a6e25960b077ee350b7bd28dcd9f59f1d657635f9506168a9afdf8ca0",
-				"dweb:/ipfs/QmdHa837WfthskgJE4c5qBxQC9j2wgiJeWhHhffr9ffVmY"
+				"bzz-raw://bb718abd59889a20296e2adf11e42d0016e51cfb984dac170764bf28be62805a",
+				"dweb:/ipfs/QmXyyu7ZJsgFP7LMCywKGYavVpqRw2SmdAHqnxnqSugNue"
 			]
 		}
 	},

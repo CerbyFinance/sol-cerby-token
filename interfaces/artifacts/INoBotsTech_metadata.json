@@ -528,11 +528,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
-			"keccak256": "0x2defcbe7fafbd423e57554cff11a5c097a5511952ba6523d9e896038ea57e8e0",
+			"keccak256": "0xe9ce724e4c77183a7e1b28275515222b60669bcedcfc965240ecf2b07dcf7c5a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://98c434869c260dc9e2fe6c94fbf892a358b89c99bac6e786445309504b823378",
-				"dweb:/ipfs/QmSXtKxUq6v3HKKdXsWhWKY74MyjEvMNAPCb4opKRUEqW1"
+				"bzz-raw://cf49561ff79db2646a3e014f231988d3384a3d551f806ce3d1f6932164d8d851",
+				"dweb:/ipfs/QmQyWrvTibDm3RVgZFV6Ujzr8naFALL9tBPphqFbHWeGsV"
 			]
 		}
 	},

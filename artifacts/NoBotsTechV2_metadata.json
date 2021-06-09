@@ -148,25 +148,6 @@
 					{
 						"indexed": false,
 						"internalType": "address",
-						"name": "to",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "transferAmount",
-						"type": "uint256"
-					}
-				],
-				"name": "TeamTaxRewardsSent",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
 						"name": "teamAddress",
 						"type": "address"
 					},
@@ -202,45 +183,6 @@
 			{
 				"inputs": [],
 				"name": "ROLE_ADMIN",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "ROLE_DEX",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "ROLE_TEAM_DEVELOPING",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "ROLE_TEAM_MARKETING",
 				"outputs": [
 					{
 						"internalType": "bytes32",
@@ -465,19 +407,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "deftStorageAddress",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "earlyInvestorTimestamp",
 				"outputs": [
 					{
@@ -689,7 +618,7 @@
 								"type": "address"
 							}
 						],
-						"internalType": "struct NoBotsTechV2.RoleAccess[]",
+						"internalType": "struct RoleAccess[]",
 						"name": "roles",
 						"type": "tuple[]"
 					}
@@ -948,71 +877,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "teamDevelopingSplit",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "teamMarketingSplit",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "teamPercentOfTax",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "teamRewards",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_deftStorageAddress",
-						"type": "address"
-					}
-				],
-				"name": "updateBotStorageAddress",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -1127,37 +991,6 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_teamPercentOfTax",
-						"type": "uint256"
-					}
-				],
-				"name": "updateTeamPercentOfTax",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_teamMarketingSplit",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_teamDevelopingSplit",
-						"type": "uint256"
-					}
-				],
-				"name": "updateTeamSplit",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -1213,11 +1046,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x99ed88c38242f50910250bf9ac8c3796f094b84de89be598b59505e54bf62355",
+			"keccak256": "0x4028f12292bcb2166655719f754cafe747a07faa223bca9df487acfa638deb05",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://522c652ed24a9439a8855f308adaa0d0f6bbcd0152f31ac1808736a4e4feefa8",
-				"dweb:/ipfs/Qma9nR99EiVYHYU3jeMvNuV1n7JQkxTQFiUCri2KsgZC5d"
+				"bzz-raw://941d0442eb74bb58d93ab4909dcfd2a46d17c8fab1ea8cb63ea0dd3f15b134cd",
+				"dweb:/ipfs/QmNi77h8MeC1sxZLvB2bZipCuaBD6uopcVmEYC6vfzXyd3"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
@@ -1229,11 +1062,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0xa68e1f3744d599b53519905c7ef086bf94623a4f39123bf7d2deb3658eaa1bf3",
+			"keccak256": "0x26d0bc3f8e0446322cd526d8064b279c2f07add5b03db0dd4358289ae14ced94",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://e7e4ff8ce2f5b42ff31bcc620d196dbb44de9feda271d2dc3e3d622b28c486df",
-				"dweb:/ipfs/QmbdziHEy9uDzut3n85mMs9ZDJyHGZSpatASUNPjKtYrqJ"
+				"bzz-raw://214b08c847f69f93018c3392439fb8e5c1f2512603f5618fb372d8376222b852",
+				"dweb:/ipfs/QmWsKAvzNUzbHHm7pYLAYoP2UGUAe1t6PdYWDjneTixezp"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
@@ -1261,11 +1094,11 @@
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
-			"keccak256": "0xcaee6d75467a223ffd64f12451e6eaf4e4ffe89675b80dc9b327b24914a8f511",
+			"keccak256": "0x216169e68f87c4f54a41e18c8b62d4d41a438db352bb5103e07ece489d3409e1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e2606725c91f3598f35fa8bbd62fb5ea64001711b0d178b75e2e3204fb88f484",
-				"dweb:/ipfs/QmSuRoMR4afV3G4nEgrP6UuiwtxTVHBR3M3buTG2w8icAs"
+				"bzz-raw://0a31be9f4c3c67f99b833f476c76a2b9d58efc75d24f5a150fc9e43d82e241d0",
+				"dweb:/ipfs/QmXCT1p75AnsZ5LexnBZFNbkBeisG2KjAoh8TMSSQdNeqz"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {

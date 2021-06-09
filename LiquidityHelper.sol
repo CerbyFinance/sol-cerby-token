@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 import "./interfaces/INoBotsTech.sol";
+import "./interfaces/IDeftStorageContract.sol";
 import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/IUniswapV2Factory.sol";
 import "./interfaces/IUniswapV2Pair.sol";
@@ -14,6 +15,7 @@ contract LiquidityHelper {
     
     uint constant NOBOTS_TECH_CONTRACT_ID = 0;
     uint constant UNISWAP_V2_FACTORY_CONTRACT_ID = 2;
+    uint constant DEFT_STORAGE_CONTRACT_ID = 3;
 
     
     address public defiFactoryToken;
@@ -54,29 +56,35 @@ contract LiquidityHelper {
         }
            
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
-        INoBotsTech iNoBotsTech = INoBotsTech(
+        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
             iDefiFactoryToken.
-                getUtilsContractAtPos(NOBOTS_TECH_CONTRACT_ID)
+                getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
         ); 
-        iNoBotsTech.grantRole(ROLE_DEX, wethAndTokenPairContract);
+        iDeftStorageContract.markPairAsDeftEthPair(wethAndTokenPairContract, true);
         
-        AccessSettings[] memory accessSettings = new AccessSettings[](4);
+        // Adding uniswap v2 pair address
+        AccessSettings[] memory accessSettings = new AccessSettings[](5);
         accessSettings[0] =
             AccessSettings(
                 true, true, false, false, false,
-                IDefiFactoryToken(defiFactoryToken).getUtilsContractAtPos(0)
+                iDefiFactoryToken.getUtilsContractAtPos(0)
             );
         accessSettings[1] =
             AccessSettings(
                 true, true, false, false, false,
-                IDefiFactoryToken(defiFactoryToken).getUtilsContractAtPos(1)
+                iDefiFactoryToken.getUtilsContractAtPos(1)
             );
         accessSettings[2] =
             AccessSettings(
                 false, false, false, false, false,
-                IDefiFactoryToken(defiFactoryToken).getUtilsContractAtPos(2)
+                iDefiFactoryToken.getUtilsContractAtPos(2)
             );
         accessSettings[3] =
+            AccessSettings(
+                false, false, false, false, false,
+                iDefiFactoryToken.getUtilsContractAtPos(3)
+            );
+        accessSettings[4] =
             AccessSettings(
                 false, false, false, false, false,
                 wethAndTokenPairContract

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./interfaces/IDeftStorageContract.sol";
@@ -46,7 +46,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         external
         view
         onlyRole(ROLE_ADMIN)
-        returns (IsHumanInfo memory output)
+        returns (IsHumanInfo memory)
     {
         /*bool isSell = isDeftEthPair[recipient];
         bool isBuy = isDeftEthPair[sender];
@@ -62,7 +62,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         
         return IsHumanInfo(
                 /* isHuman */
-                tx.gasprice > 1 && 
+                //tx.gasprice > 1 && 
                 !( 
                     sentAtBlock[tokenAddr][recipient] == block.number && !isHumanStorage[recipient] ||
                     receivedAtBlock[tokenAddr][sender] == block.number && !isHumanStorage[sender]

@@ -63,6 +63,9 @@ const start = async () => {
   const liquidityHelperJson = JSON.parse(
     fs.readFileSync(path.resolve("../artifacts/LiquidityHelper.json"), "utf8"),
   );
+  const deftStorageJson = JSON.parse(
+    fs.readFileSync(path.resolve("../artifacts/DeftStorageContract.json"), "utf8"),
+  );
 
   const currentBlock = await web3.eth.getBlockNumber();
   console.log("current block:", currentBlock);
@@ -94,6 +97,15 @@ const start = async () => {
 
   console.log("LiquidityHelper: ", liquidityHelperContract.options.address);
 
+  const deftStorageContract = await deployContract(
+    "DeftStorageContract",
+    deftStorageJson,
+    account,
+    0,
+  );
+
+  console.log("DeftStorageContract: ", deftStorageContract.options.address);
+
 
   let nonce = await web3.eth.getTransactionCount(account);
 
@@ -102,13 +114,14 @@ const start = async () => {
   });
 
   // prettier-ignore
-  async function step1() {
+  async function stepDeftUtilsContracts() {
     try {
       const transaction = await defiFactoryTokenContract.methods.updateUtilsContracts([
         [true, true, false, false, false, noBotsTechContract.options.address],
         [true, true, false, false, false, liquidityHelperContract.options.address],
         [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"], //Uniswap factory v2
         //[false, false, false, false, false, "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc"], //Pancake factory v2
+        [false, false, false, false, false, deftStorageContract.options.address],
       ])
 
       const signed  = await web3.eth.accounts.signTransaction({
@@ -121,19 +134,18 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('step1 ok')
+      console.log('stepDeftUtilsContracts ok')
   
     } catch (error) {
       console.log(error.message);
     }
   }
-
+  
   // prettier-ignore
-  async function step2() {
+  async function stepNoBotsRoles() {
     try {
       const transaction = await noBotsTechContract.methods.grantRolesBulk([
         ["0x0000000000000000000000000000000000000000000000000000000000000000", defiFactoryTokenContract.options.address],
-        ["0x0000000000000000000000000000000000000000000000000000000000000000", liquidityHelperContract.options.address],
       ])
 
       const signed  = await web3.eth.accounts.signTransaction({
@@ -146,15 +158,40 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('step2 ok')
+      console.log('stepNoBotsRoles ok')
   
     } catch (error) {
       console.log(error.message);
     }
   }
-
+  
   // prettier-ignore
-  async function step3() {
+  async function stepDeftStorageRoles() {
+    try {
+      const transaction = await deftStorageContract.methods.grantRolesBulk([
+        ["0x0000000000000000000000000000000000000000000000000000000000000000", liquidityHelperContract.options.address],
+        ["0x0000000000000000000000000000000000000000000000000000000000000000", noBotsTechContract.options.address],
+      ])
+
+      const signed  = await web3.eth.accounts.signTransaction({
+        nonce   : nonce++,
+        to      : transaction._parent._address,
+        data    : transaction.encodeABI(),
+        gas: await transaction.estimateGas({from: account}),
+        gasPrice: 2e9+1,
+      }, _account.privateKey);
+
+      const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
+
+      console.log('stepDeftStorageRoles ok')
+  
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+  
+  // prettier-ignore
+  async function stepUpdateDeftContractInNoBots() {
     try {
       const transaction = await noBotsTechContract.methods.updateDefiFactoryTokenAddress(defiFactoryTokenContract.options.address)
 
@@ -168,15 +205,15 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('step3 ok')
+      console.log('stepUpdateDeftContractInNoBots ok')
   
     } catch (error) {
       console.log(error.message);
     }
   }
-
+  
   // prettier-ignore
-  async function step4() {
+  async function stepUpdateDeftContractInLiquidityHelper() {
     try {
       const transaction = await liquidityHelperContract.methods.updateDefiFactoryTokenAddress(defiFactoryTokenContract.options.address)
 
@@ -190,14 +227,15 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('step4 ok')
+      console.log('stepUpdateDeftContractInLiquidityHelper ok')
   
     } catch (error) {
       console.log(error.message);
     }
   }
+  
   // prettier-ignore
-  async function step5() {
+  async function stepDeftRoles() {
     try {
       const transaction = await defiFactoryTokenContract.methods.grantRole(
         "0x0000000000000000000000000000000000000000000000000000000000000000", liquidityHelperContract.options.address
@@ -213,7 +251,7 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('step5 ok')
+      console.log('stepDeftRoles ok')
   
     } catch (error) {
       console.log(error.message);
@@ -222,7 +260,13 @@ const start = async () => {
 
   
 
-  await Promise.all([step1(), step2(), step3(), step4(), step5()]);
+  await Promise.all([
+    stepDeftUtilsContracts(),
+    stepNoBotsRoles(),
+    stepDeftStorageRoles(),
+    stepUpdateDeftContractInNoBots(),
+    stepUpdateDeftContractInLiquidityHelper(),
+    stepDeftRoles()]);
 
 
 

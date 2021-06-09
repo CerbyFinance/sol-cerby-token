@@ -53,11 +53,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/___IERC20.sol": {
-			"keccak256": "0xf79a37db01a64e5b40a9087a06a40505653e94b2cda818c9de4a881242e8bd4f",
+			"keccak256": "0x672718e2cc771da861f42d65843178a1a7407b988590bfaec1c707e7116d158d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://661267d1a5b032505ac4896758dce64cecfc471f01d9c51cb9d41372aaf77963",
-				"dweb:/ipfs/QmX18PpiDvvLkgXnxYG5hFHDKqPuojmX2SUioKrmTQq713"
+				"bzz-raw://3da799b9d6d08e1ee8f9c4c0d96bf7c082f7e73d1722f77b5eda6d7d5944c9fa",
+				"dweb:/ipfs/QmYj5qaYzFn2NDCDRcWjjBA1awdVXtuk1LDPMCNsWNejcn"
 			]
 		}
 	},

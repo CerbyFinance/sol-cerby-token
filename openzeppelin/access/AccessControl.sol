@@ -6,6 +6,12 @@ import "../utils/Context.sol";
 import "../utils/Strings.sol";
 import "../utils/introspection/ERC165.sol";
 
+
+struct RoleAccess {
+    bytes32 role;
+    address addr;
+}
+
 /**
  * @dev External interface of AccessControl declared to support ERC165 detection.
  */
@@ -160,8 +166,18 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * - the caller must have ``role``'s admin role.
      */
-    function grantRole(bytes32 role, address account) public virtual override onlyRole(getRoleAdmin(role)) {
+    function grantRole(bytes32 role, address account) public virtual override onlyRole(ROLE_ADMIN) {
         _grantRole(role, account);
+    }
+    
+    function grantRolesBulk(RoleAccess[] calldata roles)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        for(uint i = 0; i<roles.length; i++)
+        {
+            _setupRole(roles[i].role, roles[i].addr);
+        }
     }
 
     /**

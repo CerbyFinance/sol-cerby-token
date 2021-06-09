@@ -123,6 +123,42 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "markPairAsDeftEthPair",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "markPairAsDeftOtherPair",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
 						"name": "sender",
 						"type": "address"
 					},
@@ -166,11 +202,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0xa68e1f3744d599b53519905c7ef086bf94623a4f39123bf7d2deb3658eaa1bf3",
+			"keccak256": "0xa397118046a4cabee92d047a82fd23631c3ceadb82277d64faaaf691b662aab7",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://e7e4ff8ce2f5b42ff31bcc620d196dbb44de9feda271d2dc3e3d622b28c486df",
-				"dweb:/ipfs/QmbdziHEy9uDzut3n85mMs9ZDJyHGZSpatASUNPjKtYrqJ"
+				"bzz-raw://2f40ecdc68f211693fb29237b4a226539ce7b0320f3cd9119c61d90fd2cb0aa2",
+				"dweb:/ipfs/QmcHYHFTVbuHVEmbHw3ho8sb4TpAWmoRBDqmdYUyFVsq5p"
 			]
 		}
 	},

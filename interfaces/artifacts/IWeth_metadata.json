@@ -134,11 +134,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/IWeth.sol": {
-			"keccak256": "0x55d776711ab487dbda19fb0cf0ce8e475057ae1767d31cc78f4333cea009d386",
+			"keccak256": "0xd4d5bb3ad1029ecc6f63ac6b88b295998150ae6b435a36d502b01b8efb8bb983",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f7cc6fe73e7cba0786198e5a3d3179270732a87600e8010cb72e3332d2f8f6bd",
-				"dweb:/ipfs/QmNpMwA4GLsM7DSTTLFFwRxGGQZDbT9EtfWhWATedZPSk8"
+				"bzz-raw://c868751aeaabaaf7950f21021802faed066ddfa36eaa22a95af52693360730a4",
+				"dweb:/ipfs/QmQBjxtRCwVeyZPtrwiCSZdbqjsaK9bS6vAcwRj5dDUGF5"
 			]
 		}
 	},

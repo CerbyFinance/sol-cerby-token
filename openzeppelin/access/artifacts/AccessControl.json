@@ -50,6 +50,7 @@
 			"ROLE_ADMIN()": "d391014b",
 			"getRoleAdmin(bytes32)": "248a9ca3",
 			"grantRole(bytes32,address)": "2f2ff15d",
+			"grantRolesBulk((bytes32,address)[])": "03ed957f",
 			"hasRole(bytes32,address)": "91d14854",
 			"renounceRole(bytes32,address)": "36568abe",
 			"revokeRole(bytes32,address)": "d547741f",
@@ -178,6 +179,31 @@
 				}
 			],
 			"name": "grantRole",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "bytes32",
+							"name": "role",
+							"type": "bytes32"
+						},
+						{
+							"internalType": "address",
+							"name": "addr",
+							"type": "address"
+						}
+					],
+					"internalType": "struct RoleAccess[]",
+					"name": "roles",
+					"type": "tuple[]"
+				}
+			],
+			"name": "grantRolesBulk",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"

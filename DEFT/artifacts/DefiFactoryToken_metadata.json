@@ -802,6 +802,31 @@
 			{
 				"inputs": [
 					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "role",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "address",
+								"name": "addr",
+								"type": "address"
+							}
+						],
+						"internalType": "struct RoleAccess[]",
+						"name": "roles",
+						"type": "tuple[]"
+					}
+				],
+				"name": "grantRolesBulk",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -1361,11 +1386,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DEFT/DefiFactoryToken.sol": {
-			"keccak256": "0x61820a130a6a462185df99454794252cb4dbdb61f3315339cd95790f3dcb2445",
+			"keccak256": "0xabccf8cb66eb60c3ec49a5ccd28828c0bb0a2d85565294baf55206a76f3b58ad",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3aa3b7ab03a527dcb2039d79e78cb3277bbe6440171c418fe001e7c2d7115968",
-				"dweb:/ipfs/QmWv8F9bgJ2E6p1ww4HaQC7N2YL32pvugD4QsHyKvSscww"
+				"bzz-raw://7ded93f52a2b182d856b6ea5cfdb33e0c19f0bf1f74d5b47eb2538b3ccc80b29",
+				"dweb:/ipfs/QmVzWVRMpCnZzmHLFxaWFSkVkcu4aPH8rtU3z7Xw4RBzM9"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
@@ -1377,11 +1402,11 @@
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
-			"keccak256": "0xcaee6d75467a223ffd64f12451e6eaf4e4ffe89675b80dc9b327b24914a8f511",
+			"keccak256": "0x216169e68f87c4f54a41e18c8b62d4d41a438db352bb5103e07ece489d3409e1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e2606725c91f3598f35fa8bbd62fb5ea64001711b0d178b75e2e3204fb88f484",
-				"dweb:/ipfs/QmSuRoMR4afV3G4nEgrP6UuiwtxTVHBR3M3buTG2w8icAs"
+				"bzz-raw://0a31be9f4c3c67f99b833f476c76a2b9d58efc75d24f5a150fc9e43d82e241d0",
+				"dweb:/ipfs/QmXCT1p75AnsZ5LexnBZFNbkBeisG2KjAoh8TMSSQdNeqz"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {

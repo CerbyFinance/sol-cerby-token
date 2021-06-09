@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/INoBotsTech.sol";
@@ -12,15 +12,9 @@ import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 
 contract NoBotsTechV2 is AccessControlEnumerable {
-    bytes32 public constant ROLE_DEX = keccak256("ROLE_DEX");
-    bytes32 public constant ROLE_TEAM_MARKETING = keccak256("ROLE_TEAM_MARKETING");
-    bytes32 public constant ROLE_TEAM_DEVELOPING = keccak256("ROLE_TEAM_DEVELOPING");
     
-    uint public teamMarketingSplit = 1667e2;
-    uint public teamDevelopingSplit = TAX_PERCENT_DENORM - teamMarketingSplit;
-    
-    uint constant UNISWAP_V2_PAIR_ADDRESS_ID = 3;
-    uint constant NATIVE_TOKEN_ADDRESS_ID = 4;
+    uint constant DEFT_STORAGE_CONTRACT_ID = 3;
+    uint constant UNISWAP_V2_PAIR_ADDRESS_ID = 4;
     
     uint constant BALANCE_MULTIPLIER_DENORM = 1e18;
     uint public cachedMultiplier = BALANCE_MULTIPLIER_DENORM;
@@ -28,13 +22,10 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     uint public batchBurnAndReward;
     uint public lastCachedTimestamp = block.timestamp;
-    uint public secondsBetweenRecacheUpdates = 0;
+    uint public secondsBetweenRecacheUpdates = 120;
     
     
     address public defiFactoryTokenAddress;
-    address public deftStorageAddress;
-    
-    uint public teamPercentOfTax = 5e4;
     
     uint public botTaxPercent = 99e4; // 99.0%
     uint public howManyFirstMinutesIncreasedTax = 0 minutes;
@@ -43,15 +34,15 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public cycleOneStartTaxPercent = 15e4; // 15.0%
     uint public cycleOneEnds = 120 days;
     
-    uint public cycleTwoStartTaxPercent = 10e4; // 10.0%
+    uint public cycleTwoStartTaxPercent = 8e4; // 8.0%
     uint public cycleTwoEnds = 240 days;
     
-    uint public cycleThreeStartTaxPercent = 7e4; // 7.0%
+    uint public cycleThreeStartTaxPercent = 3e4; // 3.0%
     uint public cycleThreeEnds = 360 days;
-    uint public cycleThreeEndTaxPercent = 5e4; // 5.0%
+    uint public cycleThreeEndTaxPercent = 0; // 0.0%
     
     uint public buyLimitAmount;
-    uint public buyLimitPercent = 1e4; // 1%
+    uint public buyLimitPercent = 99e4; // 99%
     
     
     address constant BURN_ADDRESS = address(0x0);
@@ -60,8 +51,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public realTotalSupply;
     uint public earlyInvestorTimestamp;
     
-    uint public teamRewards;
-    
     mapping(address => uint) public buyTimestampStorage;
     
     struct CurrectCycle {
@@ -69,26 +58,19 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         uint howMuchTimeLeftTillEndOfCycleThree;
     }
     
-    struct RoleAccess {
-        bytes32 role;
-        address addr;
-    }
     
     event MultiplierUpdated(uint newMultiplier);
     event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);
-    event TeamTaxRewardsSent(address to, uint transferAmount);
     event BuyLimitAmountUpdated(uint newBuyLimitAmount);
     event TeamTaxRewardsUpdated(address teamAddress, uint teamRewards);
     event WalletBuyTimestampUpdated(address wallet, uint buyTimestamp);
     
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
-        _setupRole(ROLE_TEAM_MARKETING, _msgSender());
-        _setupRole(ROLE_TEAM_DEVELOPING, _msgSender());
         
-        earlyInvestorTimestamp = block.timestamp - 30 days;
+        earlyInvestorTimestamp = block.timestamp - 0 days;
         
-        buyTimestampStorage[0x539FaA851D86781009EC30dF437D794bCd090c8F] = block.timestamp - 35 days;
+        //buyTimestampStorage[0x539FaA851D86781009EC30dF437D794bCd090c8F] = block.timestamp - 35 days;
         buyTimestampStorage[0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f] = block.timestamp - 140 days;
         buyTimestampStorage[0xBbB6AE3051C5b486836a32193D8D191572C7cC1D] = block.timestamp - 333 days;
         buyTimestampStorage[0x987De8C41CB9e166E51a4913e560c08c2760EfE5] = block.timestamp - 600 days;
@@ -101,24 +83,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         emit MultiplierUpdated(cachedMultiplier);
     }
     
-    function grantRolesBulk(RoleAccess[] calldata roles)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        for(uint i = 0; i<roles.length; i++)
-        {
-            _setupRole(roles[i].role, roles[i].addr);
-        }
-    }
-    
-    function updateTeamSplit(uint _teamMarketingSplit, uint _teamDevelopingSplit)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        teamMarketingSplit = _teamMarketingSplit;
-        teamDevelopingSplit = _teamDevelopingSplit;
-    }
-    
     function updateBuyLimitPercent(uint _buyLimitPercent)
         external
         onlyRole(ROLE_ADMIN)
@@ -126,25 +90,11 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         buyLimitPercent = _buyLimitPercent;
     }
     
-    function updateTeamPercentOfTax(uint _teamPercentOfTax)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        teamPercentOfTax = _teamPercentOfTax;
-    }
-    
     function updateDefiFactoryTokenAddress(address _defiFactoryTokenAddress)
         external
         onlyRole(ROLE_ADMIN)
     {
         defiFactoryTokenAddress = _defiFactoryTokenAddress;
-    }
-    
-    function updateBotStorageAddress(address _deftStorageAddress)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        deftStorageAddress = _deftStorageAddress;
     }
     
     function updateSecondsBetweenUpdates(uint _secondsBetweenRecacheUpdates)
@@ -236,38 +186,9 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
         if (batchBurnAndReward > 0)
         {
-            uint _teamRewards = (batchBurnAndReward * teamPercentOfTax) / TAX_PERCENT_DENORM;
-            uint distributeRewards = batchBurnAndReward - _teamRewards;
-            rewardsBalance += distributeRewards; // 95% of amount goes to rewards to DEFT holders
+            rewardsBalance += batchBurnAndReward; // 100% of amount goes to rewards to DEFT holders
             realTotalSupply -= batchBurnAndReward;
             batchBurnAndReward = 0;
-            
-            uint oldRewardsBalance = rewardsBalance;
-            
-            if (_teamRewards > 0)
-            {
-                address teamMarketingAddress = getRoleMember(ROLE_TEAM_MARKETING, 0);
-                uint teamMarketingAmount = 
-                    (_teamRewards * cachedMultiplier * teamMarketingSplit) / (BALANCE_MULTIPLIER_DENORM * TAX_PERCENT_DENORM);
-                IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryTokenAddress);
-                iDefiFactoryToken.mintHumanAddress(
-                    teamMarketingAddress, 
-                    teamMarketingAmount
-                );
-                
-                address teamDevelopingAddress = getRoleMember(ROLE_TEAM_DEVELOPING, 0);
-                uint teamDevelopingAmount = 
-                    (_teamRewards * cachedMultiplier * teamDevelopingSplit) / (BALANCE_MULTIPLIER_DENORM * TAX_PERCENT_DENORM);
-                iDefiFactoryToken.mintHumanAddress(
-                    teamMarketingAddress, 
-                    teamDevelopingAmount
-                );
-                
-                rewardsBalance = oldRewardsBalance;
-                
-                emit TeamTaxRewardsUpdated(teamDevelopingAddress, teamDevelopingAmount);
-                emit TeamTaxRewardsUpdated(teamMarketingAddress, teamMarketingAmount);
-            }
             
             cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
                 (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
@@ -326,8 +247,9 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             "NBT: !amount"
         );
         
-        IsHumanInfo memory isHumanInfo = IDeftStorageContract(deftStorageAddress).
-            isHumanTransaction(defiFactoryTokenAddress, taxAmountsInput.sender, taxAmountsInput.recipient);
+        IsHumanInfo memory isHumanInfo = IDeftStorageContract(
+                IDefiFactoryToken(defiFactoryTokenAddress).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+            ).isHumanTransaction(defiFactoryTokenAddress, taxAmountsInput.sender, taxAmountsInput.recipient);
         
         require (
             !isHumanInfo.isBuy ||
@@ -339,12 +261,12 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         
         uint timePassedSinceLastBuy = block.timestamp > buyTimestampStorage[taxAmountsInput.sender]?
                                         block.timestamp - buyTimestampStorage[taxAmountsInput.sender]: 0;
-        bool isSenderHuman =    
+        bool isHumanTransaction =    
                 !(isHumanInfo.isSell && (timePassedSinceLastBuy < howManyFirstMinutesIncreasedTax)) && // !isEarlySell
                 isHumanInfo.isHumanTransaction;
         
         uint burnAndRewardRealAmount;
-        if (isSenderHuman)
+        if (isHumanTransaction)
         {
             if (isHumanInfo.isSell)
             {
@@ -358,23 +280,15 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             }
         } else
         {
-            if (!isHumanInfo.isBuy)
-            {
-                // bot
-                // buys - 0% tax
-                // sells - 99% tax
-                // transfers - 99% tax
-                
-                burnAndRewardRealAmount = (realTransferAmount * botTaxPercent) / TAX_PERCENT_DENORM;
-                
-                uint botTaxedAmount = (taxAmountsInput.transferAmount * botTaxPercent) / TAX_PERCENT_DENORM;
-                emit BotTransactionDetected(
-                    taxAmountsInput.sender, 
-                    taxAmountsInput.recipient, 
-                    taxAmountsInput.transferAmount,
-                    botTaxedAmount
-                );
-            }
+            burnAndRewardRealAmount = (realTransferAmount * botTaxPercent) / TAX_PERCENT_DENORM;
+            
+            uint botTaxedAmount = (taxAmountsInput.transferAmount * botTaxPercent) / TAX_PERCENT_DENORM;
+            emit BotTransactionDetected(
+                taxAmountsInput.sender, 
+                taxAmountsInput.recipient, 
+                taxAmountsInput.transferAmount,
+                botTaxedAmount
+            );
         }
         
         
@@ -436,7 +350,11 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         returns (CurrectCycle memory currentCycle)
     {
         
-        if (IDeftStorageContract(deftStorageAddress).isBotAddress(addr))
+        if  (
+                IDeftStorageContract(
+                    IDefiFactoryToken(defiFactoryTokenAddress).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+                ).isBotAddress(addr)
+            )
         {
             currentCycle.currentCycleTax = botTaxPercent;
             currentCycle.howMuchTimeLeftTillEndOfCycleThree = cycleThreeEnds;
