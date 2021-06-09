@@ -337,17 +337,14 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             "NBT: !buy_limit"
         );
         
-        bool isSell = hasRole(ROLE_DEX, taxAmountsInput.recipient);
+        bool isHumanTransaction = IBotsStorage(botsStorageAddress).
+                    isBot(defiFactoryTokenAddress, taxAmountsInput.sender, taxAmountsInput.recipient);
         
         uint timePassedSinceLastBuy = block.timestamp > buyTimestampStorage[taxAmountsInput.sender]?
                                         block.timestamp - buyTimestampStorage[taxAmountsInput.sender]: 0;
         bool isSenderHuman =    
                 !(isSell && (timePassedSinceLastBuy < howManyFirstMinutesIncreasedTax)) && // !isEarlySell
-                !IBotsStorage(botsStorageAddress).isBotStorage(taxAmountsInput.sender) &&
-                    (
-                        isNotContract(taxAmountsInput.sender) || 
-                        hasRole(ROLE_DEX, taxAmountsInput.sender)
-                    );
+                isHumanTransaction;
         
         uint burnAndRewardRealAmount;
         if (isSenderHuman)

@@ -278,6 +278,26 @@
 						"internalType": "bool",
 						"name": "",
 						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -495,11 +515,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x8110f8b8cb1bad39c9c1dac24e494522edaa66b972a359d37effc9ac1934ba40",
+			"keccak256": "0x5fbbe2f9fd9f9b04186ea788464f53e655cd656b3d6d115d4262f03364a50559",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://7c87ceb97e4983df646f2fa07dabb3da5c06cf07d757ee5afdad55ab5484356e",
-				"dweb:/ipfs/QmS1yGtzeysaXG6qDELZEreK8U59VYTh6wEfvGkXv4oY4n"
+				"bzz-raw://b8de2565e1fb627588d6db0447cc2be3d5f66fc20b07a59778f372ef1eb9b882",
+				"dweb:/ipfs/QmeiKd6GtYKPty1GA87jbk8uxhrjAr7j8kz6cPKwyLrLpb"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

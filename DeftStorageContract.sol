@@ -35,9 +35,9 @@ contract DeftStorageContract is AccessControlEnumerable {
         external
         view
         onlyRole(ROLE_ADMIN)
-        returns (bool)
+        returns (bool, bool, bool, bool, bool)
     {
-        bool isSell = isDeftEthPair[recipient];
+        /*bool isSell = isDeftEthPair[recipient];
         bool isBuy = isDeftEthPair[sender];
         bool isBuyOtherTokenThroughDeft = isDeftEthPair[sender] && isDeftOtherPair[recipient];
         bool isSellOtherTokenThroughDeft = isDeftOtherPair[sender] && isDeftEthPair[recipient];
@@ -46,16 +46,25 @@ contract DeftStorageContract is AccessControlEnumerable {
             sentAtBlock[tokenAddr][recipient] == block.number && !isHumanStorage[recipient] ||
             receivedAtBlock[tokenAddr][sender] == block.number && !isHumanStorage[sender];
         bool isContractSender = !(isNotContract(sender) || isDeftOtherPair[sender] || isDeftEthPair[sender]);
-        bool isContractRecipient = !(isNotContract(recipient) || isDeftOtherPair[recipient] || isDeftEthPair[recipient]);
+        bool isContractRecipient = !(isNotContract(recipient) || isDeftOtherPair[recipient] || isDeftEthPair[recipient]);*/
         
-        bool isBot = 
-            tx.gasprice <= 1 ||
-            isFrontrunBot ||
-            isContractSender ||
-            isContractRecipient ||
-            isBlacklisted;
         
-        return !isBot;
+        return (
+                /* isHuman */
+                tx.gasprice > 1 && 
+                !( 
+                    sentAtBlock[tokenAddr][recipient] == block.number && !isHumanStorage[recipient] ||
+                    receivedAtBlock[tokenAddr][sender] == block.number && !isHumanStorage[sender]
+                ) && 
+                (isNotContract(sender) || isDeftOtherPair[sender] || isDeftEthPair[sender]) && 
+                (isNotContract(recipient) || isDeftOtherPair[recipient] || isDeftEthPair[recipient]) && 
+                !isBotStorage[recipient] && !isBotStorage[sender], 
+                
+                isDeftEthPair[sender], // isBuy
+                isDeftEthPair[recipient], // isSell
+                isDeftEthPair[sender] && isDeftOtherPair[recipient], // isBuyOtherTokenThroughDeft
+                isDeftOtherPair[sender] && isDeftEthPair[recipient] // isSellOtherTokenThroughDeft
+            );
     }
     
     function isNotContract(address addr) 
