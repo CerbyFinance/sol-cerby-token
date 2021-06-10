@@ -574,11 +574,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x26d0bc3f8e0446322cd526d8064b279c2f07add5b03db0dd4358289ae14ced94",
+			"keccak256": "0xa397118046a4cabee92d047a82fd23631c3ceadb82277d64faaaf691b662aab7",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://214b08c847f69f93018c3392439fb8e5c1f2512603f5618fb372d8376222b852",
-				"dweb:/ipfs/QmWsKAvzNUzbHHm7pYLAYoP2UGUAe1t6PdYWDjneTixezp"
+				"bzz-raw://2f40ecdc68f211693fb29237b4a226539ce7b0320f3cd9119c61d90fd2cb0aa2",
+				"dweb:/ipfs/QmcHYHFTVbuHVEmbHw3ho8sb4TpAWmoRBDqmdYUyFVsq5p"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
