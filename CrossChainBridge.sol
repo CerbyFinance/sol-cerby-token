@@ -62,6 +62,13 @@ contract CrossChainBridge is AccessControlEnumerable {
         isAllowedToBridgeToChainId[chainId] = isAllowed;
     }
     
+    function updateBeneficiaryAddress(address newBeneficiaryAddr)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        beneficiaryAddress = newBeneficiaryAddr;
+    }
+    
     function updateFee(uint newFeePercent)
         public
         onlyRole(ROLE_ADMIN)
@@ -155,7 +162,7 @@ contract CrossChainBridge is AccessControlEnumerable {
         );
         require(
             amount > minAmountToBurn,
-            "CCB: Amount is greater than minimum allowed"
+            "CCB: Amount is lower than the minimum permitted amount"
         );
         
         bytes32 transactionHash = keccak256(abi.encodePacked(

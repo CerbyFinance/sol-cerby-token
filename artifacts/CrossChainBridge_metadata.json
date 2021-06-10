@@ -624,6 +624,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "newBeneficiaryAddr",
+						"type": "address"
+					}
+				],
+				"name": "updateBeneficiaryAddress",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "newFeePercent",
 						"type": "uint256"
@@ -714,11 +727,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0x4af2972aa66af7e34fe735ecf9b0e2eb13fe3a8399a53a851c0565b517a52e4d",
+			"keccak256": "0xc7b1a11b60979c5e0bc887126aef313716775fd24b30f276de7eb5eeee547421",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c7aa10a2be87fd0d930c04125426ba6b25418b5cebca6f31773214a45a79188b",
-				"dweb:/ipfs/QmemaJLVW9gKe8r12FCngH82WQrYs1TN8qzWjYoVuJn9hs"
+				"bzz-raw://08d26ee6bd94005b930ae959b833a16dcab7bea837cc6917c35baaf0f4eef956",
+				"dweb:/ipfs/QmbDAPdd3APZqMkkH5BA6K4k1nGQYeH1YuWXkaQE5o4z2x"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
