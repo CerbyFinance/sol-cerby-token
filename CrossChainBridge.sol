@@ -49,7 +49,7 @@ contract CrossChainBridge is AccessControlEnumerable {
         } else if (block.chainid == 42)
         {
             updateMinimumAmountToBurn(5000e18); // min 5000 tokens to burn on kovan
-            updateFee(5e3); // to kovan 1% fee
+            updateFee(5e3); // to kovan 0.5% fee
             isAllowedToBridgeToChainId[3] = true; // allow to bridge to ropsten
             mainTokenContract = 0x3A1f0F8aFF439a2f103d926FBf2c2663aEE44315; // kovan mintable token
         }
