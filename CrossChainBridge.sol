@@ -9,19 +9,21 @@ contract CrossChainBridge is AccessControlEnumerable {
     event ProofOfMint(address addr, uint amountAsFee, uint finalAmount, bytes32 transactionHash);
     event ApprovedTransaction(bytes32 transactionHash);
     event BulkApprovedTransactions(bytes32[] transactionHashes);
+    event FeeUpdated(uint feeAmount);
+    event MinimumAmountToBurnUpdated(uint newMinAmountToBurn);
     
     enum States{ Created, Burned, Approved, Executed }
     mapping(bytes32 => States) public transactionStorage;
     
     
     bytes32 public constant ROLE_APPROVER = keccak256("ROLE_APPROVER");
-    bytes32 public constant ROLE_BENEFICIARY = keccak256("ROLE_BENEFICIARY");
     uint constant feeDenorm = 1e6;
+    uint public feePercent = 1e4;
     
-    mapping (uint => uint) public chainIdToFee;
     uint public minAmountToBurn = 1 * 1e18;
     uint public currentNonce;
-    address defiFactoryContract;
+    address public mainTokenContract;
+    address public beneficiaryAddress;
     
     mapping (uint => bool) public isAllowedToBridgeToChainId;
     
@@ -35,35 +37,52 @@ contract CrossChainBridge is AccessControlEnumerable {
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
         _setupRole(ROLE_APPROVER, msg.sender);
-        _setupRole(ROLE_BENEFICIARY, msg.sender);
+        
+        beneficiaryAddress = msg.sender;
         
         if (block.chainid == 3)
         {
-            chainIdToFee[42] = 5e4; // from kovan 5% fee
+            updateMinimumAmountToBurn(1000e18); // min 1000 tokens to burn on ropsten
+            updateFee(1e4); // to ropsten 1% fee
             isAllowedToBridgeToChainId[42] = true; // allow to bridge to kovan
-            defiFactoryContract = 0x3Dec41e3222a02918468Bba4A235E131d31D71b2; // ropsten mintable token
+            mainTokenContract = 0x3Dec41e3222a02918468Bba4A235E131d31D71b2; // ropsten mintable token
         } else if (block.chainid == 42)
         {
-            chainIdToFee[3] = 1e4; // from ropsten 1% fee
+            updateMinimumAmountToBurn(5000e18); // min 5000 tokens to burn on kovan
+            updateFee(5e3); // to kovan 1% fee
             isAllowedToBridgeToChainId[3] = true; // allow to bridge to ropsten
-            defiFactoryContract = 0x3A1f0F8aFF439a2f103d926FBf2c2663aEE44315; // kovan mintable token
+            mainTokenContract = 0x3A1f0F8aFF439a2f103d926FBf2c2663aEE44315; // kovan mintable token
         }
     }
     
-    function updateChains(uint chainId, uint chainFee, bool isAllowed)
+    function allowChain(uint chainId, bool isAllowed)
         external
         onlyRole(ROLE_ADMIN)
     {
-        chainIdToFee[chainId] = chainFee;
         isAllowedToBridgeToChainId[chainId] = isAllowed;
     }
     
-    function updateSettings(uint newMinAmountToBurn, address newDefiFactoryContract) 
+    function updateFee(uint newFeePercent)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        feePercent = newFeePercent;
+        emit FeeUpdated(newFeePercent);
+    }
+    
+    function updateMinimumAmountToBurn(uint newMinAmountToBurn)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        minAmountToBurn = newMinAmountToBurn;
+        emit MinimumAmountToBurnUpdated(newMinAmountToBurn);
+    }
+    
+    function updateMainTokenContract(address newMainTokenContract) 
         external
         onlyRole(ROLE_ADMIN)
     {
-        newMinAmountToBurn = minAmountToBurn;
-        defiFactoryContract = newDefiFactoryContract;
+        mainTokenContract = newMainTokenContract;
     }
     
     function markTransactionAsApproved(bytes32 transactionHash) 
@@ -113,12 +132,12 @@ contract CrossChainBridge is AccessControlEnumerable {
         
         transactionStorage[sourceProofOfBurn.transactionHash] = States.Executed;
         
-        uint amountAsFee = (sourceProofOfBurn.amount*chainIdToFee[block.chainid]) / feeDenorm;
+        uint amountAsFee = (sourceProofOfBurn.amount*feePercent) / feeDenorm;
         uint finalAmount = sourceProofOfBurn.amount - amountAsFee; 
         
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryContract);
+        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(mainTokenContract);
         iDefiFactoryToken.mintByBridge(msg.sender, finalAmount);
-        iDefiFactoryToken.mintByBridge(getRoleMember(ROLE_BENEFICIARY, 0), amountAsFee);
+        iDefiFactoryToken.mintByBridge(beneficiaryAddress, amountAsFee);
         
         emit ProofOfMint(msg.sender, amountAsFee, finalAmount, transactionHash);
     }
@@ -145,7 +164,7 @@ contract CrossChainBridge is AccessControlEnumerable {
             
         transactionStorage[transactionHash] = States.Burned;
         
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryContract);
+        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(mainTokenContract);
         iDefiFactoryToken.burnByBridge(msg.sender, amount);
         
         emit ProofOfBurn(msg.sender, amount, currentNonce, block.chainid, destinationChainId, transactionHash);

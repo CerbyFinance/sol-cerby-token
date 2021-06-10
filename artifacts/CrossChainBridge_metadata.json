@@ -41,6 +41,32 @@
 				"inputs": [
 					{
 						"indexed": false,
+						"internalType": "uint256",
+						"name": "feeAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "FeeUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "newMinAmountToBurn",
+						"type": "uint256"
+					}
+				],
+				"name": "MinimumAmountToBurnUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
 						"internalType": "address",
 						"name": "addr",
 						"type": "address"
@@ -212,13 +238,31 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "chainId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isAllowed",
+						"type": "bool"
+					}
+				],
+				"name": "allowChain",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
-				"name": "ROLE_BENEFICIARY",
+				"name": "beneficiaryAddress",
 				"outputs": [
 					{
-						"internalType": "bytes32",
+						"internalType": "address",
 						"name": "",
-						"type": "bytes32"
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -256,14 +300,8 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "chainIdToFee",
+				"inputs": [],
+				"name": "currentNonce",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -276,7 +314,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "currentNonce",
+				"name": "feePercent",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -436,6 +474,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "mainTokenContract",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -574,21 +625,24 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "chainId",
+						"name": "newFeePercent",
 						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "chainFee",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "isAllowed",
-						"type": "bool"
 					}
 				],
-				"name": "updateChains",
+				"name": "updateFee",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newMainTokenContract",
+						"type": "address"
+					}
+				],
+				"name": "updateMainTokenContract",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -599,14 +653,9 @@
 						"internalType": "uint256",
 						"name": "newMinAmountToBurn",
 						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "newDefiFactoryContract",
-						"type": "address"
 					}
 				],
-				"name": "updateSettings",
+				"name": "updateMinimumAmountToBurn",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -665,11 +714,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0x219f5d540c6ce298f6f0eb8a7667a0628c4b2b1b6b7d4fc85b601b7859a9921f",
+			"keccak256": "0xde760d5d763881f5b68ea0bfddfe44fab435ae838163be4a2adc6672d993c7ae",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://91a0b30b4635bc8af68e517c479eb911522436cf5401aa16be5abc3dff0bab75",
-				"dweb:/ipfs/QmcUJqWc9KknmbyKDN4FKdAWLHHjTgMz7F3dFVGA4AttRW"
+				"bzz-raw://92dacb17e967a3e372733c8fef4c31376d9f16add405c6bff96eec990df6824b",
+				"dweb:/ipfs/QmQvvRWrzG3equRs2nrqCGcBfbQaFL7XGPBxVDS4vp33o7"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
