@@ -27,7 +27,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         _setupRole(ROLE_ADMIN, _msgSender());
     }
     
-    function getBuyTimestamp(address tokenAddr, address addr)
+    function getBuyTimestamp2(address tokenAddr, address addr)
         external
         view
         onlyRole(ROLE_ADMIN)
@@ -37,7 +37,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     }
     
     function updateBuyTimestamp(address tokenAddr, address addr, uint newBuyTimestamp)
-        external
+        public
         onlyRole(ROLE_ADMIN)
     {
         buyTimestampStorage[tokenAddr][addr] = newBuyTimestamp;
@@ -61,16 +61,6 @@ contract DeftStorageContract is AccessControlEnumerable {
         return isBotStorage[addr] ||
             !isNotContract(addr) && !isDeftOtherPair[addr] && !isDeftEthPair[addr];
     }
-    
-    function toBytes(address a) public pure returns (bytes memory b){
-    assembly {
-        let m := mload(0x40)
-        a := and(a, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
-        mstore(add(m, 20), xor(0x140000000000000000000000000000000000000000, a))
-        mstore(0x40, add(m, 52))
-        b := m
-   }
-}
     
     function isHumanTransaction(address tokenAddr, address sender, address recipient)
         external

@@ -188,7 +188,7 @@
 						"type": "address"
 					}
 				],
-				"name": "getBuyTimestamp",
+				"name": "getBuyTimestamp2",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -542,25 +542,6 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "a",
-						"type": "address"
-					}
-				],
-				"name": "toBytes",
-				"outputs": [
-					{
-						"internalType": "bytes",
-						"name": "b",
-						"type": "bytes"
-					}
-				],
-				"stateMutability": "pure",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
 						"name": "tokenAddr",
 						"type": "address"
 					},
@@ -657,11 +638,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x0ebb7415d171005d8a35ce70d01e795c316e67e34367e40e647c3f9fd49376db",
+			"keccak256": "0xdfdb031d99d73bd6db9eb46cc490a3aaa6b5883ba538e7a571214ba1e46c12f2",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://e083b64ae5e59e19db70ba9043286b43c9785a775df648635f2c79ead8d85aa2",
-				"dweb:/ipfs/QmRDBrg3s4aXeUBGtkZUxEyCoe1Pafzbodh9kG3ZzUVnzk"
+				"bzz-raw://7ae681ddbb5454ebe14eeb80cedcc25f13a76248374308d2d370ecf3f3f3587c",
+				"dweb:/ipfs/QmeuSHU2jr74ZSCJcsU6goqdrwCSSMVzb8oEDCjZWTEzJB"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {

@@ -126,8 +126,8 @@ const start = async () => {
       const transaction = await defiFactoryTokenContract.methods.updateUtilsContracts([
         [true, true, false, false, false, noBotsTechContract.options.address],
         [true, true, false, false, false, liquidityHelperContract.options.address],
-        [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"], //Uniswap factory v2
-        //[false, false, false, false, false, "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc"], //Pancake factory v2
+        [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"], // Uniswap factory v2
+        //[false, false, false, false, false, "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc"], // Pancake factory v2
         [false, false, false, false, false, deftStorageContract.options.address],
       ])
 
@@ -191,6 +191,122 @@ const start = async () => {
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
       console.log('stepDeftStorageRoles ok')
+  
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+  
+  // prettier-ignore
+  async function stepDeftStorageBuyTimestamp1() {
+    try {
+      let buyTimestamp = new Date() 
+      buyTimestamp.setDate(buyTimestamp.getDate() - 35)
+
+      const transaction = await deftStorageContract.methods.updateBuyTimestamp(
+        defiFactoryTokenContract.options.address,
+        "0x539FaA851D86781009EC30dF437D794bCd090c8F",
+        Math.floor(buyTimestamp.getTime() / 1000)
+      )
+
+      const signed  = await web3.eth.accounts.signTransaction({
+        nonce   : nonce++,
+        to      : transaction._parent._address,
+        data    : transaction.encodeABI(),
+        gas: await transaction.estimateGas({from: account}),
+        gasPrice: 10e9+1,
+      }, _account.privateKey);
+
+      const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
+
+      console.log('stepDeftStorageBuyTimestamp1 ok')
+  
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+  
+  // prettier-ignore
+  async function stepDeftStorageBuyTimestamp2() {
+    try {
+      let buyTimestamp = new Date() 
+      buyTimestamp.setDate(buyTimestamp.getDate() - 140)
+
+      const transaction = await deftStorageContract.methods.updateBuyTimestamp(
+        defiFactoryTokenContract.options.address,
+        "0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f",
+        Math.floor(buyTimestamp.getTime() / 1000)
+      )
+
+      const signed  = await web3.eth.accounts.signTransaction({
+        nonce   : nonce++,
+        to      : transaction._parent._address,
+        data    : transaction.encodeABI(),
+        gas: await transaction.estimateGas({from: account}),
+        gasPrice: 10e9+1,
+      }, _account.privateKey);
+
+      const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
+
+      console.log('stepDeftStorageBuyTimestamp2 ok')
+  
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+  
+  // prettier-ignore
+  async function stepDeftStorageBuyTimestamp3() {
+    try {
+      let buyTimestamp = new Date() 
+      buyTimestamp.setDate(buyTimestamp.getDate() - 333)
+
+      const transaction = await deftStorageContract.methods.updateBuyTimestamp(
+        defiFactoryTokenContract.options.address,
+        "0xBbB6AE3051C5b486836a32193D8D191572C7cC1D",
+        Math.floor(buyTimestamp.getTime() / 1000)
+      )
+
+      const signed  = await web3.eth.accounts.signTransaction({
+        nonce   : nonce++,
+        to      : transaction._parent._address,
+        data    : transaction.encodeABI(),
+        gas: await transaction.estimateGas({from: account}),
+        gasPrice: 10e9+1,
+      }, _account.privateKey);
+
+      const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
+
+      console.log('stepDeftStorageBuyTimestamp3 ok')
+  
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+  
+  // prettier-ignore
+  async function stepDeftStorageBuyTimestamp4() {
+    try {
+      let buyTimestamp = new Date() 
+      buyTimestamp.setDate(buyTimestamp.getDate() - 600)
+
+      const transaction = await deftStorageContract.methods.updateBuyTimestamp(
+        defiFactoryTokenContract.options.address,
+        "0x987De8C41CB9e166E51a4913e560c08c2760EfE5",
+        Math.floor(buyTimestamp.getTime() / 1000)
+      )
+
+      const signed  = await web3.eth.accounts.signTransaction({
+        nonce   : nonce++,
+        to      : transaction._parent._address,
+        data    : transaction.encodeABI(),
+        gas: await transaction.estimateGas({from: account}),
+        gasPrice: 10e9+1,
+      }, _account.privateKey);
+
+      const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
+
+      console.log('stepDeftStorageBuyTimestamp4 ok')
   
     } catch (error) {
       console.log(error.message);
@@ -346,7 +462,11 @@ const start = async () => {
     stepDeftRoles(),
     stepDeftRoleMinter(),
     stepDeftRoleBurner(),
-    stepUpdateDeftContractInCrossChainSwap()
+    stepUpdateDeftContractInCrossChainSwap(),
+    stepDeftStorageBuyTimestamp1(),
+    stepDeftStorageBuyTimestamp2(),
+    stepDeftStorageBuyTimestamp3(),
+    stepDeftStorageBuyTimestamp4(),
   ]);
 
 
@@ -396,6 +516,7 @@ const start = async () => {
   }
   
   await createPairOnUniswapV2();
+  //await delay(1000);
   await addLiquidityOnUniswapV2();
   
 };
@@ -413,4 +534,9 @@ function chunk<T>(arr: T[], len: number) {
   }
 
   return chunks;
+}
+
+function delay(ms: number)
+{
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
