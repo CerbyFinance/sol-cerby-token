@@ -157,11 +157,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/LiquidityHelper.sol": {
-			"keccak256": "0xd97a29734d7fe652148219b31bf08152122462c9f7a6859ad145c5b3704ee5a8",
+			"keccak256": "0x9e24078efbdc69c7bd1c99b7c9a7e7e2f3a066d82eafb5e9dae23e045cef3812",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://2119ca5a8203e7cbf9e637a52d227d28fed01562df49bdd4805b947ff8b433c9",
-				"dweb:/ipfs/QmZfzJXdhLfJjdFcmovzxYUMpK6T8cdoii89J2ZLsgRUsD"
+				"bzz-raw://26ccd919a2985a794d28dfc2f72b90fbe6c4d37045132b492ec3b8c4537a3e91",
+				"dweb:/ipfs/QmVJpWBRqJf8F2HEQEo7ktZ5FZ3F7LfZnDVYSPysfyargi"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

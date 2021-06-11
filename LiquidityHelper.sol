@@ -27,9 +27,9 @@ contract LiquidityHelper {
     uint public percentForUniswap = 100;
     uint constant PERCENT_DENORM = 100;
     
-    address public nativeToken = 0xd0A1E359811322d97991E03f863a0C30C2cF029C; // kovan
+    //address public nativeToken = 0xd0A1E359811322d97991E03f863a0C30C2cF029C; // kovan
     //address public nativeToken = 0xc778417E063141139Fce010982780140Aa0cD5Ab; // ropsten
-    //address public nativeToken = 0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F; // bsc testnet
+    address public nativeToken = 0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F; // bsc testnet
     
     address constant BURN_ADDRESS = address(0x0);
     

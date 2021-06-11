@@ -188,7 +188,7 @@
 						"type": "address"
 					}
 				],
-				"name": "getBuyTimestamp2",
+				"name": "getBuyTimestamp",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -638,11 +638,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0xdfdb031d99d73bd6db9eb46cc490a3aaa6b5883ba538e7a571214ba1e46c12f2",
+			"keccak256": "0xaaffb4e78fa74164b865ec6a34beb6199ad4834e5b98f6ebd4289791982564ba",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://7ae681ddbb5454ebe14eeb80cedcc25f13a76248374308d2d370ecf3f3f3587c",
-				"dweb:/ipfs/QmeuSHU2jr74ZSCJcsU6goqdrwCSSMVzb8oEDCjZWTEzJB"
+				"bzz-raw://e62bad10050c19838aa52e2c7c4062d72b54e24f042b171b7289e41058b4dc47",
+				"dweb:/ipfs/QmUk97kh1GLKPk27JEDjpRCUeTXewht2cTvzBTHSACdj9y"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {

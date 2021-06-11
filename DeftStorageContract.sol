@@ -27,7 +27,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         _setupRole(ROLE_ADMIN, _msgSender());
     }
     
-    function getBuyTimestamp2(address tokenAddr, address addr)
+    function getBuyTimestamp(address tokenAddr, address addr)
         external
         view
         onlyRole(ROLE_ADMIN)
