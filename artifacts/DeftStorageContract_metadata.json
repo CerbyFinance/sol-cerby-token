@@ -29,31 +29,6 @@
 					{
 						"indexed": false,
 						"internalType": "address",
-						"name": "tokenAddr",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "newBuyTimestampAddr",
-						"type": "uint256"
-					}
-				],
-				"name": "BuyTimestampUpdated",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
 						"name": "addr",
 						"type": "address"
 					}
@@ -638,11 +613,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0xaaffb4e78fa74164b865ec6a34beb6199ad4834e5b98f6ebd4289791982564ba",
+			"keccak256": "0x032e7b8b94622e4062bdc3c9bfc4ed0c0eb2da31c9132e9e67d0f6aa5918db7d",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://e62bad10050c19838aa52e2c7c4062d72b54e24f042b171b7289e41058b4dc47",
-				"dweb:/ipfs/QmUk97kh1GLKPk27JEDjpRCUeTXewht2cTvzBTHSACdj9y"
+				"bzz-raw://64bb8aea82434ccf26a6e6fdc5290ca90c5cf397d0a2fee2c8e3e691a94e48fc",
+				"dweb:/ipfs/QmbgqxFe7AGWa3WVZ5Up4GgSKiz3oPHmb1Z81iaeDpenj8"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {

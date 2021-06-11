@@ -61,20 +61,12 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     event MultiplierUpdated(uint newMultiplier);
     event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);
     event BuyLimitAmountUpdated(uint newBuyLimitAmount);
-    event TeamTaxRewardsUpdated(address teamAddress, uint teamRewards);
-    event WalletBuyTimestampUpdated(address wallet, uint buyTimestamp);
     
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
         
-        earlyInvestorTimestamp = block.timestamp - 0 days;
+        earlyInvestorTimestamp = block.timestamp - 30 days;
         
-        
-        realTotalSupply = 1;
-        rewardsBalance = 0;
-        
-        cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
-                (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
         emit MultiplierUpdated(cachedMultiplier);
     }
     

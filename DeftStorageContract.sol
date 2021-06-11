@@ -21,7 +21,6 @@ contract DeftStorageContract is AccessControlEnumerable {
     event BulkMarkedAsBot(address[] addrs);
     event MarkedAsBot(address addr);
     event MarkedAsNotBot(address addr);
-    event BuyTimestampUpdated(address tokenAddr, address addr, uint newBuyTimestampAddr);
     
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
@@ -41,7 +40,6 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         buyTimestampStorage[tokenAddr][addr] = newBuyTimestamp;
-        emit BuyTimestampUpdated(tokenAddr, addr, newBuyTimestamp);
     }
     
     function updateTransaction(address tokenAddr, address sender, address recipient)

@@ -143,44 +143,6 @@
 				"type": "event"
 			},
 			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "teamAddress",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "teamRewards",
-						"type": "uint256"
-					}
-				],
-				"name": "TeamTaxRewardsUpdated",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "wallet",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "buyTimestamp",
-						"type": "uint256"
-					}
-				],
-				"name": "WalletBuyTimestampUpdated",
-				"type": "event"
-			},
-			{
 				"inputs": [],
 				"name": "ROLE_ADMIN",
 				"outputs": [
@@ -1027,11 +989,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x4b9816333dfea01f434e9138ccafd088be66bb3c1acfec3195e47159fbfddb0c",
+			"keccak256": "0xce0e08d89d253c17b378abb11899b7d61beb503927195f9c435ddb67381f8c05",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://bfe1d76283a09334e9acf7a6ac623d9e673f7cda1e3534704612ef1a829c7375",
-				"dweb:/ipfs/Qma6DUSbLe7DzrrEzbbcMDfYJwhSneiBeBPtVEQuuM6A9b"
+				"bzz-raw://e4d31d06a76b11155db5c89e7f524c3313077128c6e547437257172a1afc7226",
+				"dweb:/ipfs/QmSXcUBgWZwU6ZXvC3c7gzwtjtyEz9V4X6YxweBQh9Xevj"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
