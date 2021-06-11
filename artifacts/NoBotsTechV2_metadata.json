@@ -246,6 +246,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "crossPairsTaxPercent",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "cycleOneEnds",
 				"outputs": [
 					{
@@ -854,6 +867,19 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "_crossPairsTaxPercent",
+						"type": "uint256"
+					}
+				],
+				"name": "updateCrossPairsTax",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "_cycleOneStartTaxPercent",
 						"type": "uint256"
 					},
@@ -989,11 +1015,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0xce0e08d89d253c17b378abb11899b7d61beb503927195f9c435ddb67381f8c05",
+			"keccak256": "0x8d894424f59e468ed7533aa5ca6bb48e7194c2a810760fc8760daac86c3d8503",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://e4d31d06a76b11155db5c89e7f524c3313077128c6e547437257172a1afc7226",
-				"dweb:/ipfs/QmSXcUBgWZwU6ZXvC3c7gzwtjtyEz9V4X6YxweBQh9Xevj"
+				"bzz-raw://1789ad03c6dfefe4a38f9d1d79db12848ff7a7d742a737df7a01a1ef9c288761",
+				"dweb:/ipfs/QmUs2w21ScGTEDqyC4F7ZNFLcn28Z5fQRQLtNoANRmd1cf"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

@@ -83,9 +83,19 @@ contract DeftStorageContract is AccessControlEnumerable {
         
         bool isBot;
         bool isFrontrunSellBot = 
-            sentAtBlock[tokenAddr][recipient] == block.number && !isHumanStorage[recipient];
+            sentAtBlock[tokenAddr][recipient] == block.number && 
+                !(
+                    isHumanStorage[recipient] ||
+                    isDeftOtherPair[recipient] || 
+                    isDeftEthPair[recipient]
+                );
         bool isFrontrunBuyBot =
-            receivedAtBlock[tokenAddr][sender] == block.number && !isHumanStorage[sender];
+            receivedAtBlock[tokenAddr][sender] == block.number && 
+                !(
+                    isHumanStorage[sender] ||
+                    isDeftOtherPair[sender] || 
+                    isDeftEthPair[sender]
+                );
         if (isFrontrunSellBot)
         {
             isBot = true;
