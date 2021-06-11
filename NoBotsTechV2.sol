@@ -297,7 +297,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         }
         
         
-        if (!isHumanInfo.isSell)
+        if (!isHumanInfo.isSell && !isHumanInfo.isBuyOtherTokenThroughDeft)
         { // isBuy or isTransfer: Updating cycle based on realTransferAmount
             uint newBuyTimestamp = getUpdatedBuyTimestampOfEarlyInvestor(taxAmountsInput.recipient, taxAmountsInput.recipientRealBalance);
             newBuyTimestamp = getNewBuyTimestamp(newBuyTimestamp, taxAmountsInput.recipientRealBalance, realTransferAmount);
