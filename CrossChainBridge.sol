@@ -40,18 +40,17 @@ contract CrossChainBridge is AccessControlEnumerable {
         
         beneficiaryAddress = msg.sender;
         
-        if (block.chainid == 3)
+        mainTokenContract = 0x3Dec41e3222a02918468Bba4A235E131d31D71b2; // mintable token
+        if (block.chainid == 97)
         {
-            updateMinimumAmountToBurn(1000e18); // min 1000 tokens to burn on ropsten
-            updateFee(1e4); // to ropsten 1% fee
+            updateMinimumAmountToBurn(1000e18); // min 1000 tokens to burn on bsc testnet
+            updateFee(5e3); // to bsc testnet 0.5% fee
             isAllowedToBridgeToChainId[42] = true; // allow to bridge to kovan
-            mainTokenContract = 0x3Dec41e3222a02918468Bba4A235E131d31D71b2; // ropsten mintable token
         } else if (block.chainid == 42)
         {
             updateMinimumAmountToBurn(5000e18); // min 5000 tokens to burn on kovan
-            updateFee(5e3); // to kovan 0.5% fee
-            isAllowedToBridgeToChainId[3] = true; // allow to bridge to ropsten
-            mainTokenContract = 0x3A1f0F8aFF439a2f103d926FBf2c2663aEE44315; // kovan mintable token
+            updateFee(1e4); // to kovan 1.0% fee
+            isAllowedToBridgeToChainId[97] = true; // allow to bridge to bsc testnet
         }
     }
     

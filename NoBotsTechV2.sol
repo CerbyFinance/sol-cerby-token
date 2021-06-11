@@ -51,7 +51,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public realTotalSupply;
     uint public earlyInvestorTimestamp;
     
-    mapping(address => uint) public buyTimestampStorage;
     
     struct CurrectCycle {
         uint currentCycleTax;
@@ -70,10 +69,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         
         earlyInvestorTimestamp = block.timestamp - 0 days;
         
-        //buyTimestampStorage[0x539FaA851D86781009EC30dF437D794bCd090c8F] = block.timestamp - 35 days;
-        buyTimestampStorage[0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f] = block.timestamp - 140 days;
-        buyTimestampStorage[0xBbB6AE3051C5b486836a32193D8D191572C7cC1D] = block.timestamp - 333 days;
-        buyTimestampStorage[0x987De8C41CB9e166E51a4913e560c08c2760EfE5] = block.timestamp - 600 days;
         
         realTotalSupply = 1;
         rewardsBalance = 0;
@@ -247,9 +242,10 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             "NBT: !amount"
         );
         
-        IsHumanInfo memory isHumanInfo = IDeftStorageContract(
+        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
                 IDefiFactoryToken(defiFactoryTokenAddress).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
-            ).isHumanTransaction(defiFactoryTokenAddress, taxAmountsInput.sender, taxAmountsInput.recipient);
+            );
+        IsHumanInfo memory isHumanInfo = iDeftStorageContract.isHumanTransaction(defiFactoryTokenAddress, taxAmountsInput.sender, taxAmountsInput.recipient);
         
         require (
             !isHumanInfo.isBuy ||
@@ -259,8 +255,10 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             "NBT: !buy_limit"
         );
         
-        uint timePassedSinceLastBuy = block.timestamp > buyTimestampStorage[taxAmountsInput.sender]?
-                                        block.timestamp - buyTimestampStorage[taxAmountsInput.sender]: 0;
+        uint buyTimestampSender = 
+            getUpdatedBuyTimestampOfEarlyInvestor(taxAmountsInput.sender, taxAmountsInput.senderRealBalance);
+        uint timePassedSinceLastBuy = block.timestamp > buyTimestampSender?
+                                        block.timestamp - buyTimestampSender: 0;
         bool isHumanTransaction =    
                 !(isHumanInfo.isSell && (timePassedSinceLastBuy < howManyFirstMinutesIncreasedTax)) && // !isEarlySell
                 isHumanInfo.isHumanTransaction;
@@ -294,11 +292,10 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         
         if (!isHumanInfo.isSell)
         { // isBuy or isTransfer: Updating cycle based on realTransferAmount
-            uint buyTimestampAddr = getUpdatedBuyTimestampOfEarlyInvestor(taxAmountsInput.recipient, taxAmountsInput.recipientRealBalance);
-            buyTimestampAddr = getNewBuyTimestamp(buyTimestampAddr, taxAmountsInput.recipientRealBalance, realTransferAmount);
+            uint newBuyTimestamp = getUpdatedBuyTimestampOfEarlyInvestor(taxAmountsInput.recipient, taxAmountsInput.recipientRealBalance);
+            newBuyTimestamp = getNewBuyTimestamp(newBuyTimestamp, taxAmountsInput.recipientRealBalance, realTransferAmount);
             
-            buyTimestampStorage[taxAmountsInput.recipient] = buyTimestampAddr;
-            emit WalletBuyTimestampUpdated(taxAmountsInput.recipient, buyTimestampAddr);
+            iDeftStorageContract.updateBuyTimestamp(defiFactoryTokenAddress, taxAmountsInput.recipient, newBuyTimestamp);
         }
         
         
@@ -381,16 +378,22 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         view
         returns (uint)
     {
-        uint buyTimestampAddr = block.timestamp;
-        if (buyTimestampStorage[addr] == 0 && accountBalance != 0)
+        uint newBuyTimestamp = block.timestamp;
+        
+        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
+                IDefiFactoryToken(defiFactoryTokenAddress).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+            );
+            
+        uint buyTimeStampAddr = iDeftStorageContract.getBuyTimestamp(defiFactoryTokenAddress, addr);
+        if (buyTimeStampAddr != 0)
         {
-            buyTimestampAddr = earlyInvestorTimestamp;
-        } else if (buyTimestampStorage[addr] != 0)
+            newBuyTimestamp = buyTimeStampAddr;
+        } else if (accountBalance != 0)
         {
-            buyTimestampAddr = buyTimestampStorage[addr];
+            newBuyTimestamp = earlyInvestorTimestamp;
         }
         
-        return buyTimestampAddr;
+        return newBuyTimestamp;
     }
     
     function getNewBuyTimestamp(uint currentTimestamp, uint accountBalance, uint receivedAmount)
@@ -424,11 +427,13 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             realTotalSupply += realAmountToMintOrBurn;
             
             uint accountBalance = IDefiFactoryToken(defiFactoryTokenAddress).balanceOf(account);
-            uint buyTimestampAddr = getUpdatedBuyTimestampOfEarlyInvestor(account, accountBalance);
-            buyTimestampAddr = getNewBuyTimestamp(buyTimestampAddr, accountBalance, desiredAmountToMintOrBurn);
+            uint newBuyTimestampAccount = getUpdatedBuyTimestampOfEarlyInvestor(account, accountBalance);
+            newBuyTimestampAccount = getNewBuyTimestamp(newBuyTimestampAccount, accountBalance, desiredAmountToMintOrBurn);
             
-            buyTimestampStorage[account] = buyTimestampAddr;
-            emit WalletBuyTimestampUpdated(account, buyTimestampAddr);
+            IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
+                IDefiFactoryToken(defiFactoryTokenAddress).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+            );
+            iDeftStorageContract.updateBuyTimestamp(defiFactoryTokenAddress, account, newBuyTimestampAccount);
         } else
         {
             rewardsBalance -= rewardToMintOrBurn;

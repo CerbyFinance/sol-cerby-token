@@ -29,6 +29,31 @@
 					{
 						"indexed": false,
 						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "newBuyTimestampAddr",
+						"type": "uint256"
+					}
+				],
+				"name": "BuyTimestampUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
 						"name": "addr",
 						"type": "address"
 					}
@@ -148,6 +173,30 @@
 				"name": "bulkMarkAddressAsBot",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getBuyTimestamp",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -347,11 +396,11 @@
 							}
 						],
 						"internalType": "struct IsHumanInfo",
-						"name": "",
+						"name": "output",
 						"type": "tuple"
 					}
 				],
-				"stateMutability": "view",
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -493,6 +542,48 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "a",
+						"type": "address"
+					}
+				],
+				"name": "toBytes",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "b",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "newBuyTimestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "updateBuyTimestamp",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
 						"name": "tokenAddr",
 						"type": "address"
 					},
@@ -566,19 +657,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x9611be6843e96139d254f30494790ddb638a6f784649b3b5e2773032a27c2f5f",
+			"keccak256": "0x0ebb7415d171005d8a35ce70d01e795c316e67e34367e40e647c3f9fd49376db",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://30e389d9f812f6d00eb6cf8b073afd3e6724286f468c62383b95c4eb40bb7589",
-				"dweb:/ipfs/QmeVuwvCGiYPVNYepivMSZq4pY5DHbv5EBxjefjtKKb862"
+				"bzz-raw://e083b64ae5e59e19db70ba9043286b43c9785a775df648635f2c79ead8d85aa2",
+				"dweb:/ipfs/QmRDBrg3s4aXeUBGtkZUxEyCoe1Pafzbodh9kG3ZzUVnzk"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0xa397118046a4cabee92d047a82fd23631c3ceadb82277d64faaaf691b662aab7",
+			"keccak256": "0x8515e8c91be6ac6fd6d02c2cbc38f98f0b42a6b01df0edf48e2d572610dc9f28",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://2f40ecdc68f211693fb29237b4a226539ce7b0320f3cd9119c61d90fd2cb0aa2",
-				"dweb:/ipfs/QmcHYHFTVbuHVEmbHw3ho8sb4TpAWmoRBDqmdYUyFVsq5p"
+				"bzz-raw://1e24fe6c31ac94bfa1076409444c27acaa0400b6fc8c0510ab9e1d1ef411c6e0",
+				"dweb:/ipfs/QmYJF2mq2ugqXDEu5BULT2MWgG7qeWvQs36WqbYHkMh5hP"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

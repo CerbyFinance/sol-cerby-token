@@ -11,10 +11,17 @@ struct IsHumanInfo {
 }
 
 interface IDeftStorageContract {
+    
+    function getBuyTimestamp(address tokenAddr, address addr)
+        external
+        view
+        returns (uint);
+    
+    function updateBuyTimestamp(address tokenAddr, address addr, uint newBuyTimestamp)
+        external;
         
     function isHumanTransaction(address tokenAddr, address sender, address recipient)
         external
-        view
         returns (IsHumanInfo memory);
     
     function isBotAddress(address addr)

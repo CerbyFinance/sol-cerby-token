@@ -10,6 +10,8 @@ contract DeftStorageContract is AccessControlEnumerable {
     mapping(address => bool) private isBotStorage;
     mapping(address => bool) private isHumanStorage;
     
+    mapping(address => mapping(address => uint)) private buyTimestampStorage;
+    
     mapping(address => mapping(address => uint)) private sentAtBlock;
     mapping(address => mapping(address => uint)) private receivedAtBlock;
     
@@ -19,9 +21,27 @@ contract DeftStorageContract is AccessControlEnumerable {
     event BulkMarkedAsBot(address[] addrs);
     event MarkedAsBot(address addr);
     event MarkedAsNotBot(address addr);
+    event BuyTimestampUpdated(address tokenAddr, address addr, uint newBuyTimestampAddr);
     
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
+    }
+    
+    function getBuyTimestamp(address tokenAddr, address addr)
+        external
+        view
+        onlyRole(ROLE_ADMIN)
+        returns (uint)
+    {
+        return buyTimestampStorage[tokenAddr][addr];
+    }
+    
+    function updateBuyTimestamp(address tokenAddr, address addr, uint newBuyTimestamp)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        buyTimestampStorage[tokenAddr][addr] = newBuyTimestamp;
+        emit BuyTimestampUpdated(tokenAddr, addr, newBuyTimestamp);
     }
     
     function updateTransaction(address tokenAddr, address sender, address recipient)
@@ -42,11 +62,20 @@ contract DeftStorageContract is AccessControlEnumerable {
             !isNotContract(addr) && !isDeftOtherPair[addr] && !isDeftEthPair[addr];
     }
     
+    function toBytes(address a) public pure returns (bytes memory b){
+    assembly {
+        let m := mload(0x40)
+        a := and(a, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+        mstore(add(m, 20), xor(0x140000000000000000000000000000000000000000, a))
+        mstore(0x40, add(m, 52))
+        b := m
+   }
+}
+    
     function isHumanTransaction(address tokenAddr, address sender, address recipient)
         external
-        view
         onlyRole(ROLE_ADMIN)
-        returns (IsHumanInfo memory)
+        returns (IsHumanInfo memory output)
     {
         /*bool isSell = isDeftEthPair[recipient];
         bool isBuy = isDeftEthPair[sender];
@@ -59,23 +88,37 @@ contract DeftStorageContract is AccessControlEnumerable {
         bool isContractSender = !(isNotContract(sender) || isDeftOtherPair[sender] || isDeftEthPair[sender]);
         bool isContractRecipient = !(isNotContract(recipient) || isDeftOtherPair[recipient] || isDeftEthPair[recipient]);*/
         
+        output.isSell = isDeftEthPair[recipient];
+        output.isBuy = isDeftEthPair[sender];
+        output.isBuyOtherTokenThroughDeft = isDeftEthPair[sender] && isDeftOtherPair[recipient];
+        output.isSellOtherTokenThroughDeft = isDeftOtherPair[sender] && isDeftEthPair[recipient];
         
-        return IsHumanInfo(
-                /* isHuman */
-                //tx.gasprice > 1 && 
-                !( 
-                    sentAtBlock[tokenAddr][recipient] == block.number && !isHumanStorage[recipient] ||
-                    receivedAtBlock[tokenAddr][sender] == block.number && !isHumanStorage[sender]
-                ) && 
-                (isNotContract(sender) || isDeftOtherPair[sender] || isDeftEthPair[sender]) && 
-                (isNotContract(recipient) || isDeftOtherPair[recipient] || isDeftEthPair[recipient]) && 
-                !isBotStorage[recipient] && !isBotStorage[sender], 
-                
-                isDeftEthPair[sender], // isBuy
-                isDeftEthPair[recipient], // isSell
-                isDeftEthPair[sender] && isDeftOtherPair[recipient], // isBuyOtherTokenThroughDeft
-                isDeftOtherPair[sender] && isDeftEthPair[recipient] // isSellOtherTokenThroughDeft
-            );
+        bool isBot;
+        bool isFrontrunSellBot = 
+            sentAtBlock[tokenAddr][recipient] == block.number && !isHumanStorage[recipient];
+        bool isFrontrunBuyBot =
+            receivedAtBlock[tokenAddr][sender] == block.number && !isHumanStorage[sender];
+        if (isFrontrunSellBot)
+        {
+            isBot = true;
+            markAddressAsBot(recipient);
+        } else if (isFrontrunBuyBot)
+        {
+            isBot = true;
+            markAddressAsBot(sender);
+        } else if (
+                !output.isBuy && // isSell or isTransfer
+                (
+                    !(isNotContract(sender) || isDeftOtherPair[sender] || isDeftEthPair[sender] || isHumanStorage[sender]) || // isContractSender
+                    isBotStorage[sender] // isBlacklistedSender
+                )
+            )
+        {
+            isBot = true;
+        }
+        output.isHumanTransaction = !isBot;
+        
+        return output;
     }
     
     function isNotContract(address addr) 
@@ -121,7 +164,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     }
     
     function markAddressAsBot(address addr)
-        external
+        public
         onlyRole(ROLE_ADMIN)
     {
         isBotStorage[addr] = true;

@@ -48,12 +48,14 @@
 		"gasEstimates": null,
 		"methodIdentifiers": {
 			"bulkMarkAddressAsBot(address[])": "6a930a95",
+			"getBuyTimestamp(address,address)": "161aa47e",
 			"isBotAddress(address)": "eaa8f7e3",
 			"isHumanTransaction(address,address,address)": "60623731",
 			"markAddressAsBot(address)": "1093baa9",
 			"markAddressAsNotBot(address)": "a9a48824",
 			"markPairAsDeftEthPair(address,bool)": "fc70da0a",
 			"markPairAsDeftOtherPair(address,bool)": "7524573d",
+			"updateBuyTimestamp(address,address,uint256)": "2a5bf470",
 			"updateTransaction(address,address)": "030b5b31"
 		}
 	},
@@ -69,6 +71,30 @@
 			"name": "bulkMarkAddressAsBot",
 			"outputs": [],
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "tokenAddr",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "addr",
+					"type": "address"
+				}
+			],
+			"name": "getBuyTimestamp",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -143,7 +169,7 @@
 					"type": "tuple"
 				}
 			],
-			"stateMutability": "view",
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -204,6 +230,29 @@
 				}
 			],
 			"name": "markPairAsDeftOtherPair",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "tokenAddr",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "addr",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "newBuyTimestamp",
+					"type": "uint256"
+				}
+			],
+			"name": "updateBuyTimestamp",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"

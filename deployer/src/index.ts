@@ -32,7 +32,7 @@ async function deployContract(
       from: account,
       gas: 6e6,
       // @ts-ignore
-      gasPrice: 2e9+1,
+      gasPrice: 10e9+1,
       value,
     });
 
@@ -66,6 +66,9 @@ const start = async () => {
   const deftStorageJson = JSON.parse(
     fs.readFileSync(path.resolve("../artifacts/DeftStorageContract.json"), "utf8"),
   );
+  const crossChainBridgeJson = JSON.parse(
+    fs.readFileSync(path.resolve("../artifacts/CrossChainBridge.json"), "utf8"),
+  );
 
   const currentBlock = await web3.eth.getBlockNumber();
   console.log("current block:", currentBlock);
@@ -76,7 +79,6 @@ const start = async () => {
     account,
     0,
   );
-
   console.log("DefiFactoryToken: ", defiFactoryTokenContract.options.address);
 
   const noBotsTechContract = await deployContract(
@@ -85,7 +87,6 @@ const start = async () => {
     account,
     0,
   );
-
   console.log("NoBotsTechV2: ", noBotsTechContract.options.address);
 
   const liquidityHelperContract = await deployContract(
@@ -94,7 +95,6 @@ const start = async () => {
     account,
     1e15,
   );
-
   console.log("LiquidityHelper: ", liquidityHelperContract.options.address);
 
   const deftStorageContract = await deployContract(
@@ -103,8 +103,15 @@ const start = async () => {
     account,
     0,
   );
-
   console.log("DeftStorageContract: ", deftStorageContract.options.address);
+
+  const crossChainBridgeContract = await deployContract(
+    "CrossChainBridge",
+    crossChainBridgeJson,
+    account,
+    0,
+  );
+  console.log("CrossChainBridge: ", crossChainBridgeContract.options.address);
 
 
   let nonce = await web3.eth.getTransactionCount(account);
@@ -129,7 +136,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 10e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -153,7 +160,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 10e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -178,12 +185,60 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 10e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
       console.log('stepDeftStorageRoles ok')
+  
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+  
+  // prettier-ignore
+  async function stepDeftRoleMinter() {
+    try {
+      const transaction = await defiFactoryTokenContract.methods.grantRole(
+        "0xaeaef46186eb59f884e36929b6d682a6ae35e1e43d8f05f058dcefb92b601461", crossChainBridgeContract.options.address
+      )
+
+      const signed  = await web3.eth.accounts.signTransaction({
+        nonce   : nonce++,
+        to      : transaction._parent._address,
+        data    : transaction.encodeABI(),
+        gas: await transaction.estimateGas({from: account}),
+        gasPrice: 10e9+1,
+      }, _account.privateKey);
+
+      const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
+
+      console.log('stepDeftRoleMinter ok')
+  
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+  
+  // prettier-ignore
+  async function stepDeftRoleBurner() {
+    try {
+      const transaction = await defiFactoryTokenContract.methods.grantRole(
+        "0xb5b5a86cc252b1b75a439c6ff372933ceb0690188924e6461150adeb00ab80d8", crossChainBridgeContract.options.address
+      )
+
+      const signed  = await web3.eth.accounts.signTransaction({
+        nonce   : nonce++,
+        to      : transaction._parent._address,
+        data    : transaction.encodeABI(),
+        gas: await transaction.estimateGas({from: account}),
+        gasPrice: 10e9+1,
+      }, _account.privateKey);
+
+      const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
+
+      console.log('stepDeftRoleBurner ok')
   
     } catch (error) {
       console.log(error.message);
@@ -200,7 +255,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 10e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -222,12 +277,34 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 10e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
       console.log('stepUpdateDeftContractInLiquidityHelper ok')
+  
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+  
+  // prettier-ignore
+  async function stepUpdateDeftContractInCrossChainSwap() {
+    try {
+      const transaction = await crossChainBridgeContract.methods.updateMainTokenContract(defiFactoryTokenContract.options.address)
+
+      const signed  = await web3.eth.accounts.signTransaction({
+        nonce   : nonce++,
+        to      : transaction._parent._address,
+        data    : transaction.encodeABI(),
+        gas: await transaction.estimateGas({from: account}),
+        gasPrice: 10e9+1,
+      }, _account.privateKey);
+
+      const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
+
+      console.log('stepUpdateDeftContractInCrossChainSwap ok')
   
     } catch (error) {
       console.log(error.message);
@@ -246,7 +323,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 10e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -266,7 +343,11 @@ const start = async () => {
     stepDeftStorageRoles(),
     stepUpdateDeftContractInNoBots(),
     stepUpdateDeftContractInLiquidityHelper(),
-    stepDeftRoles()]);
+    stepDeftRoles(),
+    stepDeftRoleMinter(),
+    stepDeftRoleBurner(),
+    stepUpdateDeftContractInCrossChainSwap()
+  ]);
 
 
 
@@ -280,7 +361,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 10e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -302,7 +383,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 10e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
