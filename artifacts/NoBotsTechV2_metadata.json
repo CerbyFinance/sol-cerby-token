@@ -246,19 +246,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "crossPairsTaxPercent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "cycleOneEnds",
 				"outputs": [
 					{
@@ -867,19 +854,6 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_crossPairsTaxPercent",
-						"type": "uint256"
-					}
-				],
-				"name": "updateCrossPairsTax",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
 						"name": "_cycleOneStartTaxPercent",
 						"type": "uint256"
 					},
@@ -1015,11 +989,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0xd1329d373ca5720161ab864f8f5382b1c3d008afece0caa8a150ee13f781ec8e",
+			"keccak256": "0x5cc132599ea44a61214fd608c08f51579875f9408d0e17dfdd7207adeaceccca",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://c956877f6d058824f14eb210129a0152606783a0cbe3671aca9fe02f5158c363",
-				"dweb:/ipfs/QmRZLqAJNmE1ns5SDQemMa4MD6i9HA5EDEEh1KXXVWBzBU"
+				"bzz-raw://4e924be0e5cb85232313c5a5ba9d71c549b1bc4ae86aed6fe2b18fc4944273be",
+				"dweb:/ipfs/QmXLsHV3Ui3pmziav49H7XHaJv45p8R2X7XoW4YEZufXvM"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
@@ -1031,11 +1005,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x8515e8c91be6ac6fd6d02c2cbc38f98f0b42a6b01df0edf48e2d572610dc9f28",
+			"keccak256": "0x7f31d405d1a4fd7f2298c40db2291bdceeb205b1ca8181cb9e29e8e0a87fa1a5",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://1e24fe6c31ac94bfa1076409444c27acaa0400b6fc8c0510ab9e1d1ef411c6e0",
-				"dweb:/ipfs/QmYJF2mq2ugqXDEu5BULT2MWgG7qeWvQs36WqbYHkMh5hP"
+				"bzz-raw://021138a45d69dad735aee3626b230a5d6a71e0a219e1af574c2cfac857de167c",
+				"dweb:/ipfs/Qmbq3vJdyWQGiTiioY9jQiQj7DfTYVU93FnqY9Lwd2zmR4"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

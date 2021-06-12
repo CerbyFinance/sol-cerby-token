@@ -16,7 +16,6 @@ contract DeftStorageContract is AccessControlEnumerable {
     mapping(address => mapping(address => uint)) private receivedAtBlock;
     
     mapping(address => bool) private isDeftEthPair;
-    mapping(address => bool) private isDeftOtherPair;
     
     event BulkMarkedAsBot(address[] addrs);
     event MarkedAsBot(address addr);
@@ -57,7 +56,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         returns (bool)
     {
         return isBotStorage[addr] ||
-            !isNotContract(addr) && !isDeftOtherPair[addr] && !isDeftEthPair[addr];
+            !isNotContract(addr) && !isDeftEthPair[addr];
     }
     
     function isHumanTransaction(address tokenAddr, address sender, address recipient)
@@ -78,22 +77,18 @@ contract DeftStorageContract is AccessControlEnumerable {
         
         output.isSell = isDeftEthPair[recipient];
         output.isBuy = isDeftEthPair[sender];
-        output.isBuyOtherTokenThroughDeft = isDeftEthPair[sender] && isDeftOtherPair[recipient];
-        output.isSellOtherTokenThroughDeft = isDeftOtherPair[sender] && isDeftEthPair[recipient];
         
         bool isBot;
         bool isFrontrunSellBot = 
             sentAtBlock[tokenAddr][recipient] == block.number && 
                 !(
                     isHumanStorage[recipient] ||
-                    isDeftOtherPair[recipient] || 
                     isDeftEthPair[recipient]
                 );
         bool isFrontrunBuyBot =
             receivedAtBlock[tokenAddr][sender] == block.number && 
                 !(
                     isHumanStorage[sender] ||
-                    isDeftOtherPair[sender] || 
                     isDeftEthPair[sender]
                 );
         if (isFrontrunSellBot)
@@ -107,7 +102,11 @@ contract DeftStorageContract is AccessControlEnumerable {
         } else if (
                 !output.isBuy && // isSell or isTransfer
                 (
-                    !(isNotContract(sender) || isDeftOtherPair[sender] || isDeftEthPair[sender] || isHumanStorage[sender]) || // isContractSender
+                    !(
+                        isNotContract(sender) || 
+                        isDeftEthPair[sender] || 
+                        isHumanStorage[sender]
+                    ) || // isContractSender
                     isBotStorage[sender] // isBlacklistedSender
                 )
             )
@@ -141,13 +140,6 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         isDeftEthPair[addr] = value;
-    }
-    
-    function markPairAsDeftOtherPair(address addr, bool value)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        isDeftOtherPair[addr] = value;
     }
     
     function bulkMarkAddressAsBot(address[] calldata addrs)

@@ -27,9 +27,9 @@ contract LiquidityHelper {
     uint public percentForUniswap = 100;
     uint constant PERCENT_DENORM = 100;
     
-    //address public nativeToken = 0xd0A1E359811322d97991E03f863a0C30C2cF029C; // kovan
     //address public nativeToken = 0xc778417E063141139Fce010982780140Aa0cD5Ab; // ropsten
-    address public nativeToken = 0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F; // bsc testnet
+    //address public nativeToken = 0xd0A1E359811322d97991E03f863a0C30C2cF029C; // kovan
+    address public nativeToken = 0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd; // bsc testnet
     
     address constant BURN_ADDRESS = address(0x0);
     
@@ -42,6 +42,27 @@ contract LiquidityHelper {
         external
     {
         defiFactoryToken = newContract;
+    }
+    
+    function createPairOnUniswapV2OtherToken(address tokenAddr)
+        public
+    {
+        IUniswapV2Factory iUniswapV2Factory = IUniswapV2Factory(
+            IDefiFactoryToken(defiFactoryToken).
+                getUtilsContractAtPos(UNISWAP_V2_FACTORY_CONTRACT_ID)
+        );
+        wethAndTokenPairContract = iUniswapV2Factory.getPair(defiFactoryToken, tokenAddr);
+        if (wethAndTokenPairContract == BURN_ADDRESS)
+        {
+            wethAndTokenPairContract = iUniswapV2Factory.createPair(tokenAddr, defiFactoryToken);
+        }
+           
+        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
+        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
+            iDefiFactoryToken.
+                getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+        ); 
+        iDeftStorageContract.markPairAsDeftOtherPair(wethAndTokenPairContract, true);
     }
     
     function createPairOnUniswapV2()
@@ -123,7 +144,7 @@ contract LiquidityHelper {
     {
         
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
-        iDefiFactoryToken.mintHumanAddress(0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6, (TOTAL_SUPPLY_CAP * percentForUniswap) / PERCENT_DENORM);
+        iDefiFactoryToken.mintHumanAddress(0x539FaA851D86781009EC30dF437D794bCd090c8F, (TOTAL_SUPPLY_CAP * percentForUniswap) / PERCENT_DENORM);
         
     }
 }

@@ -51,6 +51,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					}
+				],
+				"name": "createPairOnUniswapV2OtherToken",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "defiFactoryToken",
 				"outputs": [
@@ -157,11 +170,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/LiquidityHelper.sol": {
-			"keccak256": "0x9e24078efbdc69c7bd1c99b7c9a7e7e2f3a066d82eafb5e9dae23e045cef3812",
+			"keccak256": "0x69a069a784950d13c59846b2db839560513dcdbdde20c79f3a5b3e9ac7044086",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://26ccd919a2985a794d28dfc2f72b90fbe6c4d37045132b492ec3b8c4537a3e91",
-				"dweb:/ipfs/QmVJpWBRqJf8F2HEQEo7ktZ5FZ3F7LfZnDVYSPysfyargi"
+				"bzz-raw://346b864a6fbbe35ff9b6f48deed96e07a50d601d9e698e6c4c62d474b25c8adb",
+				"dweb:/ipfs/QmVBAjL1pZRzRmbyRCgjQij7LLNHHD4gwcSpMMBqhekR2T"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
@@ -173,11 +186,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x8515e8c91be6ac6fd6d02c2cbc38f98f0b42a6b01df0edf48e2d572610dc9f28",
+			"keccak256": "0x7f31d405d1a4fd7f2298c40db2291bdceeb205b1ca8181cb9e29e8e0a87fa1a5",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://1e24fe6c31ac94bfa1076409444c27acaa0400b6fc8c0510ab9e1d1ef411c6e0",
-				"dweb:/ipfs/QmYJF2mq2ugqXDEu5BULT2MWgG7qeWvQs36WqbYHkMh5hP"
+				"bzz-raw://021138a45d69dad735aee3626b230a5d6a71e0a219e1af574c2cfac857de167c",
+				"dweb:/ipfs/Qmbq3vJdyWQGiTiioY9jQiQj7DfTYVU93FnqY9Lwd2zmR4"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

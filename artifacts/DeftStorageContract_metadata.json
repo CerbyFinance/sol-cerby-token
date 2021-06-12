@@ -358,16 +358,6 @@
 								"internalType": "bool",
 								"name": "isSell",
 								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isBuyOtherTokenThroughDeft",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isSellOtherTokenThroughDeft",
-								"type": "bool"
 							}
 						],
 						"internalType": "struct IsHumanInfo",
@@ -436,24 +426,6 @@
 					}
 				],
 				"name": "markPairAsDeftEthPair",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"internalType": "bool",
-						"name": "value",
-						"type": "bool"
-					}
-				],
-				"name": "markPairAsDeftOtherPair",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -607,25 +579,25 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 1000
+			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x5beb0c027e08e8e173d164c31aae681694d496a35f5282004fd26ddbbd1a1b4f",
+			"keccak256": "0x1db4801cccf432f4420434b41ca983389a834fb12b42b5f34ce29921d00d5f93",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://c9a157c94cab3b5f4c7c9fc0db34bbd2b49b19e5d9e11db3fe68e550e7bdcf90",
-				"dweb:/ipfs/QmReE8X6jtcbRPC3ddE2xpF1rugz1dm2qnsYgLym29a6U3"
+				"bzz-raw://115abf5d7ca3a4f41f5b16023fea5ae38d1dab589278896bc4a5186ff751936d",
+				"dweb:/ipfs/QmYZtiEZAjB2BSXe2khPrSTzVUFYidZUoFpLnUmYsyiBFT"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x8515e8c91be6ac6fd6d02c2cbc38f98f0b42a6b01df0edf48e2d572610dc9f28",
+			"keccak256": "0x7f31d405d1a4fd7f2298c40db2291bdceeb205b1ca8181cb9e29e8e0a87fa1a5",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://1e24fe6c31ac94bfa1076409444c27acaa0400b6fc8c0510ab9e1d1ef411c6e0",
-				"dweb:/ipfs/QmYJF2mq2ugqXDEu5BULT2MWgG7qeWvQs36WqbYHkMh5hP"
+				"bzz-raw://021138a45d69dad735aee3626b230a5d6a71e0a219e1af574c2cfac857de167c",
+				"dweb:/ipfs/Qmbq3vJdyWQGiTiioY9jQiQj7DfTYVU93FnqY9Lwd2zmR4"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

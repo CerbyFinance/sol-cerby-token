@@ -27,7 +27,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     address public defiFactoryTokenAddress;
     
-    uint public crossPairsTaxPercent = 5e3;
     
     uint public botTaxPercent = 99e4; // 99.0%
     uint public howManyFirstMinutesIncreasedTax = 0 minutes;
@@ -91,13 +90,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         secondsBetweenRecacheUpdates = _secondsBetweenRecacheUpdates;
-    }
-    
-    function updateCrossPairsTax(uint _crossPairsTaxPercent)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        crossPairsTaxPercent = _crossPairsTaxPercent;
     }
     
     function updateBotTaxSettings(uint _botTaxPercent, uint _howManyFirstMinutesIncreasedTax)
@@ -267,13 +259,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         uint burnAndRewardRealAmount;
         if (isHumanTransaction)
         {
-            if (isHumanInfo.isSellOtherTokenThroughDeft)
-            {
-                burnAndRewardRealAmount = (realTransferAmount * crossPairsTaxPercent) / TAX_PERCENT_DENORM;
-            } else if (isHumanInfo.isBuyOtherTokenThroughDeft)
-            {
-                // Do nothing
-            } else if (isHumanInfo.isSell)
+            if (isHumanInfo.isSell)
             {
                 // human on main pair
                 // buys - 0% tax
@@ -297,7 +283,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         }
         
         
-        if (!isHumanInfo.isSell && !isHumanInfo.isBuyOtherTokenThroughDeft)
+        if (!isHumanInfo.isSell)
         { // isBuy or isTransfer: Updating cycle based on realTransferAmount
             uint newBuyTimestamp = getUpdatedBuyTimestampOfEarlyInvestor(taxAmountsInput.recipient, taxAmountsInput.recipientRealBalance);
             newBuyTimestamp = getNewBuyTimestamp(newBuyTimestamp, taxAmountsInput.recipientRealBalance, realTransferAmount);

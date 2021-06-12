@@ -152,16 +152,6 @@
 							"internalType": "bool",
 							"name": "isSell",
 							"type": "bool"
-						},
-						{
-							"internalType": "bool",
-							"name": "isBuyOtherTokenThroughDeft",
-							"type": "bool"
-						},
-						{
-							"internalType": "bool",
-							"name": "isSellOtherTokenThroughDeft",
-							"type": "bool"
 						}
 					],
 					"internalType": "struct IsHumanInfo",

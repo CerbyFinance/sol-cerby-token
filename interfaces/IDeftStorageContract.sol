@@ -6,8 +6,6 @@ struct IsHumanInfo {
     bool isHumanTransaction;
     bool isBuy;
     bool isSell;
-    bool isBuyOtherTokenThroughDeft;
-    bool isSellOtherTokenThroughDeft;
 }
 
 interface IDeftStorageContract {

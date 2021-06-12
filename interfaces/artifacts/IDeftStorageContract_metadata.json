@@ -97,16 +97,6 @@
 								"internalType": "bool",
 								"name": "isSell",
 								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isBuyOtherTokenThroughDeft",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isSellOtherTokenThroughDeft",
-								"type": "bool"
 							}
 						],
 						"internalType": "struct IsHumanInfo",
@@ -249,11 +239,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x8515e8c91be6ac6fd6d02c2cbc38f98f0b42a6b01df0edf48e2d572610dc9f28",
+			"keccak256": "0x7f31d405d1a4fd7f2298c40db2291bdceeb205b1ca8181cb9e29e8e0a87fa1a5",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://1e24fe6c31ac94bfa1076409444c27acaa0400b6fc8c0510ab9e1d1ef411c6e0",
-				"dweb:/ipfs/QmYJF2mq2ugqXDEu5BULT2MWgG7qeWvQs36WqbYHkMh5hP"
+				"bzz-raw://021138a45d69dad735aee3626b230a5d6a71e0a219e1af574c2cfac857de167c",
+				"dweb:/ipfs/Qmbq3vJdyWQGiTiioY9jQiQj7DfTYVU93FnqY9Lwd2zmR4"
 			]
 		}
 	},

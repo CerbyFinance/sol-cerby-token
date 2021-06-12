@@ -5,6 +5,13 @@ import Web3 from "web3";
 require("dotenv").config();
 
 const { PRIVATE_KEY } = process.env;
+const DEFT_STORAGE_ADDRESS = "0xC238D647c258eb276c2e520134e2218012D8F05b"; // BSC Testnet
+//const DEFT_STORAGE_ADDRESS = "0xC238D647c258eb276c2e520134e2218012D8F05b"; // Kovan
+//const UNISWAP_V2_FACTORY = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"; // Uniswap
+const UNISWAP_V2_FACTORY = "0x6725F303b657a9451d8BA641348b6761A6CC7a17"; // BSC Testnet
+//const UNISWAP_V2_ROUTER = "0xD99D1c33F9fC3444f8101754aBC46c52416550D1"; // BSC Testnet
+//const NATIVE_TOKEN_ADDRESS = "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"; // BSC Testnet
+// https://swap.extraffix.com/#/swap
 
 const web3 = new Web3(
   new Web3.providers.HttpProvider(
@@ -73,6 +80,13 @@ const start = async () => {
   const currentBlock = await web3.eth.getBlockNumber();
   console.log("current block:", currentBlock);
 
+  const deftStorageContract = new web3.eth.Contract(
+    // @ts-ignore
+    deftStorageJson.abi,
+    DEFT_STORAGE_ADDRESS,
+  )
+  console.log("DeftStorageContract: ", deftStorageContract.options.address);
+
   const defiFactoryTokenContract = await deployContract(
     "DefiFactoryToken",
     defiFactoryJson,
@@ -97,13 +111,7 @@ const start = async () => {
   );
   console.log("LiquidityHelper: ", liquidityHelperContract.options.address);
 
-  const deftStorageContract = await deployContract(
-    "DeftStorageContract",
-    deftStorageJson,
-    account,
-    0,
-  );
-  console.log("DeftStorageContract: ", deftStorageContract.options.address);
+
 
   const crossChainBridgeContract = await deployContract(
     "CrossChainBridge",
@@ -122,14 +130,15 @@ const start = async () => {
 
   // prettier-ignore
   async function stepDeftUtilsContracts() {
+    let funcName = 'stepDeftUtilsContracts';
     try {
       const transaction = await defiFactoryTokenContract.methods.updateUtilsContracts([
         [true, true, false, false, false, noBotsTechContract.options.address],
         [true, true, false, false, false, liquidityHelperContract.options.address],
-        //[false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"], // Uniswap factory v2
-        [false, false, false, false, false, "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc"], // Pancake factory v2
+        [false, false, false, false, false, UNISWAP_V2_FACTORY],
         [false, false, false, false, false, deftStorageContract.options.address],
       ])
+      // pancake testnet router https://testnet.bscscan.com/address/0xD99D1c33F9fC3444f8101754aBC46c52416550D1#readContract
 
       const signed  = await web3.eth.accounts.signTransaction({
         nonce   : nonce++,
@@ -141,15 +150,16 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('stepDeftUtilsContracts ok')
+      console.log(funcName, ' ok')
   
     } catch (error) {
-      console.log(error.message);
+      console.log(funcName, ' ', error.message);
     }
   }
   
   // prettier-ignore
   async function stepNoBotsRoles() {
+    let funcName = 'stepNoBotsRoles';
     try {
       const transaction = await noBotsTechContract.methods.grantRolesBulk([
         ["0x0000000000000000000000000000000000000000000000000000000000000000", defiFactoryTokenContract.options.address],
@@ -165,15 +175,16 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('stepNoBotsRoles ok')
+      console.log(funcName, ' ok')
   
     } catch (error) {
-      console.log(error.message);
+      console.log(funcName, ' ', error.message);
     }
   }
   
   // prettier-ignore
   async function stepDeftStorageRoles() {
+    let funcName = 'stepDeftStorageRoles';
     try {
       const transaction = await deftStorageContract.methods.grantRolesBulk([
         ["0x0000000000000000000000000000000000000000000000000000000000000000", liquidityHelperContract.options.address],
@@ -190,15 +201,16 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('stepDeftStorageRoles ok')
+      console.log(funcName, ' ok')
   
     } catch (error) {
-      console.log(error.message);
+      console.log(funcName, ' ', error.message);
     }
   }
   
   // prettier-ignore
   async function stepDeftStorageBuyTimestamp1() {
+    let funcName = 'stepDeftStorageBuyTimestamp1';
     try {
       let buyTimestamp = new Date() 
       buyTimestamp.setDate(buyTimestamp.getDate() - 35)
@@ -219,15 +231,16 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('stepDeftStorageBuyTimestamp1 ok')
+      console.log(funcName, ' ok')
   
     } catch (error) {
-      console.log(error.message);
+      console.log(funcName, ' ', error.message);
     }
   }
   
   // prettier-ignore
   async function stepDeftStorageBuyTimestamp2() {
+    let funcName = 'stepDeftStorageBuyTimestamp2';
     try {
       let buyTimestamp = new Date() 
       buyTimestamp.setDate(buyTimestamp.getDate() - 140)
@@ -248,15 +261,16 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('stepDeftStorageBuyTimestamp2 ok')
+      console.log(funcName, ' ok')
   
     } catch (error) {
-      console.log(error.message);
+      console.log(funcName, ' ', error.message);
     }
   }
   
   // prettier-ignore
   async function stepDeftStorageBuyTimestamp3() {
+    let funcName = 'stepDeftStorageBuyTimestamp3';
     try {
       let buyTimestamp = new Date() 
       buyTimestamp.setDate(buyTimestamp.getDate() - 333)
@@ -277,15 +291,16 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('stepDeftStorageBuyTimestamp3 ok')
+      console.log(funcName, ' ok')
   
     } catch (error) {
-      console.log(error.message);
+      console.log(funcName, ' ', error.message);
     }
   }
   
   // prettier-ignore
   async function stepDeftStorageBuyTimestamp4() {
+    let funcName = 'stepDeftStorageBuyTimestamp4';
     try {
       let buyTimestamp = new Date() 
       buyTimestamp.setDate(buyTimestamp.getDate() - 600)
@@ -306,15 +321,16 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('stepDeftStorageBuyTimestamp4 ok')
+      console.log(funcName, ' ok')
   
     } catch (error) {
-      console.log(error.message);
+      console.log(funcName, ' ', error.message);
     }
   }
   
   // prettier-ignore
   async function stepDeftRoleMinter() {
+    let funcName = 'stepDeftRoleMinter';
     try {
       const transaction = await defiFactoryTokenContract.methods.grantRole(
         "0xaeaef46186eb59f884e36929b6d682a6ae35e1e43d8f05f058dcefb92b601461", crossChainBridgeContract.options.address
@@ -330,15 +346,16 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('stepDeftRoleMinter ok')
+      console.log(funcName, ' ok')
   
     } catch (error) {
-      console.log(error.message);
+      console.log(funcName, ' ', error.message);
     }
   }
   
   // prettier-ignore
   async function stepDeftRoleBurner() {
+    let funcName = 'stepDeftRoleBurner';
     try {
       const transaction = await defiFactoryTokenContract.methods.grantRole(
         "0xb5b5a86cc252b1b75a439c6ff372933ceb0690188924e6461150adeb00ab80d8", crossChainBridgeContract.options.address
@@ -354,15 +371,16 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('stepDeftRoleBurner ok')
+      console.log(funcName, ' ok')
   
     } catch (error) {
-      console.log(error.message);
+      console.log(funcName, ' ', error.message);
     }
   }
   
   // prettier-ignore
   async function stepUpdateDeftContractInNoBots() {
+    let funcName = 'stepUpdateDeftContractInNoBots';
     try {
       const transaction = await noBotsTechContract.methods.updateDefiFactoryTokenAddress(defiFactoryTokenContract.options.address)
 
@@ -376,15 +394,16 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('stepUpdateDeftContractInNoBots ok')
+      console.log(funcName, ' ok')
   
     } catch (error) {
-      console.log(error.message);
+      console.log(funcName, ' ', error.message);
     }
   }
   
   // prettier-ignore
   async function stepUpdateDeftContractInLiquidityHelper() {
+    let funcName = 'stepUpdateDeftContractInLiquidityHelper';
     try {
       const transaction = await liquidityHelperContract.methods.updateDefiFactoryTokenAddress(defiFactoryTokenContract.options.address)
 
@@ -398,15 +417,17 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('stepUpdateDeftContractInLiquidityHelper ok')
+      console.log(funcName, ' ok')
   
     } catch (error) {
-      console.log(error.message);
+      console.log(funcName, ' ', error.message);
     }
   }
   
+   
   // prettier-ignore
   async function stepUpdateDeftContractInCrossChainSwap() {
+    let funcName = 'stepUpdateDeftContractInCrossChainSwap';
     try {
       const transaction = await crossChainBridgeContract.methods.updateMainTokenContract(defiFactoryTokenContract.options.address)
 
@@ -420,15 +441,16 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('stepUpdateDeftContractInCrossChainSwap ok')
+      console.log(funcName, ' ok')
   
     } catch (error) {
-      console.log(error.message);
+      console.log(funcName, ' ', error.message);
     }
   }
   
   // prettier-ignore
   async function stepDeftRoles() {
+    let funcName = 'stepDeftRoles';
     try {
       const transaction = await defiFactoryTokenContract.methods.grantRole(
         "0x0000000000000000000000000000000000000000000000000000000000000000", liquidityHelperContract.options.address
@@ -444,10 +466,10 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('stepDeftRoles ok')
+      console.log(funcName, ' ok')
   
     } catch (error) {
-      console.log(error.message);
+      console.log(funcName, ' ', error.message);
     }
   }
 
@@ -469,10 +491,9 @@ const start = async () => {
     stepDeftStorageBuyTimestamp4(),
   ]);
 
-
-
   // prettier-ignore
   async function createPairOnUniswapV2() {
+    let funcName = 'createPairOnUniswapV2';
     try {
       const transaction = await liquidityHelperContract.methods.createPairOnUniswapV2()
 
@@ -486,15 +507,16 @@ const start = async () => {
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
 
-      console.log('created pair')
+      console.log(funcName, ' ok')
   
     } catch (error) {
-      console.log(error.message);
+      console.log(funcName, ' ', error.message);
     }
   }
 
   // prettier-ignore
   async function addLiquidityOnUniswapV2() {
+    let funcName = 'addLiquidityOnUniswapV2';
     try {
       const transaction = await liquidityHelperContract.methods.addLiquidityOnUniswapV2()
 
