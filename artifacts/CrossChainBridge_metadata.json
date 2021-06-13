@@ -727,11 +727,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0x0c8918916300351a196a0384c59650390ed5285516bdf3e0af9658dc5fcad35c",
+			"keccak256": "0x8bca80ff748feed91ee5cb7b0ec999e6f5d5a8d8248abfca9b19ccd39b7c275a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://fdea56cbcbfb572ccb75502af5ea33a6b6a941d7c0ae612185ef5d98b240ca90",
-				"dweb:/ipfs/QmdCXMECkb2aNgxwBSuQEaD3tse98qxN3wzQhpGfS9K7Fn"
+				"bzz-raw://9fa9831e7c4d41f132c0916b68fc3bee8095906d7d6e09c2ccbb4c23c53d4fa7",
+				"dweb:/ipfs/QmcR8Hm6pY5bjDZH7uH113LS77nMSHrnUJuN185kT6uhak"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

@@ -50,6 +50,7 @@
 			"bulkMarkAddressAsBot(address[])": "6a930a95",
 			"getBuyTimestamp(address,address)": "161aa47e",
 			"isBotAddress(address)": "eaa8f7e3",
+			"isExcludedFromBalance(address)": "03cd615f",
 			"isHumanTransaction(address,address,address)": "60623731",
 			"markAddressAsBot(address)": "1093baa9",
 			"markAddressAsNotBot(address)": "a9a48824",
@@ -106,6 +107,25 @@
 				}
 			],
 			"name": "isBotAddress",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "addr",
+					"type": "address"
+				}
+			],
+			"name": "isExcludedFromBalance",
 			"outputs": [
 				{
 					"internalType": "bool",

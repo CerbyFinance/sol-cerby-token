@@ -26,6 +26,11 @@ interface IDeftStorageContract {
         external
         view
         returns (bool);
+    
+    function isExcludedFromBalance(address addr)
+        external
+        view
+        returns (bool);
         
     function updateTransaction(address sender, address recipient)
         external;

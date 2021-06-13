@@ -410,6 +410,25 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "accountBalance",
+						"type": "uint256"
+					}
+				],
+				"name": "getRealBalanceTeamVestingContract",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "getRewardsBalance",
 				"outputs": [
@@ -872,24 +891,6 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_cycleTwoStartTaxPercent",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_cycleTwoEnds",
-						"type": "uint256"
-					}
-				],
-				"name": "updateCycleTwoSettings",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
 						"name": "_cycleThreeStartTaxPercent",
 						"type": "uint256"
 					},
@@ -901,6 +902,24 @@
 					{
 						"internalType": "uint256",
 						"name": "_cycleThreeEndTaxPercent",
+						"type": "uint256"
+					}
+				],
+				"name": "updateCycleThreeSettings",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_cycleTwoStartTaxPercent",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_cycleTwoEnds",
 						"type": "uint256"
 					}
 				],
@@ -931,6 +950,24 @@
 					}
 				],
 				"name": "updateSecondsBetweenUpdates",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_realTotalSupply",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_rewardsBalance",
+						"type": "uint256"
+					}
+				],
+				"name": "updateSupply",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -989,11 +1026,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x5cc132599ea44a61214fd608c08f51579875f9408d0e17dfdd7207adeaceccca",
+			"keccak256": "0xc2988e3844407e4cf6f86173fee3c9bdaba356d4b11fbc9226c84707f68bfd21",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://4e924be0e5cb85232313c5a5ba9d71c549b1bc4ae86aed6fe2b18fc4944273be",
-				"dweb:/ipfs/QmXLsHV3Ui3pmziav49H7XHaJv45p8R2X7XoW4YEZufXvM"
+				"bzz-raw://f05349daa231aee116c700e5e9066d27f033d2b955eb3cf5d961e2a3c86c546c",
+				"dweb:/ipfs/QmYWNHoFVhY3EPFisxfKsp3CPLLjNu72zSTKGB2cJRPTzz"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
@@ -1005,11 +1042,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x7f31d405d1a4fd7f2298c40db2291bdceeb205b1ca8181cb9e29e8e0a87fa1a5",
+			"keccak256": "0x6c3e8e4c670d6d7f2f6c72dc1e438be32bdde5a98e91ad777c1404209a472d1d",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://021138a45d69dad735aee3626b230a5d6a71e0a219e1af574c2cfac857de167c",
-				"dweb:/ipfs/Qmbq3vJdyWQGiTiioY9jQiQj7DfTYVU93FnqY9Lwd2zmR4"
+				"bzz-raw://f78530451651a1de98fba1817e4404f4da815b764330f3be25950139a90a5c81",
+				"dweb:/ipfs/QmWNxW5KxGcfHKaK8eyS8vsni6ZLsBaut9ga4JGuJ2d4At"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

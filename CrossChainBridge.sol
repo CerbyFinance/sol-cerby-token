@@ -40,8 +40,8 @@ contract CrossChainBridge is AccessControlEnumerable {
         
         beneficiaryAddress = msg.sender;
         
-        mainTokenContract = 0x3Dec41e3222a02918468Bba4A235E131d31D71b2; // mintable token
-        if (block.chainid == 97)
+        mainTokenContract = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840; // mintable token
+        /*if (block.chainid == 97)
         {
             updateMinimumAmountToBurn(1000e18); // min 1000 tokens to burn on bsc testnet
             updateFee(5e3); // to bsc testnet 0.5% fee
@@ -51,6 +51,25 @@ contract CrossChainBridge is AccessControlEnumerable {
             updateMinimumAmountToBurn(5000e18); // min 5000 tokens to burn on kovan
             updateFee(1e4); // to kovan 1.0% fee
             isAllowedToBridgeToChainId[97] = true; // allow to bridge to bsc testnet
+        }*/
+        if (block.chainid == 1)
+        {
+            updateMinimumAmountToBurn(500000e18); // min 500k tokens to burn on eth --> *
+            updateFee(1e4); // to eth mainnet 1% fee
+            isAllowedToBridgeToChainId[56] = true; // allow to bridge to bsc
+            isAllowedToBridgeToChainId[137] = true; // allow to bridge to matic
+        } else if (block.chainid == 56)
+        {
+            updateMinimumAmountToBurn(500000e18); // min 500k tokens to burn bsc --> *
+            updateFee(5e3); // to bsc 0.5% fee
+            isAllowedToBridgeToChainId[1] = true; // allow to bridge to eth
+            isAllowedToBridgeToChainId[137] = true; // allow to bridge to matic
+        } else if (block.chainid == 137)
+        {
+            updateMinimumAmountToBurn(500000e18); // min 500k tokens to burn on matic --> *
+            updateFee(5e3); // to bsc 0.5% fee
+            isAllowedToBridgeToChainId[1] = true; // allow to bridge to eth
+            isAllowedToBridgeToChainId[56] = true; // allow to bridge to bsc
         }
     }
     

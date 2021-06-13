@@ -1,0 +1,28 @@
+1. deploy DeftStorageContract
+2. deploy NoBotsTechV2
+3. deploy CrossChainBridge
+4. noBotsTechContract.methods.grantRolesBulk([
+    ["0x0000000000000000000000000000000000000000000000000000000000000000", defiFactoryTokenContract],
+  ])
+5. deftStorageContract.methods.grantRolesBulk([
+    ["0x0000000000000000000000000000000000000000000000000000000000000000", noBotsTechContract],
+  ])
+6. NoBotsTechV2 set totalSupply + rewardsBalance
+7. defiFactoryTokenContract.methods.updateUtilsContracts
+[
+    [true, true, false, false, false, noBotsTechContract],
+    [true, true, false, false, false, teamVestingContract],
+    [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"],
+    [false, false, false, false, false, deftStorageContract],
+    [false, false, false, false, false, wethAndTokenPairContract],
+    [true, true, false, false, false, crossChainBridgeContract],
+]
+
+
+Rollback:
+defiFactoryTokenContract.methods.updateUtilsContracts
+[
+    [true, true, false, false, false, "0xDEF1Fa09538Ddd4CFe983d550D917Cd39D6ffE28"],
+    [true, true, false, false, false, "0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9"],
+    [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"]
+]

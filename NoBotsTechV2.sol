@@ -22,14 +22,14 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     uint public batchBurnAndReward;
     uint public lastCachedTimestamp = block.timestamp;
-    uint public secondsBetweenRecacheUpdates = 120;
+    uint public secondsBetweenRecacheUpdates = 600;
     
     
-    address public defiFactoryTokenAddress;
+    address public defiFactoryTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
     
     
-    uint public botTaxPercent = 99e4; // 99.0%
-    uint public howManyFirstMinutesIncreasedTax = 0 minutes;
+    uint public botTaxPercent = 999e3; // 99.9%
+    uint public howManyFirstMinutesIncreasedTax = 10 minutes;
     uint constant TAX_PERCENT_DENORM = 1e6;
     
     uint public cycleOneStartTaxPercent = 15e4; // 15.0%
@@ -42,7 +42,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public cycleThreeEnds = 360 days;
     uint public cycleThreeEndTaxPercent = 0; // 0.0%
     
-    uint public buyLimitAmount;
+    uint public buyLimitAmount = 1e18 * 1e18; // no limit
     uint public buyLimitPercent = 99e4; // 99%
     
     
@@ -66,10 +66,23 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
         
-        earlyInvestorTimestamp = block.timestamp - 30 days;
+        earlyInvestorTimestamp = 1621868400;
         
         emit MultiplierUpdated(cachedMultiplier);
     }
+    
+    function updateSupply(uint _realTotalSupply, uint _rewardsBalance)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        realTotalSupply = _realTotalSupply;
+        rewardsBalance = _rewardsBalance;
+        
+        cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
+                (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
+        emit MultiplierUpdated(cachedMultiplier);
+    }
+        
     
     function updateBuyLimitPercent(uint _buyLimitPercent)
         external
@@ -116,28 +129,13 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         cycleTwoEnds = _cycleTwoEnds;
     }
     
-    function updateCycleTwoSettings(uint _cycleThreeStartTaxPercent, uint _cycleThreeEnds, uint _cycleThreeEndTaxPercent)
+    function updateCycleThreeSettings(uint _cycleThreeStartTaxPercent, uint _cycleThreeEnds, uint _cycleThreeEndTaxPercent)
         external
         onlyRole(ROLE_ADMIN)
     {
         cycleThreeStartTaxPercent = _cycleThreeStartTaxPercent;
         cycleThreeEnds = _cycleThreeEnds;
         cycleThreeEndTaxPercent = _cycleThreeEndTaxPercent;
-    }
-    
-    function isNotContract(address account) 
-        private
-        view
-        returns (bool)
-    {
-        // This method relies on extcodesize, which returns 0 for contracts in
-        // construction, since the code is only stored at the end of the
-        // constructor execution.
-
-        uint256 size;
-        // solhint-disable-next-line no-inline-assembly
-        assembly { size := extcodesize(account) }
-        return size == 0;
     }
     
     function getTotalSupply()
@@ -442,10 +440,27 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         view
         returns(uint)
     {
-        return (accountBalance * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
+        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
+            IDefiFactoryToken(defiFactoryTokenAddress).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+        );
+        return iDeftStorageContract.isExcludedFromBalance(account)? accountBalance:
+            (accountBalance * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
     }
     
     function getRealBalance(address account, uint accountBalance)
+        external
+        onlyRole(ROLE_ADMIN)
+        view
+        returns(uint)
+    {
+        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
+            IDefiFactoryToken(defiFactoryTokenAddress).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+        );
+        return iDeftStorageContract.isExcludedFromBalance(account)? accountBalance:
+            (accountBalance * BALANCE_MULTIPLIER_DENORM) / cachedMultiplier;
+    }
+    
+    function getRealBalanceTeamVestingContract(uint accountBalance)
         external
         onlyRole(ROLE_ADMIN)
         view

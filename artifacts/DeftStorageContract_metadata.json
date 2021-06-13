@@ -31,6 +31,63 @@
 						"internalType": "address",
 						"name": "addr",
 						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "BulkMarkedAsDeftEthPair",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "BulkMarkedAsExcludedFromBalance",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "BulkMarkedAsHuman",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
 					}
 				],
 				"name": "MarkedAsBot",
@@ -153,6 +210,135 @@
 			{
 				"inputs": [
 					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					}
+				],
+				"name": "deleteAddress",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					}
+				],
+				"name": "deleteBool",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					}
+				],
+				"name": "deleteBytes",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					}
+				],
+				"name": "deleteBytes32",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					}
+				],
+				"name": "deleteInt",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					}
+				],
+				"name": "deleteString",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					}
+				],
+				"name": "deleteUint",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					}
+				],
+				"name": "getAddress",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					}
+				],
+				"name": "getBool",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "tokenAddr",
 						"type": "address"
@@ -169,6 +355,63 @@
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					}
+				],
+				"name": "getBytes",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					}
+				],
+				"name": "getBytes32",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					}
+				],
+				"name": "getInt",
+				"outputs": [
+					{
+						"internalType": "int256",
+						"name": "",
+						"type": "int256"
 					}
 				],
 				"stateMutability": "view",
@@ -226,6 +469,44 @@
 					}
 				],
 				"name": "getRoleMemberCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					}
+				],
+				"name": "getString",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					}
+				],
+				"name": "getUint",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -326,6 +607,25 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isExcludedFromBalance",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
 						"name": "tokenAddr",
 						"type": "address"
 					},
@@ -377,6 +677,24 @@
 					}
 				],
 				"name": "markAddressAsBot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "markAddressAsExcludedFromBalance",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -469,6 +787,132 @@
 			{
 				"inputs": [
 					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "_value",
+						"type": "address"
+					}
+				],
+				"name": "setAddress",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bool",
+						"name": "_value",
+						"type": "bool"
+					}
+				],
+				"name": "setBool",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes",
+						"name": "_value",
+						"type": "bytes"
+					}
+				],
+				"name": "setBytes",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "_value",
+						"type": "bytes32"
+					}
+				],
+				"name": "setBytes32",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "int256",
+						"name": "_value",
+						"type": "int256"
+					}
+				],
+				"name": "setInt",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "string",
+						"name": "_value",
+						"type": "string"
+					}
+				],
+				"name": "setString",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_key",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "setUint",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes4",
 						"name": "interfaceId",
 						"type": "bytes4"
@@ -535,6 +979,66 @@
 		"devdoc": {
 			"kind": "dev",
 			"methods": {
+				"deleteAddress(bytes32)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"deleteBool(bytes32)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"deleteBytes(bytes32)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"deleteBytes32(bytes32)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"deleteInt(bytes32)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"deleteString(bytes32)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"deleteUint(bytes32)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"getAddress(bytes32)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"getBool(bytes32)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"getBytes(bytes32)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"getBytes32(bytes32)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"getInt(bytes32)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
 				"getRoleAdmin(bytes32)": {
 					"details": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}."
 				},
@@ -543,6 +1047,16 @@
 				},
 				"getRoleMemberCount(bytes32)": {
 					"details": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role."
+				},
+				"getString(bytes32)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"getUint(bytes32)": {
+					"params": {
+						"_key": "The key for the record"
+					}
 				},
 				"grantRole(bytes32,address)": {
 					"details": "Overload {grantRole} to track enumerable memberships"
@@ -555,6 +1069,41 @@
 				},
 				"revokeRole(bytes32,address)": {
 					"details": "Overload {revokeRole} to track enumerable memberships"
+				},
+				"setAddress(bytes32,address)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"setBool(bytes32,bool)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"setBytes(bytes32,bytes)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"setBytes32(bytes32,bytes32)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"setInt(bytes32,int256)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"setString(bytes32,string)": {
+					"params": {
+						"_key": "The key for the record"
+					}
+				},
+				"setUint(bytes32,uint256)": {
+					"params": {
+						"_key": "The key for the record"
+					}
 				},
 				"supportsInterface(bytes4)": {
 					"details": "See {IERC165-supportsInterface}."
@@ -579,25 +1128,25 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 200
+			"runs": 1000
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x1db4801cccf432f4420434b41ca983389a834fb12b42b5f34ce29921d00d5f93",
+			"keccak256": "0xebeb9af051501a1683a71fc62a06ff5198e94531decd79d68dc3db8a17021354",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://115abf5d7ca3a4f41f5b16023fea5ae38d1dab589278896bc4a5186ff751936d",
-				"dweb:/ipfs/QmYZtiEZAjB2BSXe2khPrSTzVUFYidZUoFpLnUmYsyiBFT"
+				"bzz-raw://9cafed578f47309126000e3ebcaa8fab8e235cd53a38ac1ea725ada688c8ac5d",
+				"dweb:/ipfs/QmS58AZzFfDTau5mBtbGjdLJd6KnGkm9br9JrdHCmW4tfz"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x7f31d405d1a4fd7f2298c40db2291bdceeb205b1ca8181cb9e29e8e0a87fa1a5",
+			"keccak256": "0x6c3e8e4c670d6d7f2f6c72dc1e438be32bdde5a98e91ad777c1404209a472d1d",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://021138a45d69dad735aee3626b230a5d6a71e0a219e1af574c2cfac857de167c",
-				"dweb:/ipfs/Qmbq3vJdyWQGiTiioY9jQiQj7DfTYVU93FnqY9Lwd2zmR4"
+				"bzz-raw://f78530451651a1de98fba1817e4404f4da815b764330f3be25950139a90a5c81",
+				"dweb:/ipfs/QmWNxW5KxGcfHKaK8eyS8vsni6ZLsBaut9ga4JGuJ2d4At"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
