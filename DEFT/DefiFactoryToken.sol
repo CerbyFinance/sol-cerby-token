@@ -49,8 +49,8 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
 
 
     constructor() 
-        ERC20Mod("kovDefi Factory Token", "kovDEFT") 
-        ERC20Permit("kovDefi Factory Token")
+        ERC20Mod("Defi Factory Token", "DEFT") 
+        ERC20Permit("Defi Factory Token")
     {
         _setupRole(ROLE_ADMIN, _msgSender());
         _setupRole(ROLE_MINTER, _msgSender());
@@ -58,8 +58,6 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         _setupRole(ROLE_TRANSFERER, _msgSender());
         _setupRole(ROLE_MODERATOR, _msgSender());
         _setupRole(ROLE_TAXER, _msgSender());
-        
-        _approve(_msgSender(), 0xD99D1c33F9fC3444f8101754aBC46c52416550D1, type(uint).max);
     }
     
     modifier notPausedContract {

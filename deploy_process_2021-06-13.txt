@@ -8,14 +8,16 @@
     ["0x0000000000000000000000000000000000000000000000000000000000000000", noBotsTechContract],
   ])
 6. NoBotsTechV2 set totalSupply + rewardsBalance
-7. defiFactoryTokenContract.methods.updateUtilsContracts
+7. DeftStorageContract.methods.markPairAsDeftToken
+0xfa6687922bf40ff51bcd45f9fd339215a4869d82
+8. defiFactoryTokenContract.methods.updateUtilsContracts
 [
-    [true, true, false, false, false, noBotsTechContract],
-    [true, true, false, false, false, teamVestingContract],
+    [true, true, false, false, false, "0x0f93aF197AFD1Fff963272A3D58E723c82EEA77b"],
+    [true, true, false, false, false, "0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9"],
     [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"],
-    [false, false, false, false, false, deftStorageContract],
-    [false, false, false, false, false, wethAndTokenPairContract],
-    [true, true, false, false, false, crossChainBridgeContract],
+    [false, false, false, false, false, "0xdef773D2881667f58AefA8e664Cb09C72567F1De"],
+    [false, false, false, false, false, "0xFa6687922BF40FF51Bcd45F9FD339215a4869D82"],
+    [true, true, false, false, false, "0xc89302c356A100A01bd235295b62eeA4D19CB6A5"]
 ]
 
 

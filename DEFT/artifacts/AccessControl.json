@@ -49,10 +49,7 @@
 		"methodIdentifiers": {
 			"ROLE_ADMIN()": "d391014b",
 			"getRoleAdmin(bytes32)": "248a9ca3",
-			"getRoleMember(bytes32,uint256)": "9010d07c",
-			"getRoleMemberCount(bytes32)": "ca15c873",
 			"grantRole(bytes32,address)": "2f2ff15d",
-			"grantRolesBulk((bytes32,address)[])": "03ed957f",
 			"hasRole(bytes32,address)": "91d14854",
 			"renounceRole(bytes32,address)": "36568abe",
 			"revokeRole(bytes32,address)": "d547741f",
@@ -175,80 +172,12 @@
 					"type": "bytes32"
 				},
 				{
-					"internalType": "uint256",
-					"name": "index",
-					"type": "uint256"
-				}
-			],
-			"name": "getRoleMember",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "bytes32",
-					"name": "role",
-					"type": "bytes32"
-				}
-			],
-			"name": "getRoleMemberCount",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "bytes32",
-					"name": "role",
-					"type": "bytes32"
-				},
-				{
 					"internalType": "address",
 					"name": "account",
 					"type": "address"
 				}
 			],
 			"name": "grantRole",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"components": [
-						{
-							"internalType": "bytes32",
-							"name": "role",
-							"type": "bytes32"
-						},
-						{
-							"internalType": "address",
-							"name": "addr",
-							"type": "address"
-						}
-					],
-					"internalType": "struct RoleAccess[]",
-					"name": "roles",
-					"type": "tuple[]"
-				}
-			],
-			"name": "grantRolesBulk",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"

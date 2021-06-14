@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 /*
 🌎 Website: https://DefiFactory.finance
@@ -1011,7 +1011,7 @@ interface IERC20Metadata is IERC20 {
  * functions have been added to mitigate the well-known issues around setting
  * allowances. See {IERC20-approve}.
  */
-contract ERC20 is Context, IERC20, IERC20Metadata {
+contract ERC20Mod is Context, IERC20, IERC20Metadata {
     mapping (address => uint256) internal _RealBalances;
 
     mapping (address => mapping (address => uint256)) internal _allowances;
@@ -1201,6 +1201,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         emit Approval(owner, spender, amount);
     }
 }
+
 
 /**
  * @dev Elliptic Curve Digital Signature Algorithm (ECDSA) operations.
@@ -1452,7 +1453,7 @@ library Counters {
  *
  * _Available since v3.4._
  */
-abstract contract ERC20Permit is ERC20, IERC20Permit, EIP712 {
+abstract contract ERC20Permit is ERC20Mod, IERC20Permit, EIP712 {
     using Counters for Counters.Counter;
 
     mapping (address => Counters.Counter) private _nonces;
@@ -1521,7 +1522,7 @@ abstract contract ERC20Permit is ERC20, IERC20Permit, EIP712 {
     }
 }
 
-contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permit {
+contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Permit {
     bytes32 public constant ROLE_MINTER = keccak256("ROLE_MINTER");
     bytes32 public constant ROLE_BURNER = keccak256("ROLE_BURNER");
     bytes32 public constant ROLE_TRANSFERER = keccak256("ROLE_TRANSFERER");
@@ -1557,8 +1558,12 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
     event MintedByBridge(address recipient, uint amount);
     event BurnedByBridge(address sender, uint amount);
 
+
+
+
+
     constructor() 
-        ERC20("Defi Factory Token", "DEFT") 
+        ERC20Mod("Defi Factory Token", "DEFT") 
         ERC20Permit("Defi Factory Token")
     {
         _setupRole(ROLE_ADMIN, _msgSender());
@@ -1718,7 +1723,10 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20, ERC20Permi
         _RealBalances[recipient] = taxAmountsOutput.recipientRealBalance;
         
         emit Transfer(sender, recipient, taxAmountsOutput.recipientGetsAmount);
-        emit Transfer(sender, BURN_ADDRESS, taxAmountsOutput.burnAndRewardAmount);
+        if (taxAmountsOutput.burnAndRewardAmount > 0)
+        {
+            emit Transfer(sender, BURN_ADDRESS, taxAmountsOutput.burnAndRewardAmount);
+        }
     }
     
     function transferFromTeamVestingContract(address recipient, uint256 amount)
