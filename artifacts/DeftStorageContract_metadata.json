@@ -31,66 +31,66 @@
 						"internalType": "address",
 						"name": "addr",
 						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "bool",
-						"name": "value",
-						"type": "bool"
-					}
-				],
-				"name": "BulkMarkedAsDeftEthPair",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "bool",
-						"name": "value",
-						"type": "bool"
-					}
-				],
-				"name": "BulkMarkedAsExcludedFromBalance",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "bool",
-						"name": "value",
-						"type": "bool"
-					}
-				],
-				"name": "BulkMarkedAsHuman",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
 					}
 				],
 				"name": "MarkedAsBot",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "MarkedAsDeftEthPair",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "MarkedAsExcludedFromBalance",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "MarkedAsHuman",
 				"type": "event"
 			},
 			{
@@ -1134,11 +1134,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x1c10c317c51745cba36a0673d0a6dd3e0e7850134db350ad55fda8d358d21329",
+			"keccak256": "0x0148ea8b02b11659c5d3169674f0380d27d109b3e3fbf7230f9b986bb1087e33",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://f912557e87526199cfea8b3b72d89cf9bd7a672f463c3d0ec1162efaf2f5b037",
-				"dweb:/ipfs/Qmew9xoXKdxqFQMm5WwEWrTMPfkoNrdUygUziZeH5kFNoi"
+				"bzz-raw://876fd36a6bef2f6094fbb04bc0b191d9a813d4fabc5906b43c54402d2b24c874",
+				"dweb:/ipfs/Qmf4t5DfcpyhSJGWskKhXxTXKLtqmfu4MzDF3pAiyRYRdr"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {

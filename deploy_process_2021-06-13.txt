@@ -19,12 +19,8 @@
     [false, false, false, false, false, "0x077324B361272dde2D757f8Ec6Eb59daAe794519"],
     [true, true, false, false, false, "0xc89302c356A100A01bd235295b62eeA4D19CB6A5"]
 ]
-
-
-Rollback:
-defiFactoryTokenContract.methods.updateUtilsContracts
-[
-    [true, true, false, false, false, "0xDEF1Fa09538Ddd4CFe983d550D917Cd39D6ffE28"],
-    [true, true, false, false, false, "0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9"],
-    [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"]
-]
+9. blacklist top1 bot 0xC25e850F6cedE52809014d4eeCCA402eb47bDC28
+10. whitelist cross chain wallet 0xdEF78a28c78A461598d948bc0c689ce88f812AD8
+11. whitelist metamask router wallet 0x74de5d4FCbf63E00296fd95d33236B9794016631
+12. whitelist uniswap router v2 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D
+pancake v2 0x10ED43C718714eb63d5aA57B78B54704E256024E

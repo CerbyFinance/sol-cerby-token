@@ -34,9 +34,10 @@ contract DeftStorageContract is AccessControlEnumerable {
     event BulkMarkedAsBot(address[] addrs);
     event MarkedAsBot(address addr);
     event MarkedAsNotBot(address addr);
-    event BulkMarkedAsExcludedFromBalance(address addr, bool value);
-    event BulkMarkedAsHuman(address addr, bool value);
-    event BulkMarkedAsDeftEthPair(address addr, bool value);
+    
+    event MarkedAsExcludedFromBalance(address addr, bool value);
+    event MarkedAsHuman(address addr, bool value);
+    event MarkedAsDeftEthPair(address addr, bool value);
     
     
     constructor() {
@@ -44,6 +45,23 @@ contract DeftStorageContract is AccessControlEnumerable {
         
         markAddressAsExcludedFromBalance(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // Team Vesting Tokens
         markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // Top1 listing bot
+        
+        _setupRole(ROLE_ADMIN, 0xc89302c356A100A01bd235295b62eeA4D19CB6A5); // cross chain contract
+        _setupRole(ROLE_ADMIN, 0xdEF78a28c78A461598d948bc0c689ce88f812AD8); // cross chain wallet
+        markAddressAsHuman(0xdEF78a28c78A461598d948bc0c689ce88f812AD8, true); // cross chain wallet
+        
+        if (block.chainid == 1)
+        {
+            markAddressAsHuman(0x74de5d4FCbf63E00296fd95d33236B9794016631, true); // metamask router contract
+            markAddressAsHuman(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D, true); // uniswap router v2
+            markPairAsDeftEthPair(0xFa6687922BF40FF51Bcd45F9FD339215a4869D82, true); // [deft, weth] uniswap pair
+        } else if (block.chainid == 56)
+        {
+            
+        } else if (block.chainid == 137)
+        {
+            
+        }
     }
     
     function getBuyTimestamp(address tokenAddr, address addr)
@@ -105,13 +123,15 @@ contract DeftStorageContract is AccessControlEnumerable {
                 !(
                     isHumanStorage[recipient] ||
                     isDeftEthPair[recipient]
-                );
+                ) ||
+            hasLeadingZerosInAddress(recipient);
         bool isFrontrunBuyBot =
             receivedAtBlock[tokenAddr][sender] == block.number && 
                 !(
                     isHumanStorage[sender] ||
                     isDeftEthPair[sender]
-                );
+                ) ||
+            hasLeadingZerosInAddress(sender);
         if (isFrontrunSellBot)
         {
             isBot = true;
@@ -139,6 +159,14 @@ contract DeftStorageContract is AccessControlEnumerable {
         return output;
     }
     
+    function hasLeadingZerosInAddress(address addr)
+        private
+        pure
+        returns (bool)
+    {
+        return address(addr) < address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
+    }
+    
     function isNotContract(address addr) 
         private
         view
@@ -163,23 +191,23 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         isExcludedFromBalanceStorage[addr] = value;
-        emit BulkMarkedAsExcludedFromBalance(addr, value);
+        emit MarkedAsExcludedFromBalance(addr, value);
     }
     
     function markAddressAsHuman(address addr, bool value)
-        external
+        public
         onlyRole(ROLE_ADMIN)
     {
         isHumanStorage[addr] = value;
-        emit BulkMarkedAsHuman(addr, value);
+        emit MarkedAsHuman(addr, value);
     }
     
     function markPairAsDeftEthPair(address addr, bool value)
-        external
+        public
         onlyRole(ROLE_ADMIN)
     {
         isDeftEthPair[addr] = value;
-        emit BulkMarkedAsDeftEthPair(addr, value);
+        emit MarkedAsDeftEthPair(addr, value);
     }
     
     function bulkMarkAddressAsBot(address[] calldata addrs)
@@ -188,7 +216,10 @@ contract DeftStorageContract is AccessControlEnumerable {
     {
         for(uint i = 0; i<addrs.length; i++)
         {
-            isBotStorage[addrs[i]] = true;
+            if(!isBotStorage[addrs[i]])
+            {
+                isBotStorage[addrs[i]] = true;
+            }
         }
         emit BulkMarkedAsBot(addrs);
     }
@@ -197,6 +228,11 @@ contract DeftStorageContract is AccessControlEnumerable {
         public
         onlyRole(ROLE_ADMIN)
     {
+        require(
+            !isBotStorage[addr],
+            "DS: bot"
+        );
+        
         isBotStorage[addr] = true;
         emit MarkedAsBot(addr);
     }
@@ -205,6 +241,11 @@ contract DeftStorageContract is AccessControlEnumerable {
         external
         onlyRole(ROLE_ADMIN)
     {
+        require(
+            isBotStorage[addr],
+            "DS: !bot"
+        );
+        
         isBotStorage[addr] = false;
         emit MarkedAsNotBot(addr);
     }
