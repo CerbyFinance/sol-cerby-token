@@ -5,6 +5,7 @@ import Web3 from "web3";
 require("dotenv").config();
 
 const { PRIVATE_KEY } = process.env;
+const APPROVER_WALLET_ADDRESS = "0xa044c17fC7E0076C856eE3A8a71a527E5d11caDD";
 //const DEFT_STORAGE_ADDRESS = "0xA8B08BD4F7dECdD532c517a9793C050Ac7Debf00"; // Kovan
 const DEFT_STORAGE_ADDRESS = "0x23b14094ba274a210Fc0CE95054915C50d16a477"; // BSC Testnet
 //const DEFT_STORAGE_ADDRESS = "0xC238D647c258eb276c2e520134e2218012D8F05b"; // Kovan
@@ -139,7 +140,6 @@ const start = async () => {
         [false, false, false, false, false, UNISWAP_V2_FACTORY],
         [false, false, false, false, false, deftStorageContract.options.address],
       ])
-      // pancake testnet router https://testnet.bscscan.com/address/0xD99D1c33F9fC3444f8101754aBC46c52416550D1#readContract
 
       const signed  = await web3.eth.accounts.signTransaction({
         nonce   : nonce++,
@@ -190,6 +190,7 @@ const start = async () => {
       const transaction = await deftStorageContract.methods.grantRolesBulk([
         ["0x0000000000000000000000000000000000000000000000000000000000000000", liquidityHelperContract.options.address],
         ["0x0000000000000000000000000000000000000000000000000000000000000000", noBotsTechContract.options.address],
+        ["0x0000000000000000000000000000000000000000000000000000000000000000", APPROVER_WALLET_ADDRESS],
       ])
 
       const signed  = await web3.eth.accounts.signTransaction({

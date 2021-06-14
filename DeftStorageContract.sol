@@ -46,8 +46,10 @@ contract DeftStorageContract is AccessControlEnumerable {
         markAddressAsExcludedFromBalance(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // Team Vesting Tokens
         markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // Top1 listing bot
         
-        _setupRole(ROLE_ADMIN, 0xc89302c356A100A01bd235295b62eeA4D19CB6A5); // cross chain contract
-        _setupRole(ROLE_ADMIN, 0xdEF78a28c78A461598d948bc0c689ce88f812AD8); // cross chain wallet
+        _setupRole(ROLE_ADMIN, 0x0f93aF197AFD1Fff963272A3D58E723c82EEA77b); // NoBotsTechV2
+        _setupRole(ROLE_ADMIN, 0xc89302c356A100A01bd235295b62eeA4D19CB6A5); // Cross Chain Bridge Contract
+        _setupRole(ROLE_ADMIN, 0xdEF78a28c78A461598d948bc0c689ce88f812AD8); // Cross Chain Bridge Wallet for blacklisting bots
+        
         markAddressAsHuman(0xdEF78a28c78A461598d948bc0c689ce88f812AD8, true); // cross chain wallet
         
         if (block.chainid == 1)
@@ -57,7 +59,8 @@ contract DeftStorageContract is AccessControlEnumerable {
             markPairAsDeftEthPair(0xFa6687922BF40FF51Bcd45F9FD339215a4869D82, true); // [deft, weth] uniswap pair
         } else if (block.chainid == 56)
         {
-            
+            markAddressAsHuman(0x10ED43C718714eb63d5aA57B78B54704E256024E, true); // pancake router v2
+            markPairAsDeftEthPair(0x077324B361272dde2D757f8Ec6Eb59daAe794519, true); // [deft, wbnb] pancake pair
         } else if (block.chainid == 137)
         {
             
