@@ -54,19 +54,19 @@ contract CrossChainBridge is AccessControlEnumerable {
         }*/
         if (block.chainid == 1)
         {
-            updateMinimumAmountToBurn(500000e18); // min 500k tokens to burn on eth --> *
+            updateMinimumAmountToBurn(1500000e18); // min 1.5M tokens to burn on eth --> *
             updateFee(1e4); // to eth mainnet 1% fee
             isAllowedToBridgeToChainId[56] = true; // allow to bridge to bsc
             isAllowedToBridgeToChainId[137] = true; // allow to bridge to matic
         } else if (block.chainid == 56)
         {
-            updateMinimumAmountToBurn(500000e18); // min 500k tokens to burn bsc --> *
+            updateMinimumAmountToBurn(1500000e18); // min 1.5M tokens to burn bsc --> *
             updateFee(5e3); // to bsc 0.5% fee
             isAllowedToBridgeToChainId[1] = true; // allow to bridge to eth
             isAllowedToBridgeToChainId[137] = true; // allow to bridge to matic
         } else if (block.chainid == 137)
         {
-            updateMinimumAmountToBurn(500000e18); // min 500k tokens to burn on matic --> *
+            updateMinimumAmountToBurn(1500000e18); // min 1.5M tokens to burn on matic --> *
             updateFee(5e3); // to bsc 0.5% fee
             isAllowedToBridgeToChainId[1] = true; // allow to bridge to eth
             isAllowedToBridgeToChainId[56] = true; // allow to bridge to bsc

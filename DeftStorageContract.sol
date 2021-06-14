@@ -43,6 +43,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         _setupRole(ROLE_ADMIN, _msgSender());
         
         markAddressAsExcludedFromBalance(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // Team Vesting Tokens
+        markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // Top1 listing bot
     }
     
     function getBuyTimestamp(address tokenAddr, address addr)

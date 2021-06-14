@@ -66,7 +66,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
         
-        earlyInvestorTimestamp = 1621868400;
+        earlyInvestorTimestamp = block.timestamp;
         
         emit MultiplierUpdated(cachedMultiplier);
     }
