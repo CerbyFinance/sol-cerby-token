@@ -12,11 +12,15 @@ contract DeftStorageContract is AccessControlEnumerable {
     mapping(address => bool) private isExcludedFromBalanceStorage;
     
     mapping(address => mapping(address => uint)) private buyTimestampStorage;
+    mapping(address => uint) private cooldownPeriodStorage;
     
-    mapping(address => mapping(address => uint)) private sentAtBlock;
-    mapping(address => mapping(address => uint)) private receivedAtBlock;
+    mapping(address => mapping(address => uint)) private sentAtTimestamp;
+    mapping(address => mapping(address => uint)) private receivedAtTimestamp;
     
     mapping(address => bool) private isDeftEthPair;
+    
+    uint private howManyLeadingZerosToBlock;
+    mapping(uint => address) private matchingAddressWithLeadingZeros;
     
     
     
@@ -52,6 +56,22 @@ contract DeftStorageContract is AccessControlEnumerable {
         
         markAddressAsHuman(0xdEF78a28c78A461598d948bc0c689ce88f812AD8, true); // cross chain wallet
         
+        cooldownPeriodStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = 10 minutes;
+        
+        howManyLeadingZerosToBlock = 8;
+        matchingAddressWithLeadingZeros[1] = address(0x0fffFFFFFfFfffFfFfFFffFffFffFFfffFfFFFFf);
+        matchingAddressWithLeadingZeros[2] = address(0x00FfFFfFFFfFFFFFfFfFfffFFFfffFfFffFfFFFf);
+        matchingAddressWithLeadingZeros[3] = address(0x000FfFfffFFFFfFFfFFFFFfFFFfFffffFFffFfFF);
+        matchingAddressWithLeadingZeros[4] = address(0x0000FfffFfFffFFfFffFfffFFfFFFffFFFffFfFf);
+        matchingAddressWithLeadingZeros[5] = address(0x00000ffffFFffFFffffFfFffFFFfFFfFFffFffff);
+        matchingAddressWithLeadingZeros[6] = address(0x000000FFfffFFFFFFffFffffFffFfFfFFFFfFFfF);
+        matchingAddressWithLeadingZeros[7] = address(0x0000000FFfFFfffFffFfFffFFFfffffFffFFffFf);
+        matchingAddressWithLeadingZeros[8] = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
+        matchingAddressWithLeadingZeros[9] = address(0x000000000FfFFfFfFFFFFFfffFfFfFFffffFfFfF);
+        matchingAddressWithLeadingZeros[10] = address(0x000000000FfFFfFfFFFFFFfffFfFfFFffffFfFfF);
+        matchingAddressWithLeadingZeros[11] = address(0x0000000000FFFFFffFfFffFfFFFfFFFfffffFffF);
+        matchingAddressWithLeadingZeros[12] = address(0x00000000000FfFFFfffFFFfFffFFFFFFFfffFFFF);
+        
         if (block.chainid == 1)
         {
             markAddressAsHuman(0x74de5d4FCbf63E00296fd95d33236B9794016631, true); // metamask router contract
@@ -65,6 +85,40 @@ contract DeftStorageContract is AccessControlEnumerable {
         {
             
         }
+    }
+    
+    function getCooldownPeriod(address tokenAddr)
+        external
+        view
+        onlyRole(ROLE_ADMIN)
+        returns (uint)
+    {
+        return cooldownPeriodStorage[tokenAddr];
+    }
+    
+    function updateCooldownPeriod(address tokenAddr, uint newCooldownPeriod)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        cooldownPeriodStorage[tokenAddr] = newCooldownPeriod;
+    }
+    
+    function getSentAtTimestamp(address tokenAddr, address addr)
+        external
+        view
+        onlyRole(ROLE_ADMIN)
+        returns (uint)
+    {
+        return sentAtTimestamp[tokenAddr][addr];
+    }
+    
+    function getReceivedAtTimestamp(address tokenAddr, address addr)
+        external
+        view
+        onlyRole(ROLE_ADMIN)
+        returns (uint)
+    {
+        return receivedAtTimestamp[tokenAddr][addr];
     }
     
     function getBuyTimestamp(address tokenAddr, address addr)
@@ -87,8 +141,8 @@ contract DeftStorageContract is AccessControlEnumerable {
         external
         onlyRole(ROLE_ADMIN)
     {
-        sentAtBlock[tokenAddr][sender] = block.number;
-        receivedAtBlock[tokenAddr][recipient] = block.number;
+        sentAtTimestamp[tokenAddr][sender] = block.timestamp;
+        receivedAtTimestamp[tokenAddr][recipient] = block.timestamp;
     }
     
     function isBotAddress(address addr)
@@ -112,8 +166,8 @@ contract DeftStorageContract is AccessControlEnumerable {
         bool isSellOtherTokenThroughDeft = isDeftOtherPair[sender] && isDeftEthPair[recipient];
         bool isBlacklisted = isBotStorage[recipient] || isBotStorage[sender];
         bool isFrontrunBot = 
-            sentAtBlock[tokenAddr][recipient] == block.number && !isHumanStorage[recipient] ||
-            receivedAtBlock[tokenAddr][sender] == block.number && !isHumanStorage[sender];
+            sentAtTimestamp[tokenAddr][recipient] == block.number && !isHumanStorage[recipient] ||
+            receivedAtTimestamp[tokenAddr][sender] == block.number && !isHumanStorage[sender];
         bool isContractSender = !(isNotContract(sender) || isDeftOtherPair[sender] || isDeftEthPair[sender]);
         bool isContractRecipient = !(isNotContract(recipient) || isDeftOtherPair[recipient] || isDeftEthPair[recipient]);*/
         
@@ -122,19 +176,23 @@ contract DeftStorageContract is AccessControlEnumerable {
         
         bool isBot;
         bool isFrontrunSellBot = 
-            sentAtBlock[tokenAddr][recipient] == block.number && 
-                !(
-                    isHumanStorage[recipient] ||
-                    isDeftEthPair[recipient]
-                ) ||
-            hasLeadingZerosInAddress(recipient);
+            (
+                sentAtTimestamp[tokenAddr][recipient] + cooldownPeriodStorage[tokenAddr] >= block.timestamp ||
+                hasLeadingZerosInAddress(recipient)
+            ) && 
+            !(
+                isHumanStorage[recipient] ||
+                isDeftEthPair[recipient]
+            );
         bool isFrontrunBuyBot =
-            receivedAtBlock[tokenAddr][sender] == block.number && 
-                !(
-                    isHumanStorage[sender] ||
-                    isDeftEthPair[sender]
-                ) ||
-            hasLeadingZerosInAddress(sender);
+            (
+                receivedAtTimestamp[tokenAddr][sender] + cooldownPeriodStorage[tokenAddr] >= block.timestamp ||
+                hasLeadingZerosInAddress(sender)
+            ) && 
+            !(
+                isHumanStorage[sender] ||
+                isDeftEthPair[sender]
+            );
         if (isFrontrunSellBot)
         {
             isBot = true;
@@ -162,12 +220,28 @@ contract DeftStorageContract is AccessControlEnumerable {
         return output;
     }
     
+    function getHowManyLeadingZerosToBlock()
+        external
+        view
+        onlyRole(ROLE_ADMIN)
+        returns (uint)
+    {
+        return howManyLeadingZerosToBlock;
+    }
+    
+    function updateHowManyLeadingZerosToBlock(uint newHowManyLeadingZerosToBlock)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        howManyLeadingZerosToBlock = newHowManyLeadingZerosToBlock;
+    }
+    
     function hasLeadingZerosInAddress(address addr)
         private
-        pure
+        view
         returns (bool)
     {
-        return address(addr) < address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
+        return addr < matchingAddressWithLeadingZeros[howManyLeadingZerosToBlock];
     }
     
     function isNotContract(address addr) 
@@ -187,6 +261,33 @@ contract DeftStorageContract is AccessControlEnumerable {
         returns (bool)
     {
         return isExcludedFromBalanceStorage[addr];
+    }
+    
+    function isMarkedAsDeftEthPair(address addr)
+        external
+        view
+        onlyRole(ROLE_ADMIN)
+        returns (bool)
+    {
+        return isDeftEthPair[addr];
+    }
+    
+    function isMarkedAsHumanStorage(address addr)
+        external
+        view
+        onlyRole(ROLE_ADMIN)
+        returns (bool)
+    {
+        return isHumanStorage[addr];
+    }
+    
+    function isMarkedAsBotStorage(address addr)
+        external
+        view
+        onlyRole(ROLE_ADMIN)
+        returns (bool)
+    {
+        return isBotStorage[addr];
     }
     
     function markAddressAsExcludedFromBalance(address addr, bool value)

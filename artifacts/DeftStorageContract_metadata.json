@@ -401,6 +401,38 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					}
+				],
+				"name": "getCooldownPeriod",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getHowManyLeadingZerosToBlock",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes32",
 						"name": "_key",
 						"type": "bytes32"
@@ -412,6 +444,30 @@
 						"internalType": "int256",
 						"name": "",
 						"type": "int256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getReceivedAtTimestamp",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -469,6 +525,30 @@
 					}
 				],
 				"name": "getRoleMemberCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getSentAtTimestamp",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -666,6 +746,63 @@
 					}
 				],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isMarkedAsBotStorage",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isMarkedAsDeftEthPair",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isMarkedAsHumanStorage",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -960,6 +1097,37 @@
 						"type": "address"
 					},
 					{
+						"internalType": "uint256",
+						"name": "newCooldownPeriod",
+						"type": "uint256"
+					}
+				],
+				"name": "updateCooldownPeriod",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "newHowManyLeadingZerosToBlock",
+						"type": "uint256"
+					}
+				],
+				"name": "updateHowManyLeadingZerosToBlock",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
 						"internalType": "address",
 						"name": "sender",
 						"type": "address"
@@ -1134,11 +1302,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0xbad93afd2c11570e89c4acc1ce0fdead440536369aa5b3cb6eb39198195a254f",
+			"keccak256": "0x114c9eb231f126bb0eafbb45ecfc6615b6e5f215857353300f0912d9197900e1",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://ad74b70560d37535714bfdcfe5adc48a85b7c34ca36514eed128dd4ac23ccfe1",
-				"dweb:/ipfs/QmSPrCbrV8zTCTFncPFWfVMopyhqHyQ3RQfvwEiZUC2vWF"
+				"bzz-raw://684afc3146c2a29f7a34d196903df64d7f62a99e0d1c75533504bd8942ccafa0",
+				"dweb:/ipfs/QmTrHAoe7748QqTi8Gwc8SyoxJr3S3wUgqfs3SThPhW3kB"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {

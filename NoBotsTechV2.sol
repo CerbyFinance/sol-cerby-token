@@ -29,7 +29,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     
     uint public botTaxPercent = 999e3; // 99.9%
-    uint public howManyFirstMinutesIncreasedTax = 10 minutes;
+    uint public howManyFirstMinutesIncreasedTax = 0;
     uint constant TAX_PERCENT_DENORM = 1e6;
     
     uint public cycleOneStartTaxPercent = 15e4; // 15.0%
