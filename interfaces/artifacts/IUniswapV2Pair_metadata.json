@@ -50,6 +50,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					}
+				],
+				"name": "skim",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "amount0Out",
 						"type": "uint256"
@@ -137,11 +150,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
-			"keccak256": "0x5ac9e85c81d3a7217e735872c50d9642081405235816ff845a3d12f436a276a0",
+			"keccak256": "0xf6d37d6190909e697683ef7de1d5f95a7e888f6373d2bd86e435d1364e9fdfe2",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://bb718abd59889a20296e2adf11e42d0016e51cfb984dac170764bf28be62805a",
-				"dweb:/ipfs/QmXyyu7ZJsgFP7LMCywKGYavVpqRw2SmdAHqnxnqSugNue"
+				"bzz-raw://1d482dd676944dccf72dbc329a5849fa53ca2c312b0a60fd2243c7c85abb444a",
+				"dweb:/ipfs/QmNiwQrpRfxcY7sQDvb4dgq7pHPxxKAz9sVyFCiXkF1F96"
 			]
 		}
 	},

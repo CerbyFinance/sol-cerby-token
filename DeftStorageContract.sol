@@ -81,6 +81,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         {
             markAddressAsHuman(0x10ED43C718714eb63d5aA57B78B54704E256024E, true); // pancake router v2
             markPairAsDeftEthPair(0x077324B361272dde2D757f8Ec6Eb59daAe794519, true); // [deft, wbnb] pancake pair
+            markPairAsDeftEthPair(0x493E990CcC67F59A3000EfFA9d5b1417D54B6f99, true); // [deft, busd] pancake pair
         } else if (block.chainid == 137)
         {
             
@@ -152,7 +153,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         returns (bool)
     {
         return isBotStorage[addr] ||
-            !isNotContract(addr) && !isDeftEthPair[addr];
+            isContract(addr) && !isDeftEthPair[addr] && !isHumanStorage[addr];
     }
     
     function isHumanTransaction(address tokenAddr, address sender, address recipient)
@@ -180,19 +181,16 @@ contract DeftStorageContract is AccessControlEnumerable {
                 sentAtTimestamp[tokenAddr][recipient] + cooldownPeriodStorage[tokenAddr] >= block.timestamp ||
                 hasLeadingZerosInAddress(recipient)
             ) && 
-            !(
-                isHumanStorage[recipient] ||
-                isDeftEthPair[recipient]
-            );
+            !isHumanStorage[recipient] &&
+            !isDeftEthPair[recipient];
         bool isFrontrunBuyBot =
             (
                 receivedAtTimestamp[tokenAddr][sender] + cooldownPeriodStorage[tokenAddr] >= block.timestamp ||
                 hasLeadingZerosInAddress(sender)
             ) && 
-            !(
-                isHumanStorage[sender] ||
-                isDeftEthPair[sender]
-            );
+            !isHumanStorage[sender] &&
+            !isDeftEthPair[sender];
+            
         if (isFrontrunSellBot)
         {
             isBot = true;
@@ -204,11 +202,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         } else if (
                 !output.isBuy && // isSell or isTransfer
                 (
-                    !(
-                        isNotContract(sender) || 
-                        isDeftEthPair[sender] || 
-                        isHumanStorage[sender]
-                    ) || // isContractSender
+                    isContract(sender) && !isDeftEthPair[sender] && !isHumanStorage[sender] || // isContractSender
                     isBotStorage[sender] // isBlacklistedSender
                 )
             )
@@ -244,14 +238,14 @@ contract DeftStorageContract is AccessControlEnumerable {
         return addr < matchingAddressWithLeadingZeros[howManyLeadingZerosToBlock];
     }
     
-    function isNotContract(address addr) 
+    function isContract(address addr) 
         private
         view
         returns (bool)
     {
         uint256 size;
         assembly { size := extcodesize(addr) }
-        return size == 0;
+        return size > 0;
     }
     
     function isExcludedFromBalance(address addr)

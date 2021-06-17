@@ -31,5 +31,10 @@ interface IUniswapV2Pair {
         uint amount1Out, 
         address to, 
         bytes calldata data
-    ) external;
+    ) 
+        external;
+    
+    
+    function skim(address to) 
+        external;
 }

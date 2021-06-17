@@ -49,6 +49,7 @@
 		"methodIdentifiers": {
 			"getReserves()": "0902f1ac",
 			"mint(address)": "6a627842",
+			"skim(address)": "bc25cf77",
 			"swap(uint256,uint256,address,bytes)": "022c0d9f",
 			"sync()": "fff6cae9",
 			"token0()": "0dfe1681",
@@ -95,6 +96,19 @@
 					"type": "uint256"
 				}
 			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				}
+			],
+			"name": "skim",
+			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"
 		},
