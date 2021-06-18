@@ -65,8 +65,15 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
+        _setupRole(ROLE_ADMIN, defiFactoryTokenAddress);
         
-        earlyInvestorTimestamp = block.timestamp;
+        if (block.chainid == 1)
+        {
+            earlyInvestorTimestamp = 1621846800;
+        } else if (block.chainid == 56)
+        {
+            earlyInvestorTimestamp = 1623633960;
+        }
         
         emit MultiplierUpdated(cachedMultiplier);
     }
@@ -402,7 +409,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         uint weightedAverageHowManyDaysLeft = 
             (accountBalance * howManyDaysLeft + receivedAmount * cycleThreeEnds) /
                 (accountBalance + receivedAmount);
-        return currentTimestamp - weightedAverageHowManyDaysLeft + howManyDaysLeft;
+        return currentTimestamp + weightedAverageHowManyDaysLeft - howManyDaysLeft;
     }
     
     function prepareHumanAddressMintOrBurnRewardsAmounts(bool isMint, address account, uint desiredAmountToMintOrBurn)

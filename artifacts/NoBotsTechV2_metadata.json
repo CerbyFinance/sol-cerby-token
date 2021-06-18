@@ -1026,11 +1026,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x1376fb5757d91c66ddcd55eb1b9d0b92588d9513f8bf496262148abcc159ce69",
+			"keccak256": "0x2ab17bf4feef9705b5b220d0ec0bfebe8174aa9ac03786d48a85c72cf8c7488f",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://78cba0f23c739b6edcf7fdf1a199ece9a5f072a5ad422e644e776867746823bc",
-				"dweb:/ipfs/QmWYgQondMMgP1FdiMzFwtA6QT9KZgpHcUdUcW6uADm35m"
+				"bzz-raw://ac84795ff2174be11ba41d806ebbae2a44025a5a12a994c272d94df6a462ab01",
+				"dweb:/ipfs/Qmap3bw7S2bNoofZTLH3N37fs6zhWT6vrZXGA4oeGt8V3A"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

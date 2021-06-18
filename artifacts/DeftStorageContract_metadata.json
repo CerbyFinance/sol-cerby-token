@@ -406,8 +406,13 @@
 						"type": "address"
 					}
 				],
-				"name": "getCooldownPeriod",
+				"name": "getCooldownPeriods",
 				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
 					{
 						"internalType": "uint256",
 						"name": "",
@@ -1098,7 +1103,12 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "newCooldownPeriod",
+						"name": "newCooldownBuyPeriod",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "newCooldownSellPeriod",
 						"type": "uint256"
 					}
 				],
@@ -1302,11 +1312,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x1c0ac1fc0e099d77885c05a9aa5884935f4a2f38e27bcc3f4b948ac1fa0dc2fe",
+			"keccak256": "0x4472af57bcd5954adb571213d25b3894b487d3b0d862eca769cd845fcd0742f8",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://4e2471e0f3ddb1b0d9621d494ce2baaaaf0aa1907c3c4f9f8f21bff054b093f2",
-				"dweb:/ipfs/QmWExxrf74PtijPxubSwXq5WZp1eeuQ9UyZvS6X4xkCUhF"
+				"bzz-raw://a01133a9612ca1ccea2939abce273343a3ae57d69135625544d3c4efa9c643ec",
+				"dweb:/ipfs/QmewYZKzx8gTB3RJyVV2PGB831yYBQ81UqYeNHrHEwGq8B"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {

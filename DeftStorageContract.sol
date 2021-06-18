@@ -12,7 +12,8 @@ contract DeftStorageContract is AccessControlEnumerable {
     mapping(address => bool) private isExcludedFromBalanceStorage;
     
     mapping(address => mapping(address => uint)) private buyTimestampStorage;
-    mapping(address => uint) private cooldownPeriodStorage;
+    mapping(address => uint) private cooldownPeriodBuyStorage;
+    mapping(address => uint) private cooldownPeriodSellStorage;
     
     mapping(address => mapping(address => uint)) private sentAtTimestamp;
     mapping(address => mapping(address => uint)) private receivedAtTimestamp;
@@ -50,13 +51,14 @@ contract DeftStorageContract is AccessControlEnumerable {
         markAddressAsExcludedFromBalance(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // Team Vesting Tokens
         markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // Top1 listing bot
         
-        _setupRole(ROLE_ADMIN, 0x0f93aF197AFD1Fff963272A3D58E723c82EEA77b); // NoBotsTechV2
+        _setupRole(ROLE_ADMIN, 0x0C344a302fC79d687A3f09A0ca97c17F36dCC756); // NoBotsTechV2
         _setupRole(ROLE_ADMIN, 0xc89302c356A100A01bd235295b62eeA4D19CB6A5); // Cross Chain Bridge Contract
         _setupRole(ROLE_ADMIN, 0xdEF78a28c78A461598d948bc0c689ce88f812AD8); // Cross Chain Bridge Wallet for blacklisting bots
         
         markAddressAsHuman(0xdEF78a28c78A461598d948bc0c689ce88f812AD8, true); // cross chain wallet
         
-        cooldownPeriodStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = 10 minutes;
+        cooldownPeriodBuyStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = 1 minutes;
+        cooldownPeriodSellStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = 10 minutes;
         
         howManyLeadingZerosToBlock = 8;
         matchingAddressWithLeadingZeros[1] = address(0x0fffFFFFFfFfffFfFfFFffFffFffFFfffFfFFFFf);
@@ -88,20 +90,21 @@ contract DeftStorageContract is AccessControlEnumerable {
         }
     }
     
-    function getCooldownPeriod(address tokenAddr)
+    function getCooldownPeriods(address tokenAddr)
         external
         view
         onlyRole(ROLE_ADMIN)
-        returns (uint)
+        returns (uint, uint)
     {
-        return cooldownPeriodStorage[tokenAddr];
+        return (cooldownPeriodBuyStorage[tokenAddr], cooldownPeriodSellStorage[tokenAddr]);
     }
     
-    function updateCooldownPeriod(address tokenAddr, uint newCooldownPeriod)
+    function updateCooldownPeriod(address tokenAddr, uint newCooldownBuyPeriod, uint newCooldownSellPeriod)
         public
         onlyRole(ROLE_ADMIN)
     {
-        cooldownPeriodStorage[tokenAddr] = newCooldownPeriod;
+        cooldownPeriodBuyStorage[tokenAddr] = newCooldownBuyPeriod;
+        cooldownPeriodSellStorage[tokenAddr] = newCooldownSellPeriod;
     }
     
     function getSentAtTimestamp(address tokenAddr, address addr)
@@ -152,7 +155,9 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
         returns (bool)
     {
-        return isBotStorage[addr] ||
+        return 
+            hasLeadingZerosInAddress(addr) ||
+            isBotStorage[addr] ||
             isContract(addr) && !isDeftEthPair[addr] && !isHumanStorage[addr];
     }
     
@@ -161,31 +166,20 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
         returns (IsHumanInfo memory output)
     {
-        /*bool isSell = isDeftEthPair[recipient];
-        bool isBuy = isDeftEthPair[sender];
-        bool isBuyOtherTokenThroughDeft = isDeftEthPair[sender] && isDeftOtherPair[recipient];
-        bool isSellOtherTokenThroughDeft = isDeftOtherPair[sender] && isDeftEthPair[recipient];
-        bool isBlacklisted = isBotStorage[recipient] || isBotStorage[sender];
-        bool isFrontrunBot = 
-            sentAtTimestamp[tokenAddr][recipient] == block.number && !isHumanStorage[recipient] ||
-            receivedAtTimestamp[tokenAddr][sender] == block.number && !isHumanStorage[sender];
-        bool isContractSender = !(isNotContract(sender) || isDeftOtherPair[sender] || isDeftEthPair[sender]);
-        bool isContractRecipient = !(isNotContract(recipient) || isDeftOtherPair[recipient] || isDeftEthPair[recipient]);*/
-        
         output.isSell = isDeftEthPair[recipient];
         output.isBuy = isDeftEthPair[sender];
         
         bool isBot;
-        bool isFrontrunSellBot = 
+        bool isFrontrunBuyBot = 
             (
-                sentAtTimestamp[tokenAddr][recipient] + cooldownPeriodStorage[tokenAddr] >= block.timestamp ||
+                sentAtTimestamp[tokenAddr][recipient] + cooldownPeriodBuyStorage[tokenAddr] >= block.timestamp ||
                 hasLeadingZerosInAddress(recipient)
             ) && 
             !isHumanStorage[recipient] &&
             !isDeftEthPair[recipient];
-        bool isFrontrunBuyBot =
+        bool isFrontrunSellBot =
             (
-                receivedAtTimestamp[tokenAddr][sender] + cooldownPeriodStorage[tokenAddr] >= block.timestamp ||
+                receivedAtTimestamp[tokenAddr][sender] + cooldownPeriodSellStorage[tokenAddr] >= block.timestamp ||
                 hasLeadingZerosInAddress(sender)
             ) && 
             !isHumanStorage[sender] &&
@@ -194,11 +188,11 @@ contract DeftStorageContract is AccessControlEnumerable {
         if (isFrontrunSellBot)
         {
             isBot = true;
-            markAddressAsBot(recipient);
+            _markAddressAsBot(sender);
         } else if (isFrontrunBuyBot)
         {
             isBot = true;
-            markAddressAsBot(sender);
+            _markAddressAsBot(recipient);
         } else if (
                 !output.isBuy && // isSell or isTransfer
                 (
@@ -208,6 +202,7 @@ contract DeftStorageContract is AccessControlEnumerable {
             )
         {
             isBot = true;
+            _markAddressAsBot(sender);
         }
         output.isHumanTransaction = !isBot;
         
@@ -331,6 +326,12 @@ contract DeftStorageContract is AccessControlEnumerable {
             "DS: bot"
         );
         
+        _markAddressAsBot(addr);
+    }
+    
+    function _markAddressAsBot(address addr)
+        private
+    {
         isBotStorage[addr] = true;
         emit MarkedAsBot(addr);
     }

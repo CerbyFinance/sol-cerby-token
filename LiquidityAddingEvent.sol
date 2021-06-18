@@ -11,7 +11,6 @@ import "../openzeppelin/access/AccessControlEnumerable.sol";
 
 
 contract LiquidityAddingEvent is AccessControlEnumerable {
-    bytes32 public constant ROLE_WHITELIST = keccak256("ROLE_WHITELIST");
     
     uint constant NOBOTS_TECH_CONTRACT_ID = 0;
     uint constant UNISWAP_V2_FACTORY_CONTRACT_ID = 2;
@@ -34,13 +33,12 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
     
     address public defiFactoryToken;
     
-    uint public constant TOTAL_SUPPLY_CAP = 100 * 1e9 * 1e18; // 100B DEFT
+    uint public constant TOTAL_SUPPLY_CAP = 10e9 * 1e18; // 10B DEFT
     
-    uint public percentForTheTeam = 30; // 5% - marketing; 10% - team; 15% - developer
-    uint public percentForUniswap = 70; // 70% - to uniswap
+    uint public percentForUniswap = 50; // 50% - to pancakeswap
     uint constant PERCENT_DENORM = 100;
     
-    address public nativeToken;
+    address public nativeToken = ;
     
     address public developerAddress;
     uint public developerCap;
