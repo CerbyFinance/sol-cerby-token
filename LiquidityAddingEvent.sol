@@ -2,25 +2,19 @@
 
 pragma solidity ^0.8.4;
 
-import "../interfaces/IDefiFactoryToken.sol";
-import "../interfaces/INoBotsTech.sol";
-import "../interfaces/IUniswapV2Factory.sol";
-import "../interfaces/IUniswapV2Pair.sol";
-import "../interfaces/IWeth.sol";
-import "../openzeppelin/access/AccessControlEnumerable.sol";
+import "./interfaces/IDefiFactoryToken.sol";
+import "./interfaces/IUniswapV2Factory.sol";
+import "./interfaces/IUniswapV2Pair.sol";
+import "./interfaces/IWeth.sol";
+import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 
 contract LiquidityAddingEvent is AccessControlEnumerable {
     
-    uint constant NOBOTS_TECH_CONTRACT_ID = 0;
-    uint constant UNISWAP_V2_FACTORY_CONTRACT_ID = 2;
-
     struct Investor {
         address addr;
         uint wethValue;
         uint sentValue;
-        uint startDelay;
-        uint lockFor;
     }
     
     enum States { AcceptingPayments, ReachedGoal, PreparedAddLiqudity, CreatedPair, AddedLiquidity, DistributedTokens }
@@ -28,36 +22,18 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
     
     mapping(address => uint) cachedIndex;
     Investor[] investors;
-    uint public totalInvested;
-    uint public totalSent;
+    uint public totalInvestedWeth;
+    uint public maxWethCap = 1e15;
     
-    address public defiFactoryToken;
+    address public defiFactoryToken = 0x648C608D1cb7b425a89b64D70A646c2295687169;
+    address public wethToken = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
+    address public wethAndTokenPairContract = 0x4E22bbbBd75bcB9D5A40604D29fE3178A3D9E4D2;
+    address public uniswapFactory = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
     
     uint public constant TOTAL_SUPPLY_CAP = 10e9 * 1e18; // 10B DEFT
     
     uint public percentForUniswap = 50; // 50% - to pancakeswap
     uint constant PERCENT_DENORM = 100;
-    
-    address public nativeToken = ;
-    
-    address public developerAddress;
-    uint public developerCap;
-    uint public constant DEVELOPER_STARTING_LOCK_DELAY = 0 days;
-    uint public constant DEVELOPER_STARTING_LOCK_FOR = 730 days;
-    
-    address public teamAddress;
-    uint public teamCap;
-    uint public constant TEAM_STARTING_LOCK_DELAY = 0 days;
-    uint public constant TEAM_STARTING_LOCK_FOR = 730 days;
-    
-    address public marketingAddress;
-    uint public marketingCap;
-    uint public constant MARKETING_STARTING_LOCK_DELAY = 0;
-    uint public constant MARKETING_STARTING_LOCK_FOR = 365 days;
-    
-    uint public startedLocking;
-    address public wethAndTokenPairContract;
-    
     
     uint public amountOfTokensForInvestors;
     
@@ -69,7 +45,7 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
     }
 
     receive() external payable {
-        require(state == States.AcceptingPayments, "TVC: Accepting payments has been stopped!");
+        require(state == States.AcceptingPayments, "LEA: Accepting payments has been stopped!");
         
         addInvestor(_msgSender(), msg.value);
     }
@@ -77,95 +53,59 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
     function addInvestor(address addr, uint wethValue)
         internal
     {
-        uint updMaxInvestAmount;
-        uint lockFor;
-        uint startDelay;
-        if (addr == developerAddress)
-        {
-            updMaxInvestAmount = developerCap;
-            lockFor = DEVELOPER_STARTING_LOCK_FOR;
-            startDelay = DEVELOPER_STARTING_LOCK_DELAY;
-        } else if (addr == teamAddress)
-        {
-            updMaxInvestAmount = teamCap;
-            lockFor = TEAM_STARTING_LOCK_FOR;
-            startDelay = TEAM_STARTING_LOCK_DELAY;
-        } else if (addr == marketingAddress) 
-        {
-            updMaxInvestAmount = marketingCap;
-            lockFor = MARKETING_STARTING_LOCK_FOR;
-            startDelay = MARKETING_STARTING_LOCK_DELAY;
-        } else
-        {
-            revert("TVC: Only team, dev and marketing addresses allowed!");
-        }
-        
         if (cachedIndex[addr] == 0)
         {
             investors.push(
                 Investor(
                     addr, 
                     wethValue,
-                    0,
-                    startDelay,
-                    lockFor
+                    0
                 )
             );
             cachedIndex[addr] = investors.length;
         } else
         {
             investors[cachedIndex[addr] - 1].wethValue += wethValue;
+            totalInvestedWeth += wethValue;
         }
-        require(
-            investors[cachedIndex[addr] - 1].wethValue <= updMaxInvestAmount,
-            "TVC: Requires Investor max amount less than maxInvestAmount!"
-        );
         
-        totalInvested += wethValue;
+        checkIfGoalIsReached();
     }
     
-    function markGoalAsReachedAndPrepareLiqudity()
+    function checkIfGoalIsReached()
         public
-        onlyRole(ROLE_ADMIN)
     {
-        state = States.ReachedGoal;
+        require(state == States.AcceptingPayments, "LEA: Goal is already reached!");
         
-        prepareAddLiqudity();
+        if (totalInvestedWeth >= maxWethCap)
+        {
+            state = States.ReachedGoal;
+        }
     }
     
     function prepareAddLiqudity()
-        internal
+        public
+        onlyRole(ROLE_ADMIN)
     {
-        require(state == States.ReachedGoal, "TVC: Preparing add liquidity is completed!");
-        require(address(this).balance > 0, "TVC: Ether balance must be larger than zero!");
+        require(state == States.ReachedGoal, "LEA: Preparing add liquidity is completed!");
+        require(address(this).balance > 0, "LEA: Ether balance must be larger than zero!");
         
-        IWeth iWeth = IWeth(nativeToken);
+        IWeth iWeth = IWeth(defiFactoryToken);
         iWeth.deposit{ value: address(this).balance }();
         
         state = States.PreparedAddLiqudity;
     }
     
-    function createPairOnUniswapV2()
+    function checkIfPairIsCreated()
         public
         onlyRole(ROLE_ADMIN)
     {
-        require(state == States.PreparedAddLiqudity, "TVC: Pair is already created!");
+        require(state == States.PreparedAddLiqudity, "LEA: Pair is already created!");
 
-        IUniswapV2Factory iUniswapV2Factory = IUniswapV2Factory(
-            IDefiFactoryToken(defiFactoryToken).
-                getUtilsContractAtPos(UNISWAP_V2_FACTORY_CONTRACT_ID)
-        );
-        wethAndTokenPairContract = iUniswapV2Factory.getPair(defiFactoryToken, nativeToken);
-        if (wethAndTokenPairContract == BURN_ADDRESS)
-        {
-            wethAndTokenPairContract = iUniswapV2Factory.createPair(nativeToken, defiFactoryToken);
-        }
-           
-        INoBotsTech iNoBotsTech = INoBotsTech(
-            IDefiFactoryToken(defiFactoryToken).
-                getUtilsContractAtPos(NOBOTS_TECH_CONTRACT_ID)
-        ); 
-        iNoBotsTech.grantRole(ROLE_WHITELIST, wethAndTokenPairContract);
+        wethAndTokenPairContract = IUniswapV2Factory(uniswapFactory).
+            getPair(defiFactoryToken, wethToken);
+        
+        require(wethAndTokenPairContract != BURN_ADDRESS, "LEA: Pair does not exist!");
         
         state = States.CreatedPair;
     }
@@ -174,13 +114,13 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         public
         onlyRole(ROLE_ADMIN)
     {
-        require(state == States.CreatedPair, "TVC: Liquidity is already added!");
+        require(state == States.CreatedPair, "LEA: Liquidity is already added!");
         
-        IWeth iWeth = IWeth(nativeToken);
+        IWeth iWeth = IWeth(defiFactoryToken);
         uint wethAmount = iWeth.balanceOf(address(this));
         iWeth.transfer(wethAndTokenPairContract, wethAmount);
         
-        uint amountOfTokensForUniswap = (TOTAL_SUPPLY_CAP * percentForUniswap) / PERCENT_DENORM; // 70% for uniswap
+        uint amountOfTokensForUniswap = (TOTAL_SUPPLY_CAP * percentForUniswap) / PERCENT_DENORM; // 50% for uniswap
         
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
         iDefiFactoryToken.mintHumanAddress(wethAndTokenPairContract, amountOfTokensForUniswap);
@@ -189,121 +129,35 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         iPair.mint(_msgSender());
     
         state = States.AddedLiquidity;
-        
-        distributeTokens();
     }
 
     function distributeTokens()
-        internal
+        public
+        onlyRole(ROLE_ADMIN)
     {
-        require(state == States.AddedLiquidity, "TVC: Tokens have already been distributed!");
+        require(state == States.AddedLiquidity, "LEA: Tokens have already been distributed!");
         
-        INoBotsTech iNoBotsTech = INoBotsTech(
-            IDefiFactoryToken(defiFactoryToken).
-                getUtilsContractAtPos(NOBOTS_TECH_CONTRACT_ID)
-        );
         
-        iNoBotsTech.grantRole(ROLE_WHITELIST, address(this));
-        
-        amountOfTokensForInvestors = (TOTAL_SUPPLY_CAP * percentForTheTeam) / PERCENT_DENORM; // 30% for the team
+        amountOfTokensForInvestors = (TOTAL_SUPPLY_CAP * (PERCENT_DENORM - percentForUniswap)) / PERCENT_DENORM; // 50% for the investors
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
         iDefiFactoryToken.mintHumanAddress(address(this), amountOfTokensForInvestors);
         
-        startedLocking = block.timestamp;
         
         state = States.DistributedTokens;
     }
     
-    function claimTeamVestingTokens(uint amount)
-        public
-    {
-        address addr = _msgSender();
-        
-        uint claimableAmount = getClaimableTokenAmount(addr);
-        require(claimableAmount > 0, "TVC: !claimable_amount");
-        
-        if (
-            amount == 0 || 
-            amount > claimableAmount
-        ) {
-            amount = claimableAmount;
-        }
-        
-        investors[cachedIndex[addr] - 1].sentValue += amount;
-        
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
-        iDefiFactoryToken.transferFromTeamVestingContract(addr, amount);
-    }
-    
-    function burnVestingTokens(uint amount)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
-        iDefiFactoryToken.burnHumanAddress(address(this), amount);
-        
-        amountOfTokensForInvestors -= amount;
-    }
-    
-    function taxVestingTokens(uint amount)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        INoBotsTech iNoBotsTech = INoBotsTech(
-            IDefiFactoryToken(defiFactoryToken).
-                getUtilsContractAtPos(NOBOTS_TECH_CONTRACT_ID)
-        );
-        
-        amountOfTokensForInvestors = iNoBotsTech.chargeCustomTaxTeamVestingContract(
-            amount, 
-            amountOfTokensForInvestors
-        );
-    }
-    
-    function getClaimableTokenAmount(address addr)
-        public
-        view
-        returns(uint)
-    {
-        require(state == States.DistributedTokens, "TVC: Tokens aren't distributed yet!");
-        
-        require(cachedIndex[addr] > 0, "TVC: !exist");
-        
-        Investor memory investor = investors[cachedIndex[addr] - 1];
-        
-        uint realStartedLocking = startedLocking + investor.startDelay;
-        if (block.timestamp < realStartedLocking) return 0;
-        
-        uint lockedUntil = realStartedLocking + investor.lockFor; 
-        uint nominator = 1;
-        uint denominator = 1;
-        if (block.timestamp < lockedUntil)
-        {
-            nominator = block.timestamp - realStartedLocking;
-            denominator = investor.lockFor;
-        }
-            
-        uint claimableAmount = 
-            (investor.wethValue * amountOfTokensForInvestors * nominator) / 
-                (denominator * totalInvested);
-                
-        if (claimableAmount <= investor.sentValue) return 0;
-        claimableAmount -= investor.sentValue;
-        
-        return claimableAmount;
-    }
     
     function getLeftTokenAmount(address addr)
         public
         view
         returns(uint)
     {
-        require(state == States.DistributedTokens, "TVC: Tokens aren't distributed yet!");
+        require(state == States.DistributedTokens, "LEA: Tokens aren't distributed yet!");
         
         Investor memory investor = investors[cachedIndex[addr] - 1];
         uint leftAmount = 
             (investor.wethValue * amountOfTokensForInvestors) / 
-                (totalInvested);
+                (totalInvestedWeth);
                 
         if (leftAmount <= investor.sentValue) return 0;
         leftAmount -= investor.sentValue;
@@ -359,23 +213,5 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         defiFactoryToken = newContract;
-    }
-    
-    function updateInvestmentSettings(
-        address _nativeToken, 
-        address _developerAddress, uint _developerCap,
-        address _teamAddress, uint _teamCap,
-        address _marketingAddress, uint _marketingCap
-    )
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        nativeToken = _nativeToken;
-        developerAddress = _developerAddress;
-        developerCap = _developerCap;
-        teamAddress = _teamAddress;
-        teamCap = _teamCap;
-        marketingAddress = _marketingAddress;
-        marketingCap = _marketingCap;
     }
 }
