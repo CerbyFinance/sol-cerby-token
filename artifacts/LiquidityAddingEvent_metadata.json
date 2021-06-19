@@ -7,8 +7,27 @@
 		"abi": [
 			{
 				"inputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "payable",
 				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "investorAddr",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "investorAmountWeth",
+						"type": "uint256"
+					}
+				],
+				"name": "InvestedAmount",
+				"type": "event"
 			},
 			{
 				"anonymous": false,
@@ -86,6 +105,45 @@
 				"type": "event"
 			},
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "enum LiquidityAddingEvent.States",
+						"name": "newState",
+						"type": "uint8"
+					}
+				],
+				"name": "StateChanged",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "DEFT_DECIMALS",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "PRICE_DENORM",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "ROLE_ADMIN",
 				"outputs": [
@@ -129,6 +187,19 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "normedDeftPriceInUSD",
+						"type": "uint256"
+					}
+				],
+				"name": "balancePairPrice",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -567,6 +638,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "uniswapRouter",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -577,6 +661,19 @@
 				"name": "updateDefiFactoryContract",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "usdtToken",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -663,11 +760,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/LiquidityAddingEvent.sol": {
-			"keccak256": "0x9066bac7358fe0ea13f2905327927cb5abe3eb30a392da159947d71bc8a8eca5",
+			"keccak256": "0x2872af2706b6733c9c56aeb8ccbe3d32bdce70fd99b62e17577c8a5cb3e3a422",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://1566535d97ae164f61d3fb7603840a34fdecb0499832df19aaf10c69f1f86515",
-				"dweb:/ipfs/QmQvHGStjbzRD26w7enmWc3Cig8q388qe3vuamGAHkCpTc"
+				"bzz-raw://185b18aa49241c73578aa983dc8fba8d00b65ebe2b86366f25ea216f45cd0c94",
+				"dweb:/ipfs/QmTBU3GGiF4mYW3nrrTkRc4xABZYkMQiSaHEkK5vnL5QxX"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
@@ -694,12 +791,20 @@
 				"dweb:/ipfs/QmNiwQrpRfxcY7sQDvb4dgq7pHPxxKAz9sVyFCiXkF1F96"
 			]
 		},
-		"sol-defifactory-token/interfaces/IWeth.sol": {
-			"keccak256": "0xd4d5bb3ad1029ecc6f63ac6b88b295998150ae6b435a36d502b01b8efb8bb983",
+		"sol-defifactory-token/interfaces/IUniswapV2Router.sol": {
+			"keccak256": "0x590b9262136f0a0af7a7ba0c2f823624e8b5a70461b91822c404ce9fb0ab69dd",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c868751aeaabaaf7950f21021802faed066ddfa36eaa22a95af52693360730a4",
-				"dweb:/ipfs/QmQBjxtRCwVeyZPtrwiCSZdbqjsaK9bS6vAcwRj5dDUGF5"
+				"bzz-raw://27cdcc84b36b3ded02e4db7bd50c4e3ca417c57b0937b6a01a730aa405e4ed72",
+				"dweb:/ipfs/QmQSu4eRtu1YKaS5bVRNizUZn2RHnhqBqXbjM4pgoauN7U"
+			]
+		},
+		"sol-defifactory-token/interfaces/IWeth.sol": {
+			"keccak256": "0x51f4f8e3e1a7ccd1c9f5e7bc309f45fdd5af8de587a69f6bdb1d58c5d8f3868b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://26e24fca252fe03674b5af63dccf059e8d71ac83f7a38fa41111f3dc50cdf1cb",
+				"dweb:/ipfs/QmVnGwETXJqrd57kS6JMincsxnruwT6hCh4pMkxNEUCXtg"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

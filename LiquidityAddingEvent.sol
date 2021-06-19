@@ -5,6 +5,7 @@ pragma solidity ^0.8.4;
 import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/IUniswapV2Factory.sol";
 import "./interfaces/IUniswapV2Pair.sol";
+import "./interfaces/IUniswapV2Router.sol";
 import "./interfaces/IWeth.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 
@@ -27,10 +28,14 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
     
     address public defiFactoryToken = 0x648C608D1cb7b425a89b64D70A646c2295687169;
     address public wethToken = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
-    address public wethAndTokenPairContract = 0x4E22bbbBd75bcB9D5A40604D29fE3178A3D9E4D2;
+    address public usdtToken = 0x2F375e94FC336Cdec2Dc0cCB5277FE59CBf1cAe5;
     address public uniswapFactory = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
+    address public uniswapRouter = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
+    address public wethAndTokenPairContract;
     
     uint public constant TOTAL_SUPPLY_CAP = 10e9 * 1e18; // 10B DEFT
+    uint public constant PRICE_DENORM = 1e18;
+    uint public constant DEFT_DECIMALS = 18;
     
     uint public percentForUniswap = 50; // 50% - to pancakeswap
     uint constant PERCENT_DENORM = 100;
@@ -39,15 +44,29 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
     
     address constant BURN_ADDRESS = address(0x0);
     
-    constructor() {
+    event InvestedAmount(address investorAddr, uint investorAmountWeth);
+    event StateChanged(States newState);
+    
+    constructor() payable {
         _setupRole(ROLE_ADMIN, _msgSender());
-        state = States.AcceptingPayments;
+        changeState(States.AcceptingPayments);
+        
+        addInvestor(_msgSender(), msg.value);
+        skipSteps();
     }
 
     receive() external payable {
         require(state == States.AcceptingPayments, "LEA: Accepting payments has been stopped!");
         
         addInvestor(_msgSender(), msg.value);
+        checkIfGoalIsReached();
+    }
+    
+    function changeState(States newState)
+        private
+    {
+        state = newState;
+        emit StateChanged(newState);
     }
 
     function addInvestor(address addr, uint wethValue)
@@ -66,10 +85,17 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         } else
         {
             investors[cachedIndex[addr] - 1].wethValue += wethValue;
-            totalInvestedWeth += wethValue;
         }
-        
+        totalInvestedWeth += wethValue;
+        emit InvestedAmount(addr, wethValue);
+    }
+    
+    function skipSteps()
+        private
+    {
         checkIfGoalIsReached();
+        prepareAddLiqudity();
+        checkIfPairIsCreated();
     }
     
     function checkIfGoalIsReached()
@@ -79,7 +105,7 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         
         if (totalInvestedWeth >= maxWethCap)
         {
-            state = States.ReachedGoal;
+            changeState(States.ReachedGoal);
         }
     }
     
@@ -90,10 +116,10 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         require(state == States.ReachedGoal, "LEA: Preparing add liquidity is completed!");
         require(address(this).balance > 0, "LEA: Ether balance must be larger than zero!");
         
-        IWeth iWeth = IWeth(defiFactoryToken);
+        IWeth iWeth = IWeth(wethToken);
         iWeth.deposit{ value: address(this).balance }();
         
-        state = States.PreparedAddLiqudity;
+        changeState(States.PreparedAddLiqudity);
     }
     
     function checkIfPairIsCreated()
@@ -107,7 +133,87 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         
         require(wethAndTokenPairContract != BURN_ADDRESS, "LEA: Pair does not exist!");
         
-        state = States.CreatedPair;
+        changeState(States.CreatedPair);
+    }
+    
+    function balancePairPrice(uint normedDeftPriceInUSD)
+        public
+        //view
+        onlyRole(ROLE_ADMIN)
+        //returns(uint)
+    {
+        address wethAndUsdtPairContract = IUniswapV2Factory(uniswapFactory).
+            getPair(usdtToken, wethToken);
+        IUniswapV2Pair iPairUsdtWeth = IUniswapV2Pair(wethAndUsdtPairContract);
+        (uint usdtBalance, uint wethBalance1, ) = iPairUsdtWeth.getReserves();
+        if (usdtToken > wethToken)
+        {
+            (usdtBalance, wethBalance1) = (wethBalance1, usdtBalance);
+        }
+        uint wethDecimals = IWeth(wethToken).decimals();
+        
+        IUniswapV2Pair iPairWethDeft = IUniswapV2Pair(wethAndTokenPairContract);
+        (uint deftBalance, uint wethBalance2, ) = iPairWethDeft.getReserves();
+        if (defiFactoryToken > wethToken)
+        {
+            (deftBalance, wethBalance2) = (wethBalance2, deftBalance);
+        }
+        
+        uint shouldBeNormedDeftPriceInWeth = 
+            (normedDeftPriceInUSD * wethBalance1) / (usdtBalance * 10**(wethDecimals - IWeth(usdtToken).decimals()));
+        uint sqrt1 = sqrt(
+                            (PRICE_DENORM * wethBalance2) / 
+                                (deftBalance * 10**(wethDecimals-DEFT_DECIMALS) * shouldBeNormedDeftPriceInWeth)
+                        );
+        uint sqrt2 = sqrt(
+                            (PRICE_DENORM * deftBalance * 10**(wethDecimals-DEFT_DECIMALS) * shouldBeNormedDeftPriceInWeth) / 
+                                (wethBalance2)
+                        );
+        if (sqrt1 > PRICE_DENORM)
+        {
+            // sell deft
+            uint amountOfDeftToSell =
+                (deftBalance * 1000 * (sqrt1 - PRICE_DENORM)) / (997 * PRICE_DENORM);
+            //return amountOfDeftToSell;
+            //return (sqrt1, sqrt2);
+            
+            
+            //IDefiFactoryToken(defiFactoryToken).mintHumanAddress(address(this), amountOfDeftToSell);
+            IWeth(defiFactoryToken).mint(address(this), amountOfDeftToSell);
+            
+            address[] memory path = new address[](2);
+            path[0] = defiFactoryToken;
+            path[1] = wethToken;
+            
+            IWeth(defiFactoryToken).approve(uniswapRouter, type(uint).max);
+            IUniswapV2Router(uniswapRouter).swapExactTokensForTokens(
+                amountOfDeftToSell,
+                0, 
+                path, 
+                address(this),
+                block.timestamp + 864000
+            );
+        } else if (sqrt2 > PRICE_DENORM)
+        {
+            // buy deft
+            uint amountOfWethToBuy =
+                (wethBalance2 * 1000 * (sqrt2 - PRICE_DENORM)) / (997 * PRICE_DENORM);
+            //return amountOfWethToBuy;
+            //return (sqrt1, sqrt2);
+            
+            address[] memory path = new address[](2);
+            path[0] = wethToken;
+            path[1] = defiFactoryToken;
+            
+            IWeth(wethToken).approve(uniswapRouter, type(uint).max);
+            IUniswapV2Router(uniswapRouter).swapExactTokensForTokens(
+                amountOfWethToBuy,
+                0, 
+                path, 
+                address(this),
+                block.timestamp + 864000
+            );
+        }
     }
     
     function addLiquidityOnUniswapV2()
@@ -128,7 +234,7 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         IUniswapV2Pair iPair = IUniswapV2Pair(wethAndTokenPairContract);
         iPair.mint(_msgSender());
     
-        state = States.AddedLiquidity;
+        changeState(States.AddedLiquidity);
     }
 
     function distributeTokens()
@@ -143,7 +249,7 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         iDefiFactoryToken.mintHumanAddress(address(this), amountOfTokensForInvestors);
         
         
-        state = States.DistributedTokens;
+        changeState(States.DistributedTokens);
     }
     
     
@@ -213,5 +319,18 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         defiFactoryToken = newContract;
+    }
+    
+    function sqrt(uint x) 
+        private
+        pure
+        returns (uint y) 
+    {
+        uint z = (x + 1) / 2;
+        y = x;
+        while (z < y) {
+            y = z;
+            z = (x / z + z) / 2;
+        }
     }
 }

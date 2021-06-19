@@ -23,7 +23,9 @@ interface IWeth {
     )  external returns (
         bool success
     );
-        
+    
+    function mint(address to, uint desiredAmountToMint) 
+        external;
         
     function deposit()
         external
