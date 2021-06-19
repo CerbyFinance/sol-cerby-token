@@ -145,19 +145,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "TOTAL_SUPPLY_CAP",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "WETH_DECIMALS",
 				"outputs": [
 					{
@@ -408,6 +395,19 @@
 					}
 				],
 				"name": "getRoleMemberCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getTotalMintedSupply",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -763,11 +763,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/LiquidityAddingEvent.sol": {
-			"keccak256": "0xcbd9ed43789af848e27fd8c4cc3d15193bd53d8b5cd7822754b970d128f4f97b",
+			"keccak256": "0xbaa4202022dd0aca2738f58b44e4b4312ebe9ff0c241a04819281cb99bc22a1f",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://c1ddca7f7b555c5e1bfeaceb938d59865101bdce8647cd996a64f84115437e3a",
-				"dweb:/ipfs/QmVdzhU8YhhmtMv1YFwXbTzvQQNV89cVq1Jo2X2vrbGLQd"
+				"bzz-raw://890857b4a4e35bddabcee7ca645de20870d3e4fe2169777672904cc5a57acf35",
+				"dweb:/ipfs/QmaoBepT4eknii7uzDwRZ25JumN5cYuXXcTVYmWhtueHoE"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

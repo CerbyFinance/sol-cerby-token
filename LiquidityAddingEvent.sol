@@ -34,7 +34,6 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
     address public uniswapRouter = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
     address public wethAndTokenPairContract;
     
-    uint public constant TOTAL_SUPPLY_CAP = 10e9 * 1e18; // 10B DEFT
     uint public constant DEFT_DECIMALS = 18;
     uint public constant WETH_DECIMALS = 18;
     
@@ -56,6 +55,18 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         
         addInvestor(_msgSender(), msg.value);
         checkIfGoalIsReached();
+    }
+    
+    // TODO: update contracts values
+    // TODO: emergency refund
+    // TODO: update max weth cap
+    
+    function getTotalMintedSupply()
+        external
+        view
+        returns (uint)
+    {
+        return amountOfDeftForInvestors * 2;
     }
     
     function updateDefiFactoryContract(address newContract)
