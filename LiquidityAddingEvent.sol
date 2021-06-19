@@ -58,6 +58,13 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         checkIfGoalIsReached();
     }
     
+    function updateDefiFactoryContract(address newContract)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        defiFactoryToken = newContract;
+    }
+    
     function changeState(States newState)
         private
     {
@@ -165,9 +172,6 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
             // sell deft
             uint amountOfDeftToSell =
                 (deftBalance * 1000 * (sqrt1 - PRICE_DENORM)) / (997 * PRICE_DENORM);
-            //return amountOfDeftToSell;
-            //return (sqrt1, sqrt2);
-            
             
             //IDefiFactoryToken(defiFactoryToken).mintHumanAddress(address(this), amountOfDeftToSell);
             IDefiFactoryToken(defiFactoryToken).mintByBridge(address(this), amountOfDeftToSell);
@@ -190,8 +194,6 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
             // buy deft
             uint amountOfWethToBuy =
                 (wethBalance2 * 1000 * (sqrt2 - PRICE_DENORM)) / (997 * PRICE_DENORM);
-            //return amountOfWethToBuy;
-            //return (sqrt1, sqrt2);
             
             address[] memory path = new address[](2);
             path[0] = wethToken;
@@ -240,18 +242,31 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         changeState(States.AddedLiquidity);
     }
 
-    function distributeTokens()
+    function distributeTokens(uint offset, uint limit)
         public
         onlyRole(ROLE_ADMIN)
     {
         require(state == States.AddedLiquidity, "LEA: Tokens have already been distributed!");
         
+        uint leftAmount;
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
-        iDefiFactoryToken.mintHumanAddress(address(this), amountOfDeftForInvestors);
-        
-        changeState(States.DistributedTokens);
+        Investor[] memory investorsList = listInvestors(offset, limit);
+        for(uint i = 0; i < investorsList.length; i++)
+        {
+            leftAmount = 
+            (investorsList[i].wethValue * amountOfDeftForInvestors) / 
+                (totalInvestedWeth);
+                
+            if (leftAmount > investorsList[i].sentValue)
+            {
+                iDefiFactoryToken.mintByBridge(
+                    investorsList[i].addr, 
+                    leftAmount
+                );
+                investorsList[i].sentValue += leftAmount;
+            }
+        }
     }
-    
     
     function getLeftTokenAmount(address addr)
         public
@@ -312,13 +327,6 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         }
         
         return listOfInvestors;
-    }
-    
-    function updateDefiFactoryContract(address newContract)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        defiFactoryToken = newContract;
     }
     
     function sqrt(uint x) 
