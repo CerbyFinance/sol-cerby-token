@@ -132,19 +132,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "PRICE_DENORM",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "ROLE_ADMIN",
 				"outputs": [
 					{
@@ -171,6 +158,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "WETH_DECIMALS",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "addLiquidityOnUniswapV2",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -178,7 +178,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "amountOfTokensForInvestors",
+				"name": "amountOfDeftForInvestors",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -194,6 +194,11 @@
 					{
 						"internalType": "uint256",
 						"name": "normedDeftPriceInUSD",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "PRICE_DENORM",
 						"type": "uint256"
 					}
 				],
@@ -525,19 +530,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "percentForUniswap",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "prepareAddLiqudity",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -760,11 +752,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/LiquidityAddingEvent.sol": {
-			"keccak256": "0x2872af2706b6733c9c56aeb8ccbe3d32bdce70fd99b62e17577c8a5cb3e3a422",
+			"keccak256": "0x8e074371fe11056a43ba3a5c0fc50c1af49ab62278bf47f19c943e419d56cbab",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://185b18aa49241c73578aa983dc8fba8d00b65ebe2b86366f25ea216f45cd0c94",
-				"dweb:/ipfs/QmTBU3GGiF4mYW3nrrTkRc4xABZYkMQiSaHEkK5vnL5QxX"
+				"bzz-raw://c99cf1e35f97854f8c7d831fc056db1654cbf364e9bc7ba7215aef685043ab9a",
+				"dweb:/ipfs/QmU3Tx4oMet3WoNPR3z6dpWiFTKqfEPMco4BYLJxGjHpS4"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

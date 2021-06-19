@@ -25,6 +25,7 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
     Investor[] investors;
     uint public totalInvestedWeth;
     uint public maxWethCap = 1e15;
+    uint public amountOfDeftForInvestors;
     
     address public defiFactoryToken = 0x648C608D1cb7b425a89b64D70A646c2295687169;
     address public wethToken = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
@@ -34,13 +35,8 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
     address public wethAndTokenPairContract;
     
     uint public constant TOTAL_SUPPLY_CAP = 10e9 * 1e18; // 10B DEFT
-    uint public constant PRICE_DENORM = 1e18;
     uint public constant DEFT_DECIMALS = 18;
-    
-    uint public percentForUniswap = 50; // 50% - to pancakeswap
-    uint constant PERCENT_DENORM = 100;
-    
-    uint public amountOfTokensForInvestors;
+    uint public constant WETH_DECIMALS = 18;
     
     address constant BURN_ADDRESS = address(0x0);
     
@@ -136,37 +132,32 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         changeState(States.CreatedPair);
     }
     
-    function balancePairPrice(uint normedDeftPriceInUSD)
+    function balancePairPrice(uint normedDeftPriceInUSD, uint PRICE_DENORM)
         public
-        //view
         onlyRole(ROLE_ADMIN)
-        //returns(uint)
     {
         address wethAndUsdtPairContract = IUniswapV2Factory(uniswapFactory).
             getPair(usdtToken, wethToken);
-        IUniswapV2Pair iPairUsdtWeth = IUniswapV2Pair(wethAndUsdtPairContract);
-        (uint usdtBalance, uint wethBalance1, ) = iPairUsdtWeth.getReserves();
+        (uint usdtBalance, uint wethBalance1, ) = IUniswapV2Pair(wethAndUsdtPairContract).getReserves();
         if (usdtToken > wethToken)
         {
             (usdtBalance, wethBalance1) = (wethBalance1, usdtBalance);
         }
-        uint wethDecimals = IWeth(wethToken).decimals();
         
-        IUniswapV2Pair iPairWethDeft = IUniswapV2Pair(wethAndTokenPairContract);
-        (uint deftBalance, uint wethBalance2, ) = iPairWethDeft.getReserves();
+        (uint deftBalance, uint wethBalance2, ) = IUniswapV2Pair(wethAndTokenPairContract).getReserves();
         if (defiFactoryToken > wethToken)
         {
             (deftBalance, wethBalance2) = (wethBalance2, deftBalance);
         }
         
         uint shouldBeNormedDeftPriceInWeth = 
-            (normedDeftPriceInUSD * wethBalance1) / (usdtBalance * 10**(wethDecimals - IWeth(usdtToken).decimals()));
+            (normedDeftPriceInUSD * wethBalance1) / (usdtBalance * 10**(WETH_DECIMALS - IWeth(usdtToken).decimals()));
         uint sqrt1 = sqrt(
                             (PRICE_DENORM * wethBalance2) / 
-                                (deftBalance * 10**(wethDecimals-DEFT_DECIMALS) * shouldBeNormedDeftPriceInWeth)
+                                (deftBalance * shouldBeNormedDeftPriceInWeth)
                         );
         uint sqrt2 = sqrt(
-                            (PRICE_DENORM * deftBalance * 10**(wethDecimals-DEFT_DECIMALS) * shouldBeNormedDeftPriceInWeth) / 
+                            (PRICE_DENORM * deftBalance * shouldBeNormedDeftPriceInWeth) / 
                                 (wethBalance2)
                         );
         if (sqrt1 > PRICE_DENORM)
@@ -179,7 +170,8 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
             
             
             //IDefiFactoryToken(defiFactoryToken).mintHumanAddress(address(this), amountOfDeftToSell);
-            IWeth(defiFactoryToken).mint(address(this), amountOfDeftToSell);
+            IDefiFactoryToken(defiFactoryToken).mintByBridge(address(this), amountOfDeftToSell);
+            amountOfDeftForInvestors += amountOfDeftToSell;
             
             address[] memory path = new address[](2);
             path[0] = defiFactoryToken;
@@ -222,17 +214,28 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
     {
         require(state == States.CreatedPair, "LEA: Liquidity is already added!");
         
-        IWeth iWeth = IWeth(defiFactoryToken);
+        (uint deftBalance, uint wethBalance2, ) = IUniswapV2Pair(wethAndTokenPairContract).getReserves();
+        if (defiFactoryToken > wethToken)
+        {
+            (deftBalance, wethBalance2) = (wethBalance2, deftBalance);
+        }
+        
+        IWeth iWeth = IWeth(wethToken);
         uint wethAmount = iWeth.balanceOf(address(this));
         iWeth.transfer(wethAndTokenPairContract, wethAmount);
         
-        uint amountOfTokensForUniswap = (TOTAL_SUPPLY_CAP * percentForUniswap) / PERCENT_DENORM; // 50% for uniswap
+        uint amountOfTokensForUniswap = (deftBalance * wethAmount) / wethBalance2;
+        amountOfDeftForInvestors += amountOfTokensForUniswap;
         
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
-        iDefiFactoryToken.mintHumanAddress(wethAndTokenPairContract, amountOfTokensForUniswap);
+        //IDefiFactoryToken(defiFactoryToken).mintHumanAddress(wethAndTokenPairContract, amountOfTokensForUniswap);
+        IDefiFactoryToken(defiFactoryToken).mintByBridge(wethAndTokenPairContract, amountOfTokensForUniswap);
         
         IUniswapV2Pair iPair = IUniswapV2Pair(wethAndTokenPairContract);
         iPair.mint(_msgSender());
+        
+        amountOfDeftForInvestors -= IDefiFactoryToken(defiFactoryToken).balanceOf(address(this));
+        IDefiFactoryToken(defiFactoryToken).
+            burnByBridge(address(this), IDefiFactoryToken(defiFactoryToken).balanceOf(address(this)));
     
         changeState(States.AddedLiquidity);
     }
@@ -243,11 +246,8 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
     {
         require(state == States.AddedLiquidity, "LEA: Tokens have already been distributed!");
         
-        
-        amountOfTokensForInvestors = (TOTAL_SUPPLY_CAP * (PERCENT_DENORM - percentForUniswap)) / PERCENT_DENORM; // 50% for the investors
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
-        iDefiFactoryToken.mintHumanAddress(address(this), amountOfTokensForInvestors);
-        
+        iDefiFactoryToken.mintHumanAddress(address(this), amountOfDeftForInvestors);
         
         changeState(States.DistributedTokens);
     }
@@ -262,7 +262,7 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         
         Investor memory investor = investors[cachedIndex[addr] - 1];
         uint leftAmount = 
-            (investor.wethValue * amountOfTokensForInvestors) / 
+            (investor.wethValue * amountOfDeftForInvestors) / 
                 (totalInvestedWeth);
                 
         if (leftAmount <= investor.sentValue) return 0;
