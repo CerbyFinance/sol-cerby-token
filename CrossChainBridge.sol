@@ -4,7 +4,6 @@ pragma solidity ^0.8.4;
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/IDeftStorageContract.sol";
-import "./interfaces/INoBotsTech.sol";
 
 contract CrossChainBridge is AccessControlEnumerable {
     event ProofOfBurn(address addr, uint amount, uint currentNonce, uint sourceChain, uint destinationChain, bytes32 transactionHash);
