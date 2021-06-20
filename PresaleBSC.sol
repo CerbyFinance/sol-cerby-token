@@ -10,7 +10,7 @@ import "./interfaces/IWeth.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 
-contract LiquidityAddingEvent is AccessControlEnumerable {
+contract PresaleBSC is AccessControlEnumerable {
     
     struct Investor {
         address addr;
@@ -51,7 +51,7 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
     }
 
     receive() external payable {
-        require(state == States.AcceptingPayments, "LEA: Accepting payments has been stopped!");
+        require(state == States.AcceptingPayments, "P: Accepting payments has been stopped!");
         
         addInvestor(_msgSender(), msg.value);
         checkIfGoalIsReached();
@@ -115,7 +115,7 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
     function checkIfGoalIsReached()
         public
     {
-        require(state == States.AcceptingPayments, "LEA: Goal is already reached!");
+        require(state == States.AcceptingPayments, "P: Goal is already reached!");
         
         if (totalInvestedWeth >= maxWethCap)
         {
@@ -127,8 +127,8 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         public
         onlyRole(ROLE_ADMIN)
     {
-        require(state == States.ReachedGoal, "LEA: Preparing add liquidity is completed!");
-        require(address(this).balance > 0, "LEA: Ether balance must be larger than zero!");
+        require(state == States.ReachedGoal, "P: Preparing add liquidity is completed!");
+        require(address(this).balance > 0, "P: Ether balance must be larger than zero!");
         
         IWeth iWeth = IWeth(wethToken);
         iWeth.deposit{ value: address(this).balance }();
@@ -140,12 +140,12 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         public
         onlyRole(ROLE_ADMIN)
     {
-        require(state == States.PreparedAddLiqudity, "LEA: Pair is already created!");
+        require(state == States.PreparedAddLiqudity, "P: Pair is already created!");
 
         wethAndTokenPairContract = IUniswapV2Factory(uniswapFactory).
             getPair(defiFactoryToken, wethToken);
         
-        require(wethAndTokenPairContract != BURN_ADDRESS, "LEA: Pair does not exist!");
+        require(wethAndTokenPairContract != BURN_ADDRESS, "P: Pair does not exist!");
         
         changeState(States.CreatedPair);
     }
@@ -225,7 +225,7 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         public
         onlyRole(ROLE_ADMIN)
     {
-        require(state == States.CreatedPair, "LEA: Liquidity is already added!");
+        require(state == States.CreatedPair, "P: Liquidity is already added!");
         
         (uint deftBalance, uint wethBalance2, ) = IUniswapV2Pair(wethAndTokenPairContract).getReserves();
         if (defiFactoryToken > wethToken)
@@ -257,7 +257,7 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         public
         onlyRole(ROLE_ADMIN)
     {
-        require(state == States.AddedLiquidity, "LEA: Tokens have already been distributed!");
+        require(state == States.AddedLiquidity, "P: Tokens have already been distributed!");
         
         uint leftAmount;
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
@@ -284,7 +284,7 @@ contract LiquidityAddingEvent is AccessControlEnumerable {
         view
         returns(uint)
     {
-        require(state == States.DistributedTokens, "LEA: Tokens aren't distributed yet!");
+        require(state == States.DistributedTokens, "P: Tokens aren't distributed yet!");
         
         Investor memory investor = investors[cachedIndex[addr] - 1];
         uint leftAmount = 

@@ -109,7 +109,7 @@
 				"inputs": [
 					{
 						"indexed": false,
-						"internalType": "enum LiquidityAddingEvent.States",
+						"internalType": "enum PresaleBSC.States",
 						"name": "newState",
 						"type": "uint8"
 					}
@@ -267,7 +267,7 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct LiquidityAddingEvent.Investor",
+						"internalType": "struct PresaleBSC.Investor",
 						"name": "",
 						"type": "tuple"
 					}
@@ -303,7 +303,7 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct LiquidityAddingEvent.Investor",
+						"internalType": "struct PresaleBSC.Investor",
 						"name": "",
 						"type": "tuple"
 					}
@@ -518,7 +518,7 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct LiquidityAddingEvent.Investor[]",
+						"internalType": "struct PresaleBSC.Investor[]",
 						"name": "",
 						"type": "tuple[]"
 					}
@@ -587,7 +587,7 @@
 				"name": "state",
 				"outputs": [
 					{
-						"internalType": "enum LiquidityAddingEvent.States",
+						"internalType": "enum PresaleBSC.States",
 						"name": "",
 						"type": "uint8"
 					}
@@ -748,7 +748,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/PresaleBSC.sol": "LiquidityAddingEvent"
+			"sol-defifactory-token/PresaleBSC.sol": "PresaleBSC"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -763,11 +763,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleBSC.sol": {
-			"keccak256": "0xbaa4202022dd0aca2738f58b44e4b4312ebe9ff0c241a04819281cb99bc22a1f",
+			"keccak256": "0x448820291aaf2ee897b8a85ad401e317f7eafa431f8f5a1d1096533ac686fd62",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://890857b4a4e35bddabcee7ca645de20870d3e4fe2169777672904cc5a57acf35",
-				"dweb:/ipfs/QmaoBepT4eknii7uzDwRZ25JumN5cYuXXcTVYmWhtueHoE"
+				"bzz-raw://c758d9c923f1170abc27152349d8c18f70488d042d38041d449ac4aeb14c7f17",
+				"dweb:/ipfs/QmeHHG2fKb4rhQy43ga2D9pHsSHYJ36KprN5fqu693pwZ6"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
