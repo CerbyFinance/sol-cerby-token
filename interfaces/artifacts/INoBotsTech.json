@@ -47,6 +47,7 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
+			"botTaxPercent()": "1857b512",
 			"chargeCustomTax(uint256,uint256)": "36098758",
 			"chargeCustomTaxTeamVestingContract(uint256,uint256)": "a202bd52",
 			"clearReferrerRewards(address)": "e3556819",
@@ -173,6 +174,19 @@
 			],
 			"name": "ReferrerRewardUpdated",
 			"type": "event"
+		},
+		{
+			"inputs": [],
+			"name": "botTaxPercent",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
 		},
 		{
 			"inputs": [

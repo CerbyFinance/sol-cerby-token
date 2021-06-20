@@ -63,6 +63,24 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "chargeCustomTax",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "pos",
 						"type": "uint256"
@@ -214,11 +232,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x8a29e67ba0ebd4f2305a4d0c0eab7060cade477ab63840c15da56f7ea175fd62",
+			"keccak256": "0x5f0e6d5ed27736a6908525ae87674920930a8d229646e8fa3bb94902fb6a39d4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://a7408bd3be7b16e69caeafa88318eda0927cf436a60fd3d350e89fd8317bbcff",
-				"dweb:/ipfs/Qma6wSH7c1v5WbC1dM5DjWPBVUtmtRjPW7zzZkMtQ18osX"
+				"bzz-raw://1ea94418aab7693f3b463665281131675c6f2e969378c409cfb4da7ecce0a243",
+				"dweb:/ipfs/QmcjTyzm3ofo4VgZUzDjWgb1eRudrQ5YzmkTmndYEqfyrT"
 			]
 		}
 	},

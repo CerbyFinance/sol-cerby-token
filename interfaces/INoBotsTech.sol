@@ -21,6 +21,11 @@ struct TemporaryReferralRealAmountsBulk {
 }
 
 interface INoBotsTech {
+    
+    function botTaxPercent()
+        external
+        returns (uint);
+    
     function prepareTaxAmounts(
         TaxAmountsInput calldata taxAmountsInput
     ) 

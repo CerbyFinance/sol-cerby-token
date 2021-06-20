@@ -20,6 +20,9 @@ interface IDefiFactoryToken {
         view
         returns (uint);
         
+    function chargeCustomTax(address from, uint amount)
+        external;
+        
     function mintHumanAddress(address to, uint desiredAmountToMint) external;
 
     function burnHumanAddress(address from, uint desiredAmountToBurn) external;

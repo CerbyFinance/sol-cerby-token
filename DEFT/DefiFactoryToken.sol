@@ -297,8 +297,14 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         notPausedContract
         onlyRole(ROLE_TAXER)
     {
+        uint balanceBefore = _RealBalances[from];
+        
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        _RealBalances[from] = iNoBotsTech.chargeCustomTax(amount, _RealBalances[from]);
+        _RealBalances[from] = iNoBotsTech.chargeCustomTax(amount, balanceBefore);
+        
+        // TODO: have to check below code
+        uint taxAmount = iNoBotsTech.getBalance(from, balanceBefore - _RealBalances[from]);
+        emit Transfer(from, address(0), taxAmount);
     }
     
     function updateUtilsContracts(AccessSettings[] calldata accessSettings)

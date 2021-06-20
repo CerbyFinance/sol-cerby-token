@@ -3,6 +3,8 @@ pragma solidity ^0.8.4;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./interfaces/IDefiFactoryToken.sol";
+import "./interfaces/IDeftStorageContract.sol";
+import "./interfaces/INoBotsTech.sol";
 
 contract CrossChainBridge is AccessControlEnumerable {
     event ProofOfBurn(address addr, uint amount, uint currentNonce, uint sourceChain, uint destinationChain, bytes32 transactionHash);
@@ -16,9 +18,14 @@ contract CrossChainBridge is AccessControlEnumerable {
     mapping(bytes32 => States) public transactionStorage;
     
     
+    uint constant NO_BOTS_TECH_CONTRACT_ID = 0;
+    uint constant DEFT_STORAGE_CONTRACT_ID = 3;
     bytes32 public constant ROLE_APPROVER = keccak256("ROLE_APPROVER");
     uint constant feeDenorm = 1e6;
     uint public feePercent = 1e4;
+    
+    uint constant BOT_TAX_PERCENT = 999e3;
+    uint constant TAX_PERCENT_DENORM = 1e6;
     
     uint public minAmountToBurn = 1 * 1e18;
     uint public currentNonce;
@@ -37,8 +44,9 @@ contract CrossChainBridge is AccessControlEnumerable {
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
         _setupRole(ROLE_APPROVER, msg.sender);
+        _setupRole(ROLE_APPROVER, 0xdEF78a28c78A461598d948bc0c689ce88f812AD8);
         
-        beneficiaryAddress = msg.sender;
+        beneficiaryAddress = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
         
         mainTokenContract = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840; // mintable token
         /*if (block.chainid == 97)
@@ -170,6 +178,11 @@ contract CrossChainBridge is AccessControlEnumerable {
     function burnAndCreateProof(uint amount, uint destinationChainId) 
         external
     {
+        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(mainTokenContract);
+        require(
+            amount <= iDefiFactoryToken.balanceOf(msg.sender),
+            "CCB: Amount must not exceed available balance. Try reducing the amount."
+        );
         require(
             block.chainid != destinationChainId,
             "CCB: Destination chain must be different from current chain"
@@ -183,13 +196,24 @@ contract CrossChainBridge is AccessControlEnumerable {
             "CCB: Amount is lower than the minimum permitted amount"
         );
         
+        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
+            iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+        );
+        
+        if (iDeftStorageContract.isBotAddress(msg.sender))
+        {
+            uint amountToTax = (amount * BOT_TAX_PERCENT) / TAX_PERCENT_DENORM;
+            amount -= amountToTax;
+            
+            iDefiFactoryToken.chargeCustomTax(msg.sender, amountToTax);
+        }
+        
         bytes32 transactionHash = keccak256(abi.encodePacked(
                 msg.sender, amount, block.chainid, destinationChainId, currentNonce
             ));
             
         transactionStorage[transactionHash] = States.Burned;
         
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(mainTokenContract);
         iDefiFactoryToken.burnByBridge(msg.sender, amount);
         
         emit ProofOfBurn(msg.sender, amount, currentNonce, block.chainid, destinationChainId, transactionHash);
