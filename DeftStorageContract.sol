@@ -309,12 +309,12 @@ contract DeftStorageContract is AccessControlEnumerable {
     {
         for(uint i = 0; i<addrs.length; i++)
         {
-            if(!isBotStorage[addrs[i]])
-            {
-                isBotStorage[addrs[i]] = true;
-            } else
+            if(isBotStorage[addrs[i]])
             {
                 addrs[i] = address(0x0);
+            } else
+            {
+                isBotStorage[addrs[i]] = true;
             }
         }
         emit BulkMarkedAsBot(addrs);
