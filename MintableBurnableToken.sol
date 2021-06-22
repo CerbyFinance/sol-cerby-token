@@ -6,7 +6,7 @@ import "./openzeppelin/token/ERC20/ERC20.sol";
 contract MintableBurnableToken is ERC20 {
     
     constructor()
-        ERC20("Mintable", "MNT", 18) 
+        ERC20("Mintable2", "MNT2", 18) 
     {
         _mint(msg.sender, 1e18*1e9);
     }

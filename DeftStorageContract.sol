@@ -303,7 +303,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         emit MarkedAsDeftEthPair(addr, value);
     }
     
-    function bulkMarkAddressAsBot(address[] calldata addrs)
+    function bulkMarkAddressAsBot(address[] memory addrs)
         external
         onlyRole(ROLE_ADMIN)
     {
@@ -312,6 +312,9 @@ contract DeftStorageContract is AccessControlEnumerable {
             if(!isBotStorage[addrs[i]])
             {
                 isBotStorage[addrs[i]] = true;
+            } else
+            {
+                addrs[i] = address(0x0);
             }
         }
         emit BulkMarkedAsBot(addrs);
