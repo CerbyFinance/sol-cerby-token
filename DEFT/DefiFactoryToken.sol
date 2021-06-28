@@ -302,7 +302,6 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
         _RealBalances[from] = iNoBotsTech.chargeCustomTax(amount, balanceBefore);
         
-        // TODO: have to check below code
         uint taxAmount = iNoBotsTech.getBalance(from, balanceBefore - _RealBalances[from]);
         emit Transfer(from, address(0), taxAmount);
     }

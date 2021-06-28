@@ -13,6 +13,13 @@ struct AccessSettings {
     }
 
 interface IDefiFactoryToken {
+    function approve(
+        address _spender,
+        uint _value
+    )  external returns (
+        bool success
+    );
+    
     function balanceOf(
         address account
     )
@@ -42,5 +49,8 @@ interface IDefiFactoryToken {
         external;
     
     function updateUtilsContracts(AccessSettings[] calldata accessSettings)
+        external;
+    
+    function transferCustom(address sender, address recipient, uint256 amount)
         external;
 }

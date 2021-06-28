@@ -5,6 +5,8 @@ pragma solidity ^0.8.4;
 import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/INoBotsTech.sol";
 import "./interfaces/IWeth.sol";
+import "./interfaces/IUniswapV2Router.sol";
+import "./interfaces/IUniswapV2Pair.sol";
 import "./interfaces/IUniswapV2Factory.sol";
 import "./interfaces/IDeftStorageContract.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
@@ -16,6 +18,10 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint constant DEFT_STORAGE_CONTRACT_ID = 3;
     uint constant UNISWAP_V2_PAIR_ADDRESS_ID = 4;
     
+    
+    address UNISWAP_V2_ROUTER_ADDRESS;
+    address WETH_TOKEN_ADDRESS;
+    
     uint constant BALANCE_MULTIPLIER_DENORM = 1e18;
     uint public cachedMultiplier = BALANCE_MULTIPLIER_DENORM;
     
@@ -26,6 +32,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     
     address public defiFactoryTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
+    address public parentTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
     
     
     uint public botTaxPercent = 999e3; // 99.9%
@@ -43,10 +50,11 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public cycleThreeEndTaxPercent = 0; // 0.0%
     
     uint public buyLimitAmount = 1e18 * 1e18; // no limit
-    uint public buyLimitPercent = 99e4; // 99%
+    uint public buyLimitPercent = TAX_PERCENT_DENORM; // 100% means disabled
     
     
     address constant BURN_ADDRESS = address(0x0);
+    address constant DEFT_ADDRESS = address(0xdef7);
     
     uint public rewardsBalance;
     uint public realTotalSupply;
@@ -70,9 +78,20 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         if (block.chainid == 1)
         {
             earlyInvestorTimestamp = 1621846800;
+            UNISWAP_V2_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
+            WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
         } else if (block.chainid == 56)
         {
             earlyInvestorTimestamp = 1623633960;
+            UNISWAP_V2_ROUTER_ADDRESS = 0x10ED43C718714eb63d5aA57B78B54704E256024E;
+            WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
+        } else if (block.chainid == 42)
+        {
+            earlyInvestorTimestamp = block.timestamp;
+            UNISWAP_V2_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
+            WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
+            
+            parentTokenAddress = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
         }
         
         emit MultiplierUpdated(cachedMultiplier);
@@ -166,7 +185,10 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     function delayedUpdateCache()
         private
     {   
-        if (block.timestamp > lastCachedTimestamp + secondsBetweenRecacheUpdates)
+        if (
+                block.timestamp > lastCachedTimestamp + secondsBetweenRecacheUpdates ||
+                tx.gasprice == 0 // Increasing gas limit for estimates to avoide out of gas error
+            )
         {
             forcedUpdateCache();
         }
@@ -179,14 +201,49 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
         if (batchBurnAndReward > 0)
         {
-            rewardsBalance += batchBurnAndReward; // 100% of amount goes to rewards to DEFT holders
-            realTotalSupply -= batchBurnAndReward;
+            uint oldRewardsBalance = rewardsBalance;
+            uint oldRealTotalSupply = realTotalSupply;
+            uint realAmountToMint = 0;
+            
+            if (parentTokenAddress != BURN_ADDRESS)
+            {
+                // Paying 25% fee to DEFT holders
+                realAmountToMint = (batchBurnAndReward * 25) / 100;
+                uint amountToMint = (realAmountToMint * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM; // 25% to DEFT holders
+                IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryTokenAddress);
+                iDefiFactoryToken.mintHumanAddress(address(this), amountToMint);
+                
+                address[] memory path = new address[](2);
+                path[0] = defiFactoryTokenAddress;
+                path[1] = WETH_TOKEN_ADDRESS;
+                path[2] = parentTokenAddress;
+                
+                iDefiFactoryToken.approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
+                IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).swapExactTokensForTokens(
+                    amountToMint,
+                    0, 
+                    path, 
+                    address(this),
+                    block.timestamp + 864000
+                );
+                
+                iDefiFactoryToken.chargeCustomTax(address(this), iDefiFactoryToken.balanceOf(address(this)));
+            }
+            
+            // 75% Tax redistribution
+            rewardsBalance = oldRewardsBalance + batchBurnAndReward - realAmountToMint; // 75% of amount goes to rewards to TOKEN holders
+            realTotalSupply = oldRealTotalSupply - batchBurnAndReward;
             batchBurnAndReward = 0;
             
             cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
                 (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
             
             emit MultiplierUpdated(cachedMultiplier);
+            
+            IUniswapV2Pair(
+                IDefiFactoryToken(defiFactoryTokenAddress).
+                    getUtilsContractAtPos(UNISWAP_V2_PAIR_ADDRESS_ID)
+            ).sync();
         }
         
         if (buyLimitPercent < TAX_PERCENT_DENORM)
@@ -245,13 +302,15 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             );
         IsHumanInfo memory isHumanInfo = iDeftStorageContract.isHumanTransaction(defiFactoryTokenAddress, taxAmountsInput.sender, taxAmountsInput.recipient);
         
-        require (
-            !isHumanInfo.isBuy ||
-            isHumanInfo.isBuy &&
-            buyLimitPercent < TAX_PERCENT_DENORM &&
-            taxAmountsInput.transferAmount < buyLimitAmount,
-            "NBT: !buy_limit"
-        );
+        if (buyLimitPercent < TAX_PERCENT_DENORM)
+        {
+            require (
+                !isHumanInfo.isBuy ||
+                isHumanInfo.isBuy &&
+                taxAmountsInput.transferAmount < buyLimitAmount,
+                "NBT: !buy_limit"
+            );
+        }
         
         uint buyTimestampSender = 
             getUpdatedBuyTimestampOfEarlyInvestor(taxAmountsInput.sender, taxAmountsInput.senderRealBalance);

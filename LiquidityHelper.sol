@@ -27,13 +27,19 @@ contract LiquidityHelper {
     uint public percentForUniswap = 100;
     uint constant PERCENT_DENORM = 100;
     
-    //address public nativeToken = 0xc778417E063141139Fce010982780140Aa0cD5Ab; // ropsten
-    //address public nativeToken = 0xd0A1E359811322d97991E03f863a0C30C2cF029C; // kovan
-    address public nativeToken = 0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd; // bsc testnet
+    address public nativeToken;
     
     address constant BURN_ADDRESS = address(0x0);
     
     constructor() payable {
+        if (block.chainid == 42)
+        {
+            nativeToken = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
+        } else if (block.chainid == 97)
+        {
+            nativeToken = 0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd;
+        }
+        
         IWeth iWeth = IWeth(nativeToken);
         iWeth.deposit{ value: address(this).balance }();
     }

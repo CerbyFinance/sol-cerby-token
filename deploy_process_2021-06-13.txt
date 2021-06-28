@@ -6,7 +6,7 @@
 6. defiFactoryTokenContract.methods.updateUtilsContracts
 Eth:
 [
-    [true, true, false, false, false, "0x0C344a302fC79d687A3f09A0ca97c17F36dCC756"],
+    [true, true, false, false, true, "0x0C344a302fC79d687A3f09A0ca97c17F36dCC756"],
     [true, true, false, false, false, "0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9"],
     [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"],
     [false, false, false, false, false, "0x88713Fa9b96303e8BE7d4bdB92f09830421713c5"],
@@ -16,7 +16,7 @@ Eth:
 
 Bsc:
 [
-    [true, true, false, false, false, "0x0C344a302fC79d687A3f09A0ca97c17F36dCC756"],
+    [true, true, false, false, true, "0x0C344a302fC79d687A3f09A0ca97c17F36dCC756"],
     [true, true, false, false, false, "0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9"],
     [false, false, false, false, false, "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73"],
     [false, false, false, false, false, "0x88713Fa9b96303e8BE7d4bdB92f09830421713c5"],

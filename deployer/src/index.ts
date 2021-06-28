@@ -6,19 +6,21 @@ require("dotenv").config();
 
 const { PRIVATE_KEY } = process.env;
 const APPROVER_WALLET_ADDRESS = "0xa044c17fC7E0076C856eE3A8a71a527E5d11caDD";
-//const DEFT_STORAGE_ADDRESS = "0xA8B08BD4F7dECdD532c517a9793C050Ac7Debf00"; // Kovan
-const DEFT_STORAGE_ADDRESS = "0x23b14094ba274a210Fc0CE95054915C50d16a477"; // BSC Testnet
-//const DEFT_STORAGE_ADDRESS = "0xC238D647c258eb276c2e520134e2218012D8F05b"; // Kovan
-//const UNISWAP_V2_FACTORY = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"; // Uniswap
-const UNISWAP_V2_FACTORY = "0x6725F303b657a9451d8BA641348b6761A6CC7a17"; // BSC Testnet
-//const UNISWAP_V2_ROUTER = "0xD99D1c33F9fC3444f8101754aBC46c52416550D1"; // BSC Testnet
-//const NATIVE_TOKEN_ADDRESS = "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"; // BSC Testnet
-// https://swap.extraffix.com/#/swap
+//const DEFT_STORAGE_ADDRESS = "0x23b14094ba274a210Fc0CE95054915C50d16a477"; // BSC Testnet
+const DEFT_STORAGE_ADDRESS = "0x1700d9698bB791b4aBB795657DCC6509B7f14cC6"; // Kovan
+const UNISWAP_V2_FACTORY = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"; // Uniswap
+//const UNISWAP_V2_FACTORY = "0x6725F303b657a9451d8BA641348b6761A6CC7a17"; // BSC Testnet
+/*
+  For BSC Testnet swaps
+  const UNISWAP_V2_ROUTER = "0xD99D1c33F9fC3444f8101754aBC46c52416550D1"; // BSC Testnet
+  const NATIVE_TOKEN_ADDRESS = "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"; // BSC Testnet
+  https://swap.extraffix.com/#/swap
+*/
 
 const web3 = new Web3(
   new Web3.providers.HttpProvider(
-    "https://data-seed-prebsc-1-s1.binance.org:8545/",
-    //"https://kovan.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33"
+    //"https://data-seed-prebsc-1-s1.binance.org:8545/",
+    "https://kovan.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33"
     //"https://ropsten.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33"
   ),
 );

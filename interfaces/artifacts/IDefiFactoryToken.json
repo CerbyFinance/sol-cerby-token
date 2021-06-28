@@ -47,6 +47,7 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
+			"approve(address,uint256)": "095ea7b3",
 			"balanceOf(address)": "70a08231",
 			"burnByBridge(address,uint256)": "66830b21",
 			"burnHumanAddress(address,uint256)": "18a8ad87",
@@ -55,11 +56,36 @@
 			"mintByBridge(address,uint256)": "1f2eba24",
 			"mintHumanAddress(address,uint256)": "0bb9ff5d",
 			"publicForcedUpdateCacheMultiplier()": "e8ac6e4e",
+			"transferCustom(address,address,uint256)": "9cff2eba",
 			"transferFromTeamVestingContract(address,uint256)": "8cbfeb0c",
 			"updateUtilsContracts((bool,bool,bool,bool,bool,address)[])": "789210b3"
 		}
 	},
 	"abi": [
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "approve",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "success",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
 		{
 			"inputs": [
 				{
@@ -191,6 +217,29 @@
 		{
 			"inputs": [],
 			"name": "publicForcedUpdateCacheMultiplier",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "sender",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "recipient",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "amount",
+					"type": "uint256"
+				}
+			],
+			"name": "transferCustom",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"
