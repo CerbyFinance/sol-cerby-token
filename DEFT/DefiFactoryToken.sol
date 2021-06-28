@@ -49,8 +49,8 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
 
 
     constructor() 
-        ERC20Mod("Defi Factory Token", "DEFT") 
-        ERC20Permit("Defi Factory Token")
+        ERC20Mod("Meme Defi Factory Token", "memeDEFT") 
+        ERC20Permit("Meme Defi Factory Token")
     {
         _setupRole(ROLE_ADMIN, _msgSender());
         _setupRole(ROLE_MINTER, _msgSender());

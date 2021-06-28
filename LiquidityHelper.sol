@@ -50,27 +50,6 @@ contract LiquidityHelper {
         defiFactoryToken = newContract;
     }
     
-    function createPairOnUniswapV2OtherToken(address tokenAddr)
-        public
-    {
-        IUniswapV2Factory iUniswapV2Factory = IUniswapV2Factory(
-            IDefiFactoryToken(defiFactoryToken).
-                getUtilsContractAtPos(UNISWAP_V2_FACTORY_CONTRACT_ID)
-        );
-        wethAndTokenPairContract = iUniswapV2Factory.getPair(defiFactoryToken, tokenAddr);
-        if (wethAndTokenPairContract == BURN_ADDRESS)
-        {
-            wethAndTokenPairContract = iUniswapV2Factory.createPair(tokenAddr, defiFactoryToken);
-        }
-           
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
-        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-            iDefiFactoryToken.
-                getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
-        ); 
-        iDeftStorageContract.markPairAsDeftOtherPair(wethAndTokenPairContract, true);
-    }
-    
     function createPairOnUniswapV2()
         public
     {
@@ -95,7 +74,7 @@ contract LiquidityHelper {
         AccessSettings[] memory accessSettings = new AccessSettings[](5);
         accessSettings[0] =
             AccessSettings(
-                true, true, false, false, false,
+                true, true, false, false, true,
                 iDefiFactoryToken.getUtilsContractAtPos(0)
             );
         accessSettings[1] =

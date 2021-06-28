@@ -51,19 +51,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenAddr",
-						"type": "address"
-					}
-				],
-				"name": "createPairOnUniswapV2OtherToken",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "defiFactoryToken",
 				"outputs": [
@@ -170,11 +157,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/LiquidityHelper.sol": {
-			"keccak256": "0x4e32889413c5f624007abbcee02dfc57e7c3eae2ca98dd3a413590755d7f2f11",
+			"keccak256": "0x6119aa79ed68e22db6346314c497e50f831219a4529d39cf45a99a835c3b46c4",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://62f4fa90346081a867e6d58a740081140baf383b29d6f5907a20d84ace6592b0",
-				"dweb:/ipfs/QmQwKvEJKeztG5Ktatx4NM3XBz5LcaeCPi5Q4gyk3xtpFG"
+				"bzz-raw://d787a1b9ab635a6a24c607ced28d618651a05a80b83a2b8b30cfa9984340db95",
+				"dweb:/ipfs/QmZQxKja3HA3cT946YBaXTusZu1pKiqPK8RXpZBiuGhHPP"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

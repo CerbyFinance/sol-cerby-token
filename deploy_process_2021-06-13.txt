@@ -3,7 +3,8 @@
 3. deploy CrossChainBridge
 4. NoBotsTechV2 set totalSupply + rewardsBalance
 5. DeftStorageContract give admin rights to CrossChainBridge contract 
-6. defiFactoryTokenContract.methods.updateUtilsContracts
+6. DefiFactoryToken.grantRole(ROLE_BURNER, NoBotsTechV2NewMemeToken)
+7. defiFactoryTokenContract.methods.updateUtilsContracts
 Eth:
 [
     [true, true, false, false, true, "0x0C344a302fC79d687A3f09A0ca97c17F36dCC756"],

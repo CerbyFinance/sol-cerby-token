@@ -642,6 +642,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "lastPaidFeeTimestamp",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "parentTokenAddress",
 				"outputs": [
 					{
@@ -651,6 +664,13 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "payFeeToDeftHolders",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -759,6 +779,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "realAmountToPayDeftFee",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "realTotalSupply",
 				"outputs": [
 					{
@@ -857,11 +890,6 @@
 						"internalType": "uint256",
 						"name": "_botTaxPercent",
 						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_howManyFirstMinutesIncreasedTax",
-						"type": "uint256"
 					}
 				],
 				"name": "updateBotTaxSettings",
@@ -957,6 +985,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "_parentTokenAddress",
+						"type": "address"
+					}
+				],
+				"name": "updateParentTokenAddress",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "_secondsBetweenRecacheUpdates",
 						"type": "uint256"
@@ -1039,11 +1080,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0xc50a885b2c59ca7119e59152b78a77127a0a7d14fbdc262f05866f4d2c914f02",
+			"keccak256": "0x826597f1c92b1b7d535613b0d7a8c5afe6702e3b871d55780f7345a0375008c9",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://7d34b40d73c6707cab37c67e8b007dc816445b51f3353868f63bbeca58be6dc3",
-				"dweb:/ipfs/QmQTkAVmTsi5iWySSwa3fa1MJYmNtAsn1ZxpQrYLdN9H7X"
+				"bzz-raw://087f8c18ca0bdb0f998a7178502bfb5c36a7c27cea2590c324a761eed366ba4a",
+				"dweb:/ipfs/QmWpg7mveF271evMbm8zd7U4qXyXWocsVv7UCB441L1F8U"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
@@ -1084,14 +1125,6 @@
 			"urls": [
 				"bzz-raw://1d482dd676944dccf72dbc329a5849fa53ca2c312b0a60fd2243c7c85abb444a",
 				"dweb:/ipfs/QmNiwQrpRfxcY7sQDvb4dgq7pHPxxKAz9sVyFCiXkF1F96"
-			]
-		},
-		"sol-defifactory-token/interfaces/IUniswapV2Router.sol": {
-			"keccak256": "0x590b9262136f0a0af7a7ba0c2f823624e8b5a70461b91822c404ce9fb0ab69dd",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://27cdcc84b36b3ded02e4db7bd50c4e3ca417c57b0937b6a01a730aa405e4ed72",
-				"dweb:/ipfs/QmQSu4eRtu1YKaS5bVRNizUZn2RHnhqBqXbjM4pgoauN7U"
 			]
 		},
 		"sol-defifactory-token/interfaces/IWeth.sol": {

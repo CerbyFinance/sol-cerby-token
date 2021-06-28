@@ -8,6 +8,7 @@ const { PRIVATE_KEY } = process.env;
 const APPROVER_WALLET_ADDRESS = "0xa044c17fC7E0076C856eE3A8a71a527E5d11caDD";
 //const DEFT_STORAGE_ADDRESS = "0x23b14094ba274a210Fc0CE95054915C50d16a477"; // BSC Testnet
 const DEFT_STORAGE_ADDRESS = "0x1700d9698bB791b4aBB795657DCC6509B7f14cC6"; // Kovan
+const CROSS_CHAIN_BRIDGE_ADDRESS = "0x537b503609273524940F3DE4F8EC407cC7eE2459"; // Kovan
 const UNISWAP_V2_FACTORY = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"; // Uniswap
 //const UNISWAP_V2_FACTORY = "0x6725F303b657a9451d8BA641348b6761A6CC7a17"; // BSC Testnet
 /*
@@ -15,6 +16,15 @@ const UNISWAP_V2_FACTORY = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"; // Unis
   const UNISWAP_V2_ROUTER = "0xD99D1c33F9fC3444f8101754aBC46c52416550D1"; // BSC Testnet
   const NATIVE_TOKEN_ADDRESS = "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"; // BSC Testnet
   https://swap.extraffix.com/#/swap
+*/
+
+/* Kovan latest version
+current block: 25775315
+DeftStorageContract:  0x1700d9698bB791b4aBB795657DCC6509B7f14cC6
+DefiFactoryToken:  0xC0138126C0Bd394C547df17B649B81B543c76906
+NoBotsTechV2:  0x97b14887Fed9666FA283691530778Acee8DEAE74
+LiquidityHelper:  0x9c369c5124d1fF290d1c001Bc2570abc095EB25c
+CrossChainBridge:  0x537b503609273524940F3DE4F8EC407cC7eE2459
 */
 
 const web3 = new Web3(
@@ -43,7 +53,7 @@ async function deployContract(
       from: account,
       gas: 6e6,
       // @ts-ignore
-      gasPrice: 10e9+1,
+      gasPrice: 2e9+1,
       value,
     });
 
@@ -117,12 +127,18 @@ const start = async () => {
 
 
 
-  const crossChainBridgeContract = await deployContract(
+  /*const crossChainBridgeContract = await deployContract(
     "CrossChainBridge",
     crossChainBridgeJson,
     account,
     0,
-  );
+  );*/
+
+  const crossChainBridgeContract = new web3.eth.Contract(
+    // @ts-ignore
+    crossChainBridgeJson.abi,
+    CROSS_CHAIN_BRIDGE_ADDRESS,
+  )
   console.log("CrossChainBridge: ", crossChainBridgeContract.options.address);
 
 
@@ -137,7 +153,7 @@ const start = async () => {
     let funcName = 'stepDeftUtilsContracts';
     try {
       const transaction = await defiFactoryTokenContract.methods.updateUtilsContracts([
-        [true, true, false, false, false, noBotsTechContract.options.address],
+        [true, true, false, false, true, noBotsTechContract.options.address],
         [true, true, false, false, false, liquidityHelperContract.options.address],
         [false, false, false, false, false, UNISWAP_V2_FACTORY],
         [false, false, false, false, false, deftStorageContract.options.address],
@@ -148,7 +164,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 2e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -173,7 +189,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 2e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -200,7 +216,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 2e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -213,114 +229,17 @@ const start = async () => {
   }
   
   // prettier-ignore
-  async function stepDeftStorageBuyTimestamp1() {
-    let funcName = 'stepDeftStorageBuyTimestamp1';
+  async function stepDeftStorageMarkAsHuman() {
+    let funcName = 'stepDeftStorageMarkAsHuman';
     try {
-      let buyTimestamp = new Date() 
-      buyTimestamp.setDate(buyTimestamp.getDate() - 35)
-
-      const transaction = await deftStorageContract.methods.updateBuyTimestamp(
-        defiFactoryTokenContract.options.address,
-        "0x539FaA851D86781009EC30dF437D794bCd090c8F",
-        Math.floor(buyTimestamp.getTime() / 1000)
-      )
+      const transaction = await deftStorageContract.methods.markAddressAsHuman(noBotsTechContract.options.address, true)
 
       const signed  = await web3.eth.accounts.signTransaction({
         nonce   : nonce++,
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
-      }, _account.privateKey);
-
-      const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
-
-      console.log(funcName, ' ok')
-  
-    } catch (error) {
-      console.log(funcName, ' ', error.message);
-    }
-  }
-  
-  // prettier-ignore
-  async function stepDeftStorageBuyTimestamp2() {
-    let funcName = 'stepDeftStorageBuyTimestamp2';
-    try {
-      let buyTimestamp = new Date() 
-      buyTimestamp.setDate(buyTimestamp.getDate() - 140)
-
-      const transaction = await deftStorageContract.methods.updateBuyTimestamp(
-        defiFactoryTokenContract.options.address,
-        "0xAAa96EB7c2b9C22144f8B742a5Afdabab3b6781f",
-        Math.floor(buyTimestamp.getTime() / 1000)
-      )
-
-      const signed  = await web3.eth.accounts.signTransaction({
-        nonce   : nonce++,
-        to      : transaction._parent._address,
-        data    : transaction.encodeABI(),
-        gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
-      }, _account.privateKey);
-
-      const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
-
-      console.log(funcName, ' ok')
-  
-    } catch (error) {
-      console.log(funcName, ' ', error.message);
-    }
-  }
-  
-  // prettier-ignore
-  async function stepDeftStorageBuyTimestamp3() {
-    let funcName = 'stepDeftStorageBuyTimestamp3';
-    try {
-      let buyTimestamp = new Date() 
-      buyTimestamp.setDate(buyTimestamp.getDate() - 333)
-
-      const transaction = await deftStorageContract.methods.updateBuyTimestamp(
-        defiFactoryTokenContract.options.address,
-        "0xBbB6AE3051C5b486836a32193D8D191572C7cC1D",
-        Math.floor(buyTimestamp.getTime() / 1000)
-      )
-
-      const signed  = await web3.eth.accounts.signTransaction({
-        nonce   : nonce++,
-        to      : transaction._parent._address,
-        data    : transaction.encodeABI(),
-        gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
-      }, _account.privateKey);
-
-      const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
-
-      console.log(funcName, ' ok')
-  
-    } catch (error) {
-      console.log(funcName, ' ', error.message);
-    }
-  }
-  
-  // prettier-ignore
-  async function stepDeftStorageBuyTimestamp4() {
-    let funcName = 'stepDeftStorageBuyTimestamp4';
-    try {
-      let buyTimestamp = new Date() 
-      buyTimestamp.setDate(buyTimestamp.getDate() - 600)
-
-      const transaction = await deftStorageContract.methods.updateBuyTimestamp(
-        defiFactoryTokenContract.options.address,
-        "0x987De8C41CB9e166E51a4913e560c08c2760EfE5",
-        Math.floor(buyTimestamp.getTime() / 1000)
-      )
-
-      const signed  = await web3.eth.accounts.signTransaction({
-        nonce   : nonce++,
-        to      : transaction._parent._address,
-        data    : transaction.encodeABI(),
-        gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 2e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -345,7 +264,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 2e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -370,7 +289,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 2e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -393,7 +312,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 2e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -416,7 +335,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 2e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -440,7 +359,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 2e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -465,7 +384,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 2e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -486,13 +405,10 @@ const start = async () => {
     stepUpdateDeftContractInNoBots(),
     stepUpdateDeftContractInLiquidityHelper(),
     stepDeftRoles(),
-    stepDeftRoleMinter(),
+    stepDeftStorageMarkAsHuman(),
+    /*stepDeftRoleMinter(),
     stepDeftRoleBurner(),
-    stepUpdateDeftContractInCrossChainSwap(),
-    stepDeftStorageBuyTimestamp1(),
-    stepDeftStorageBuyTimestamp2(),
-    stepDeftStorageBuyTimestamp3(),
-    stepDeftStorageBuyTimestamp4(),
+    stepUpdateDeftContractInCrossChainSwap()*/
   ]);
 
   // prettier-ignore
@@ -506,7 +422,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 2e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -529,7 +445,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 10e9+1,
+        gasPrice: 2e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
