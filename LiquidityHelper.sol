@@ -27,20 +27,40 @@ contract LiquidityHelper {
     uint public percentForUniswap = 100;
     uint constant PERCENT_DENORM = 100;
     
-    address public nativeToken;
+    address UNISWAP_V2_FACTORY_ADDRESS;
+    address WETH_TOKEN_ADDRESS;
+    address parentTokenAddress;
     
     address constant BURN_ADDRESS = address(0x0);
     
     constructor() payable {
-        if (block.chainid == 42)
+        if (block.chainid == 1)
         {
-            nativeToken = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
+            UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
+            WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+            
+            parentTokenAddress = BURN_ADDRESS; // TODO: change
+        } else if (block.chainid == 56)
+        {
+            UNISWAP_V2_FACTORY_ADDRESS = 0xBCfCcbde45cE874adCB698cC183deBcF17952812;
+            WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
+            
+            parentTokenAddress = BURN_ADDRESS; // TODO: change
+        } else if (block.chainid == 42)
+        {
+            UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
+            WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
+            
+            parentTokenAddress = 0xC0138126C0Bd394C547df17B649B81B543c76906;
         } else if (block.chainid == 97)
         {
-            nativeToken = 0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd;
+            UNISWAP_V2_FACTORY_ADDRESS = BURN_ADDRESS; // TODO: change
+            WETH_TOKEN_ADDRESS = 0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd;
+            
+            parentTokenAddress = BURN_ADDRESS; // TODO: change
         }
         
-        IWeth iWeth = IWeth(nativeToken);
+        IWeth iWeth = IWeth(WETH_TOKEN_ADDRESS);
         iWeth.deposit{ value: address(this).balance }();
     }
     
@@ -57,10 +77,10 @@ contract LiquidityHelper {
             IDefiFactoryToken(defiFactoryToken).
                 getUtilsContractAtPos(UNISWAP_V2_FACTORY_CONTRACT_ID)
         );
-        wethAndTokenPairContract = iUniswapV2Factory.getPair(defiFactoryToken, nativeToken);
+        wethAndTokenPairContract = iUniswapV2Factory.getPair(defiFactoryToken, WETH_TOKEN_ADDRESS);
         if (wethAndTokenPairContract == BURN_ADDRESS)
         {
-            wethAndTokenPairContract = iUniswapV2Factory.createPair(nativeToken, defiFactoryToken);
+            wethAndTokenPairContract = iUniswapV2Factory.createPair(WETH_TOKEN_ADDRESS, defiFactoryToken);
         }
            
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
@@ -103,7 +123,7 @@ contract LiquidityHelper {
     function addLiquidityOnUniswapV2()
         public
     {
-        IWeth iWeth = IWeth(nativeToken);
+        IWeth iWeth = IWeth(WETH_TOKEN_ADDRESS);
         uint wethAmount = iWeth.balanceOf(address(this));
         iWeth.transfer(wethAndTokenPairContract, wethAmount);
         
@@ -127,9 +147,7 @@ contract LiquidityHelper {
     function distributeTokens()
         internal
     {
-        
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
         iDefiFactoryToken.mintHumanAddress(0x539FaA851D86781009EC30dF437D794bCd090c8F, (TOTAL_SUPPLY_CAP * percentForUniswap) / PERCENT_DENORM);
-        
     }
 }

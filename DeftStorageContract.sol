@@ -46,20 +46,6 @@ contract DeftStorageContract is AccessControlEnumerable {
     
     
     constructor() {
-        _setupRole(ROLE_ADMIN, _msgSender());
-        
-        markAddressAsExcludedFromBalance(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // Team Vesting Tokens
-        markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // Top1 listing bot
-        
-        _setupRole(ROLE_ADMIN, 0x0C344a302fC79d687A3f09A0ca97c17F36dCC756); // NoBotsTechV2
-        _setupRole(ROLE_ADMIN, 0x01e835C7A3f7B51243229DfB85A1EA08a5512499); // Cross Chain Bridge Contract
-        _setupRole(ROLE_ADMIN, 0xdEF78a28c78A461598d948bc0c689ce88f812AD8); // Cross Chain Bridge Wallet for blacklisting bots
-        
-        markAddressAsHuman(0xdEF78a28c78A461598d948bc0c689ce88f812AD8, true); // cross chain wallet
-        markAddressAsHuman(0x0C344a302fC79d687A3f09A0ca97c17F36dCC756, true); // NoBotsTechV2
-        
-        cooldownPeriodBuyStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = 1 minutes;
-        cooldownPeriodSellStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = 10 minutes;
         
         howManyLeadingZerosToBlock = 8;
         matchingAddressWithLeadingZeros[1] = address(0x0fffFFFFFfFfffFfFfFFffFffFffFFfffFfFFFFf);
@@ -75,9 +61,32 @@ contract DeftStorageContract is AccessControlEnumerable {
         matchingAddressWithLeadingZeros[11] = address(0x0000000000FFFFFffFfFffFfFFFfFFFfffffFffF);
         matchingAddressWithLeadingZeros[12] = address(0x00000000000FfFFFfffFFFfFffFFFFFFFfffFFFF);
         
+        
+        _setupRole(ROLE_ADMIN, _msgSender());
+        
+        markAddressAsExcludedFromBalance(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // Team Vesting Tokens
+        markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // Top1 listing bot
+        
+        _setupRole(ROLE_ADMIN, 0x0C344a302fC79d687A3f09A0ca97c17F36dCC756); // NoBotsTechV2
+        _setupRole(ROLE_ADMIN, 0x01e835C7A3f7B51243229DfB85A1EA08a5512499); // Cross Chain Bridge Contract
+        _setupRole(ROLE_ADMIN, 0xdEF78a28c78A461598d948bc0c689ce88f812AD8); // Cross Chain Bridge Wallet for blacklisting bots
+        
+        markAddressAsHuman(0xdEF78a28c78A461598d948bc0c689ce88f812AD8, true); // Cross Chain Bridge Wallet
+        markAddressAsHuman(0x0C344a302fC79d687A3f09A0ca97c17F36dCC756, true); // NoBotsTechV2
+        markAddressAsHuman(0xDef1C0ded9bec7F1a1670819833240f027b25EfF, true); // 0x: Exchange Proxy
+        markAddressAsHuman(0xdb38ae75c5F44276803345f7F02e95A0aeEF5944, true); // 1inch Router
+        markAddressAsHuman(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // TeamVestingContract
+        markAddressAsHuman(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, true); // DefiFactoryContract
+        
+        
+        cooldownPeriodBuyStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = 1 minutes;
+        cooldownPeriodSellStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = 10 minutes;
+        
+        
         if (block.chainid == 1)
         {
-            markAddressAsHuman(0x74de5d4FCbf63E00296fd95d33236B9794016631, true); // metamask router contract
+            markAddressAsHuman(0x881D40237659C251811CEC9c364ef91dC08D300C, true); // Metamask Swap Router
+            markAddressAsHuman(0x74de5d4FCbf63E00296fd95d33236B9794016631, true); // metamask router wallet
             markAddressAsHuman(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D, true); // uniswap router v2
             markPairAsDeftEthPair(0xFa6687922BF40FF51Bcd45F9FD339215a4869D82, true); // [deft, weth] uniswap pair
         } else if (block.chainid == 56)

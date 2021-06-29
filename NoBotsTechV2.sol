@@ -55,11 +55,11 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     
     address constant BURN_ADDRESS = address(0x0);
-    address constant DEFT_ADDRESS = address(0xdef7);
+    address constant DEFT_ADDRESS = 0xdEad000000000000000000000000000000000000;
     
     uint public rewardsBalance;
     uint public realTotalSupply;
-    uint public realAmountToPayDeftFee = 1e18*1e6; // TODO: remove on production
+    uint public realAmountToPayDeftFee;
     uint public earlyInvestorTimestamp;
     
     
@@ -254,7 +254,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         if  (
                 parentTokenAddress != BURN_ADDRESS &&
                 realAmountToPayDeftFee > 1 &&
-                block.timestamp > lastPaidFeeTimestamp + 0 minutes
+                block.timestamp > lastPaidFeeTimestamp + 60 minutes
             )
         {
             address sellPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(defiFactoryTokenAddress, WETH_TOKEN_ADDRESS);
@@ -308,14 +308,14 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             IUniswapV2Pair(buyPair).swap(
                 amount0Out, 
                 amount1Out, 
-                address(this), 
+                DEFT_ADDRESS, 
                 new bytes(0)
             );
             
-            uint amountToRedistribute = IDefiFactoryToken(parentTokenAddress).balanceOf(address(this));
+            uint amountToRedistribute = IDefiFactoryToken(parentTokenAddress).balanceOf(DEFT_ADDRESS);
             IDefiFactoryToken(parentTokenAddress).
                 burnHumanAddress(
-                        address(this), 
+                        DEFT_ADDRESS, 
                         amountToRedistribute
                     );
                     
@@ -387,7 +387,9 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         uint burnAndRewardRealAmount;
         if (isHumanInfo.isHumanTransaction)
         {
-            if (isHumanInfo.isSell)
+            if (
+                    isHumanInfo.isSell
+                )
             {
                 // human on main pair
                 // buys - 0% tax
@@ -430,12 +432,13 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         taxAmountsOutput.recipientGetsAmount = 
             taxAmountsInput.transferAmount - taxAmountsOutput.burnAndRewardAmount; // Actual amount recipient got and have to show in event
         
-        delayedUpdateCache();
         
-        if (!isHumanInfo.isSell && !isHumanInfo.isBuy) // TODO: test isBuy only
+        if (!isHumanInfo.isBuy && !isHumanInfo.isSell)
         { // isTransfer
             payFeeToDeftHolders();
         }
+        
+        delayedUpdateCache();
         
         return taxAmountsOutput;
     }
