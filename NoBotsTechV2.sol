@@ -41,7 +41,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint constant TAX_PERCENT_DENORM = 1e6;
     
     /* DEFT Taxes:
-    uint public frozenTotalSupply;
     uint public cycleOneStartTaxPercent = 15e4; // 15.0%
     uint public cycleOneEnds = 120 days;
     uint public cycleTwoStartTaxPercent = 8e4; // 8.0%
@@ -51,7 +50,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public cycleThreeEndTaxPercent = 0; // 0.0%*/
     
     /* Lambo Taxes */
-    uint public frozenTotalSupply = 2000 * 1e18;
     uint public cycleOneStartTaxPercent = 30e4; // 30.0%
     uint public cycleOneEnds = 7 days;
     uint public cycleTwoStartTaxPercent = 5e4; // 5.0%
@@ -62,6 +60,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     uint public buyLimitAmount = 1e18 * 1e18; // no limit
     uint public buyLimitPercent = TAX_PERCENT_DENORM; // 100% means disabled
+    
+    uint public MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE;
     
     
     address constant BURN_ADDRESS = address(0x0);
@@ -92,16 +92,19 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             earlyInvestorTimestamp = 1621846800;
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 50;
         } else if (block.chainid == 56)
         {
             earlyInvestorTimestamp = 1623633960;
             UNISWAP_V2_FACTORY_ADDRESS = 0xBCfCcbde45cE874adCB698cC183deBcF17952812;
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
+            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 400;
         } else if (block.chainid == 42)
         {
             earlyInvestorTimestamp = block.timestamp;
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
+            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 0;
             
             parentTokenAddress = 0xC0138126C0Bd394C547df17B649B81B543c76906;
         }
@@ -126,13 +129,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         buyLimitPercent = _buyLimitPercent;
-    }
-    
-    function updateFrozenTotalSupply(uint _frozenTotalSupply)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        frozenTotalSupply = _frozenTotalSupply;
     }
     
     function updateDefiFactoryTokenAddress(address _defiFactoryTokenAddress)
@@ -201,7 +197,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         view
         returns (uint)
     {
-        return (frozenTotalSupply > 0? frozenTotalSupply: realTotalSupply + rewardsBalance);
+        return realTotalSupply + rewardsBalance;
     }
     
     function getRewardsBalance()
@@ -241,7 +237,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             
             cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
                 (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
-                
                 
             amountToPayDeftFee += (realAmountToPayFeeThisTime * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
             
@@ -285,6 +280,10 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             address sellPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(defiFactoryTokenAddress, WETH_TOKEN_ADDRESS);
             address buyPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(WETH_TOKEN_ADDRESS, parentTokenAddress);
             
+            if (IWeth(WETH_TOKEN_ADDRESS).balanceOf(buyPair) <= MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE)
+            {
+                return;
+            }
             
             // Paying 25% fee to DEFT holders
             uint amountIn = amountToPayDeftFee;

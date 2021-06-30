@@ -144,6 +144,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "ROLE_ADMIN",
 				"outputs": [
 					{
@@ -377,19 +390,6 @@
 			{
 				"inputs": [],
 				"name": "earlyInvestorTimestamp",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "frozenTotalSupply",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -1024,19 +1024,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "_frozenTotalSupply",
-						"type": "uint256"
-					}
-				],
-				"name": "updateFrozenTotalSupply",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "address",
 						"name": "_parentTokenAddress",
 						"type": "address"
@@ -1132,11 +1119,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0xbcc6c910de291dc6a2c9c8556e32ae831709356b497971a53f3dc55325a9f94d",
+			"keccak256": "0xb292464d8f3c27e442aafe63218f4e871f298f6a25f14542fa0c7b271dd818d3",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://2812a989c73440df0a717495ae2bd78977e966068e1d0dfe6a83e30a99b0ce30",
-				"dweb:/ipfs/QmRAZ5CVYBsLFWAMxkoWMK3pvTHZ8tPQdJhZ2uyDtwt49P"
+				"bzz-raw://9d2d396301c559d789b5cd83f08789333d0d83ecf681b93e4a438dc38598c56f",
+				"dweb:/ipfs/QmWkGCM4P5LNHLk23w6APPbKo2HreWNsDDjieFsNXhqafE"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

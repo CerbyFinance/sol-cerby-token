@@ -145,12 +145,64 @@
 			},
 			{
 				"inputs": [],
+				"name": "UNISWAP_V2_FACTORY_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "UNISWAP_V2_ROUTER_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "USDT_TOKEN_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "WETH_DECIMALS",
 				"outputs": [
 					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "WETH_TOKEN_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -174,24 +226,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "normedDeftPriceInUSD",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "PRICE_DENORM",
-						"type": "uint256"
-					}
-				],
-				"name": "balancePairPrice",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -237,6 +271,26 @@
 				"name": "distributeTokens",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "emergencyRefund",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "fixedPriceInUsd",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -528,6 +582,13 @@
 			},
 			{
 				"inputs": [],
+				"name": "markGoalAsReached",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "maxWethCap",
 				"outputs": [
 					{
@@ -641,29 +702,21 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "uniswapFactory",
-				"outputs": [
+				"inputs": [
 					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "_maxWethCap",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_perWalletWethCap",
+						"type": "uint256"
 					}
 				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "uniswapRouter",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
+				"name": "updateCaps",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -681,33 +734,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "usdtToken",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "wethAndTokenPairContract",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "wethToken",
 				"outputs": [
 					{
 						"internalType": "address",
@@ -776,11 +803,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleLambo.sol": {
-			"keccak256": "0x8d75e37f816ec4da816410360f862ca2c32f0853cd4930c2fb76772070ab1291",
+			"keccak256": "0xd9bfa532989121d7285a3d3be04ec6dfe9236f64867c7937b069c46e3c5ca66d",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://d7f2b514ae468def7061a26813ba489b750d8fc1b15caf6a3119d649473205dc",
-				"dweb:/ipfs/Qma7WfL1fPaPK2DQxVirKTz8oDYLpNvxFgq4fXcMR9smm7"
+				"bzz-raw://a50a323d8b61b18a94e561a77b25066a1d7068f2e511a5b680c5ffca3c7d5218",
+				"dweb:/ipfs/Qmddr5Zt7Vzr7mA8qk5uu2WpwHiZRQzCqQWHvf7qM3hHM1"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
