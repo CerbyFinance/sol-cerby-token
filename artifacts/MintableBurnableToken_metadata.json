@@ -146,6 +146,24 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "burnHumanAddress",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "decimals",
 				"outputs": [
@@ -220,6 +238,24 @@
 					}
 				],
 				"name": "mintByBridge",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "mintHumanAddress",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -379,11 +415,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/MintableBurnableToken.sol": {
-			"keccak256": "0x85eb5aa2ac1b26380e02ea9fea67f64f9eb08f91bbbbbf64dde362b14a608bc2",
+			"keccak256": "0xf4047a7d1fbbc54902a83661c69b15134f80a701a3b635371c1082fd7d7397e2",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://84c5d7b24f7a9419b08f4de556629f3c23fb78a3c908f1462627ad0a28d137d9",
-				"dweb:/ipfs/Qmd71BybP3J86SDw4ZsiiorPNjjUEwDotkH933VHdGuGiJ"
+				"bzz-raw://cafbd995c614e168e8114301af9efdd425788f69fa74166af88ae1301738db33",
+				"dweb:/ipfs/QmYSoxo4Dz2usNejwwJoVCj4s7sNiWDvzuLr6mDd8RYgwL"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20.sol": {

@@ -171,6 +171,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "USDT_DECIMALS",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "USDT_TOKEN_ADDRESS",
 				"outputs": [
 					{
@@ -243,19 +256,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "defiFactoryToken",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -276,6 +276,19 @@
 			{
 				"inputs": [],
 				"name": "emergencyRefund",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					}
+				],
+				"name": "emergencyWithdrawToken",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -540,6 +553,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "lamboTokenAddress",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -733,6 +759,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_fixedPriceInUsd",
+						"type": "uint256"
+					}
+				],
+				"name": "updateFixedPriceInUsd",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "wethAndTokenPairContract",
 				"outputs": [
@@ -803,11 +842,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleLambo.sol": {
-			"keccak256": "0xd9bfa532989121d7285a3d3be04ec6dfe9236f64867c7937b069c46e3c5ca66d",
+			"keccak256": "0x9d486dba355da4c3fe3c82c9be60e6b01e04a16023df733dbf956fc19cef951a",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://a50a323d8b61b18a94e561a77b25066a1d7068f2e511a5b680c5ffca3c7d5218",
-				"dweb:/ipfs/Qmddr5Zt7Vzr7mA8qk5uu2WpwHiZRQzCqQWHvf7qM3hHM1"
+				"bzz-raw://55670c2054ea02e7afd123bddf44cff22cb5a8a4253dd0e9bef4da48ab5a41c4",
+				"dweb:/ipfs/QmPvcysTeAarKVvptCmXCfEHcLWo7wQFpw6q68rWRxyjze"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

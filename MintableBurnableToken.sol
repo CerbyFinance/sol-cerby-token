@@ -18,4 +18,12 @@ contract MintableBurnableToken is ERC20 {
     function burnByBridge(address from, uint amount) public {
         _burn(from, amount);
     }
+    
+    function mintHumanAddress(address to, uint amount) public {
+        _mint(to, amount);
+    }
+    
+    function burnHumanAddress(address from, uint amount) public {
+        _burn(from, amount);
+    }
 }

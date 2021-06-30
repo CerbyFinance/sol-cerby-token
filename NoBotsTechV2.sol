@@ -35,12 +35,12 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     address public defiFactoryTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
     address public parentTokenAddress;
     
-    uint public deftFeePercent = 25e4; // 25.0%
     uint public botTaxPercent = 999e3; // 99.9%
     uint public howManyFirstMinutesIncreasedTax = 0;
     uint constant TAX_PERCENT_DENORM = 1e6;
     
     /* DEFT Taxes:
+    uint public deftFeePercent; // 0.0%
     uint public cycleOneStartTaxPercent = 15e4; // 15.0%
     uint public cycleOneEnds = 120 days;
     uint public cycleTwoStartTaxPercent = 8e4; // 8.0%
@@ -50,6 +50,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public cycleThreeEndTaxPercent = 0; // 0.0%*/
     
     /* Lambo Taxes */
+    uint public deftFeePercent = 25e4; // 25.0%
     uint public cycleOneStartTaxPercent = 30e4; // 30.0%
     uint public cycleOneEnds = 7 days;
     uint public cycleTwoStartTaxPercent = 5e4; // 5.0%
@@ -238,7 +239,10 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
                 (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
                 
-            amountToPayDeftFee += (realAmountToPayFeeThisTime * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
+            if (realAmountToPayFeeThisTime > 0)
+            {
+                amountToPayDeftFee += (realAmountToPayFeeThisTime * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
+            }
             
             emit MultiplierUpdated(cachedMultiplier);
             

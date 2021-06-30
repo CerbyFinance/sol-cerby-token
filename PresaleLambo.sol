@@ -28,9 +28,9 @@ contract PresaleLambo is AccessControlEnumerable {
     uint public perWalletWethCap = 1e15;
     uint public amountOfDeftForInvestors;
     
-    uint public fixedPriceInUsd = 100e18; // 100 usd
+    uint public fixedPriceInUsd = 1e12; // 0.000001 usd
     
-    address public defiFactoryToken;
+    address public lamboTokenAddress;
     address public WETH_TOKEN_ADDRESS;
     address public USDT_TOKEN_ADDRESS;
     address public UNISWAP_V2_FACTORY_ADDRESS;
@@ -39,6 +39,7 @@ contract PresaleLambo is AccessControlEnumerable {
     
     uint public constant DEFT_DECIMALS = 18;
     uint public constant WETH_DECIMALS = 18;
+    uint public USDT_DECIMALS;
     
     address constant BURN_ADDRESS = address(0x0);
     
@@ -48,31 +49,34 @@ contract PresaleLambo is AccessControlEnumerable {
     constructor() payable {
         _setupRole(ROLE_ADMIN, _msgSender());
         
-        defiFactoryToken = 0x648C608D1cb7b425a89b64D70A646c2295687169;
+        lamboTokenAddress = 0x01202D4400f0F04631Dea6221cd789D49eBaC147;
         if (block.chainid == 1)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             UNISWAP_V2_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
             USDT_TOKEN_ADDRESS = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
             WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+            USDT_DECIMALS = 6;
         } else if (block.chainid == 56)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0xBCfCcbde45cE874adCB698cC183deBcF17952812;
             UNISWAP_V2_ROUTER_ADDRESS = 0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F;
             USDT_TOKEN_ADDRESS = 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56;
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
+            USDT_DECIMALS = 18;
         } else if (block.chainid == 42)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             UNISWAP_V2_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
             USDT_TOKEN_ADDRESS = 0x2F375e94FC336Cdec2Dc0cCB5277FE59CBf1cAe5;
             WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
+            USDT_DECIMALS = 6;
         }
         
         changeState(States.AcceptingPayments);
         
         addInvestor(_msgSender(), msg.value);
-        skipSteps();
+        //skipSteps();
     }
 
     receive() external payable {
@@ -80,6 +84,13 @@ contract PresaleLambo is AccessControlEnumerable {
         
         addInvestor(_msgSender(), msg.value);
         checkIfGoalIsReached();
+    }
+    
+    function updateFixedPriceInUsd(uint _fixedPriceInUsd)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        fixedPriceInUsd = _fixedPriceInUsd;
     }
     
     function updateCaps(uint _maxWethCap, uint _perWalletWethCap)
@@ -109,6 +120,15 @@ contract PresaleLambo is AccessControlEnumerable {
         changeState(States.AcceptingPayments);
     }
     
+    function emergencyWithdrawToken(address _token)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        IWeth iWeth = IWeth(_token);
+        uint amount = iWeth.balanceOf(address(this));
+        iWeth.transfer(msg.sender, amount);
+    }
+    
     function getTotalMintedSupply()
         external
         view
@@ -121,7 +141,7 @@ contract PresaleLambo is AccessControlEnumerable {
         external
         onlyRole(ROLE_ADMIN)
     {
-        defiFactoryToken = newContract;
+        lamboTokenAddress = newContract;
     }
     
     function changeState(States newState)
@@ -160,6 +180,8 @@ contract PresaleLambo is AccessControlEnumerable {
         checkIfGoalIsReached();
         prepareAddLiqudity();
         checkIfPairIsCreated();
+        addLiquidityOnUniswapV2();
+        distributeTokens(0,10);
     }
     
     function checkIfGoalIsReached()
@@ -202,9 +224,13 @@ contract PresaleLambo is AccessControlEnumerable {
         require(state == States.PreparedAddLiqudity, "P: Pair is already created!");
 
         wethAndTokenPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
-            getPair(defiFactoryToken, WETH_TOKEN_ADDRESS);
+            getPair(lamboTokenAddress, WETH_TOKEN_ADDRESS);
         
-        require(wethAndTokenPairContract != BURN_ADDRESS, "P: Pair does not exist!");
+        if (wethAndTokenPairContract == BURN_ADDRESS)
+        {
+            wethAndTokenPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
+                createPair(lamboTokenAddress, WETH_TOKEN_ADDRESS);
+        }
         
         changeState(States.CreatedPair);
     }
@@ -223,7 +249,7 @@ contract PresaleLambo is AccessControlEnumerable {
             (usdtBalance, wethBalance1) = (wethBalance1, usdtBalance);
         }
         
-        uint amountOfTokensForUniswap = (usdtBalance * totalInvestedWeth * 1e18) / (fixedPriceInUsd * wethBalance1);
+        uint amountOfTokensForUniswap = (usdtBalance * totalInvestedWeth * 10**(36-USDT_DECIMALS)) / (fixedPriceInUsd * wethBalance1);
         
         IWeth iWeth = IWeth(WETH_TOKEN_ADDRESS);
         uint wethAmount = iWeth.balanceOf(address(this));
@@ -231,19 +257,17 @@ contract PresaleLambo is AccessControlEnumerable {
         
         amountOfDeftForInvestors += amountOfTokensForUniswap;
         
-        //IDefiFactoryToken(defiFactoryToken).mintHumanAddress(wethAndTokenPairContract, amountOfTokensForUniswap);
-        IDefiFactoryToken(defiFactoryToken).mintByBridge(wethAndTokenPairContract, amountOfTokensForUniswap);
+        IDefiFactoryToken(lamboTokenAddress).mintHumanAddress(wethAndTokenPairContract, amountOfTokensForUniswap);
         
         IUniswapV2Pair iPair = IUniswapV2Pair(wethAndTokenPairContract);
         iPair.mint(_msgSender());
         
-        uint dustLeftInContract = IDefiFactoryToken(defiFactoryToken).balanceOf(address(this));
+        uint dustLeftInContract = IDefiFactoryToken(lamboTokenAddress).balanceOf(address(this));
         if (dustLeftInContract > 0)
         {
             amountOfDeftForInvestors -= dustLeftInContract;
-            IDefiFactoryToken(defiFactoryToken).
-                burnByBridge(address(this), dustLeftInContract);
-                //burnHumanAddress(address(this), dustLeftInContract);
+            IDefiFactoryToken(lamboTokenAddress).
+                burnHumanAddress(address(this), dustLeftInContract);
         }
     
         changeState(States.AddedLiquidity);
@@ -256,7 +280,7 @@ contract PresaleLambo is AccessControlEnumerable {
         require(state == States.AddedLiquidity, "P: Tokens have already been distributed!");
         
         uint leftAmount;
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
+        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(lamboTokenAddress);
         Investor[] memory investorsList = listInvestors(offset, limit);
         for(uint i = 0; i < investorsList.length; i++)
         {
@@ -266,8 +290,7 @@ contract PresaleLambo is AccessControlEnumerable {
                 
             if (leftAmount > investorsList[i].sentValue)
             {
-                iDefiFactoryToken.mintByBridge(
-                //iDefiFactoryToken.mintHumanAddress(
+                iDefiFactoryToken.mintHumanAddress(
                     investorsList[i].addr, 
                     leftAmount
                 );
