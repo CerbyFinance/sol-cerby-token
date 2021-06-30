@@ -35,20 +35,11 @@ contract DeftStorageContract is AccessControlEnumerable {
     
     
     constructor() {
-        
         howManyLeadingZerosToBlock = 8;
-        matchingAddressWithLeadingZeros[1] = address(0x0fffFFFFFfFfffFfFfFFffFffFffFFfffFfFFFFf);
-        matchingAddressWithLeadingZeros[2] = address(0x00FfFFfFFFfFFFFFfFfFfffFFFfffFfFffFfFFFf);
-        matchingAddressWithLeadingZeros[3] = address(0x000FfFfffFFFFfFFfFFFFFfFFFfFffffFFffFfFF);
-        matchingAddressWithLeadingZeros[4] = address(0x0000FfffFfFffFFfFffFfffFFfFFFffFFFffFfFf);
         matchingAddressWithLeadingZeros[5] = address(0x00000ffffFFffFFffffFfFffFFFfFFfFFffFffff);
         matchingAddressWithLeadingZeros[6] = address(0x000000FFfffFFFFFFffFffffFffFfFfFFFFfFFfF);
         matchingAddressWithLeadingZeros[7] = address(0x0000000FFfFFfffFffFfFffFFFfffffFffFFffFf);
         matchingAddressWithLeadingZeros[8] = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
-        matchingAddressWithLeadingZeros[9] = address(0x000000000FfFFfFfFFFFFFfffFfFfFFffffFfFfF);
-        matchingAddressWithLeadingZeros[10] = address(0x000000000FfFFfFfFFFFFFfffFfFfFFffffFfFfF);
-        matchingAddressWithLeadingZeros[11] = address(0x0000000000FFFFFffFfFffFfFFFfFFFfffffFffF);
-        matchingAddressWithLeadingZeros[12] = address(0x00000000000FfFFFfffFFFfFffFFFFFFFfffFFFF);
         
         
         _setupRole(ROLE_ADMIN, _msgSender());
@@ -64,7 +55,6 @@ contract DeftStorageContract is AccessControlEnumerable {
         markAddressAsHuman(0x0C344a302fC79d687A3f09A0ca97c17F36dCC756, true); // NoBotsTechV2
         markAddressAsHuman(0xDef1C0ded9bec7F1a1670819833240f027b25EfF, true); // 0x: Exchange Proxy
         markAddressAsHuman(0x11111112542D85B3EF69AE05771c2dCCff4fAa26, true); // 1inch Router
-        markAddressAsHuman(0xdb38ae75c5F44276803345f7F02e95A0aeEF5944, true); // 1inch Router
         markAddressAsHuman(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // TeamVestingContract
         markAddressAsHuman(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, true); // DefiFactoryContract
         
