@@ -35,20 +35,30 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     address public defiFactoryTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
     address public parentTokenAddress;
     
-    
+    uint public deftFeePercent = 25e4; // 25.0%
     uint public botTaxPercent = 999e3; // 99.9%
     uint public howManyFirstMinutesIncreasedTax = 0;
     uint constant TAX_PERCENT_DENORM = 1e6;
     
+    /* DEFT Taxes:
+    uint public frozenTotalSupply;
     uint public cycleOneStartTaxPercent = 15e4; // 15.0%
     uint public cycleOneEnds = 120 days;
-    
     uint public cycleTwoStartTaxPercent = 8e4; // 8.0%
     uint public cycleTwoEnds = 240 days;
-    
     uint public cycleThreeStartTaxPercent = 3e4; // 3.0%
     uint public cycleThreeEnds = 360 days;
-    uint public cycleThreeEndTaxPercent = 0; // 0.0%
+    uint public cycleThreeEndTaxPercent = 0; // 0.0%*/
+    
+    /* Lambo Taxes */
+    uint public frozenTotalSupply = 2000 * 1e18;
+    uint public cycleOneStartTaxPercent = 30e4; // 30.0%
+    uint public cycleOneEnds = 7 days;
+    uint public cycleTwoStartTaxPercent = 5e4; // 5.0%
+    uint public cycleTwoEnds = 7 days;
+    uint public cycleThreeStartTaxPercent = 5e4; // 5.0%
+    uint public cycleThreeEnds = 7 days;
+    uint public cycleThreeEndTaxPercent = 5e4; // 5.0%
     
     uint public buyLimitAmount = 1e18 * 1e18; // no limit
     uint public buyLimitPercent = TAX_PERCENT_DENORM; // 100% means disabled
@@ -59,7 +69,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     uint public rewardsBalance;
     uint public realTotalSupply;
-    uint public realAmountToPayDeftFee;
+    uint public amountToPayDeftFee;
     uint public earlyInvestorTimestamp;
     
     
@@ -110,13 +120,19 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                 (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
         emit MultiplierUpdated(cachedMultiplier);
     }
-        
     
     function updateBuyLimitPercent(uint _buyLimitPercent)
         external
         onlyRole(ROLE_ADMIN)
     {
         buyLimitPercent = _buyLimitPercent;
+    }
+    
+    function updateFrozenTotalSupply(uint _frozenTotalSupply)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        frozenTotalSupply = _frozenTotalSupply;
     }
     
     function updateDefiFactoryTokenAddress(address _defiFactoryTokenAddress)
@@ -145,6 +161,13 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         botTaxPercent = _botTaxPercent;
+    }
+    
+    function updateDeftFeeTaxSettings(uint _deftFeePercent)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        deftFeePercent = _deftFeePercent;
     }
     
     function updateCycleOneSettings(uint _cycleOneStartTaxPercent, uint _cycleOneEnds)
@@ -178,7 +201,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         view
         returns (uint)
     {
-        return realTotalSupply + rewardsBalance;
+        return (frozenTotalSupply > 0? frozenTotalSupply: realTotalSupply + rewardsBalance);
     }
     
     function getRewardsBalance()
@@ -209,8 +232,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
         if (batchBurnAndReward > 0)
         {
-            uint realAmountToPayFeeThisTime = (batchBurnAndReward * 25e4) / TAX_PERCENT_DENORM; // 25% of tax goes to DEFT
-            realAmountToPayDeftFee += realAmountToPayFeeThisTime;
+            uint realAmountToPayFeeThisTime = (batchBurnAndReward * deftFeePercent) / TAX_PERCENT_DENORM; // 25% of tax goes to DEFT
             
             // 75% Tax redistribution
             rewardsBalance += batchBurnAndReward - realAmountToPayFeeThisTime; // 75% of amount goes to rewards to TOKEN holders
@@ -219,6 +241,9 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             
             cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
                 (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
+                
+                
+            amountToPayDeftFee += (realAmountToPayFeeThisTime * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
             
             emit MultiplierUpdated(cachedMultiplier);
             
@@ -253,19 +278,20 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     {
         if  (
                 parentTokenAddress != BURN_ADDRESS &&
-                realAmountToPayDeftFee > 1 &&
+                amountToPayDeftFee > 1 &&
                 block.timestamp > lastPaidFeeTimestamp + 60 minutes
             )
         {
             address sellPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(defiFactoryTokenAddress, WETH_TOKEN_ADDRESS);
             address buyPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(WETH_TOKEN_ADDRESS, parentTokenAddress);
             
+            
             // Paying 25% fee to DEFT holders
-            uint amountIn = (realAmountToPayDeftFee * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM; // 25% to DEFT holders
+            uint amountIn = amountToPayDeftFee;
             IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryTokenAddress);
             iDefiFactoryToken.mintHumanAddress(sellPair, amountIn);
             
-            realAmountToPayDeftFee = 0;
+            amountToPayDeftFee = 0;
             
             // Sell Lambo
             (uint reserveIn, uint reserveOut,) = IUniswapV2Pair(sellPair).getReserves();
@@ -275,9 +301,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             }
             
             uint amountInWithFee = amountIn * 997;
-            uint numerator = amountInWithFee * reserveOut;
-            uint denominator = reserveIn * 1000 + amountInWithFee;
-            uint amountOut = numerator / denominator;
+            uint amountOut = (amountInWithFee * reserveOut) / (reserveIn * 1000 + amountInWithFee);
             
             (uint amount0Out, uint amount1Out) = defiFactoryTokenAddress < WETH_TOKEN_ADDRESS? 
                 (uint(0), amountOut): (amountOut, uint(0));
@@ -298,9 +322,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             }
             
             amountInWithFee = amountOut * 997;
-            numerator = amountInWithFee * reserveOut;
-            denominator = reserveIn * 1000 + amountInWithFee;
-            amountOut = numerator / denominator;
+            amountOut = (amountInWithFee * reserveOut) / (reserveIn * 1000 + amountInWithFee);
             
             (amount0Out, amount1Out) = WETH_TOKEN_ADDRESS < parentTokenAddress?
                 (uint(0), amountOut): (amountOut, uint(0));
@@ -437,7 +459,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         { // isTransfer
             payFeeToDeftHolders();
         }
-        
         delayedUpdateCache();
         
         return taxAmountsOutput;

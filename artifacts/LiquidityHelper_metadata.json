@@ -12,19 +12,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "ROLE_DEX",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "TOTAL_SUPPLY_CAP",
 				"outputs": [
 					{
@@ -144,11 +131,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/LiquidityHelper.sol": {
-			"keccak256": "0xcf48955ccf8e51cf0e2790e32c20396e34bac0d5c7618ffc06c0c05203991f95",
+			"keccak256": "0xef40d3b80ace21a8461135fd5a099fd50d7abf93c97d9a6e5cf33ac327402411",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://27899870b72bcfe83743130eabdb0d8f4a05a6a1d1c42c0e97f55d85bcfa6229",
-				"dweb:/ipfs/QmekbkuiFerA7mfFf2ormJprxq3bGFjStHwfzM7i3yKses"
+				"bzz-raw://9f0a064dc0e8ee92072e8596b74d79b9b349c9d5590ca9c0d31036998c0144aa",
+				"dweb:/ipfs/QmcgxSBd8takVU19eaf7GXhKn4YKY5vB3rkLZrSGtT22Rp"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

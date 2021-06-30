@@ -210,135 +210,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					}
-				],
-				"name": "deleteAddress",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					}
-				],
-				"name": "deleteBool",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					}
-				],
-				"name": "deleteBytes",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					}
-				],
-				"name": "deleteBytes32",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					}
-				],
-				"name": "deleteInt",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					}
-				],
-				"name": "deleteString",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					}
-				],
-				"name": "deleteUint",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					}
-				],
-				"name": "getAddress",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					}
-				],
-				"name": "getBool",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "address",
 						"name": "tokenAddr",
 						"type": "address"
@@ -355,44 +226,6 @@
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					}
-				],
-				"name": "getBytes",
-				"outputs": [
-					{
-						"internalType": "bytes",
-						"name": "",
-						"type": "bytes"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					}
-				],
-				"name": "getBytes32",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
 					}
 				],
 				"stateMutability": "view",
@@ -430,25 +263,6 @@
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					}
-				],
-				"name": "getInt",
-				"outputs": [
-					{
-						"internalType": "int256",
-						"name": "",
-						"type": "int256"
 					}
 				],
 				"stateMutability": "view",
@@ -554,44 +368,6 @@
 					}
 				],
 				"name": "getSentAtTimestamp",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					}
-				],
-				"name": "getString",
-				"outputs": [
-					{
-						"internalType": "string",
-						"name": "",
-						"type": "string"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					}
-				],
-				"name": "getUint",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -775,6 +551,25 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					}
+				],
+				"name": "isMarkedAsBotStorageBulk",
+				"outputs": [
+					{
+						"internalType": "address[]",
+						"name": "",
+						"type": "address[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "addr",
 						"type": "address"
@@ -805,6 +600,25 @@
 						"internalType": "bool",
 						"name": "",
 						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					}
+				],
+				"name": "isMarkedAsHumanStorageBulk",
+				"outputs": [
+					{
+						"internalType": "address[]",
+						"name": "",
+						"type": "address[]"
 					}
 				],
 				"stateMutability": "view",
@@ -929,132 +743,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "address",
-						"name": "_value",
-						"type": "address"
-					}
-				],
-				"name": "setAddress",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "bool",
-						"name": "_value",
-						"type": "bool"
-					}
-				],
-				"name": "setBool",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "bytes",
-						"name": "_value",
-						"type": "bytes"
-					}
-				],
-				"name": "setBytes",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "bytes32",
-						"name": "_value",
-						"type": "bytes32"
-					}
-				],
-				"name": "setBytes32",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "int256",
-						"name": "_value",
-						"type": "int256"
-					}
-				],
-				"name": "setInt",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "string",
-						"name": "_value",
-						"type": "string"
-					}
-				],
-				"name": "setString",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "_key",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_value",
-						"type": "uint256"
-					}
-				],
-				"name": "setUint",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "bytes4",
 						"name": "interfaceId",
 						"type": "bytes4"
@@ -1157,66 +845,6 @@
 		"devdoc": {
 			"kind": "dev",
 			"methods": {
-				"deleteAddress(bytes32)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"deleteBool(bytes32)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"deleteBytes(bytes32)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"deleteBytes32(bytes32)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"deleteInt(bytes32)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"deleteString(bytes32)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"deleteUint(bytes32)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"getAddress(bytes32)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"getBool(bytes32)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"getBytes(bytes32)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"getBytes32(bytes32)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"getInt(bytes32)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
 				"getRoleAdmin(bytes32)": {
 					"details": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}."
 				},
@@ -1225,16 +853,6 @@
 				},
 				"getRoleMemberCount(bytes32)": {
 					"details": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role."
-				},
-				"getString(bytes32)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"getUint(bytes32)": {
-					"params": {
-						"_key": "The key for the record"
-					}
 				},
 				"grantRole(bytes32,address)": {
 					"details": "Overload {grantRole} to track enumerable memberships"
@@ -1247,41 +865,6 @@
 				},
 				"revokeRole(bytes32,address)": {
 					"details": "Overload {revokeRole} to track enumerable memberships"
-				},
-				"setAddress(bytes32,address)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"setBool(bytes32,bool)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"setBytes(bytes32,bytes)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"setBytes32(bytes32,bytes32)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"setInt(bytes32,int256)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"setString(bytes32,string)": {
-					"params": {
-						"_key": "The key for the record"
-					}
-				},
-				"setUint(bytes32,uint256)": {
-					"params": {
-						"_key": "The key for the record"
-					}
 				},
 				"supportsInterface(bytes4)": {
 					"details": "See {IERC165-supportsInterface}."
@@ -1312,11 +895,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x3f824a67fafd777307263c1e678bb1d504ef80cc9d65c11266fd0568fbdc70f0",
+			"keccak256": "0x153ae727b0e858719019f7087667dbbb216f37cbc533117ba53bcb2fa3ff11ac",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://7c08dc3972e836557ef582259bc9a7f478ab11297b586cf66064c07df8720b0c",
-				"dweb:/ipfs/QmQgCrNV7SRcEatgS4kcLkn13eqpULWLk8GDjkAoi5XrrT"
+				"bzz-raw://bed484a1c1b1c0681025236f8681d8931a6bfd7b9cc94eaeaa23b4f99455cd8a",
+				"dweb:/ipfs/QmbVG1CE7fWANwSZgAgAanB8Kk44ENKQunG6G4AHHvCWKH"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {

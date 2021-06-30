@@ -109,7 +109,7 @@
 				"inputs": [
 					{
 						"indexed": false,
-						"internalType": "enum PresaleBSC.States",
+						"internalType": "enum PresaleLambo.States",
 						"name": "newState",
 						"type": "uint8"
 					}
@@ -267,7 +267,7 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct PresaleBSC.Investor",
+						"internalType": "struct PresaleLambo.Investor",
 						"name": "",
 						"type": "tuple"
 					}
@@ -303,7 +303,7 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct PresaleBSC.Investor",
+						"internalType": "struct PresaleLambo.Investor",
 						"name": "",
 						"type": "tuple"
 					}
@@ -518,7 +518,7 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct PresaleBSC.Investor[]",
+						"internalType": "struct PresaleLambo.Investor[]",
 						"name": "",
 						"type": "tuple[]"
 					}
@@ -529,6 +529,19 @@
 			{
 				"inputs": [],
 				"name": "maxWethCap",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "perWalletWethCap",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -587,7 +600,7 @@
 				"name": "state",
 				"outputs": [
 					{
-						"internalType": "enum PresaleBSC.States",
+						"internalType": "enum PresaleLambo.States",
 						"name": "",
 						"type": "uint8"
 					}
@@ -748,7 +761,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/PresaleLambo.sol": "PresaleBSC"
+			"sol-defifactory-token/PresaleLambo.sol": "PresaleLambo"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -763,11 +776,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleLambo.sol": {
-			"keccak256": "0x448820291aaf2ee897b8a85ad401e317f7eafa431f8f5a1d1096533ac686fd62",
+			"keccak256": "0x8d75e37f816ec4da816410360f862ca2c32f0853cd4930c2fb76772070ab1291",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://c758d9c923f1170abc27152349d8c18f70488d042d38041d449ac4aeb14c7f17",
-				"dweb:/ipfs/QmeHHG2fKb4rhQy43ga2D9pHsSHYJ36KprN5fqu693pwZ6"
+				"bzz-raw://d7f2b514ae468def7061a26813ba489b750d8fc1b15caf6a3119d649473205dc",
+				"dweb:/ipfs/Qma7WfL1fPaPK2DQxVirKTz8oDYLpNvxFgq4fXcMR9smm7"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

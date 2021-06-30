@@ -157,6 +157,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "amountToPayDeftFee",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "batchBurnAndReward",
 				"outputs": [
 					{
@@ -350,7 +363,33 @@
 			},
 			{
 				"inputs": [],
+				"name": "deftFeePercent",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "earlyInvestorTimestamp",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "frozenTotalSupply",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -779,19 +818,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "realAmountToPayDeftFee",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "realTotalSupply",
 				"outputs": [
 					{
@@ -985,6 +1011,32 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "_deftFeePercent",
+						"type": "uint256"
+					}
+				],
+				"name": "updateDeftFeeTaxSettings",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_frozenTotalSupply",
+						"type": "uint256"
+					}
+				],
+				"name": "updateFrozenTotalSupply",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "_parentTokenAddress",
 						"type": "address"
@@ -1080,11 +1132,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x2be56aa705835ac21b1c272326d30078ac8df4626ec465fdecad76b7bf9ebd01",
+			"keccak256": "0xbcc6c910de291dc6a2c9c8556e32ae831709356b497971a53f3dc55325a9f94d",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://17ab0b6fe594e2237a9dffb4f6f7e62899ba1cd50e05a99104cce005d68d5133",
-				"dweb:/ipfs/QmVFRguVWbLyGYfxjHak95k3wFwpt2GqKUU3aJ8ki85Ydd"
+				"bzz-raw://2812a989c73440df0a717495ae2bd78977e966068e1d0dfe6a83e30a99b0ce30",
+				"dweb:/ipfs/QmRAZ5CVYBsLFWAMxkoWMK3pvTHZ8tPQdJhZ2uyDtwt49P"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
