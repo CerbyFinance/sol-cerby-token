@@ -233,7 +233,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             
             // 75% Tax redistribution
             rewardsBalance += batchBurnAndReward - realAmountToPayFeeThisTime; // 75% of amount goes to rewards to TOKEN holders
-            realTotalSupply -= batchBurnAndReward;
+            realTotalSupply -= batchBurnAndReward + realAmountToPayFeeThisTime;
             batchBurnAndReward = 0;
             
             cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 

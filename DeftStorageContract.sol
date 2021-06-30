@@ -24,6 +24,8 @@ contract DeftStorageContract is AccessControlEnumerable {
     mapping(uint => address) private matchingAddressWithLeadingZeros;
     
     address constant BURN_ADDRESS = address(0x0);
+    uint constant DEFAULT_BUY_COOLDOWN = 1 minutes;
+    uint constant DEFAULT_SELL_COOLDOWN = 10 minutes;
     
     event BulkMarkedAsBot(address[] addrs);
     event MarkedAsBot(address addr);
@@ -41,15 +43,13 @@ contract DeftStorageContract is AccessControlEnumerable {
         matchingAddressWithLeadingZeros[7] = address(0x0000000FFfFFfffFffFfFffFFFfffffFffFFffFf);
         matchingAddressWithLeadingZeros[8] = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
         
-        
         _setupRole(ROLE_ADMIN, _msgSender());
-        
-        markAddressAsExcludedFromBalance(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // Team Vesting Tokens
-        markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // Top1 listing bot
-        
         _setupRole(ROLE_ADMIN, 0x0C344a302fC79d687A3f09A0ca97c17F36dCC756); // NoBotsTechV2
         _setupRole(ROLE_ADMIN, 0x01e835C7A3f7B51243229DfB85A1EA08a5512499); // Cross Chain Bridge Contract
         _setupRole(ROLE_ADMIN, 0xdEF78a28c78A461598d948bc0c689ce88f812AD8); // Cross Chain Bridge Wallet for blacklisting bots
+        
+        markAddressAsExcludedFromBalance(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // Team Vesting Tokens
+        markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // Top1 listing bot
         
         markAddressAsHuman(0xdEF78a28c78A461598d948bc0c689ce88f812AD8, true); // Cross Chain Bridge Wallet
         markAddressAsHuman(0x0C344a302fC79d687A3f09A0ca97c17F36dCC756, true); // NoBotsTechV2
@@ -59,9 +59,8 @@ contract DeftStorageContract is AccessControlEnumerable {
         markAddressAsHuman(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, true); // DefiFactoryContract
         
         
-        cooldownPeriodBuyStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = 1 minutes;
-        cooldownPeriodSellStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = 10 minutes;
-        
+        cooldownPeriodBuyStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = DEFAULT_BUY_COOLDOWN;
+        cooldownPeriodSellStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = DEFAULT_SELL_COOLDOWN;
         
         if (block.chainid == 1)
         {
@@ -159,17 +158,19 @@ contract DeftStorageContract is AccessControlEnumerable {
         output.isSell = isDeftEthPair[recipient];
         output.isBuy = isDeftEthPair[sender];
         
+        uint defaultBuyCooldown = cooldownPeriodBuyStorage[tokenAddr] > 0? cooldownPeriodBuyStorage[tokenAddr]: DEFAULT_BUY_COOLDOWN;
+        uint defaultSellCooldown = cooldownPeriodSellStorage[tokenAddr] > 0? cooldownPeriodSellStorage[tokenAddr]: DEFAULT_SELL_COOLDOWN;
         bool isBot;
         bool isFrontrunBuyBot = 
             (
-                sentAtTimestamp[tokenAddr][recipient] + cooldownPeriodBuyStorage[tokenAddr] >= block.timestamp ||
+                sentAtTimestamp[tokenAddr][recipient] + defaultBuyCooldown >= block.timestamp ||
                 hasLeadingZerosInAddress(recipient)
             ) && 
             !isHumanStorage[recipient] &&
             !isDeftEthPair[recipient];
         bool isFrontrunSellBot =
             (
-                receivedAtTimestamp[tokenAddr][sender] + cooldownPeriodSellStorage[tokenAddr] >= block.timestamp ||
+                receivedAtTimestamp[tokenAddr][sender] + defaultSellCooldown >= block.timestamp ||
                 hasLeadingZerosInAddress(sender)
             ) && 
             !isHumanStorage[sender] &&
