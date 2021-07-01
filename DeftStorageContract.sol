@@ -27,13 +27,13 @@ contract DeftStorageContract is AccessControlEnumerable {
     uint constant DEFAULT_BUY_COOLDOWN = 1 minutes;
     uint constant DEFAULT_SELL_COOLDOWN = 10 minutes;
     
-    event BulkMarkedAsBot(address[] addrs);
+    /*event BulkMarkedAsBot(address[] addrs);
     event MarkedAsBot(address addr);
     event MarkedAsNotBot(address addr);
     
     event MarkedAsExcludedFromBalance(address addr, bool value);
     event MarkedAsHuman(address addr, bool value);
-    event MarkedAsDeftEthPair(address addr, bool value);
+    event MarkedAsDeftEthPair(address addr, bool value);*/
     
     
     constructor() {
@@ -307,7 +307,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         isExcludedFromBalanceStorage[addr] = value;
-        emit MarkedAsExcludedFromBalance(addr, value);
+        //emit MarkedAsExcludedFromBalance(addr, value);
     }
     
     function markAddressAsHuman(address addr, bool value)
@@ -315,7 +315,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         isHumanStorage[addr] = value;
-        emit MarkedAsHuman(addr, value);
+        //emit MarkedAsHuman(addr, value);
     }
     
     function markPairAsDeftEthPair(address addr, bool value)
@@ -323,7 +323,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         isDeftEthPair[addr] = value;
-        emit MarkedAsDeftEthPair(addr, value);
+        //emit MarkedAsDeftEthPair(addr, value);
     }
     
     function bulkMarkAddressAsBot(address[] memory addrs)
@@ -332,15 +332,12 @@ contract DeftStorageContract is AccessControlEnumerable {
     {
         for(uint i = 0; i<addrs.length; i++)
         {
-            if(isBotStorage[addrs[i]])
-            {
-                addrs[i] = address(0x0);
-            } else
+            if(!isBotStorage[addrs[i]])
             {
                 isBotStorage[addrs[i]] = true;
             }
         }
-        emit BulkMarkedAsBot(addrs);
+        //emit BulkMarkedAsBot(addrs);
     }
     
     function markAddressAsBot(address addr)
@@ -359,7 +356,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         private
     {
         isBotStorage[addr] = true;
-        emit MarkedAsBot(addr);
+        //emit MarkedAsBot(addr);
     }
     
     function markAddressAsNotBot(address addr)
@@ -372,7 +369,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         );
         
         isBotStorage[addr] = false;
-        emit MarkedAsNotBot(addr);
+        //emit MarkedAsNotBot(addr);
     }
     
 }

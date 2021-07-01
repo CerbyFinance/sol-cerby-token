@@ -119,12 +119,12 @@
 			},
 			{
 				"inputs": [],
-				"name": "DEFT_DECIMALS",
+				"name": "BURN_ADDRESS",
 				"outputs": [
 					{
-						"internalType": "uint256",
+						"internalType": "address",
 						"name": "",
-						"type": "uint256"
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -138,6 +138,71 @@
 						"internalType": "bytes32",
 						"name": "",
 						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "TEAM_ADDRESS1",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "TEAM_ADDRESS2",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "TEAM_FINANCE_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "TEAM_WEIGHT1",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "TEAM_WEIGHT2",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -171,38 +236,12 @@
 			},
 			{
 				"inputs": [],
-				"name": "USDT_DECIMALS",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "USDT_TOKEN_ADDRESS",
 				"outputs": [
 					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "WETH_DECIMALS",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -242,10 +281,22 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "checkIfGoalIsReached",
-				"outputs": [],
-				"stateMutability": "nonpayable",
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "cachedIndex",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -268,27 +319,14 @@
 						"type": "uint256"
 					}
 				],
-				"name": "distributeTokens",
+				"name": "distributeInvestorsTokens",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "emergencyRefund",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_token",
-						"type": "address"
-					}
-				],
-				"name": "emergencyWithdrawToken",
+				"name": "distributeTeamTokens",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -394,25 +432,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "getLeftTokenAmount",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -462,19 +481,6 @@
 					}
 				],
 				"name": "getRoleMemberCount",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getTotalMintedSupply",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -553,6 +559,35 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "investors",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "wethValue",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "sentValue",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "lamboTokenAddress",
 				"outputs": [
@@ -608,6 +643,13 @@
 			},
 			{
 				"inputs": [],
+				"name": "lockLPTokensAtTeamFinance",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "markGoalAsReached",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -628,7 +670,20 @@
 			},
 			{
 				"inputs": [],
-				"name": "perWalletWethCap",
+				"name": "perWalletMaxWethCap",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "perWalletMinWethCap",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -684,6 +739,31 @@
 			},
 			{
 				"inputs": [],
+				"name": "skipSteps1",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "limit",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isLiquidityLocked",
+						"type": "bool"
+					}
+				],
+				"name": "skipSteps2",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "state",
 				"outputs": [
 					{
@@ -716,6 +796,45 @@
 			},
 			{
 				"inputs": [],
+				"name": "teamPercent",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "teamReceived1",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "teamReceived2",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "totalInvestedWeth",
 				"outputs": [
 					{
@@ -736,24 +855,16 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "_perWalletWethCap",
+						"name": "_perWalletMinWethCap",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_perWalletMaxWethCap",
 						"type": "uint256"
 					}
 				],
 				"name": "updateCaps",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "newContract",
-						"type": "address"
-					}
-				],
-				"name": "updateDefiFactoryContract",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -767,6 +878,19 @@
 					}
 				],
 				"name": "updateFixedPriceInUsd",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newContract",
+						"type": "address"
+					}
+				],
+				"name": "updateLamboContract",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -842,11 +966,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleLambo.sol": {
-			"keccak256": "0x9d486dba355da4c3fe3c82c9be60e6b01e04a16023df733dbf956fc19cef951a",
+			"keccak256": "0x041e0b33465ebd65965603ffc35394712e8eed9204333c03b655039ae6acafed",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://55670c2054ea02e7afd123bddf44cff22cb5a8a4253dd0e9bef4da48ab5a41c4",
-				"dweb:/ipfs/QmPvcysTeAarKVvptCmXCfEHcLWo7wQFpw6q68rWRxyjze"
+				"bzz-raw://7619dda93873feabf070e673a00bcc912d14351a69e66cb170e259092168e469",
+				"dweb:/ipfs/QmWB3XdtiRgWveJcCrmQnyxg7aqKZSE4R5ZEyRMXhLQZo5"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
@@ -855,6 +979,14 @@
 			"urls": [
 				"bzz-raw://aed836272507b878e2884f3b2162a968ecbcffb7314814efe2a381cf32294c4a",
 				"dweb:/ipfs/QmRo1TxhaNYgr7E4aLpBwsAUi7y6RcYw7j8Wk3EzvWjbAD"
+			]
+		},
+		"sol-defifactory-token/interfaces/ITeamFinance.sol": {
+			"keccak256": "0x6a63b8ce921e4a3ece16c6c8dd3bcd17536e4079d02b0f68891810f035bf9a24",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0213eb180a0c35b27ece742707f49edfa9376fa1dab3b38d256473e495e891da",
+				"dweb:/ipfs/QmVzw8vwaBTbzRA5mvYEPL58uijq13CbfgnDTY6eWqhcUj"
 			]
 		},
 		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {

@@ -14,102 +14,6 @@
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": false,
-						"internalType": "address[]",
-						"name": "addrs",
-						"type": "address[]"
-					}
-				],
-				"name": "BulkMarkedAsBot",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "MarkedAsBot",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "bool",
-						"name": "value",
-						"type": "bool"
-					}
-				],
-				"name": "MarkedAsDeftEthPair",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "bool",
-						"name": "value",
-						"type": "bool"
-					}
-				],
-				"name": "MarkedAsExcludedFromBalance",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "bool",
-						"name": "value",
-						"type": "bool"
-					}
-				],
-				"name": "MarkedAsHuman",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "MarkedAsNotBot",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
 						"indexed": true,
 						"internalType": "bytes32",
 						"name": "role",
@@ -895,11 +799,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0xe2aa1718f19223e4b8ada688e51014eb0ccea2ed50a344c2c03d828af6770a9d",
+			"keccak256": "0xaebfa36996fd05a644964e4f7a80156c58f8e780304335b5a0f51a47f588f62b",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://e7b983fc816f57693c16ea772362ed871c4f681d872ed7f2b7ea56779d0589b6",
-				"dweb:/ipfs/Qmahier8D5me5cWTHX3W3jPXRZwE1P2CTnMeUtHQsNaCFN"
+				"bzz-raw://381348f00bfd7502d7ddf1968ce790204565a2bf79d17875ee52a9f20fa6692a",
+				"dweb:/ipfs/QmS2hGLVWKb9d4YeXthcSh7D4gq2hyoMYsxxPaAT6xJerv"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {

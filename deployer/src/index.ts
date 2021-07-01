@@ -53,7 +53,7 @@ async function deployContract(
       from: account,
       gas: 6e6,
       // @ts-ignore
-      gasPrice: 2e9+1,
+      gasPrice: 1e9+1,
       value,
     });
 
@@ -164,7 +164,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 1e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -189,7 +189,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 1e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -216,7 +216,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 1e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -239,7 +239,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 1e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -264,7 +264,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 1e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -289,7 +289,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 1e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -312,7 +312,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 1e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -335,7 +335,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 1e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -359,7 +359,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 1e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -384,7 +384,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 1e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -422,7 +422,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 1e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
@@ -445,7 +445,7 @@ const start = async () => {
         to      : transaction._parent._address,
         data    : transaction.encodeABI(),
         gas: await transaction.estimateGas({from: account}),
-        gasPrice: 2e9+1,
+        gasPrice: 1e9+1,
       }, _account.privateKey);
 
       const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction!);
