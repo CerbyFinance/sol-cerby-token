@@ -47,7 +47,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public cycleTwoEnds = 240 days;
     uint public cycleThreeStartTaxPercent = 3e4; // 3.0%
     uint public cycleThreeEnds = 360 days;
-    uint public cycleThreeEndTaxPercent = 0; // 0.0%*/
+    uint public cycleThreeEndTaxPercent = 0; // 0.0%
+    uint public howOftenPayDeftFee = 0; */
     
     /* Lambo Taxes */
     uint public deftFeePercent = 25e4; // 25.0%
@@ -58,6 +59,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public cycleThreeStartTaxPercent = 5e4; // 5.0%
     uint public cycleThreeEnds = 7 days;
     uint public cycleThreeEndTaxPercent = 5e4; // 5.0%
+    uint public howOftenPayDeftFee = 10 minutes;
     
     uint public buyLimitAmount = 1e18 * 1e18; // no limit
     uint public buyLimitPercent = TAX_PERCENT_DENORM; // 100% means disabled
@@ -93,19 +95,19 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             earlyInvestorTimestamp = 1621846800;
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 50;
+            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 50e18;
         } else if (block.chainid == 56)
         {
             earlyInvestorTimestamp = 1623633960;
             UNISWAP_V2_FACTORY_ADDRESS = 0xBCfCcbde45cE874adCB698cC183deBcF17952812;
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
-            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 400;
+            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 400e18;
         } else if (block.chainid == 42)
         {
             earlyInvestorTimestamp = block.timestamp;
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
-            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 0;
+            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 1e12;
             
             parentTokenAddress = 0xC0138126C0Bd394C547df17B649B81B543c76906;
         }
@@ -130,6 +132,13 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         buyLimitPercent = _buyLimitPercent;
+    }
+    
+    function updateHowOftenPayDeftFee(uint _howOftenPayDeftFee)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        howOftenPayDeftFee = _howOftenPayDeftFee;
     }
     
     function updateDefiFactoryTokenAddress(address _defiFactoryTokenAddress)
@@ -215,7 +224,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     {   
         if (
                 block.timestamp > lastCachedTimestamp + secondsBetweenRecacheUpdates ||
-                tx.gasprice == 0 && block.timestamp > lastCachedTimestamp // Increasing gas limit for estimates to avoide out of gas error
+                tx.gasprice == 0 && block.timestamp > lastCachedTimestamp // Increasing gas limit for estimates to avoid out of gas error
             )
         {
             forcedUpdateCache();
@@ -233,7 +242,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             
             // 75% Tax redistribution
             rewardsBalance += batchBurnAndReward - realAmountToPayFeeThisTime; // 75% of amount goes to rewards to TOKEN holders
-            realTotalSupply -= batchBurnAndReward + realAmountToPayFeeThisTime;
+            realTotalSupply -= batchBurnAndReward + realAmountToPayFeeThisTime; // no idea why but it works
             batchBurnAndReward = 0;
             
             cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
@@ -278,7 +287,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         if  (
                 parentTokenAddress != BURN_ADDRESS &&
                 amountToPayDeftFee > 1 &&
-                block.timestamp > lastPaidFeeTimestamp + 60 minutes
+                block.timestamp > lastPaidFeeTimestamp + howOftenPayDeftFee
             )
         {
             address sellPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(defiFactoryTokenAddress, WETH_TOKEN_ADDRESS);
@@ -343,7 +352,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                         DEFT_ADDRESS, 
                         amountToRedistribute
                     );
-                    
+            
+            // TODO: fix
             rewardsBalance += (amountToRedistribute * BALANCE_MULTIPLIER_DENORM) / cachedMultiplier;
             
             cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 

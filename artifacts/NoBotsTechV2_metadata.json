@@ -668,6 +668,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "howOftenPayDeftFee",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "lastCachedTimestamp",
 				"outputs": [
 					{
@@ -1024,6 +1037,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "_howOftenPayDeftFee",
+						"type": "uint256"
+					}
+				],
+				"name": "updateHowOftenPayDeftFee",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "_parentTokenAddress",
 						"type": "address"
@@ -1119,11 +1145,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0xcd2b9d85ffca992a19049821046a3872f1530f364ab4dbaaa7a1fc28bf84d7a8",
+			"keccak256": "0x99b230b6b1216112a50bb420d81684e277b389a93a377b12beab6856bf2b3bc0",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://a3389b1c28a1e060bb7f323c3f472cf46dab80035bbafd72b3556378e013f568",
-				"dweb:/ipfs/QmdXUcMisZQB9LdzDBKRG1BrmxEehuv9WyoZYKojig5vvC"
+				"bzz-raw://76755ca814e9ccb400321a3b301285fec170b111b4055550ae882a6c542c279d",
+				"dweb:/ipfs/QmR9LjxpPkb6ysTkp9awGSdPSLxPxBEApZ6Ur6vzjCXDzC"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

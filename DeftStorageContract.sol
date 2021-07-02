@@ -27,14 +27,6 @@ contract DeftStorageContract is AccessControlEnumerable {
     uint constant DEFAULT_BUY_COOLDOWN = 1 minutes;
     uint constant DEFAULT_SELL_COOLDOWN = 10 minutes;
     
-    /*event BulkMarkedAsBot(address[] addrs);
-    event MarkedAsBot(address addr);
-    event MarkedAsNotBot(address addr);
-    
-    event MarkedAsExcludedFromBalance(address addr, bool value);
-    event MarkedAsHuman(address addr, bool value);
-    event MarkedAsDeftEthPair(address addr, bool value);*/
-    
     
     constructor() {
         howManyLeadingZerosToBlock = 8;
@@ -307,7 +299,6 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         isExcludedFromBalanceStorage[addr] = value;
-        //emit MarkedAsExcludedFromBalance(addr, value);
     }
     
     function markAddressAsHuman(address addr, bool value)
@@ -315,7 +306,6 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         isHumanStorage[addr] = value;
-        //emit MarkedAsHuman(addr, value);
     }
     
     function markPairAsDeftEthPair(address addr, bool value)
@@ -323,7 +313,6 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         isDeftEthPair[addr] = value;
-        //emit MarkedAsDeftEthPair(addr, value);
     }
     
     function bulkMarkAddressAsBot(address[] memory addrs)
@@ -337,7 +326,6 @@ contract DeftStorageContract is AccessControlEnumerable {
                 isBotStorage[addrs[i]] = true;
             }
         }
-        //emit BulkMarkedAsBot(addrs);
     }
     
     function markAddressAsBot(address addr)
@@ -356,7 +344,6 @@ contract DeftStorageContract is AccessControlEnumerable {
         private
     {
         isBotStorage[addr] = true;
-        //emit MarkedAsBot(addr);
     }
     
     function markAddressAsNotBot(address addr)
@@ -369,7 +356,6 @@ contract DeftStorageContract is AccessControlEnumerable {
         );
         
         isBotStorage[addr] = false;
-        //emit MarkedAsNotBot(addr);
     }
     
 }
