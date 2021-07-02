@@ -29,7 +29,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public lastCachedTimestamp = block.timestamp;
     uint public lastPaidFeeTimestamp;
     
-    uint public secondsBetweenRecacheUpdates = 0;
+    uint public secondsBetweenRecacheUpdates = 0 minutes;
     
     
     address public defiFactoryTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
@@ -100,13 +100,13 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             earlyInvestorTimestamp = 1621846800; // TODO: change for Lambo
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 50e18;
+            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 10e18;
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
             earlyInvestorTimestamp = 1623633960;
             UNISWAP_V2_FACTORY_ADDRESS = 0xBCfCcbde45cE874adCB698cC183deBcF17952812;
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
-            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 400e18;
+            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 75e18;
         } else if (block.chainid == ETH_KOVAN_CHAIN_ID)
         {
             earlyInvestorTimestamp = block.timestamp;
