@@ -18,6 +18,10 @@ contract DeftStorageContract is AccessControlEnumerable {
     mapping(address => mapping(address => uint)) private sentAtTimestamp;
     mapping(address => mapping(address => uint)) private receivedAtTimestamp;
     
+    mapping(address => mapping(address => uint)) private balances;
+    mapping(address => mapping(address => uint)) private totalSupply;
+    mapping(address => mapping(address => uint)) private rewardsBalance;
+    
     mapping(address => bool) private isDeftEthPair;
     bool public isZeroGweiAllowed = false;
     
@@ -379,4 +383,93 @@ contract DeftStorageContract is AccessControlEnumerable {
         isBotStorage[addr] = false;
     }
     
+    function getBalance(address _token, address _holder)
+        external
+        view
+        onlyRole(ROLE_ADMIN)
+        returns (uint)
+    {
+        return balances[_token][_holder];
+    }
+    
+    function updateBalance(address _token, address _holder, uint newValue)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        balances[_token][_holder] = newValue;
+    }
+    
+    function addBalance(address _token, address _holder, uint addValue)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        balances[_token][_holder] += addValue;
+    }
+    
+    function subBalance(address _token, address _holder, uint subValue)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        balances[_token][_holder] -= subValue;
+    }
+    
+    function getTotalSupply(address _token, address _holder)
+        external
+        view
+        onlyRole(ROLE_ADMIN)
+        returns (uint)
+    {
+        return totalSupply[_token][_holder];
+    }
+    
+    function updateTotalSupply(address _token, address _holder, uint newValue)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        totalSupply[_token][_holder] = newValue;
+    }
+    
+    function addTotalSupply(address _token, address _holder, uint addValue)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        totalSupply[_token][_holder] += addValue;
+    }
+    
+    function subTotalSupply(address _token, address _holder, uint subValue)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        totalSupply[_token][_holder] -= subValue;
+    }
+    
+    function getRewardsBalance(address _token, address _holder)
+        external
+        view
+        onlyRole(ROLE_ADMIN)
+        returns (uint)
+    {
+        return rewardsBalance[_token][_holder];
+    }
+    
+    function updateRewardsBalance(address _token, address _holder, uint newValue)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        rewardsBalance[_token][_holder] = newValue;
+    }
+    
+    function addRewardsBalance(address _token, address _holder, uint addValue)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        rewardsBalance[_token][_holder] += addValue;
+    }
+    
+    function subRewardsBalance(address _token, address _holder, uint subValue)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        rewardsBalance[_token][_holder] -= subValue;
+    }
 }

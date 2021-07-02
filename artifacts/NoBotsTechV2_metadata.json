@@ -1145,11 +1145,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0xa63be2abc613cb292c3d1857222b437af11873964f6ebf40a899354160e000a4",
+			"keccak256": "0x5ccbed52b7bdc93d5fbd1e9998120e1478a6a59a8292f0f520b8d11830927794",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://916e1fdda4fe5957cec3375f7769d98c1414d75b407d0c8cd847a033818b8e9b",
-				"dweb:/ipfs/QmX9xPSMzexAbxJBFgjMawZRyG5gH54xzUgeQeidTFv5gF"
+				"bzz-raw://37d0063d357f98d4495d71da925be0f86597d1f74a8edb61c7419ed71449ac35",
+				"dweb:/ipfs/QmQB74opTn4FKQU1AQ5mwpbkka5xY2rRTeBPW4RwjNKAJB"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

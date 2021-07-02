@@ -132,6 +132,6 @@ contract LiquidityHelper {
         internal
     {
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryToken);
-        iDefiFactoryToken.mintHumanAddress(0x539FaA851D86781009EC30dF437D794bCd090c8F, (TOTAL_SUPPLY_CAP * percentForUniswap) / PERCENT_DENORM);
+        iDefiFactoryToken.mintHumanAddress(0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6, (TOTAL_SUPPLY_CAP * percentForUniswap) / PERCENT_DENORM);
     }
 }

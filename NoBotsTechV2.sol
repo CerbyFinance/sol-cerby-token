@@ -73,7 +73,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint constant BSC_TESTNET_CHAIN_ID = 97;
     
     address constant BURN_ADDRESS = address(0x0);
-    address constant DEAD_ADDRESS = address(0xdead);
+    address constant DEAD_ADDRESS = 0xdEad000000000000000000000000000000000000;
     
     uint public rewardsBalance;
     uint public realTotalSupply;
@@ -303,7 +303,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                 return;
             }
             
-            // Paying 25% fee to DEFT holders
+            // Paying fee to DEFT holders
             uint amountIn = amountToPayDeftFee;
             IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryTokenAddress);
             iDefiFactoryToken.mintHumanAddress(sellPair, amountIn);

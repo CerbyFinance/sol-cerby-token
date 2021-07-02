@@ -110,7 +110,7 @@ contract PresaleLambo is AccessControlEnumerable {
     receive() external payable {
         require(state == States.AcceptingPayments, "PR: Accepting payments has been stopped!");
         require(totalInvestedWeth <= maxWethCap, "PR: Max cap reached!");
-        require(msg.value >= perWalletMinWethCap, "PR: Mmount is below minimum permitted");
+        require(msg.value >= perWalletMinWethCap, "PR: Amount is below minimum permitted");
         require(msg.value <= perWalletMaxWethCap, "PR: Amount is above maximum permitted");
         
         addInvestor(msg.sender, msg.value);
