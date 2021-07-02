@@ -14,8 +14,6 @@ contract DeftStorageContract is AccessControlEnumerable {
     mapping(address => uint) private cooldownPeriodBuyStorage;
     mapping(address => uint) private cooldownPeriodSellStorage;
     
-    mapping(address => mapping(address => uint)) private sentAtTimestamp;
-    mapping(address => mapping(address => uint)) private receivedAtTimestamp;
     mapping(address => mapping(address => uint)) private buyTimestampStorage;
     
     mapping(address => bool) private isDeftEthPair;
@@ -25,7 +23,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     mapping(uint => address) private matchingAddressWithLeadingZeros;
     
     address constant BURN_ADDRESS = address(0x0);
-    uint constant DEFAULT_BUY_COOLDOWN = 45 seconds;
+    uint constant DEFAULT_BUY_COOLDOWN = 0 seconds;
     uint constant DEFAULT_SELL_COOLDOWN = 5 minutes;
     uint constant BALANCE_DENORM = 1e18;
     
@@ -100,24 +98,6 @@ contract DeftStorageContract is AccessControlEnumerable {
         cooldownPeriodSellStorage[tokenAddr] = newCooldownSellPeriod;
     }
     
-    function getSentAtTimestamp(address tokenAddr, address addr)
-        external
-        view
-        onlyRole(ROLE_ADMIN)
-        returns (uint)
-    {
-        return sentAtTimestamp[tokenAddr][addr];
-    }
-    
-    function getReceivedAtTimestamp(address tokenAddr, address addr)
-        external
-        view
-        onlyRole(ROLE_ADMIN)
-        returns (uint)
-    {
-        return receivedAtTimestamp[tokenAddr][addr];
-    }
-    
     function getBuyTimestamp(address tokenAddr, address addr)
         external
         view
@@ -132,14 +112,6 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         buyTimestampStorage[tokenAddr][addr] = newBuyTimestamp;
-    }
-    
-    function updateTransaction(address tokenAddr, address sender, address recipient)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        sentAtTimestamp[tokenAddr][sender] = block.timestamp;
-        receivedAtTimestamp[tokenAddr][recipient] = block.timestamp;
     }
     
     function isBotAddress(address addr)
@@ -162,55 +134,41 @@ contract DeftStorageContract is AccessControlEnumerable {
         output.isSell = isDeftEthPair[recipient];
         output.isBuy = isDeftEthPair[sender];
         
-        uint defaultBuyCooldown = cooldownPeriodBuyStorage[tokenAddr] > 0? cooldownPeriodBuyStorage[tokenAddr]: DEFAULT_BUY_COOLDOWN;
         uint defaultSellCooldown = cooldownPeriodSellStorage[tokenAddr] > 0? cooldownPeriodSellStorage[tokenAddr]: DEFAULT_SELL_COOLDOWN;
         bool isBot;
         bool isZeroGweiAllowedForBots = !(isZeroGweiAllowed && tx.gasprice == 0);
-        bool isOriginBot = 
-            output.isBuy && 
-            tx.origin != recipient && 
-            !isContract(recipient) && 
-            !isHumanStorage[recipient] &&
-            isZeroGweiAllowedForBots;
-        bool isFrontrunBuyBot = 
-            (
-                sentAtTimestamp[tokenAddr][recipient] + defaultBuyCooldown >= block.timestamp ||
-                hasLeadingZerosInAddress(recipient)
-            ) && 
-            !isHumanStorage[recipient] &&
-            !isDeftEthPair[recipient] &&
-            isZeroGweiAllowedForBots;
-        bool isFrontrunSellBot =
-            (
-                receivedAtTimestamp[tokenAddr][sender] + defaultSellCooldown >= block.timestamp ||
-                hasLeadingZerosInAddress(sender)
-            ) && 
-            !isHumanStorage[sender] &&
-            !isDeftEthPair[sender] &&
-            isZeroGweiAllowedForBots;
             
-        if (isFrontrunSellBot)
+        if (
+                output.isBuy && 
+                tx.origin != recipient && // isOriginBot
+                !isContract(recipient) && 
+                !isHumanStorage[recipient] &&
+                isZeroGweiAllowedForBots 
+            )
         {
-            isBot = true;
-            _markAddressAsBot(sender);
-        } else if (isFrontrunBuyBot || isOriginBot)
-        {
-            isBot = true;
             _markAddressAsBot(recipient);
-        } else if (
+        } else if(
                 !output.isBuy && // isSell or isTransfer
                 (
                     isContract(sender) && !isDeftEthPair[sender] && !isHumanStorage[sender] || // isContractSender
-                    isBotStorage[sender] // isBlacklistedSender
+                    isBotStorage[sender] || // isBlacklistedSender
+                    buyTimestampStorage[tokenAddr][sender] + defaultSellCooldown >= block.timestamp ||
+                    hasLeadingZerosInAddress(sender)
                 ) &&
                 isZeroGweiAllowedForBots
             )
         {
-            isBot = true;
+            if (output.isSell) // 99.9% tax only on sells
+            {
+                isBot = true;
+            } else // isTransfer
+            {
+                _markAddressAsBot(recipient); // passing bot decease
+            }
             _markAddressAsBot(sender);
         }
-        output.isHumanTransaction = !isBot;
         
+        output.isHumanTransaction = !isBot;
         return output;
     }
     

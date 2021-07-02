@@ -455,6 +455,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         { // isTransfer
             payFeeToDeftHolders();
         }
+        
         delayedUpdateCache();
         
         return taxAmountsOutput;

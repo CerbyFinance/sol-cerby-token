@@ -56,8 +56,7 @@
 			"markAddressAsNotBot(address)": "a9a48824",
 			"markPairAsDeftEthPair(address,bool)": "fc70da0a",
 			"markPairAsDeftOtherPair(address,bool)": "7524573d",
-			"updateBuyTimestamp(address,address,uint256)": "2a5bf470",
-			"updateTransaction(address,address)": "030b5b31"
+			"updateBuyTimestamp(address,address,uint256)": "2a5bf470"
 		}
 	},
 	"abi": [
@@ -263,24 +262,6 @@
 				}
 			],
 			"name": "updateBuyTimestamp",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "sender",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "recipient",
-					"type": "address"
-				}
-			],
-			"name": "updateTransaction",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"

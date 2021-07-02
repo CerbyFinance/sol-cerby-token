@@ -1145,11 +1145,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x5ccbed52b7bdc93d5fbd1e9998120e1478a6a59a8292f0f520b8d11830927794",
+			"keccak256": "0xdd144ba7d22365efb78584291c3508a145f3f0d35cd776de4be0825bfe6e98ba",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://37d0063d357f98d4495d71da925be0f86597d1f74a8edb61c7419ed71449ac35",
-				"dweb:/ipfs/QmQB74opTn4FKQU1AQ5mwpbkka5xY2rRTeBPW4RwjNKAJB"
+				"bzz-raw://d6509b2dd135bd3d5b54ca4e04a286880e6bce3edcf6ed6fa48f217cd2283d88",
+				"dweb:/ipfs/QmVXBubQWSSr1FMLcABKk7j1pk2ZqpYMf1n5cjSqinEU3c"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
@@ -1161,11 +1161,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x6c3e8e4c670d6d7f2f6c72dc1e438be32bdde5a98e91ad777c1404209a472d1d",
+			"keccak256": "0xcee90fcacc8725ccd5b900437203750e7d5a4a98d81eacb0f3fa69a1be919e7e",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://f78530451651a1de98fba1817e4404f4da815b764330f3be25950139a90a5c81",
-				"dweb:/ipfs/QmWNxW5KxGcfHKaK8eyS8vsni6ZLsBaut9ga4JGuJ2d4At"
+				"bzz-raw://f2b23e30f5058f4e004b15e868b34df5c2248206adf07bfe2a5037eb283e26a4",
+				"dweb:/ipfs/QmaAChav6978W4YkckxwkEbMguuvE2wdaxXgW5AgyZBEEZ"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

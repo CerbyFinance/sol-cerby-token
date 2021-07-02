@@ -31,9 +31,6 @@ interface IDeftStorageContract {
         external
         view
         returns (bool);
-        
-    function updateTransaction(address sender, address recipient)
-        external;
     
     function bulkMarkAddressAsBot(address[] calldata addrs)
         external;

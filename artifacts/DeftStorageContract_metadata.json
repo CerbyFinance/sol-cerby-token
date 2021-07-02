@@ -175,30 +175,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "tokenAddr",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "getReceivedAtTimestamp",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -248,30 +224,6 @@
 					}
 				],
 				"name": "getRoleMemberCount",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenAddr",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "getSentAtTimestamp",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -747,29 +699,6 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenAddr",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "sender",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "recipient",
-						"type": "address"
-					}
-				],
-				"name": "updateTransaction",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -825,19 +754,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x5acd8c0cd6c4f6d550068561c0e1b97ac1f65c2df9813c55a734c8794361a83c",
+			"keccak256": "0x8bb7aa53140988cc3860ac84de978139ef34e4a68ebf1fc3e6db0fc92b9ef886",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://73ad6bff2b9766b143c70d3594155156e618a68b9ce31cb9429be0647c7a539c",
-				"dweb:/ipfs/QmXzmoS1ddRC15tq3aJ7f1qxjc5HDR3EXiJHtwovv8vbUS"
+				"bzz-raw://793da0f737d20b3121c9687cf09b0533569c4eaac7e46ad380ccd2e21cde77a2",
+				"dweb:/ipfs/QmRFQ15JcKf5RKGuE9iKTzjGYL3A5dqCW2wN8fF3oqYCpg"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x6c3e8e4c670d6d7f2f6c72dc1e438be32bdde5a98e91ad777c1404209a472d1d",
+			"keccak256": "0xcee90fcacc8725ccd5b900437203750e7d5a4a98d81eacb0f3fa69a1be919e7e",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://f78530451651a1de98fba1817e4404f4da815b764330f3be25950139a90a5c81",
-				"dweb:/ipfs/QmWNxW5KxGcfHKaK8eyS8vsni6ZLsBaut9ga4JGuJ2d4At"
+				"bzz-raw://f2b23e30f5058f4e004b15e868b34df5c2248206adf07bfe2a5037eb283e26a4",
+				"dweb:/ipfs/QmaAChav6978W4YkckxwkEbMguuvE2wdaxXgW5AgyZBEEZ"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
