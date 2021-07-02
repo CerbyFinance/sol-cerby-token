@@ -101,12 +101,22 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address[]",
-						"name": "addrs",
-						"type": "address[]"
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_holder",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "addValue",
+						"type": "uint256"
 					}
 				],
-				"name": "bulkMarkAddressAsBot",
+				"name": "addBalance",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -115,16 +125,75 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenAddr",
+						"name": "_token",
 						"type": "address"
 					},
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "_holder",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "addValue",
+						"type": "uint256"
+					}
+				],
+				"name": "addRealBalance",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "addValue",
+						"type": "uint256"
+					}
+				],
+				"name": "addRewardsBalance",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "addValue",
+						"type": "uint256"
+					}
+				],
+				"name": "addTotalSupply",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_holder",
 						"type": "address"
 					}
 				],
-				"name": "getBuyTimestamp",
+				"name": "getBalance",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -139,29 +208,16 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenAddr",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_holder",
 						"type": "address"
 					}
 				],
-				"name": "getCooldownPeriods",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getHowManyLeadingZerosToBlock",
+				"name": "getRealBalance",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -176,16 +232,54 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenAddr",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "addr",
+						"name": "_token",
 						"type": "address"
 					}
 				],
-				"name": "getReceivedAtTimestamp",
+				"name": "getRealTotalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "getRealValue",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					}
+				],
+				"name": "getRewardsBalance",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -262,16 +356,35 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenAddr",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "addr",
+						"name": "_token",
 						"type": "address"
 					}
 				],
-				"name": "getSentAtTimestamp",
+				"name": "getTotalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "getValue",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -352,278 +465,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "isBotAddress",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "isExcludedFromBalance",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenAddr",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "sender",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "recipient",
-						"type": "address"
-					}
-				],
-				"name": "isHumanTransaction",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "bool",
-								"name": "isHumanTransaction",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isBuy",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isSell",
-								"type": "bool"
-							}
-						],
-						"internalType": "struct IsHumanInfo",
-						"name": "output",
-						"type": "tuple"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "isMarkedAsBotStorage",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address[]",
-						"name": "addrs",
-						"type": "address[]"
-					}
-				],
-				"name": "isMarkedAsBotStorageBulk",
-				"outputs": [
-					{
-						"internalType": "address[]",
-						"name": "",
-						"type": "address[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "isMarkedAsDeftEthPair",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "isMarkedAsHumanStorage",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address[]",
-						"name": "addrs",
-						"type": "address[]"
-					}
-				],
-				"name": "isMarkedAsHumanStorageBulk",
-				"outputs": [
-					{
-						"internalType": "address[]",
-						"name": "",
-						"type": "address[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "isZeroGweiAllowed",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "markAddressAsBot",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"internalType": "bool",
-						"name": "value",
-						"type": "bool"
-					}
-				],
-				"name": "markAddressAsExcludedFromBalance",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"internalType": "bool",
-						"name": "value",
-						"type": "bool"
-					}
-				],
-				"name": "markAddressAsHuman",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "markAddressAsNotBot",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"internalType": "bool",
-						"name": "value",
-						"type": "bool"
-					}
-				],
-				"name": "markPairAsDeftEthPair",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -660,6 +501,88 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_holder",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "subValue",
+						"type": "uint256"
+					}
+				],
+				"name": "subBalance",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_holder",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "subValue",
+						"type": "uint256"
+					}
+				],
+				"name": "subRealBalance",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "subValue",
+						"type": "uint256"
+					}
+				],
+				"name": "subRewardsBalance",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "subValue",
+						"type": "uint256"
+					}
+				],
+				"name": "subTotalSupply",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes4",
 						"name": "interfaceId",
 						"type": "bytes4"
@@ -680,21 +603,21 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenAddr",
+						"name": "_token",
 						"type": "address"
 					},
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "_holder",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "newBuyTimestamp",
+						"name": "newValue",
 						"type": "uint256"
 					}
 				],
-				"name": "updateBuyTimestamp",
+				"name": "updateBalance",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -703,47 +626,21 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenAddr",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_holder",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "newCooldownBuyPeriod",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "newCooldownSellPeriod",
+						"name": "newValue",
 						"type": "uint256"
 					}
 				],
-				"name": "updateCooldownPeriod",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "newHowManyLeadingZerosToBlock",
-						"type": "uint256"
-					}
-				],
-				"name": "updateHowManyLeadingZerosToBlock",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bool",
-						"name": "_isZeroGweiAllowed",
-						"type": "bool"
-					}
-				],
-				"name": "updateIsZeroGweiAllowed",
+				"name": "updateRealBalance",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -752,21 +649,34 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenAddr",
+						"name": "_token",
 						"type": "address"
 					},
 					{
-						"internalType": "address",
-						"name": "sender",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "recipient",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "newValue",
+						"type": "uint256"
 					}
 				],
-				"name": "updateTransaction",
+				"name": "updateRealTotalSupply",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "newValue",
+						"type": "uint256"
+					}
+				],
+				"name": "updateRewardsBalance",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -810,7 +720,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/DeftStorageContract.sol": "DeftStorageContract"
+			"sol-defifactory-token/BalancesStorage.sol": "BalanceStorageContract"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -824,12 +734,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x5acd8c0cd6c4f6d550068561c0e1b97ac1f65c2df9813c55a734c8794361a83c",
+		"sol-defifactory-token/BalancesStorage.sol": {
+			"keccak256": "0x7df685e5e6a4953aca329a590fe16c5cbf9c2ca804d6f5a8a4894e743573b091",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://73ad6bff2b9766b143c70d3594155156e618a68b9ce31cb9429be0647c7a539c",
-				"dweb:/ipfs/QmXzmoS1ddRC15tq3aJ7f1qxjc5HDR3EXiJHtwovv8vbUS"
+				"bzz-raw://c4567ad02d12b27ba95897076c43f34440af20eb54243863a36fd2a48842bd16",
+				"dweb:/ipfs/QmNWX1UPdd1whc4Sp9L365B3Q8x5RK8NAYdtPUx9QPiyxe"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {

@@ -810,7 +810,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/DeftStorageContract.sol": "DeftStorageContract"
+			"sol-defifactory-token/DeftStorageContract.sol": "BalanceStorageC"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -825,11 +825,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x5acd8c0cd6c4f6d550068561c0e1b97ac1f65c2df9813c55a734c8794361a83c",
+			"keccak256": "0xcd044a8840d04a150f62dcd116a8df7af25edb7a1e8f2979150bf9713206b524",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://73ad6bff2b9766b143c70d3594155156e618a68b9ce31cb9429be0647c7a539c",
-				"dweb:/ipfs/QmXzmoS1ddRC15tq3aJ7f1qxjc5HDR3EXiJHtwovv8vbUS"
+				"bzz-raw://00310657d8c0218d40ef6be45c6c27ce88d14a98deb2d7e3fa02a28946ec4937",
+				"dweb:/ipfs/QmSwFJb66NWBANeV128Rp1jVimxCod7aVpQZDcwZsrkSX4"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
