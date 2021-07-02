@@ -143,25 +143,7 @@
 						"type": "address"
 					}
 				],
-				"name": "getCooldownPeriods",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getHowManyLeadingZerosToBlock",
+				"name": "getCooldownPeriodSell",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -660,29 +642,11 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "newCooldownBuyPeriod",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
 						"name": "newCooldownSellPeriod",
 						"type": "uint256"
 					}
 				],
-				"name": "updateCooldownPeriod",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "newHowManyLeadingZerosToBlock",
-						"type": "uint256"
-					}
-				],
-				"name": "updateHowManyLeadingZerosToBlock",
+				"name": "updateCooldownPeriodSell",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -754,11 +718,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x8bb7aa53140988cc3860ac84de978139ef34e4a68ebf1fc3e6db0fc92b9ef886",
+			"keccak256": "0xa188fa9a99554ad3c5e984b0595bc4496d2e3bfa0ce66fec3baeea70db637b51",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://793da0f737d20b3121c9687cf09b0533569c4eaac7e46ad380ccd2e21cde77a2",
-				"dweb:/ipfs/QmRFQ15JcKf5RKGuE9iKTzjGYL3A5dqCW2wN8fF3oqYCpg"
+				"bzz-raw://c1dd3079e41969351dc9a70de8427caaf8a1370f53527e78902ee5c467615920",
+				"dweb:/ipfs/QmUAXa2V2sGW4y2TWMx3yTXM9VZ4hd2gLWpYdzhQzGEtGq"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {

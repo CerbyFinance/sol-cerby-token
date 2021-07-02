@@ -11,7 +11,6 @@ contract DeftStorageContract is AccessControlEnumerable {
     mapping(address => bool) private isHumanStorage;
     mapping(address => bool) private isExcludedFromBalanceStorage;
     
-    mapping(address => uint) private cooldownPeriodBuyStorage;
     mapping(address => uint) private cooldownPeriodSellStorage;
     
     mapping(address => mapping(address => uint)) private buyTimestampStorage;
@@ -19,11 +18,9 @@ contract DeftStorageContract is AccessControlEnumerable {
     mapping(address => bool) private isDeftEthPair;
     bool public isZeroGweiAllowed = false;
     
-    uint private howManyLeadingZerosToBlock;
-    mapping(uint => address) private matchingAddressWithLeadingZeros;
+    address constant EIGHT_LEADING_ZEROS_TO_COMPARE = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
     
     address constant BURN_ADDRESS = address(0x0);
-    uint constant DEFAULT_BUY_COOLDOWN = 0 seconds;
     uint constant DEFAULT_SELL_COOLDOWN = 5 minutes;
     uint constant BALANCE_DENORM = 1e18;
     
@@ -34,11 +31,6 @@ contract DeftStorageContract is AccessControlEnumerable {
     uint constant BSC_TESTNET_CHAIN_ID = 97;
     
     constructor() {
-        howManyLeadingZerosToBlock = 8;
-        matchingAddressWithLeadingZeros[5] = address(0x00000ffffFFffFFffffFfFffFFFfFFfFFffFffff);
-        matchingAddressWithLeadingZeros[6] = address(0x000000FFfffFFFFFFffFffffFffFfFfFFFFfFFfF);
-        matchingAddressWithLeadingZeros[7] = address(0x0000000FFfFFfffFffFfFffFFFfffffFffFFffFf);
-        matchingAddressWithLeadingZeros[8] = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
         
         _setupRole(ROLE_ADMIN, _msgSender());
         _setupRole(ROLE_ADMIN, 0x0C344a302fC79d687A3f09A0ca97c17F36dCC756); // NoBotsTechV2
@@ -54,10 +46,6 @@ contract DeftStorageContract is AccessControlEnumerable {
         markAddressAsHuman(0x11111112542D85B3EF69AE05771c2dCCff4fAa26, true); // 1inch Router
         markAddressAsHuman(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // TeamVestingContract
         markAddressAsHuman(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, true); // DefiFactoryContract
-        
-        
-        cooldownPeriodBuyStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = DEFAULT_BUY_COOLDOWN;
-        cooldownPeriodSellStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = DEFAULT_SELL_COOLDOWN;
         
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
@@ -81,20 +69,19 @@ contract DeftStorageContract is AccessControlEnumerable {
         isZeroGweiAllowed = _isZeroGweiAllowed;
     }
     
-    function getCooldownPeriods(address tokenAddr)
+    function getCooldownPeriodSell(address tokenAddr)
         external
         view
         onlyRole(ROLE_ADMIN)
-        returns (uint, uint)
+        returns (uint)
     {
-        return (cooldownPeriodBuyStorage[tokenAddr], cooldownPeriodSellStorage[tokenAddr]);
+        return (cooldownPeriodSellStorage[tokenAddr]);
     }
     
-    function updateCooldownPeriod(address tokenAddr, uint newCooldownBuyPeriod, uint newCooldownSellPeriod)
+    function updateCooldownPeriodSell(address tokenAddr, uint newCooldownSellPeriod)
         public
         onlyRole(ROLE_ADMIN)
     {
-        cooldownPeriodBuyStorage[tokenAddr] = newCooldownBuyPeriod;
         cooldownPeriodSellStorage[tokenAddr] = newCooldownSellPeriod;
     }
     
@@ -163,7 +150,7 @@ contract DeftStorageContract is AccessControlEnumerable {
                 isBot = true;
             } else // isTransfer
             {
-                _markAddressAsBot(recipient); // passing bot decease
+               revert("DS: Transfers are temporary disabled");
             }
             _markAddressAsBot(sender);
         }
@@ -172,28 +159,12 @@ contract DeftStorageContract is AccessControlEnumerable {
         return output;
     }
     
-    function getHowManyLeadingZerosToBlock()
-        external
-        view
-        onlyRole(ROLE_ADMIN)
-        returns (uint)
-    {
-        return howManyLeadingZerosToBlock;
-    }
-    
-    function updateHowManyLeadingZerosToBlock(uint newHowManyLeadingZerosToBlock)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        howManyLeadingZerosToBlock = newHowManyLeadingZerosToBlock;
-    }
-    
     function hasLeadingZerosInAddress(address addr)
         private
-        view
+        pure
         returns (bool)
     {
-        return addr < matchingAddressWithLeadingZeros[howManyLeadingZerosToBlock];
+        return addr < EIGHT_LEADING_ZEROS_TO_COMPARE;
     }
     
     function isContract(address addr) 
