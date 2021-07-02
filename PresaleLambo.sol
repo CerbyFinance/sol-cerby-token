@@ -54,11 +54,11 @@ contract PresaleLambo is AccessControlEnumerable {
     address public constant BURN_ADDRESS = address(0x0);
     
     address public constant TEAM_ADDRESS1 = 0x43cFD604C3a59f2eE315d25D5D982257D9D28a3E;
-    uint public constant TEAM_WEIGHT1 = 6;
+    uint public constant TEAM_WEIGHT1 = 30;
     uint public teamReceived1;
     
     address public constant TEAM_ADDRESS2 = 0x629cC87a549a529238a43cadBc2053d495339940;
-    uint public constant TEAM_WEIGHT2 = 1;
+    uint public constant TEAM_WEIGHT2 = 5;
     uint public teamReceived2;
     
     uint public constant teamPercent = 10;

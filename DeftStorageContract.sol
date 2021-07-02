@@ -19,14 +19,20 @@ contract DeftStorageContract is AccessControlEnumerable {
     mapping(address => mapping(address => uint)) private receivedAtTimestamp;
     
     mapping(address => bool) private isDeftEthPair;
+    bool public isZeroGweiAllowed = false;
     
     uint private howManyLeadingZerosToBlock;
     mapping(uint => address) private matchingAddressWithLeadingZeros;
     
     address constant BURN_ADDRESS = address(0x0);
-    uint constant DEFAULT_BUY_COOLDOWN = 1 minutes;
-    uint constant DEFAULT_SELL_COOLDOWN = 10 minutes;
+    uint constant DEFAULT_BUY_COOLDOWN = 45 seconds;
+    uint constant DEFAULT_SELL_COOLDOWN = 5 minutes;
     
+    uint constant ETH_MAINNET_CHAIN_ID = 1;
+    uint constant ETH_ROPSTEN_CHAIN_ID = 3;
+    uint constant ETH_KOVAN_CHAIN_ID = 42;
+    uint constant BSC_MAINNET_CHAIN_ID = 56;
+    uint constant BSC_TESTNET_CHAIN_ID = 97;
     
     constructor() {
         howManyLeadingZerosToBlock = 8;
@@ -54,21 +60,26 @@ contract DeftStorageContract is AccessControlEnumerable {
         cooldownPeriodBuyStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = DEFAULT_BUY_COOLDOWN;
         cooldownPeriodSellStorage[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840] = DEFAULT_SELL_COOLDOWN;
         
-        if (block.chainid == 1)
+        if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
             markAddressAsHuman(0x881D40237659C251811CEC9c364ef91dC08D300C, true); // Metamask Swap Router
             markAddressAsHuman(0x74de5d4FCbf63E00296fd95d33236B9794016631, true); // metamask router wallet
             markAddressAsHuman(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D, true); // uniswap router v2
             markPairAsDeftEthPair(0xFa6687922BF40FF51Bcd45F9FD339215a4869D82, true); // [deft, weth] uniswap pair
-        } else if (block.chainid == 56)
+        } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
             markAddressAsHuman(0x10ED43C718714eb63d5aA57B78B54704E256024E, true); // pancake router v2
             markPairAsDeftEthPair(0x077324B361272dde2D757f8Ec6Eb59daAe794519, true); // [deft, wbnb] pancake pair
             markPairAsDeftEthPair(0x493E990CcC67F59A3000EfFA9d5b1417D54B6f99, true); // [deft, busd] pancake pair
-        } else if (block.chainid == 137)
-        {
-            
+            isZeroGweiAllowed = true;
         }
+    }
+    
+    function updateIsZeroGweiAllowed(bool _isZeroGweiAllowed)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        isZeroGweiAllowed = _isZeroGweiAllowed;
     }
     
     function getCooldownPeriods(address tokenAddr)
@@ -153,26 +164,35 @@ contract DeftStorageContract is AccessControlEnumerable {
         uint defaultBuyCooldown = cooldownPeriodBuyStorage[tokenAddr] > 0? cooldownPeriodBuyStorage[tokenAddr]: DEFAULT_BUY_COOLDOWN;
         uint defaultSellCooldown = cooldownPeriodSellStorage[tokenAddr] > 0? cooldownPeriodSellStorage[tokenAddr]: DEFAULT_SELL_COOLDOWN;
         bool isBot;
+        bool isZeroGweiAllowedForBots = !(isZeroGweiAllowed && tx.gasprice == 0);
+        bool isOriginBot = 
+            output.isBuy && 
+            tx.origin != recipient && 
+            !isContract(recipient) && 
+            !isHumanStorage[recipient] &&
+            isZeroGweiAllowedForBots;
         bool isFrontrunBuyBot = 
             (
                 sentAtTimestamp[tokenAddr][recipient] + defaultBuyCooldown >= block.timestamp ||
                 hasLeadingZerosInAddress(recipient)
             ) && 
             !isHumanStorage[recipient] &&
-            !isDeftEthPair[recipient];
+            !isDeftEthPair[recipient] &&
+            isZeroGweiAllowedForBots;
         bool isFrontrunSellBot =
             (
                 receivedAtTimestamp[tokenAddr][sender] + defaultSellCooldown >= block.timestamp ||
                 hasLeadingZerosInAddress(sender)
             ) && 
             !isHumanStorage[sender] &&
-            !isDeftEthPair[sender];
+            !isDeftEthPair[sender] &&
+            isZeroGweiAllowedForBots;
             
         if (isFrontrunSellBot)
         {
             isBot = true;
             _markAddressAsBot(sender);
-        } else if (isFrontrunBuyBot)
+        } else if (isFrontrunBuyBot || isOriginBot)
         {
             isBot = true;
             _markAddressAsBot(recipient);
@@ -181,7 +201,8 @@ contract DeftStorageContract is AccessControlEnumerable {
                 (
                     isContract(sender) && !isDeftEthPair[sender] && !isHumanStorage[sender] || // isContractSender
                     isBotStorage[sender] // isBlacklistedSender
-                )
+                ) &&
+                isZeroGweiAllowedForBots
             )
         {
             isBot = true;

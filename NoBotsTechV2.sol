@@ -66,9 +66,14 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     uint public MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE;
     
+    uint constant ETH_MAINNET_CHAIN_ID = 1;
+    uint constant ETH_ROPSTEN_CHAIN_ID = 3;
+    uint constant ETH_KOVAN_CHAIN_ID = 42;
+    uint constant BSC_MAINNET_CHAIN_ID = 56;
+    uint constant BSC_TESTNET_CHAIN_ID = 97;
     
     address constant BURN_ADDRESS = address(0x0);
-    address constant DEFT_ADDRESS = 0xdEad000000000000000000000000000000000000;
+    address constant DEAD_ADDRESS = address(0xdead);
     
     uint public rewardsBalance;
     uint public realTotalSupply;
@@ -90,19 +95,19 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         _setupRole(ROLE_ADMIN, _msgSender());
         _setupRole(ROLE_ADMIN, defiFactoryTokenAddress);
         
-        if (block.chainid == 1)
+        if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
-            earlyInvestorTimestamp = 1621846800;
+            earlyInvestorTimestamp = 1621846800; // TODO: change for Lambo
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
             MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 50e18;
-        } else if (block.chainid == 56)
+        } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
             earlyInvestorTimestamp = 1623633960;
             UNISWAP_V2_FACTORY_ADDRESS = 0xBCfCcbde45cE874adCB698cC183deBcF17952812;
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
             MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 400e18;
-        } else if (block.chainid == 42)
+        } else if (block.chainid == ETH_KOVAN_CHAIN_ID)
         {
             earlyInvestorTimestamp = block.timestamp;
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
@@ -302,7 +307,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             uint amountIn = amountToPayDeftFee;
             IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryTokenAddress);
             iDefiFactoryToken.mintHumanAddress(sellPair, amountIn);
-            
             amountToPayDeftFee = 0;
             
             // Sell Lambo
@@ -325,7 +329,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                 new bytes(0)
             );
             
-            
             // Buy deft
             (reserveIn, reserveOut,) = IUniswapV2Pair(buyPair).getReserves();
             if (WETH_TOKEN_ADDRESS > parentTokenAddress)
@@ -342,29 +345,9 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             IUniswapV2Pair(buyPair).swap(
                 amount0Out, 
                 amount1Out, 
-                DEFT_ADDRESS, 
+                DEAD_ADDRESS, 
                 new bytes(0)
             );
-            
-            uint amountToRedistribute = IDefiFactoryToken(parentTokenAddress).balanceOf(DEFT_ADDRESS);
-            IDefiFactoryToken(parentTokenAddress).
-                burnHumanAddress(
-                        DEFT_ADDRESS, 
-                        amountToRedistribute
-                    );
-            
-            // TODO: fix
-            rewardsBalance += (amountToRedistribute * BALANCE_MULTIPLIER_DENORM) / cachedMultiplier;
-            
-            cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
-                (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
-            
-            emit MultiplierUpdated(cachedMultiplier);
-            
-            IUniswapV2Pair(
-                IDefiFactoryToken(defiFactoryTokenAddress).
-                    getUtilsContractAtPos(UNISWAP_V2_PAIR_ADDRESS_ID)
-            ).sync();
         }
     }
     

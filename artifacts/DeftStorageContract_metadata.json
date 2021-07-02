@@ -529,6 +529,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "isZeroGweiAllowed",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -725,6 +738,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "bool",
+						"name": "_isZeroGweiAllowed",
+						"type": "bool"
+					}
+				],
+				"name": "updateIsZeroGweiAllowed",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "tokenAddr",
 						"type": "address"
@@ -799,11 +825,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x0a9ed90015cbbdf14515098f5b60f6876d47da11d3990f43d7b87d88d52cbfd3",
+			"keccak256": "0x544b9092b37ae283d65dd475667ae869e705352e6d312ba674e101a429754192",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://ab0707f9eba75e3f9cdf75e73fe847ab4ca8a0a771052a395aa915cf37e160af",
-				"dweb:/ipfs/QmYeJWyMhr62uFY8Acv5gfR4S73z7NQ3rNTiQDAtNTCwGZ"
+				"bzz-raw://07144c29aad45a87d7f4a2110e2e881874b685b9b6cc42756168b16be5e9ffd3",
+				"dweb:/ipfs/QmQcqq4zAj6ruWee45eRpdfypjU2AQGB3PHu5RJumYt8t5"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
