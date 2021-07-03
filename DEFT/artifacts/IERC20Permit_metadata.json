@@ -105,7 +105,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/DEFT/Flat_DefiFactoryToken.sol": "IERC20Permit"
+			"sol-defifactory-token/DEFT/Flat_LamboToken.sol": "IERC20Permit"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -119,12 +119,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/DEFT/Flat_DefiFactoryToken.sol": {
-			"keccak256": "0xd49c68681410c79d473f7d0789ab7997e5c42e8b3b0e02acdf0bddb0fba656e9",
+		"sol-defifactory-token/DEFT/Flat_LamboToken.sol": {
+			"keccak256": "0xc699e5c6cdb402f542538f2beb43ca107a4727f3970c135d634d0153d561610f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7a4787a3912a6ce5a35f9df9597bff118becda7d024fd564bd3139dd199cef47",
-				"dweb:/ipfs/QmUTck9d6E2KbThSG82RNtM3CegcPQDF7qzMK6tLoyevme"
+				"bzz-raw://5acd8cf5d7a9c0522564b2b3fd93e4a7f922329f740e61082dc2ff3ec55b594b",
+				"dweb:/ipfs/QmeBsScDeGWJRRZgNrRGr2xxWYUAt37Cd19HUa3DmQ8fn5"
 			]
 		}
 	},

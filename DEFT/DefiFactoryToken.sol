@@ -54,8 +54,6 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         _setupRole(ROLE_TRANSFERER, _msgSender());
         _setupRole(ROLE_MODERATOR, _msgSender());
         _setupRole(ROLE_TAXER, _msgSender());
-        
-        _mintHumanAddress(DEAD_ADDRESS, 1);
     }
     
     modifier notPausedContract {

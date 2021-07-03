@@ -2,9 +2,8 @@
 pragma solidity ^0.8.4;
 
 /*
-🌎 Website: https://DefiFactory.finance
-💻 Dashboard: https://app.defifactory.fi
-👉 Telegram: https://t.me/DefiFactoryBot?start=info-join
+🌎 Website: https://Lambo.DefiFactory.finance
+👉 Telegram: https://t.me/LamboTokenOwners
 */
 
 struct TaxAmountsInput {
@@ -1522,7 +1521,7 @@ abstract contract ERC20Permit is ERC20Mod, IERC20Permit, EIP712 {
     }
 }
 
-contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Permit {
+contract LamboToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Permit {
     bytes32 public constant ROLE_MINTER = keccak256("ROLE_MINTER");
     bytes32 public constant ROLE_BURNER = keccak256("ROLE_BURNER");
     bytes32 public constant ROLE_TRANSFERER = keccak256("ROLE_TRANSFERER");
@@ -1547,24 +1546,20 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     bool public isPaused;
     
     address constant BURN_ADDRESS = address(0x0);
+    address constant DEAD_ADDRESS = 0xdEad000000000000000000000000000000000000;
     
     event VestedAmountClaimed(address recipient, uint amount);
     event UpdatedUtilsContracts(AccessSettings[] accessSettings);
     event TransferCustom(address sender, address recipient, uint amount);
     event MintHumanAddress(address recipient, uint amount);
     event BurnHumanAddress(address sender, uint amount);
-    event ClaimedReferralRewards(address recipient, uint amount);
     
     event MintedByBridge(address recipient, uint amount);
     event BurnedByBridge(address sender, uint amount);
 
-
-
-
-
     constructor() 
-        ERC20Mod("Defi Factory Token", "DEFT") 
-        ERC20Permit("Defi Factory Token")
+        ERC20Mod("Lambo Token t.me/LamboTokenOwners", "LAMBO") 
+        ERC20Permit("Lambo Token")
     {
         _setupRole(ROLE_ADMIN, _msgSender());
         _setupRole(ROLE_MINTER, _msgSender());
@@ -1577,7 +1572,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     modifier notPausedContract {
         require(
             !isPaused,
-            "DEFT: paused"
+            "T: paused"
         );
         _;
     }
@@ -1585,7 +1580,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     modifier pausedContract {
         require(
             isPaused,
-            "DEFT: !paused"
+            "T: !paused"
         );
         _;
     }
@@ -1654,12 +1649,12 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     {
         require(
             sender != BURN_ADDRESS,
-            "DEFT: !burn"
+            "T: !burn"
         );
         _transfer(sender, recipient, amount);
 
         uint256 currentAllowance = _allowances[sender][_msgSender()];
-        require(currentAllowance >= amount, "DEFT: transfer amount exceeds allowance");
+        require(currentAllowance >= amount, "T: transfer amount exceeds allowance");
         _approve(sender, _msgSender(), currentAllowance - amount);
 
         return true;
@@ -1673,7 +1668,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     {
         require(
             sender != BURN_ADDRESS,
-            "DEFT: !burn"
+            "T: !burn"
         );
         _transfer(sender, recipient, amount);
 
@@ -1687,7 +1682,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     {
         require(
             sender != BURN_ADDRESS,
-            "DEFT: !burn"
+            "T: !burn"
         );
         _transfer(sender, recipient, amount);
         
@@ -1701,11 +1696,11 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     {
         require(
             recipient != BURN_ADDRESS,
-            "DEFT: !burn"
+            "T: !burn"
         );
         require(
             sender != recipient,
-            "DEFT: !self"
+            "T: !self"
         );
         
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
@@ -1734,7 +1729,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         notPausedContract
     {
         address vestingContract = utilsContracts[TEAM_VESTING_CONTRACT_ID];
-        require(vestingContract == _msgSender(), "DEFT: !VESTING_CONTRACT");
+        require(vestingContract == _msgSender(), "T: !VESTING_CONTRACT");
         
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
         _RealBalances[vestingContract] -= amount;
@@ -1747,72 +1742,18 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         emit VestedAmountClaimed(recipient, amount);
     }
     
-    function registerReferral(address referrer)
-        public
-    {
-        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        return iNoBotsTech.registerReferral(_msgSender(), referrer);
-    }
-    
-    function getTemporaryReferralRealAmountsBulk(address[] calldata addrs)
-        external
-        view
-        returns (TemporaryReferralRealAmountsBulk[] memory)
-    {
-        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        return iNoBotsTech.getTemporaryReferralRealAmountsBulk(addrs);
-    }
-    
-    function getCachedReferrerRewards(address addr)
-        external
-        view
-        returns(uint)
-    {
-        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        return iNoBotsTech.getCachedReferrerRewards(addr);
-    }
-    
-    function getCalculatedReferrerRewards(address addr, address[] calldata referrals)
-        external
-        view
-        returns(uint)
-    {
-        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        return iNoBotsTech.getCalculatedReferrerRewards(addr, referrals);
-    }
-    
-    function filterNonZeroReferrals(address[] calldata referrals)
-        external
-        view
-        returns (address[] memory)
-    {
-        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        return iNoBotsTech.filterNonZeroReferrals(referrals);
-    }
-    
-    function claimReferrerRewards(address[] calldata referrals)
-        external
-        notPausedContract
-    {
-        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        iNoBotsTech.updateReferrersRewards(referrals);
-        
-        uint rewards = iNoBotsTech.getCachedReferrerRewards(_msgSender());
-        require(rewards > 0, "DEFT: !rewards");
-        
-        iNoBotsTech.clearReferrerRewards(_msgSender());
-        _mintHumanAddress(_msgSender(), rewards);
-        
-        emit ClaimedReferralRewards(_msgSender(), rewards);
-    }
-    
     function chargeCustomTax(address from, uint amount)
         external
         notPausedContract
         onlyRole(ROLE_TAXER)
     {
+        uint balanceBefore = _RealBalances[from];
+        
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        _RealBalances[from] = iNoBotsTech.chargeCustomTax(amount, _RealBalances[from]);
+        _RealBalances[from] = iNoBotsTech.chargeCustomTax(amount, balanceBefore);
+        
+        uint taxAmount = iNoBotsTech.getBalance(from, balanceBefore - _RealBalances[from]);
+        emit Transfer(from, address(0), taxAmount);
     }
     
     function updateUtilsContracts(AccessSettings[] calldata accessSettings)
