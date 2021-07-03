@@ -33,20 +33,16 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     bool public isPaused;
     
     address constant BURN_ADDRESS = address(0x0);
+    address constant DEAD_ADDRESS = 0xdEad000000000000000000000000000000000000;
     
     event VestedAmountClaimed(address recipient, uint amount);
     event UpdatedUtilsContracts(AccessSettings[] accessSettings);
     event TransferCustom(address sender, address recipient, uint amount);
     event MintHumanAddress(address recipient, uint amount);
     event BurnHumanAddress(address sender, uint amount);
-    event ClaimedReferralRewards(address recipient, uint amount);
     
     event MintedByBridge(address recipient, uint amount);
     event BurnedByBridge(address sender, uint amount);
-
-
-
-
 
     constructor() 
         ERC20Mod("Meme Defi Factory Token", "memeDEFT") 
@@ -58,6 +54,8 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         _setupRole(ROLE_TRANSFERER, _msgSender());
         _setupRole(ROLE_MODERATOR, _msgSender());
         _setupRole(ROLE_TAXER, _msgSender());
+        
+        _mintHumanAddress(DEAD_ADDRESS, 1);
     }
     
     modifier notPausedContract {
@@ -231,65 +229,6 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         
         emit Transfer(vestingContract, recipient, amount);
         emit VestedAmountClaimed(recipient, amount);
-    }
-    
-    function registerReferral(address referrer)
-        public
-    {
-        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        return iNoBotsTech.registerReferral(_msgSender(), referrer);
-    }
-    
-    function getTemporaryReferralRealAmountsBulk(address[] calldata addrs)
-        external
-        view
-        returns (TemporaryReferralRealAmountsBulk[] memory)
-    {
-        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        return iNoBotsTech.getTemporaryReferralRealAmountsBulk(addrs);
-    }
-    
-    function getCachedReferrerRewards(address addr)
-        external
-        view
-        returns(uint)
-    {
-        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        return iNoBotsTech.getCachedReferrerRewards(addr);
-    }
-    
-    function getCalculatedReferrerRewards(address addr, address[] calldata referrals)
-        external
-        view
-        returns(uint)
-    {
-        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        return iNoBotsTech.getCalculatedReferrerRewards(addr, referrals);
-    }
-    
-    function filterNonZeroReferrals(address[] calldata referrals)
-        external
-        view
-        returns (address[] memory)
-    {
-        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        return iNoBotsTech.filterNonZeroReferrals(referrals);
-    }
-    
-    function claimReferrerRewards(address[] calldata referrals)
-        external
-        notPausedContract
-    {
-        INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        iNoBotsTech.updateReferrersRewards(referrals);
-        
-        uint rewards = iNoBotsTech.getCachedReferrerRewards(_msgSender());
-        require(rewards > 0, "DEFT: !rewards");
-        
-        iNoBotsTech.clearReferrerRewards(_msgSender());
-        _mintHumanAddress(_msgSender(), rewards);
-        
-        emit ClaimedReferralRewards(_msgSender(), rewards);
     }
     
     function chargeCustomTax(address from, uint amount)

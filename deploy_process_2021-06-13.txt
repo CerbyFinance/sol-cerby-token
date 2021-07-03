@@ -3,24 +3,23 @@
 3. deploy CrossChainBridge
 4. NoBotsTechV2 set totalSupply + rewardsBalance
 5. DeftStorageContract give admin rights to CrossChainBridge contract 
-6. DefiFactoryToken.grantRole(ROLE_BURNER, NoBotsTechV2NewMemeToken)
 7. defiFactoryTokenContract.methods.updateUtilsContracts
 Eth:
 [
-    [true, true, false, false, true, "0x0C344a302fC79d687A3f09A0ca97c17F36dCC756"],
+    [true, true, false, false, true, "0x905DeBc561EaE6D18098c0BEF4056773257a4982"],
     [true, true, false, false, false, "0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9"],
     [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"],
-    [false, false, false, false, false, "0x88713Fa9b96303e8BE7d4bdB92f09830421713c5"],
+    [false, false, false, false, false, "0x23f857A9A017f84402AC5c392b377d50f9A98160"],
     [false, false, false, false, false, "0xfa6687922bf40ff51bcd45f9fd339215a4869d82"],
     [true, true, false, false, true, "0x01e835C7A3f7B51243229DfB85A1EA08a5512499"]
 ]
 
 Bsc:
 [
-    [true, true, false, false, true, "0x0C344a302fC79d687A3f09A0ca97c17F36dCC756"],
+    [true, true, false, false, true, "0x905DeBc561EaE6D18098c0BEF4056773257a4982"],
     [true, true, false, false, false, "0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9"],
     [false, false, false, false, false, "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73"],
-    [false, false, false, false, false, "0x88713Fa9b96303e8BE7d4bdB92f09830421713c5"],
+    [false, false, false, false, false, "0x23f857A9A017f84402AC5c392b377d50f9A98160"],
     [false, false, false, false, false, "0x077324B361272dde2D757f8Ec6Eb59daAe794519"],
     [true, true, false, false, true, "0x01e835C7A3f7B51243229DfB85A1EA08a5512499"]
 ]

@@ -41,7 +41,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // Top1 listing bot
         
         markAddressAsHuman(0xdEF78a28c78A461598d948bc0c689ce88f812AD8, true); // Cross Chain Bridge Wallet
-        markAddressAsHuman(0x0C344a302fC79d687A3f09A0ca97c17F36dCC756, true); // NoBotsTechV2
+        markAddressAsHuman(0x905DeBc561EaE6D18098c0BEF4056773257a4982, true); // NoBotsTechV2
         markAddressAsHuman(0xDef1C0ded9bec7F1a1670819833240f027b25EfF, true); // 0x: Exchange Proxy
         markAddressAsHuman(0x11111112542D85B3EF69AE05771c2dCCff4fAa26, true); // 1inch Router
         markAddressAsHuman(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // TeamVestingContract

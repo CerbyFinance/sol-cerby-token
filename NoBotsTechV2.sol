@@ -27,7 +27,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     uint public batchBurnAndReward;
     uint public lastCachedTimestamp = block.timestamp;
-    uint public lastPaidFeeTimestamp;
+    uint public lastPaidFeeTimestamp = block.timestamp;
     
     uint public secondsBetweenRecacheUpdates = 0 minutes;
     
@@ -51,7 +51,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public howOftenPayDeftFee = 0; */
     
     /* Lambo Taxes */
-    uint public deftFeePercent = 25e4; // 25.0%
+    uint public deftFeePercent = 10e4; // 10.0%
     uint public cycleOneStartTaxPercent = 30e4; // 30.0%
     uint public cycleOneEnds = 7 days;
     uint public cycleTwoStartTaxPercent = 5e4; // 5.0%
@@ -77,15 +77,12 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
     uint public rewardsBalance;
     uint public realTotalSupply;
-    uint public amountToPayDeftFee;
     uint public earlyInvestorTimestamp;
-    
     
     struct CurrectCycle {
         uint currentCycleTax;
         uint howMuchTimeLeftTillEndOfCycleThree;
     }
-    
     
     event MultiplierUpdated(uint newMultiplier);
     event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);
@@ -247,17 +244,23 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             
             // 75% Tax redistribution
             rewardsBalance += batchBurnAndReward - realAmountToPayFeeThisTime; // 75% of amount goes to rewards to TOKEN holders
-            realTotalSupply -= batchBurnAndReward + realAmountToPayFeeThisTime; // no idea why but it works
+            realTotalSupply -= batchBurnAndReward; // no idea why but it works
             batchBurnAndReward = 0;
-            
-            cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
-                (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
                 
             if (realAmountToPayFeeThisTime > 0)
             {
-                amountToPayDeftFee += (realAmountToPayFeeThisTime * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
+                uint amountToPayFeeThisTime = (realAmountToPayFeeThisTime * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
+                IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryTokenAddress);
+                iDefiFactoryToken.mintHumanAddress(DEAD_ADDRESS, amountToPayFeeThisTime);
+                
+                uint extraTotalSupply = (amountToPayFeeThisTime - realAmountToPayFeeThisTime);
+                uint extraRealTotalSupply = (extraTotalSupply * BALANCE_MULTIPLIER_DENORM) / cachedMultiplier;
+                realTotalSupply -= extraRealTotalSupply;
+                rewardsBalance -= extraTotalSupply - extraRealTotalSupply;
             }
             
+            cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
+                (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
             emit MultiplierUpdated(cachedMultiplier);
             
             IUniswapV2Pair(
@@ -289,65 +292,69 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     function payFeeToDeftHolders()
         public
     {
-        if  (
-                parentTokenAddress != BURN_ADDRESS &&
-                amountToPayDeftFee > 1 &&
-                block.timestamp > lastPaidFeeTimestamp + howOftenPayDeftFee
-            )
+        if  (parentTokenAddress != BURN_ADDRESS)
         {
-            address sellPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(defiFactoryTokenAddress, WETH_TOKEN_ADDRESS);
-            address buyPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(WETH_TOKEN_ADDRESS, parentTokenAddress);
-            
-            if (IWeth(WETH_TOKEN_ADDRESS).balanceOf(buyPair) <= MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE)
+            uint amountToPayDeftFee = IWeth(defiFactoryTokenAddress).balanceOf(DEAD_ADDRESS);
+            if (
+                    amountToPayDeftFee > 1 &&
+                    block.timestamp > lastPaidFeeTimestamp + howOftenPayDeftFee
+                )
             {
-                return;
+                address sellPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(defiFactoryTokenAddress, WETH_TOKEN_ADDRESS);
+                address buyPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(WETH_TOKEN_ADDRESS, parentTokenAddress);
+                
+                if (IWeth(WETH_TOKEN_ADDRESS).balanceOf(buyPair) <= MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE)
+                {
+                    return;
+                }
+                
+                // Paying fee to DEFT holders
+                uint amountIn = amountToPayDeftFee;
+                IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryTokenAddress);
+                iDefiFactoryToken.burnHumanAddress(DEAD_ADDRESS, amountIn);
+                iDefiFactoryToken.mintHumanAddress(sellPair, amountIn);
+                amountToPayDeftFee = 0;
+                
+                // Sell Lambo
+                (uint reserveIn, uint reserveOut,) = IUniswapV2Pair(sellPair).getReserves();
+                if (defiFactoryTokenAddress > WETH_TOKEN_ADDRESS)
+                {
+                    (reserveIn, reserveOut) = (reserveOut, reserveIn);
+                }
+                
+                uint amountInWithFee = amountIn * 997;
+                uint amountOut = (amountInWithFee * reserveOut) / (reserveIn * 1000 + amountInWithFee);
+                
+                (uint amount0Out, uint amount1Out) = defiFactoryTokenAddress < WETH_TOKEN_ADDRESS? 
+                    (uint(0), amountOut): (amountOut, uint(0));
+                
+                IUniswapV2Pair(sellPair).swap(
+                    amount0Out, 
+                    amount1Out, 
+                    buyPair, 
+                    new bytes(0)
+                );
+                
+                // Buy deft
+                (reserveIn, reserveOut,) = IUniswapV2Pair(buyPair).getReserves();
+                if (WETH_TOKEN_ADDRESS > parentTokenAddress)
+                {
+                    (reserveIn, reserveOut) = (reserveOut, reserveIn);
+                }
+                
+                amountInWithFee = amountOut * 997;
+                amountOut = (amountInWithFee * reserveOut) / (reserveIn * 1000 + amountInWithFee);
+                
+                (amount0Out, amount1Out) = WETH_TOKEN_ADDRESS < parentTokenAddress?
+                    (uint(0), amountOut): (amountOut, uint(0));
+                
+                IUniswapV2Pair(buyPair).swap(
+                    amount0Out, 
+                    amount1Out, 
+                    DEAD_ADDRESS, 
+                    new bytes(0)
+                );
             }
-            
-            // Paying fee to DEFT holders
-            uint amountIn = amountToPayDeftFee;
-            IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryTokenAddress);
-            iDefiFactoryToken.mintHumanAddress(sellPair, amountIn);
-            amountToPayDeftFee = 0;
-            
-            // Sell Lambo
-            (uint reserveIn, uint reserveOut,) = IUniswapV2Pair(sellPair).getReserves();
-            if (defiFactoryTokenAddress > WETH_TOKEN_ADDRESS)
-            {
-                (reserveIn, reserveOut) = (reserveOut, reserveIn);
-            }
-            
-            uint amountInWithFee = amountIn * 997;
-            uint amountOut = (amountInWithFee * reserveOut) / (reserveIn * 1000 + amountInWithFee);
-            
-            (uint amount0Out, uint amount1Out) = defiFactoryTokenAddress < WETH_TOKEN_ADDRESS? 
-                (uint(0), amountOut): (amountOut, uint(0));
-            
-            IUniswapV2Pair(sellPair).swap(
-                amount0Out, 
-                amount1Out, 
-                buyPair, 
-                new bytes(0)
-            );
-            
-            // Buy deft
-            (reserveIn, reserveOut,) = IUniswapV2Pair(buyPair).getReserves();
-            if (WETH_TOKEN_ADDRESS > parentTokenAddress)
-            {
-                (reserveIn, reserveOut) = (reserveOut, reserveIn);
-            }
-            
-            amountInWithFee = amountOut * 997;
-            amountOut = (amountInWithFee * reserveOut) / (reserveIn * 1000 + amountInWithFee);
-            
-            (amount0Out, amount1Out) = WETH_TOKEN_ADDRESS < parentTokenAddress?
-                (uint(0), amountOut): (amountOut, uint(0));
-            
-            IUniswapV2Pair(buyPair).swap(
-                amount0Out, 
-                amount1Out, 
-                DEAD_ADDRESS, 
-                new bytes(0)
-            );
         }
     }
     
@@ -397,11 +404,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             );
         }
         
-        uint buyTimestampSender = 
-            getUpdatedBuyTimestampOfEarlyInvestor(taxAmountsInput.sender, taxAmountsInput.senderRealBalance);
-        uint timePassedSinceLastBuy = block.timestamp > buyTimestampSender?
-                                        block.timestamp - buyTimestampSender: 0;
-        
         uint burnAndRewardRealAmount;
         if (isHumanInfo.isHumanTransaction)
         {
@@ -414,6 +416,10 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                 // sells - cycle tax
                 // transfers - 0% tax
                 
+                uint buyTimestampSender = 
+                    getUpdatedBuyTimestampOfEarlyInvestor(taxAmountsInput.sender, taxAmountsInput.senderRealBalance);
+                uint timePassedSinceLastBuy = 
+                    block.timestamp > buyTimestampSender? block.timestamp - buyTimestampSender: 0;
                 uint cycleTaxPercent = calculateCurrentCycleTax(timePassedSinceLastBuy);
                 burnAndRewardRealAmount = (realTransferAmount * cycleTaxPercent) / TAX_PERCENT_DENORM;
             }
@@ -430,13 +436,17 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             );
         }
         
-        
         if (!isHumanInfo.isSell)
         { // isBuy or isTransfer: Updating cycle based on realTransferAmount
             uint newBuyTimestamp = getUpdatedBuyTimestampOfEarlyInvestor(taxAmountsInput.recipient, taxAmountsInput.recipientRealBalance);
             newBuyTimestamp = getNewBuyTimestamp(newBuyTimestamp, taxAmountsInput.recipientRealBalance, realTransferAmount);
             
             iDeftStorageContract.updateBuyTimestamp(defiFactoryTokenAddress, taxAmountsInput.recipient, newBuyTimestamp);
+            
+            if (!isHumanInfo.isBuy)
+            {
+                payFeeToDeftHolders();
+            }
         }
         
         
@@ -449,12 +459,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             (burnAndRewardRealAmount * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM; // Actual amount we burned and have to show in event
         taxAmountsOutput.recipientGetsAmount = 
             taxAmountsInput.transferAmount - taxAmountsOutput.burnAndRewardAmount; // Actual amount recipient got and have to show in event
-        
-        
-        if (!isHumanInfo.isBuy && !isHumanInfo.isSell)
-        { // isTransfer
-            payFeeToDeftHolders();
-        }
         
         delayedUpdateCache();
         
