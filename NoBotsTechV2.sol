@@ -32,7 +32,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public secondsBetweenRecacheUpdates = 10 minutes;
     
     
-    address public defiFactoryTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
+    address public defiFactoryTokenAddress;
     address public parentTokenAddress;
     
     uint public botTaxPercent = 999e3; // 99.9%
@@ -94,16 +94,26 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
-            earlyInvestorTimestamp = 1621846800; // TODO: change for Lambo
+            //earlyInvestorTimestamp = 1621846800; // DEFT
+            earlyInvestorTimestamp = block.timestamp;
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
             MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 10e18;
+            
+            defiFactoryTokenAddress = 0x44EB8f6C496eAA8e0321006d3c61d851f87685BD; // LAMBO
+            
+            parentTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840; // DEFT
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
-            earlyInvestorTimestamp = 1623633960;
+            //earlyInvestorTimestamp = 1623633960; // DEFT
+            earlyInvestorTimestamp = block.timestamp;
             UNISWAP_V2_FACTORY_ADDRESS = 0xBCfCcbde45cE874adCB698cC183deBcF17952812;
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
             MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 75e18;
+            
+            defiFactoryTokenAddress = 0x44EB8f6C496eAA8e0321006d3c61d851f87685BD; // LAMBO
+            
+            parentTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840; // DEFT
         } else if (block.chainid == ETH_KOVAN_CHAIN_ID)
         {
             earlyInvestorTimestamp = block.timestamp;
@@ -313,7 +323,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                 IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryTokenAddress);
                 iDefiFactoryToken.burnHumanAddress(DEAD_ADDRESS, amountIn);
                 iDefiFactoryToken.mintHumanAddress(sellPair, amountIn);
-                amountToPayDeftFee = 0;
                 
                 // Sell Lambo
                 (uint reserveIn, uint reserveOut,) = IUniswapV2Pair(sellPair).getReserves();
