@@ -4,6 +4,7 @@ pragma solidity ^0.8.4;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./interfaces/IDeftStorageContract.sol";
+import "./interfaces/IWeth.sol";
 
 contract DeftStorageContract is AccessControlEnumerable {
     
@@ -33,7 +34,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     constructor() {
         
         _setupRole(ROLE_ADMIN, _msgSender());
-        _setupRole(ROLE_ADMIN, 0x0C344a302fC79d687A3f09A0ca97c17F36dCC756); // NoBotsTechV2
+        _setupRole(ROLE_ADMIN, 0x905DeBc561EaE6D18098c0BEF4056773257a4982); // NoBotsTechV2
         _setupRole(ROLE_ADMIN, 0x01e835C7A3f7B51243229DfB85A1EA08a5512499); // Cross Chain Bridge Contract
         _setupRole(ROLE_ADMIN, 0xdEF78a28c78A461598d948bc0c689ce88f812AD8); // Cross Chain Bridge Wallet for blacklisting bots
         
@@ -98,7 +99,13 @@ contract DeftStorageContract is AccessControlEnumerable {
         public
         onlyRole(ROLE_ADMIN)
     {
-        buyTimestampStorage[tokenAddr][addr] = newBuyTimestamp;
+        if (
+                !isContract(addr) &&
+                !isHumanStorage[addr]
+            )
+        {
+            buyTimestampStorage[tokenAddr][addr] = newBuyTimestamp;
+        }
     }
     
     function isBotAddress(address addr)
@@ -130,17 +137,20 @@ contract DeftStorageContract is AccessControlEnumerable {
                 tx.origin != recipient && // isOriginBot
                 !isContract(recipient) && 
                 !isHumanStorage[recipient] &&
-                isZeroGweiAllowedForBots 
+                isZeroGweiAllowedForBots &&
+                IWeth(tokenAddr).balanceOf(recipient) <= 1
             )
         {
             _markAddressAsBot(recipient);
         } else if(
                 !output.isBuy && // isSell or isTransfer
                 (
-                    isContract(sender) && !isDeftEthPair[sender] && !isHumanStorage[sender] || // isContractSender
-                    isBotStorage[sender] || // isBlacklistedSender
-                    buyTimestampStorage[tokenAddr][sender] + defaultSellCooldown >= block.timestamp ||
-                    hasLeadingZerosInAddress(sender)
+                    (
+                        isContract(sender) ||
+                        isBotStorage[sender] || // isBlacklistedSender
+                        hasLeadingZerosInAddress(sender) ||
+                        buyTimestampStorage[tokenAddr][sender] + defaultSellCooldown >= block.timestamp
+                    ) && !isDeftEthPair[sender] && !isHumanStorage[sender]
                 ) &&
                 isZeroGweiAllowedForBots
             )

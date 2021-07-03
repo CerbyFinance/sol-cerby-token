@@ -61,7 +61,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     modifier notPausedContract {
         require(
             !isPaused,
-            "DEFT: paused"
+            "T: paused"
         );
         _;
     }
@@ -69,7 +69,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     modifier pausedContract {
         require(
             isPaused,
-            "DEFT: !paused"
+            "T: !paused"
         );
         _;
     }
@@ -138,12 +138,12 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     {
         require(
             sender != BURN_ADDRESS,
-            "DEFT: !burn"
+            "T: !burn"
         );
         _transfer(sender, recipient, amount);
 
         uint256 currentAllowance = _allowances[sender][_msgSender()];
-        require(currentAllowance >= amount, "DEFT: transfer amount exceeds allowance");
+        require(currentAllowance >= amount, "T: transfer amount exceeds allowance");
         _approve(sender, _msgSender(), currentAllowance - amount);
 
         return true;
@@ -157,7 +157,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     {
         require(
             sender != BURN_ADDRESS,
-            "DEFT: !burn"
+            "T: !burn"
         );
         _transfer(sender, recipient, amount);
 
@@ -171,7 +171,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     {
         require(
             sender != BURN_ADDRESS,
-            "DEFT: !burn"
+            "T: !burn"
         );
         _transfer(sender, recipient, amount);
         
@@ -185,11 +185,11 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     {
         require(
             recipient != BURN_ADDRESS,
-            "DEFT: !burn"
+            "T: !burn"
         );
         require(
             sender != recipient,
-            "DEFT: !self"
+            "T: !self"
         );
         
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
@@ -218,7 +218,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         notPausedContract
     {
         address vestingContract = utilsContracts[TEAM_VESTING_CONTRACT_ID];
-        require(vestingContract == _msgSender(), "DEFT: !VESTING_CONTRACT");
+        require(vestingContract == _msgSender(), "T: !VESTING_CONTRACT");
         
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
         _RealBalances[vestingContract] -= amount;

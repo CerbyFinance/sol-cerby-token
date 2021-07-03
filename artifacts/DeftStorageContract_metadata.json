@@ -718,11 +718,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0xce6ee175e9a57b40604e488d428f853839b5d955449f9037119414b939a2d052",
+			"keccak256": "0x90bd6ab2811778955765eaa8fb7b299ce6d4b35f1e5dac87a40083272adda5f0",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://a61ef94ba1ace812f333090d46e71ad7b57855617fb0312120cef583463ab8a3",
-				"dweb:/ipfs/QmRjWyEzvRsNb5voegmZ5CMPocNrGG8pjPuAEGGXMj74P7"
+				"bzz-raw://2bc75cb82a27db50065b7337963c6d52d9ead2b16df3f4db0c98aa6bfdef2baf",
+				"dweb:/ipfs/QmWQVqLfQAd8rWzE3pLEf5egYsyxm4ECTgwALtP6hoq6Z6"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
@@ -731,6 +731,14 @@
 			"urls": [
 				"bzz-raw://f2b23e30f5058f4e004b15e868b34df5c2248206adf07bfe2a5037eb283e26a4",
 				"dweb:/ipfs/QmaAChav6978W4YkckxwkEbMguuvE2wdaxXgW5AgyZBEEZ"
+			]
+		},
+		"sol-defifactory-token/interfaces/IWeth.sol": {
+			"keccak256": "0x51f4f8e3e1a7ccd1c9f5e7bc309f45fdd5af8de587a69f6bdb1d58c5d8f3868b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://26e24fca252fe03674b5af63dccf059e8d71ac83f7a38fa41111f3dc50cdf1cb",
+				"dweb:/ipfs/QmVnGwETXJqrd57kS6JMincsxnruwT6hCh4pMkxNEUCXtg"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

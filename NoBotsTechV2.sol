@@ -29,7 +29,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public lastCachedTimestamp = block.timestamp;
     uint public lastPaidFeeTimestamp = block.timestamp;
     
-    uint public secondsBetweenRecacheUpdates = 0 minutes;
+    uint public secondsBetweenRecacheUpdates = 10 minutes;
     
     
     address public defiFactoryTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
@@ -39,8 +39,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public howManyFirstMinutesIncreasedTax = 0;
     uint constant TAX_PERCENT_DENORM = 1e6;
     
-    /* DEFT Taxes:
-    uint public deftFeePercent; // 0.0%
+    /* DEFT Taxes: */
+    /*uint public deftFeePercent; // 0.0%
     uint public cycleOneStartTaxPercent = 15e4; // 15.0%
     uint public cycleOneEnds = 120 days;
     uint public cycleTwoStartTaxPercent = 8e4; // 8.0%
