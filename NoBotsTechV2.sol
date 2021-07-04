@@ -260,13 +260,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             if (realAmountToPayFeeThisTime > 0)
             {
                 uint amountToPayFeeThisTime = (realAmountToPayFeeThisTime * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
-                IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryTokenAddress);
-                iDefiFactoryToken.mintHumanAddress(DEAD_ADDRESS, amountToPayFeeThisTime);
-                
-                uint extraTotalSupply = (amountToPayFeeThisTime - realAmountToPayFeeThisTime);
-                uint extraRealTotalSupply = (extraTotalSupply * BALANCE_MULTIPLIER_DENORM) / cachedMultiplier;
-                realTotalSupply -= extraRealTotalSupply;
-                rewardsBalance -= extraTotalSupply - extraRealTotalSupply;
+                mintAmountAndUpdateTotalSupply(DEAD_ADDRESS, amountToPayFeeThisTime, realAmountToPayFeeThisTime);
             }
             
             cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
@@ -288,6 +282,19 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             
             emit BuyLimitAmountUpdated(buyLimitAmount);
         }
+    }
+    
+    function mintAmountAndUpdateTotalSupply(address addr, uint amount, uint realAmount)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryTokenAddress);
+        iDefiFactoryToken.mintHumanAddress(addr, amount);
+        
+        uint extraTotalSupply = (amount - realAmount);
+        uint extraRealTotalSupply = (extraTotalSupply * BALANCE_MULTIPLIER_DENORM) / cachedMultiplier;
+        realTotalSupply -= extraRealTotalSupply;
+        rewardsBalance -= extraTotalSupply - extraRealTotalSupply;
     }
     
     function publicForcedUpdateCacheMultiplier()

@@ -26,9 +26,9 @@ contract PresaleBSC is AccessControlEnumerable {
     Investor[] public investors;
     
     uint public totalInvestedWeth;
-    uint public maxWethCap = 1000e18;
-    uint public perWalletMinWethCap = 0;
-    uint public perWalletMaxWethCap = 50e18;
+    uint public maxWethCap = 10000e18;
+    uint public perWalletMinWethCap = 1;
+    uint public perWalletMaxWethCap = 10000e18;
     uint public amountOfDeftForInvestors;
     uint public amountOfDeftForUniswap;
     uint public amountOfDeftBurned;

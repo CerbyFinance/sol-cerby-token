@@ -6,8 +6,6 @@ import "../interfaces/INoBotsTech.sol";
 import "../openzeppelin/access/AccessControlEnumerable.sol";
 import "../openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol";
 
-
-
 contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Permit {
     bytes32 public constant ROLE_MINTER = keccak256("ROLE_MINTER");
     bytes32 public constant ROLE_BURNER = keccak256("ROLE_BURNER");
