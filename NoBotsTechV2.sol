@@ -107,7 +107,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         {
             //earlyInvestorTimestamp = 1623633960; // DEFT
             earlyInvestorTimestamp = block.timestamp;
-            UNISWAP_V2_FACTORY_ADDRESS = 0xBCfCcbde45cE874adCB698cC183deBcF17952812;
+            UNISWAP_V2_FACTORY_ADDRESS = 0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73;
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
             MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 75e18;
             
