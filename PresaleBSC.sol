@@ -30,8 +30,10 @@ contract PresaleBSC is AccessControlEnumerable {
     uint public perWalletMinWethCap = 0;
     uint public perWalletMaxWethCap = 50e18;
     uint public amountOfDeftForInvestors;
+    uint public amountOfDeftForUniswap;
+    uint public amountOfDeftBurned;
+    uint public amountOfDeftMinted;
     
-    uint public fixedPriceInUsd = 1e18; // 1 usd
     
     address public defiFactoryTokenAddress;
     address public TEAM_FINANCE_ADDRESS;
@@ -50,6 +52,9 @@ contract PresaleBSC is AccessControlEnumerable {
     uint constant DEFT_DECIMALS = 18;
     uint constant WETH_DECIMALS = 18;
     uint USDT_DECIMALS;
+    
+    uint constant bonusPercent = 5e4;
+    uint constant PERCENT_DENORM = 1e6;
     
     address public constant BURN_ADDRESS = address(0x0);
     
@@ -84,7 +89,7 @@ contract PresaleBSC is AccessControlEnumerable {
             USDT_DECIMALS = 6;
             TEAM_FINANCE_ADDRESS = BURN_ADDRESS;
             
-            defiFactoryTokenAddress = 0xD986d684f51efeb18Bf1A6F129F8Cd70126E3826;
+            defiFactoryTokenAddress = 0xAa54f213dBe6ba9a1f5ceE5bCcb40Ea0e8Dd2984;
         } else if (block.chainid == ETH_ROPSTEN_CHAIN_ID)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
@@ -134,13 +139,6 @@ contract PresaleBSC is AccessControlEnumerable {
         emit InvestedAmount(addr, wethValue);
     }
     
-    function updateFixedPriceInUsd(uint _fixedPriceInUsd)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        fixedPriceInUsd = _fixedPriceInUsd;
-    }
-    
     function updateCaps(uint _maxWethCap, uint _perWalletMinWethCap, uint _perWalletMaxWethCap)
         public
         onlyRole(ROLE_ADMIN)
@@ -150,7 +148,7 @@ contract PresaleBSC is AccessControlEnumerable {
         perWalletMaxWethCap = _perWalletMaxWethCap;
     }
     
-    function updateLamboContract(address newContract)
+    function updateDefiFactoryContract(address newContract)
         public
         onlyRole(ROLE_ADMIN)
     {
@@ -211,32 +209,30 @@ contract PresaleBSC is AccessControlEnumerable {
         markGoalAsReached();
         prepareAddLiqudity();
         checkIfPairIsCreated();
-        //balancePairPrice(1e12, 1e18);
     }
     
     function skipSteps2(uint price, uint priceDenorm, uint limit, bool isLiquidityLocked)
         public
     {
-        //balancePairPrice(price, priceDenorm);
+        balancePairPrice(price, priceDenorm);
         addLiquidityOnUniswapV2();
         if (isLiquidityLocked)
         {
             lockLPTokensAtTeamFinance();
+        } else
+        {
+            uint amountOfLPTokensToSend = IWeth(wethAndTokenPairContract).balanceOf(address(this));
+            IWeth(wethAndTokenPairContract).transfer(msg.sender, amountOfLPTokensToSend);
         }
         
         limit = limit == 0? investors.length: limit;
         distributeInvestorsTokens(0, limit);
     }
     
-    function balancePairPrice()
+    function balancePairPrice(uint normedDeftPriceInUSD, uint PRICE_DENORM)
         public
         onlyRole(ROLE_ADMIN)
-        view
-        returns(uint,uint,uint,uint)
     {
-        uint normedDeftPriceInUSD = 3e13;
-        uint PRICE_DENORM = 1e18;
-        
         address wethAndUsdtPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
             getPair(USDT_TOKEN_ADDRESS, WETH_TOKEN_ADDRESS);
         (uint usdtBalance, uint wethBalance1, ) = IUniswapV2Pair(wethAndUsdtPairContract).getReserves();
@@ -252,22 +248,21 @@ contract PresaleBSC is AccessControlEnumerable {
         }
         
         uint sqrt1 = sqrt(
-                            (wethBalance2 * deftBalance * usdtBalance * PRICE_DENORM) / 
-                                (normedDeftPriceInUSD * 10**USDT_DECIMALS * wethBalance1)
+                            (wethBalance2 * deftBalance * usdtBalance * PRICE_DENORM * 10**(DEFT_DECIMALS - USDT_DECIMALS)) / 
+                                (normedDeftPriceInUSD * wethBalance1)
                         );
         uint sqrt2 = sqrt(
-                            (wethBalance2 * deftBalance * normedDeftPriceInUSD * 10**USDT_DECIMALS * wethBalance1) / 
-                                (usdtBalance * PRICE_DENORM)
+                            (wethBalance2 * deftBalance * normedDeftPriceInUSD * wethBalance1) / 
+                                (usdtBalance * PRICE_DENORM * 10**(DEFT_DECIMALS - USDT_DECIMALS))
                         );
-        return (sqrt1, deftBalance, sqrt2, wethBalance2);
-        /*if (sqrt1 > deftBalance)
+        if (sqrt1 > deftBalance)
         {
             // sell deft
             uint amountOfDeftToSell =
                 (1000 * (sqrt1 - deftBalance)) / 997;
             
             IDefiFactoryToken(defiFactoryTokenAddress).mintHumanAddress(wethAndTokenPairContract, amountOfDeftToSell);
-            amountOfDeftForInvestors += amountOfDeftToSell;
+            amountOfDeftMinted += amountOfDeftToSell;
             
             uint reserveIn = deftBalance;
             uint reserveOut = wethBalance2;
@@ -307,7 +302,15 @@ contract PresaleBSC is AccessControlEnumerable {
                 address(this), 
                 new bytes(0)
             );
-        }*/
+            
+            uint amountOfDustToBurn = IDefiFactoryToken(defiFactoryTokenAddress).balanceOf(address(this));
+            if (amountOfDustToBurn > 0)
+            {
+                amountOfDeftBurned += amountOfDustToBurn;
+                IDefiFactoryToken(defiFactoryTokenAddress).
+                    burnHumanAddress(address(this), amountOfDustToBurn);
+            }
+        }
     }
     
     function addLiquidityOnUniswapV2()
@@ -326,18 +329,14 @@ contract PresaleBSC is AccessControlEnumerable {
         uint wethAmount = iWeth.balanceOf(address(this));
         iWeth.transfer(wethAndTokenPairContract, wethAmount);
         
-        uint amountOfTokensForUniswap = (deftBalance * wethAmount) / wethBalance2;
-        amountOfDeftForInvestors += amountOfTokensForUniswap;
+        amountOfDeftForUniswap = (deftBalance * wethAmount) / wethBalance2;
+        amountOfDeftForInvestors = amountOfDeftForUniswap + (amountOfDeftForUniswap * bonusPercent) / PERCENT_DENORM;
         
-        IDefiFactoryToken(defiFactoryTokenAddress).mintHumanAddress(wethAndTokenPairContract, amountOfTokensForUniswap);
+        IDefiFactoryToken(defiFactoryTokenAddress).mintHumanAddress(wethAndTokenPairContract, amountOfDeftForUniswap);
         
         IUniswapV2Pair iPair = IUniswapV2Pair(wethAndTokenPairContract);
         iPair.mint(address(this));
         
-        amountOfDeftForInvestors -= IDefiFactoryToken(defiFactoryTokenAddress).balanceOf(address(this));
-        IDefiFactoryToken(defiFactoryTokenAddress).
-            burnByBridge(address(this), IDefiFactoryToken(defiFactoryTokenAddress).balanceOf(address(this)));
-    
         changeState(States.AddedLiquidity);
     }
 
@@ -379,6 +378,14 @@ contract PresaleBSC is AccessControlEnumerable {
                     IWeth(wethAndTokenPairContract).balanceOf(address(this)), 
                     block.timestamp + 36500 days
                 );
+    }
+    
+    function getTotalMintedTokens()
+        public
+        view
+        returns(uint)
+    {
+        return amountOfDeftForInvestors + amountOfDeftForUniswap + amountOfDeftMinted - amountOfDeftBurned;
     }
     
     function getInvestorsCount()

@@ -19,7 +19,7 @@ contract LiquidityHelper {
     address public defiFactoryToken;
     address public wethAndTokenPairContract;
     
-    uint public constant TOTAL_SUPPLY_CAP = 100 * 1e9 * 1e18; // 100B DEFT
+    uint public constant TOTAL_SUPPLY_CAP = 1000 * 1e18; // 100B DEFT
     
     uint public percentForTheTeam = 0;
     uint public percentForUniswap = 100;

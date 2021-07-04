@@ -9770,6 +9770,73 @@
 			"type": "event"
 		},
 		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "taxAmount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "accountBalance",
+					"type": "uint256"
+				}
+			],
+			"name": "chargeCustomTax",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "bytes32",
+					"name": "role",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				}
+			],
+			"name": "grantRole",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "bytes32",
+							"name": "role",
+							"type": "bytes32"
+						},
+						{
+							"internalType": "address",
+							"name": "addr",
+							"type": "address"
+						}
+					],
+					"internalType": "struct RoleAccess[]",
+					"name": "roles",
+					"type": "tuple[]"
+				}
+			],
+			"name": "grantRolesBulk",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"anonymous": false,
 			"inputs": [
 				{
@@ -9781,6 +9848,153 @@
 			],
 			"name": "MultiplierUpdated",
 			"type": "event"
+		},
+		{
+			"inputs": [],
+			"name": "payFeeToDeftHolders",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "bool",
+					"name": "isMint",
+					"type": "bool"
+				},
+				{
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "desiredAmountToMintOrBurn",
+					"type": "uint256"
+				}
+			],
+			"name": "prepareHumanAddressMintOrBurnRewardsAmounts",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "sender",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "recipient",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "transferAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "senderRealBalance",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "recipientRealBalance",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct TaxAmountsInput",
+					"name": "taxAmountsInput",
+					"type": "tuple"
+				}
+			],
+			"name": "prepareTaxAmounts",
+			"outputs": [
+				{
+					"components": [
+						{
+							"internalType": "uint256",
+							"name": "senderRealBalance",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "recipientRealBalance",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "burnAndRewardAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "recipientGetsAmount",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct TaxAmountsOutput",
+					"name": "taxAmountsOutput",
+					"type": "tuple"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "publicForcedUpdateCacheMultiplier",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "bytes32",
+					"name": "role",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				}
+			],
+			"name": "renounceRole",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "bytes32",
+					"name": "role",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				}
+			],
+			"name": "revokeRole",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
 		},
 		{
 			"anonymous": false,
@@ -9858,29 +10072,171 @@
 			"type": "event"
 		},
 		{
-			"inputs": [],
-			"name": "MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE",
-			"outputs": [
+			"inputs": [
 				{
 					"internalType": "uint256",
-					"name": "",
+					"name": "_botTaxPercent",
 					"type": "uint256"
 				}
 			],
-			"stateMutability": "view",
+			"name": "updateBotTaxSettings",
+			"outputs": [],
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
-			"inputs": [],
-			"name": "ROLE_ADMIN",
-			"outputs": [
+			"inputs": [
 				{
-					"internalType": "bytes32",
-					"name": "",
-					"type": "bytes32"
+					"internalType": "uint256",
+					"name": "_buyLimitPercent",
+					"type": "uint256"
 				}
 			],
-			"stateMutability": "view",
+			"name": "updateBuyLimitPercent",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_cycleOneStartTaxPercent",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_cycleOneEnds",
+					"type": "uint256"
+				}
+			],
+			"name": "updateCycleOneSettings",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_cycleThreeStartTaxPercent",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_cycleThreeEnds",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_cycleThreeEndTaxPercent",
+					"type": "uint256"
+				}
+			],
+			"name": "updateCycleThreeSettings",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_cycleTwoStartTaxPercent",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_cycleTwoEnds",
+					"type": "uint256"
+				}
+			],
+			"name": "updateCycleTwoSettings",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_defiFactoryTokenAddress",
+					"type": "address"
+				}
+			],
+			"name": "updateDefiFactoryTokenAddress",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_deftFeePercent",
+					"type": "uint256"
+				}
+			],
+			"name": "updateDeftFeeTaxSettings",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_howOftenPayDeftFee",
+					"type": "uint256"
+				}
+			],
+			"name": "updateHowOftenPayDeftFee",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_parentTokenAddress",
+					"type": "address"
+				}
+			],
+			"name": "updateParentTokenAddress",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_secondsBetweenRecacheUpdates",
+					"type": "uint256"
+				}
+			],
+			"name": "updateSecondsBetweenUpdates",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_realTotalSupply",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_rewardsBalance",
+					"type": "uint256"
+				}
+			],
+			"name": "updateSupply",
+			"outputs": [],
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -9949,30 +10305,6 @@
 			"type": "function"
 		},
 		{
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "taxAmount",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "accountBalance",
-					"type": "uint256"
-				}
-			],
-			"name": "chargeCustomTax",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"inputs": [],
 			"name": "cycleOneEnds",
 			"outputs": [
@@ -10000,7 +10332,7 @@
 		},
 		{
 			"inputs": [],
-			"name": "cycleThreeEndTaxPercent",
+			"name": "cycleThreeEnds",
 			"outputs": [
 				{
 					"internalType": "uint256",
@@ -10013,7 +10345,7 @@
 		},
 		{
 			"inputs": [],
-			"name": "cycleThreeEnds",
+			"name": "cycleThreeEndTaxPercent",
 			"outputs": [
 				{
 					"internalType": "uint256",
@@ -10301,49 +10633,6 @@
 					"type": "address"
 				}
 			],
-			"name": "grantRole",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"components": [
-						{
-							"internalType": "bytes32",
-							"name": "role",
-							"type": "bytes32"
-						},
-						{
-							"internalType": "address",
-							"name": "addr",
-							"type": "address"
-						}
-					],
-					"internalType": "struct RoleAccess[]",
-					"name": "roles",
-					"type": "tuple[]"
-				}
-			],
-			"name": "grantRolesBulk",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "bytes32",
-					"name": "role",
-					"type": "bytes32"
-				},
-				{
-					"internalType": "address",
-					"name": "account",
-					"type": "address"
-				}
-			],
 			"name": "hasRole",
 			"outputs": [
 				{
@@ -10409,6 +10698,19 @@
 		},
 		{
 			"inputs": [],
+			"name": "MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
 			"name": "parentTokenAddress",
 			"outputs": [
 				{
@@ -10418,117 +10720,6 @@
 				}
 			],
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [],
-			"name": "payFeeToDeftHolders",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "bool",
-					"name": "isMint",
-					"type": "bool"
-				},
-				{
-					"internalType": "address",
-					"name": "account",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "desiredAmountToMintOrBurn",
-					"type": "uint256"
-				}
-			],
-			"name": "prepareHumanAddressMintOrBurnRewardsAmounts",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"components": [
-						{
-							"internalType": "address",
-							"name": "sender",
-							"type": "address"
-						},
-						{
-							"internalType": "address",
-							"name": "recipient",
-							"type": "address"
-						},
-						{
-							"internalType": "uint256",
-							"name": "transferAmount",
-							"type": "uint256"
-						},
-						{
-							"internalType": "uint256",
-							"name": "senderRealBalance",
-							"type": "uint256"
-						},
-						{
-							"internalType": "uint256",
-							"name": "recipientRealBalance",
-							"type": "uint256"
-						}
-					],
-					"internalType": "struct TaxAmountsInput",
-					"name": "taxAmountsInput",
-					"type": "tuple"
-				}
-			],
-			"name": "prepareTaxAmounts",
-			"outputs": [
-				{
-					"components": [
-						{
-							"internalType": "uint256",
-							"name": "senderRealBalance",
-							"type": "uint256"
-						},
-						{
-							"internalType": "uint256",
-							"name": "recipientRealBalance",
-							"type": "uint256"
-						},
-						{
-							"internalType": "uint256",
-							"name": "burnAndRewardAmount",
-							"type": "uint256"
-						},
-						{
-							"internalType": "uint256",
-							"name": "recipientGetsAmount",
-							"type": "uint256"
-						}
-					],
-					"internalType": "struct TaxAmountsOutput",
-					"name": "taxAmountsOutput",
-					"type": "tuple"
-				}
-			],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [],
-			"name": "publicForcedUpdateCacheMultiplier",
-			"outputs": [],
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -10545,42 +10736,6 @@
 			"type": "function"
 		},
 		{
-			"inputs": [
-				{
-					"internalType": "bytes32",
-					"name": "role",
-					"type": "bytes32"
-				},
-				{
-					"internalType": "address",
-					"name": "account",
-					"type": "address"
-				}
-			],
-			"name": "renounceRole",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "bytes32",
-					"name": "role",
-					"type": "bytes32"
-				},
-				{
-					"internalType": "address",
-					"name": "account",
-					"type": "address"
-				}
-			],
-			"name": "revokeRole",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"inputs": [],
 			"name": "rewardsBalance",
 			"outputs": [
@@ -10588,6 +10743,19 @@
 					"internalType": "uint256",
 					"name": "",
 					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "ROLE_ADMIN",
+			"outputs": [
+				{
+					"internalType": "bytes32",
+					"name": "",
+					"type": "bytes32"
 				}
 			],
 			"stateMutability": "view",
@@ -10623,174 +10791,6 @@
 				}
 			],
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_botTaxPercent",
-					"type": "uint256"
-				}
-			],
-			"name": "updateBotTaxSettings",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_buyLimitPercent",
-					"type": "uint256"
-				}
-			],
-			"name": "updateBuyLimitPercent",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_cycleOneStartTaxPercent",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_cycleOneEnds",
-					"type": "uint256"
-				}
-			],
-			"name": "updateCycleOneSettings",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_cycleThreeStartTaxPercent",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_cycleThreeEnds",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_cycleThreeEndTaxPercent",
-					"type": "uint256"
-				}
-			],
-			"name": "updateCycleThreeSettings",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_cycleTwoStartTaxPercent",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_cycleTwoEnds",
-					"type": "uint256"
-				}
-			],
-			"name": "updateCycleTwoSettings",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_defiFactoryTokenAddress",
-					"type": "address"
-				}
-			],
-			"name": "updateDefiFactoryTokenAddress",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_deftFeePercent",
-					"type": "uint256"
-				}
-			],
-			"name": "updateDeftFeeTaxSettings",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_howOftenPayDeftFee",
-					"type": "uint256"
-				}
-			],
-			"name": "updateHowOftenPayDeftFee",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_parentTokenAddress",
-					"type": "address"
-				}
-			],
-			"name": "updateParentTokenAddress",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_secondsBetweenRecacheUpdates",
-					"type": "uint256"
-				}
-			],
-			"name": "updateSecondsBetweenUpdates",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_realTotalSupply",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_rewardsBalance",
-					"type": "uint256"
-				}
-			],
-			"name": "updateSupply",
-			"outputs": [],
-			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	]

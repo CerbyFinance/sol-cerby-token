@@ -217,6 +217,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "amountOfDeftBurned",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "amountOfDeftForInvestors",
 				"outputs": [
 					{
@@ -230,23 +243,8 @@
 			},
 			{
 				"inputs": [],
-				"name": "balancePairPrice",
+				"name": "amountOfDeftForUniswap",
 				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
 					{
 						"internalType": "uint256",
 						"name": "",
@@ -254,6 +252,37 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "amountOfDeftMinted",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "normedDeftPriceInUSD",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "PRICE_DENORM",
+						"type": "uint256"
+					}
+				],
+				"name": "balancePairPrice",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -311,19 +340,6 @@
 				"name": "distributeInvestorsTokens",
 				"outputs": [],
 				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "fixedPriceInUsd",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -463,6 +479,19 @@
 					}
 				],
 				"name": "getRoleMemberCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getTotalMintedTokens",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -812,25 +841,12 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "_fixedPriceInUsd",
-						"type": "uint256"
-					}
-				],
-				"name": "updateFixedPriceInUsd",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "address",
 						"name": "newContract",
 						"type": "address"
 					}
 				],
-				"name": "updateLamboContract",
+				"name": "updateDefiFactoryContract",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -906,11 +922,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleBSC.sol": {
-			"keccak256": "0x7d00b4430e5e693f5d9b7695b5a98e762cbe54425b28568798649c616c0f8e22",
+			"keccak256": "0x4a7afdc2ca422d5ed790573aba1ad8eca9a2ac23c1c1b8137cca53454317c7be",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://aca0e2c8536f77c94186bbeabf5dad3c42eeb9a53f214339f4649e17c27b49fb",
-				"dweb:/ipfs/QmXZuPtavNT1XkAjaE7My56JacmsjqLcnbvBDChEpvVfob"
+				"bzz-raw://9deef5ecb74f29df6db972bc6ebdb7dcf4a462ab0a5cb88ef35f7faea194f92a",
+				"dweb:/ipfs/QmdybWXp5CNZL6ADh9f9R5afuUwr75Z7myVqLFajYkRAp3"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
