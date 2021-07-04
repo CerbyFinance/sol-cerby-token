@@ -940,11 +940,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleBSC.sol": {
-			"keccak256": "0x7024ad0ed1a826b46558c3338fcd8688379a590520fc9599052b552b4f964c38",
+			"keccak256": "0x592f4128623db4b72eb7b02c764d33cfbe3ad8d167baf5d70094e3cc99d41116",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://54fcf74fa9d597597c77dd8ab379edb3fad6a517c288e81a6df5ca3be4e547aa",
-				"dweb:/ipfs/QmWjiEkx1zEPhvK3DqCRgkC6cwy57oq9FoEc7nULCYMHCP"
+				"bzz-raw://e454930a6d8a956a07a4e91ee0a7d3e2019dcb9d24c68c81a2e78a0d58898380",
+				"dweb:/ipfs/QmZEULWRxFSUDuiwtML63xnZ76CnqL4xMeefrYx4scB2o5"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

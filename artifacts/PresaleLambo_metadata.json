@@ -984,11 +984,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleLambo.sol": {
-			"keccak256": "0x1b48e122db0a16743ffcc786312077c850975b6bb76c01a759bf3cad2c942bf0",
+			"keccak256": "0x96ae8a1ce3c41b8343aeed33d2762e6cc1c27fc1799b2d9bd9f1f747bc03deef",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://780d4396a8833e6808d773e5145509948910ff922098c2bb446584d22b2cac95",
-				"dweb:/ipfs/QmTn9LKhf3pafQmAbkq5otz8NuzNNPcFHntPMjJD47Jaj8"
+				"bzz-raw://eecb0d91e265186abda0ac4f33609d41d451f5d0f36ee7b0d8e7f8867e713c26",
+				"dweb:/ipfs/QmTa3VSuRnNyya3n2eXzyPH8P6rmX3hvEbfVFpbyrbUKhb"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
