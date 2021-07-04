@@ -345,6 +345,24 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "offset",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "limit",
+						"type": "uint256"
+					}
+				],
+				"name": "emergencyRefund",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "addr",
 						"type": "address"
@@ -922,11 +940,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleBSC.sol": {
-			"keccak256": "0x4a7afdc2ca422d5ed790573aba1ad8eca9a2ac23c1c1b8137cca53454317c7be",
+			"keccak256": "0x1887787b984d64e579bde76c9ffc063aecf06d18a1685734f3695aca4f34c9a9",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://9deef5ecb74f29df6db972bc6ebdb7dcf4a462ab0a5cb88ef35f7faea194f92a",
-				"dweb:/ipfs/QmdybWXp5CNZL6ADh9f9R5afuUwr75Z7myVqLFajYkRAp3"
+				"bzz-raw://66fc0c20b84594a6d5b7095b5e480bdc2579173332ad2ede6f08f506d7830114",
+				"dweb:/ipfs/QmYBbZVvts5ryjw872fTnCxdua9UsDYb1Z5S8YXcySE264"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

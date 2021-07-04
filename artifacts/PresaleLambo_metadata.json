@@ -332,6 +332,24 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "offset",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "limit",
+						"type": "uint256"
+					}
+				],
+				"name": "emergencyRefund",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "fixedPriceInUsd",
 				"outputs": [
@@ -966,11 +984,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleLambo.sol": {
-			"keccak256": "0x04ba5c284d817ebce10ca0d05067a2d78664f48feb4ce7de76579fdf5c23b2a0",
+			"keccak256": "0x1b48e122db0a16743ffcc786312077c850975b6bb76c01a759bf3cad2c942bf0",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://118fd082a97aefb62599cb28c24eadb81e9aca9b094d99a7c4dfd918f478f7b7",
-				"dweb:/ipfs/QmYL8qCAxisgyW5es6LMbr2kzKudk63XjwV3GCKejt2RaE"
+				"bzz-raw://780d4396a8833e6808d773e5145509948910ff922098c2bb446584d22b2cac95",
+				"dweb:/ipfs/QmTn9LKhf3pafQmAbkq5otz8NuzNNPcFHntPMjJD47Jaj8"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

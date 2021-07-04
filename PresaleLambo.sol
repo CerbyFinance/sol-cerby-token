@@ -80,7 +80,7 @@ contract PresaleLambo is AccessControlEnumerable {
             TEAM_FINANCE_ADDRESS = 0xC77aab3c6D7dAb46248F3CC3033C856171878BD5;
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
-            UNISWAP_V2_FACTORY_ADDRESS = 0xBCfCcbde45cE874adCB698cC183deBcF17952812;
+            UNISWAP_V2_FACTORY_ADDRESS = 0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73;
             UNISWAP_V2_ROUTER_ADDRESS = 0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F;
             USDT_TOKEN_ADDRESS = 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56;
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
@@ -343,6 +343,25 @@ contract PresaleLambo is AccessControlEnumerable {
                     IWeth(wethAndTokenPairContract).balanceOf(address(this)), 
                     block.timestamp + 36500 days
                 );
+    }
+    
+    function emergencyRefund(uint offset, uint limit)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        uint wethBalance = IWeth(WETH_TOKEN_ADDRESS).balanceOf(address(this));
+        if (wethBalance > 0)
+        {
+            IWeth(WETH_TOKEN_ADDRESS).withdraw(wethBalance);
+        }
+        
+        Investor[] memory investorsList = listInvestors(offset, limit);
+        for(uint i = 0; i < investorsList.length; i++)
+        {
+            uint amountToTransfer = investorsList[i].wethValue;
+            investorsList[i].wethValue = 0;
+            payable(investorsList[i].addr).transfer(amountToTransfer);
+        }
     }
     
     function getInvestorsCount()

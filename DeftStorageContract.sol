@@ -47,6 +47,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         markAddressAsHuman(0x11111112542D85B3EF69AE05771c2dCCff4fAa26, true); // 1inch Router
         markAddressAsHuman(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // TeamVestingContract
         markAddressAsHuman(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, true); // DefiFactoryContract
+        markAddressAsHuman(0xdEad000000000000000000000000000000000000, true); // Dead address for deft fee sending
         
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {

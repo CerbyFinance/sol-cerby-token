@@ -26,7 +26,7 @@ contract PresaleBSC is AccessControlEnumerable {
     Investor[] public investors;
     
     uint public totalInvestedWeth;
-    uint public maxWethCap = 1e15;
+    uint public maxWethCap = 1000e18;
     uint public perWalletMinWethCap = 0;
     uint public perWalletMaxWethCap = 50e18;
     uint public amountOfDeftForInvestors;
@@ -72,14 +72,18 @@ contract PresaleBSC is AccessControlEnumerable {
             WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
             USDT_DECIMALS = 6;
             TEAM_FINANCE_ADDRESS = 0xC77aab3c6D7dAb46248F3CC3033C856171878BD5;
+            
+            defiFactoryTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
-            UNISWAP_V2_FACTORY_ADDRESS = 0xBCfCcbde45cE874adCB698cC183deBcF17952812;
+            UNISWAP_V2_FACTORY_ADDRESS = 0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73;
             UNISWAP_V2_ROUTER_ADDRESS = 0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F;
             USDT_TOKEN_ADDRESS = 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56;
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
             USDT_DECIMALS = 18;
             TEAM_FINANCE_ADDRESS = 0x7536592bb74b5d62eB82e8b93b17eed4eed9A85c;
+            
+            defiFactoryTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
         } else if (block.chainid == ETH_KOVAN_CHAIN_ID)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
@@ -102,8 +106,8 @@ contract PresaleBSC is AccessControlEnumerable {
         
         changeState(States.AcceptingPayments);
         
-        addInvestor(msg.sender, msg.value);
-        skipSteps1();
+        /*addInvestor(msg.sender, msg.value);
+        skipSteps1();*/
     }
 
     receive() external payable {
@@ -229,10 +233,15 @@ contract PresaleBSC is AccessControlEnumerable {
         distributeInvestorsTokens(0, limit);
     }
     
+    //function balancePairPrice()
     function balancePairPrice(uint normedDeftPriceInUSD, uint PRICE_DENORM)
         public
         onlyRole(ROLE_ADMIN)
+        /*view
+        returns(uint,uint,uint,uint)*/
     {
+        //uint normedDeftPriceInUSD = 1e12; uint PRICE_DENORM = 1e18;
+        
         address wethAndUsdtPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
             getPair(USDT_TOKEN_ADDRESS, WETH_TOKEN_ADDRESS);
         (uint usdtBalance, uint wethBalance1, ) = IUniswapV2Pair(wethAndUsdtPairContract).getReserves();
@@ -255,6 +264,9 @@ contract PresaleBSC is AccessControlEnumerable {
                             (wethBalance2 * deftBalance * normedDeftPriceInUSD * wethBalance1) / 
                                 (usdtBalance * PRICE_DENORM * 10**(DEFT_DECIMALS - USDT_DECIMALS))
                         );
+                        
+        //return(sqrt1, deftBalance, sqrt2, wethBalance2);
+                        
         if (sqrt1 > deftBalance)
         {
             // sell deft
@@ -284,6 +296,11 @@ contract PresaleBSC is AccessControlEnumerable {
             // buy deft
             uint amountOfWethToBuy =
                 (1000 * (sqrt2 - wethBalance2)) / 997;
+            
+            require(
+                amountOfWethToBuy <= IWeth(WETH_TOKEN_ADDRESS).balanceOf(address(this)),
+                "!balance_weth"
+            );
             
             IWeth(WETH_TOKEN_ADDRESS).transfer(wethAndTokenPairContract, amountOfWethToBuy);
             
@@ -378,6 +395,25 @@ contract PresaleBSC is AccessControlEnumerable {
                     IWeth(wethAndTokenPairContract).balanceOf(address(this)), 
                     block.timestamp + 36500 days
                 );
+    }
+    
+    function emergencyRefund(uint offset, uint limit)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        uint wethBalance = IWeth(WETH_TOKEN_ADDRESS).balanceOf(address(this));
+        if (wethBalance > 0)
+        {
+            IWeth(WETH_TOKEN_ADDRESS).withdraw(wethBalance);
+        }
+        
+        Investor[] memory investorsList = listInvestors(offset, limit);
+        for(uint i = 0; i < investorsList.length; i++)
+        {
+            uint amountToTransfer = investorsList[i].wethValue;
+            investorsList[i].wethValue = 0;
+            payable(investorsList[i].addr).transfer(amountToTransfer);
+        }
     }
     
     function getTotalMintedTokens()
