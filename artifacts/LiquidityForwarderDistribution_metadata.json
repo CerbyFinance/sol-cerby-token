@@ -7,7 +7,7 @@
 		"abi": [
 			{
 				"inputs": [],
-				"stateMutability": "payable",
+				"stateMutability": "nonpayable",
 				"type": "constructor"
 			},
 			{
@@ -606,11 +606,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/LiquidityForwarderDistribution.sol": {
-			"keccak256": "0x13755586ea8dbb19ec3409c5515119f4c7e4c75bb18ff4b951ce33d8eb8f1cd6",
+			"keccak256": "0x1c746868d1891465e14538f9428137a5cd59772870a83317dd418947cc6e8cd3",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://a526940432097b8b6851e6ddd220c824c284f61c7a85b94f032e754360114632",
-				"dweb:/ipfs/QmQKBqNABDqisqno4TVJoxNKE4hoByd8VDQfN7uRgWQ7Kn"
+				"bzz-raw://ec7c5b6650ce151b335fb04a806d3d808f1a1b7b8570d037f8a6d47789cbfc23",
+				"dweb:/ipfs/QmZZVCgb2iNJdZYzUVqfyry5jKmgxFrkeKWk7Ddrmc9pTy"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

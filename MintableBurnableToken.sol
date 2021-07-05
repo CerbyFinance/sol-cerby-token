@@ -6,9 +6,9 @@ import "./openzeppelin/token/ERC20/ERC20.sol";
 contract MintableBurnableToken is ERC20 {
     
     constructor()
-        ERC20("DEFT", "DEFT", 18) 
+        ERC20("TEST", "TEST", 18) 
     {
-        _mint(msg.sender, 1e18*1e9);
+        //_mint(msg.sender, 1e18*1e9);
     }
     
     function mintByBridge(address to, uint amount) public {

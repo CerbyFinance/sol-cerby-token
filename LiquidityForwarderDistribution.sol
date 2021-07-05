@@ -24,7 +24,7 @@ contract LiquidityForwarderDistribution is AccessControlEnumerable {
     mapping(address => uint) public cachedIndex;
     Investor[] public investors;
     
-    uint public totalSupply = 18e9; // 18 billions
+    uint public totalSupply = 18e9 * 1e18; // 18 billions
     uint public percentForUniswap = 15e4; // 15%
     uint public constant PERCENT_DENORM = 1e6; // 100%
     
@@ -41,7 +41,7 @@ contract LiquidityForwarderDistribution is AccessControlEnumerable {
     
     address public constant BURN_ADDRESS = address(0x0);
     
-    constructor() payable {
+    constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
         changeState(States.CreatedContract);
         
@@ -62,53 +62,49 @@ contract LiquidityForwarderDistribution is AccessControlEnumerable {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
             
-            tokenAddress = 0xAa54f213dBe6ba9a1f5ceE5bCcb40Ea0e8Dd2984;
-        } else if (block.chainid == ETH_ROPSTEN_CHAIN_ID)
-        {
-            UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
-            WETH_TOKEN_ADDRESS = 0xc778417E063141139Fce010982780140Aa0cD5Ab;
+            tokenAddress = 0x36b0660A50f40e9e1A2764Cb00351cCB3640d932;
         }
         
         Investor[] memory _investors = new Investor[](10); // 10 investors. Make sure to add exactly 10 below
         _investors[0] = Investor( // !!! index starts from zero !!!
-            0x1000000000000000000000000000000000000001, // Investor1
+            0x0100000000000000000000000000000000000001, // Investor1
             1e4 // 1%
         );
         _investors[1] = Investor(
-            0x2000000000000000000000000000000000000002, // Investor2
+            0x0200000000000000000000000000000000000002, // Investor2
             2e4 // 2%
         );
         _investors[2] = Investor(
-            0x3000000000000000000000000000000000000003, // Investor3
+            0x0300000000000000000000000000000000000003, // Investor3
             3e4 // 3%
         );
         _investors[3] = Investor(
-            0x4000000000000000000000000000000000000004, // Investor4
+            0x0400000000000000000000000000000000000004, // Investor4
             4e4 // 4%
         );
         _investors[4] = Investor(
-            0x5000000000000000000000000000000000000005, // Investor5
+            0x0500000000000000000000000000000000000005, // Investor5
             5e4 // 5%
         );
         _investors[5] = Investor(
-            0x6000000000000000000000000000000000000006, // Investor6
+            0x0600000000000000000000000000000000000006, // Investor6
             6e4 // 6%
         );
         _investors[6] = Investor(
-            0x7000000000000000000000000000000000000007, // Investor7
+            0x0700000000000000000000000000000000000007, // Investor7
             7e4 // 7%
         );
         _investors[7] = Investor(
-            0x8000000000000000000000000000000000000008, // Investor8
+            0x0800000000000000000000000000000000000008, // Investor8
             8e4 // 8%
         );
         _investors[8] = Investor(
-            0x9000000000000000000000000000000000000009, // Investor9
+            0x0900000000000000000000000000000000000009, // Investor9
             9e4 // 9%
         );
         _investors[9] = Investor(
             0x1000000000000000000000000000000000000010, // Investor10
-            55e4 // 40%
+            40e4 // 40% = 85 - (1+2+3+4+5+6+7+8+9)
         );
         
         // !!! Make sure that sum of percentages equals to 85e4 = PERCENT_DENORM - percentForUniswap !!!
@@ -155,14 +151,12 @@ contract LiquidityForwarderDistribution is AccessControlEnumerable {
         require(currentState == States.CreatedPair, "LFD: Tokens were already distributed!");
         
         uint mintAmountOfTokensToInvestor;
-        uint supplyAvailableForInvestors = 
-            (totalSupply - (totalSupply * percentForUniswap) / PERCENT_DENORM);
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(tokenAddress);
         for(uint i = 0; i < investors.length; i++)
         {
             mintAmountOfTokensToInvestor = 
-                (investors[i].percent * supplyAvailableForInvestors) / 
-                    (supplyAvailableForInvestors);
+                (investors[i].percent * totalSupply) / 
+                    (PERCENT_DENORM);
                 
             if (mintAmountOfTokensToInvestor > 0)
             {
