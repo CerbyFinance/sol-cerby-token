@@ -22,7 +22,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     address constant EIGHT_LEADING_ZEROS_TO_COMPARE = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
     
     address constant BURN_ADDRESS = address(0x0);
-    uint constant DEFAULT_SELL_COOLDOWN = 5 minutes;
+    uint constant DEFAULT_SELL_COOLDOWN = 0 minutes; // TODO: change on production!!!
     uint constant BALANCE_DENORM = 1e18;
     
     uint constant ETH_MAINNET_CHAIN_ID = 1;

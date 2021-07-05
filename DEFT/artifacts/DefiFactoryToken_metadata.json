@@ -1248,11 +1248,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DEFT/DefiFactoryToken.sol": {
-			"keccak256": "0x72b647cc51592acae0d86841638b0cdb3463edccd01347ddb7227e3c56c93e4f",
+			"keccak256": "0x8ef4dcb0fe4315fb495e70609974a6f504d343c77f9d8d96f1175074c4ea4c65",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://64003a86ad052e44c9d222e19dc7e96038e620b561e9681a1af08a856eb60f6d",
-				"dweb:/ipfs/QmRask3Ga7upLEPFykKxrNmyWMSaxcftMd3c1NvbbESZwe"
+				"bzz-raw://f757de1a2682983091ef675cca8ff49c329be04ca89067df3d75fe066f83e975",
+				"dweb:/ipfs/QmaxLmu9nHGWQAuuSiCAvtyyJ71wkTdW1WYLDpYNxXsiqP"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

@@ -29,18 +29,19 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public lastCachedTimestamp = block.timestamp;
     uint public lastPaidFeeTimestamp = block.timestamp;
     
-    uint public secondsBetweenRecacheUpdates = 10 minutes;
+    uint public secondsBetweenCacheUpdates = 0 minutes;
     
     
     address public defiFactoryTokenAddress;
     address public parentTokenAddress;
     
     uint public botTaxPercent = 999e3; // 99.9%
-    uint public howManyFirstMinutesIncreasedTax = 0;
     uint constant TAX_PERCENT_DENORM = 1e6;
     
     /* DEFT Taxes: */
-    /*uint public deftFeePercent; // 0.0%
+    /*
+    uint public constant DEFT_FEE_PERCENT = 0; // 0.0%
+    uint public marketingFeePercent = 0; // 0%
     uint public cycleOneStartTaxPercent = 15e4; // 15.0%
     uint public cycleOneEnds = 120 days;
     uint public cycleTwoStartTaxPercent = 8e4; // 8.0%
@@ -48,18 +49,20 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public cycleThreeStartTaxPercent = 3e4; // 3.0%
     uint public cycleThreeEnds = 360 days;
     uint public cycleThreeEndTaxPercent = 0; // 0.0%
-    uint public howOftenPayDeftFee = 0; */
+    uint public howOftenToPayFee = 0 minutes; */
     
-    /* Lambo Taxes */
-    uint public deftFeePercent = 10e4; // 10.0%
-    uint public cycleOneStartTaxPercent = 30e4; // 30.0%
-    uint public cycleOneEnds = 7 days;
-    uint public cycleTwoStartTaxPercent = 5e4; // 5.0%
-    uint public cycleTwoEnds = 7 days;
-    uint public cycleThreeStartTaxPercent = 5e4; // 5.0%
-    uint public cycleThreeEnds = 7 days;
-    uint public cycleThreeEndTaxPercent = 5e4; // 5.0%
-    uint public howOftenPayDeftFee = 10 minutes;
+    /* Integration Taxes */
+    uint public constant DEFT_FEE_PERCENT = 10e4; // 10.0%
+    uint public marketingFeePercent = 40e4; // 40%
+    /* buyBackFeePercent = 100 - 10 - 40 = 50% */
+    uint public cycleOneStartTaxPercent = 0; // 0.0%
+    uint public cycleOneEnds = 0 days;
+    uint public cycleTwoStartTaxPercent = 0; // 0.0%
+    uint public cycleTwoEnds = 0 days;
+    uint public cycleThreeStartTaxPercent = 0; // 0.0%
+    uint public cycleThreeEnds = 0 days;
+    uint public cycleThreeEndTaxPercent = 6e4; // 6.0%
+    uint public howOftenToPayFee = 0 minutes; // TODO: change in production
     
     uint public buyLimitAmount = 1e18 * 1e18; // no limit
     uint public buyLimitPercent = TAX_PERCENT_DENORM; // 100% means disabled
@@ -73,7 +76,13 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint constant BSC_TESTNET_CHAIN_ID = 97;
     
     address constant BURN_ADDRESS = address(0x0);
+    address constant DEFT_TRACKING_ADDRESS = 0x1111111100000000000000000000000000000000;
+    address constant MARKETING_TRACKING_ADDRESS = 0x2222222200000000000000000000000000000000;
+    address constant BUY_BACK_TRACKING_ADDRESS = 0x3333333300000000000000000000000000000000;
     address constant DEAD_ADDRESS = 0xdEad000000000000000000000000000000000000;
+    
+    address public marketingWallet = 0x1234567800000000000000000000000000000000;
+    address public buyBackWallet = 0x9876543200000000000000000000000000000000;
     
     uint public rewardsBalance;
     uint public realTotalSupply;
@@ -100,8 +109,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
             MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 10e18;
             
-            defiFactoryTokenAddress = 0x44EB8f6C496eAA8e0321006d3c61d851f87685BD; // LAMBO
-            
             parentTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840; // DEFT
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
@@ -111,20 +118,49 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
             MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 75e18;
             
-            defiFactoryTokenAddress = 0x44EB8f6C496eAA8e0321006d3c61d851f87685BD; // LAMBO
-            
             parentTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840; // DEFT
         } else if (block.chainid == ETH_KOVAN_CHAIN_ID)
         {
             earlyInvestorTimestamp = block.timestamp;
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
-            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 1e12;
+            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 1e6;
             
-            parentTokenAddress = 0xC0138126C0Bd394C547df17B649B81B543c76906;
+            parentTokenAddress = 0xa1EDE2C6D2b36853cc967E04bB4fF39f55eDa885;
         }
         
         emit MultiplierUpdated(cachedMultiplier);
+    }
+    
+    function updateHowOftenToPayFee(uint _value)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        require(_value < 1 days, "NBT: Value can't be larger than 1 day");
+        
+        howOftenToPayFee = _value;
+    }
+    
+    function updateBuyBackWallet(address _wallet)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        buyBackWallet = _wallet;
+    }
+    
+    function updateMarketingWallet(address _wallet)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        marketingWallet = _wallet;
+    }
+    
+    function updateMarketingFeePercent(uint _fee)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        require(_fee <= TAX_PERCENT_DENORM - DEFT_FEE_PERCENT, "NBT: fee has to be less than 90e4 = 90%");
+        marketingFeePercent = _fee;
     }
     
     function updateSupply(uint _realTotalSupply, uint _rewardsBalance)
@@ -146,13 +182,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         buyLimitPercent = _buyLimitPercent;
     }
     
-    function updateHowOftenPayDeftFee(uint _howOftenPayDeftFee)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        howOftenPayDeftFee = _howOftenPayDeftFee;
-    }
-    
     function updateDefiFactoryTokenAddress(address _defiFactoryTokenAddress)
         external
         onlyRole(ROLE_ADMIN)
@@ -160,18 +189,13 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         defiFactoryTokenAddress = _defiFactoryTokenAddress;
     }
     
-    function updateParentTokenAddress(address _parentTokenAddress)
+    function updateSecondsBetweenCacheUpdates(uint _value)
         external
         onlyRole(ROLE_ADMIN)
     {
-        parentTokenAddress = _parentTokenAddress;
-    }
-    
-    function updateSecondsBetweenUpdates(uint _secondsBetweenRecacheUpdates)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        secondsBetweenRecacheUpdates = _secondsBetweenRecacheUpdates;
+        require(_value < 1 days, "NBT: Value can't be larger than 1 day");
+        
+        secondsBetweenCacheUpdates = _value;
     }
     
     function updateBotTaxSettings(uint _botTaxPercent)
@@ -179,13 +203,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         botTaxPercent = _botTaxPercent;
-    }
-    
-    function updateDeftFeeTaxSettings(uint _deftFeePercent)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        deftFeePercent = _deftFeePercent;
     }
     
     function updateCycleOneSettings(uint _cycleOneStartTaxPercent, uint _cycleOneEnds)
@@ -235,8 +252,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         private
     {   
         if (
-                block.timestamp > lastCachedTimestamp + secondsBetweenRecacheUpdates ||
-                tx.gasprice == 0 && block.timestamp > lastCachedTimestamp // Increasing gas limit for estimates to avoid out of gas error
+                block.timestamp > lastCachedTimestamp + secondsBetweenCacheUpdates/* ||
+                tx.gasprice == 0 && block.timestamp > lastCachedTimestamp*/ // Increasing gas limit for estimates to avoid out of gas error
             )
         {
             forcedUpdateCache();
@@ -250,27 +267,50 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     
         if (batchBurnAndReward > 0)
         {
-            uint realAmountToPayFeeThisTime = (batchBurnAndReward * deftFeePercent) / TAX_PERCENT_DENORM; // 25% of tax goes to DEFT
+            uint realAmountToPayFeeThisTime = (batchBurnAndReward * DEFT_FEE_PERCENT) / TAX_PERCENT_DENORM;
+            uint realAmountToSendToMarketingThisTime = (batchBurnAndReward * marketingFeePercent) / TAX_PERCENT_DENORM;
+            uint realAmountToSendToBuyBackThisTime = batchBurnAndReward > realAmountToSendToMarketingThisTime + realAmountToPayFeeThisTime?
+                batchBurnAndReward - realAmountToSendToMarketingThisTime - realAmountToPayFeeThisTime: 0;
             
-            // 75% Tax redistribution
-            rewardsBalance += batchBurnAndReward - realAmountToPayFeeThisTime; // 75% of amount goes to rewards to TOKEN holders
-            realTotalSupply -= batchBurnAndReward; // no idea why but it works
+            
+            // Tax redistribution
+            uint sumAmountsToPay = 
+                realAmountToPayFeeThisTime + realAmountToSendToMarketingThisTime + realAmountToSendToBuyBackThisTime;
+            if (batchBurnAndReward > sumAmountsToPay)
+            {
+                rewardsBalance += batchBurnAndReward - sumAmountsToPay; // % of amount goes to rewards to TOKEN holders
+            }
+            realTotalSupply -= batchBurnAndReward; // this amount to be minted below
             batchBurnAndReward = 0;
                 
             if (realAmountToPayFeeThisTime > 0)
             {
                 uint amountToPayFeeThisTime = (realAmountToPayFeeThisTime * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
-                mintAmountAndUpdateTotalSupply(DEAD_ADDRESS, amountToPayFeeThisTime, realAmountToPayFeeThisTime);
+                mintAmountAndUpdateTotalSupply(DEFT_TRACKING_ADDRESS, amountToPayFeeThisTime, realAmountToPayFeeThisTime);
+            }
+            if (realAmountToSendToMarketingThisTime > 0)
+            {
+                uint amountToSendToMarketingThisTime = (realAmountToSendToMarketingThisTime * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
+                mintAmountAndUpdateTotalSupply(MARKETING_TRACKING_ADDRESS, amountToSendToMarketingThisTime, realAmountToSendToMarketingThisTime);
             }
             
-            cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
-                (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
-            emit MultiplierUpdated(cachedMultiplier);
+            if (realAmountToSendToBuyBackThisTime > 0)
+            {
+                uint amountToSendToBuyBackThisTime = (realAmountToSendToBuyBackThisTime * cachedMultiplier) / BALANCE_MULTIPLIER_DENORM;
+                mintAmountAndUpdateTotalSupply(BUY_BACK_TRACKING_ADDRESS, amountToSendToBuyBackThisTime, realAmountToSendToBuyBackThisTime);
+            }
             
-            IUniswapV2Pair(
-                IDefiFactoryToken(defiFactoryTokenAddress).
-                    getUtilsContractAtPos(UNISWAP_V2_PAIR_ADDRESS_ID)
-            ).sync();
+            if (rewardsBalance > 0)
+            {
+                cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
+                    (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
+                emit MultiplierUpdated(cachedMultiplier);
+            
+                IUniswapV2Pair(
+                    IDefiFactoryToken(defiFactoryTokenAddress).
+                        getUtilsContractAtPos(UNISWAP_V2_PAIR_ADDRESS_ID)
+                ).sync();
+            }
         }
         
         if (buyLimitPercent < TAX_PERCENT_DENORM)
@@ -306,15 +346,25 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         }
     }
     
-    function payFeeToDeftHolders()
+    function payAllFees()
         public
+    {
+        payFeeToDeftHolders();
+        payFeeTo(MARKETING_TRACKING_ADDRESS, marketingWallet);
+        payFeeTo(BUY_BACK_TRACKING_ADDRESS, buyBackWallet);
+        
+        lastPaidFeeTimestamp = block.timestamp;
+    }
+    
+    function payFeeToDeftHolders()
+        private
     {
         if  (parentTokenAddress != BURN_ADDRESS)
         {
-            uint amountToPayDeftFee = IWeth(defiFactoryTokenAddress).balanceOf(DEAD_ADDRESS);
+            uint amountToPayDeftFee = IWeth(defiFactoryTokenAddress).balanceOf(DEFT_TRACKING_ADDRESS);
             if (
                     amountToPayDeftFee > 1 &&
-                    block.timestamp > lastPaidFeeTimestamp + howOftenPayDeftFee
+                    block.timestamp > lastPaidFeeTimestamp + howOftenToPayFee
                 )
             {
                 address sellPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(defiFactoryTokenAddress, WETH_TOKEN_ADDRESS);
@@ -328,10 +378,10 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                 // Paying fee to DEFT holders
                 uint amountIn = amountToPayDeftFee;
                 IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryTokenAddress);
-                iDefiFactoryToken.burnHumanAddress(DEAD_ADDRESS, amountIn);
+                iDefiFactoryToken.burnHumanAddress(DEFT_TRACKING_ADDRESS, amountIn);
                 iDefiFactoryToken.mintHumanAddress(sellPair, amountIn);
                 
-                // Sell Lambo
+                // Sell Token
                 (uint reserveIn, uint reserveOut,) = IUniswapV2Pair(sellPair).getReserves();
                 if (defiFactoryTokenAddress > WETH_TOKEN_ADDRESS)
                 {
@@ -368,6 +418,47 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                     amount0Out, 
                     amount1Out, 
                     DEAD_ADDRESS, 
+                    new bytes(0)
+                );
+            }
+        }
+    }
+    
+    function payFeeTo(address fromTrackingAddress, address toAddress)
+        private
+    {
+        if  (fromTrackingAddress != toAddress)
+        {
+            uint amountToPayDeftFee = IWeth(defiFactoryTokenAddress).balanceOf(fromTrackingAddress);
+            if (
+                    amountToPayDeftFee > 1 &&
+                    block.timestamp > lastPaidFeeTimestamp + howOftenToPayFee
+                )
+            {
+                address sellPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(defiFactoryTokenAddress, WETH_TOKEN_ADDRESS);
+                
+                uint amountIn = amountToPayDeftFee;
+                IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(defiFactoryTokenAddress);
+                iDefiFactoryToken.burnHumanAddress(fromTrackingAddress, amountIn);
+                iDefiFactoryToken.mintHumanAddress(sellPair, amountIn);
+                
+                // Sell Token
+                (uint reserveIn, uint reserveOut,) = IUniswapV2Pair(sellPair).getReserves();
+                if (defiFactoryTokenAddress > WETH_TOKEN_ADDRESS)
+                {
+                    (reserveIn, reserveOut) = (reserveOut, reserveIn);
+                }
+                
+                uint amountInWithFee = amountIn * 997;
+                uint amountOut = (amountInWithFee * reserveOut) / (reserveIn * 1000 + amountInWithFee);
+                
+                (uint amount0Out, uint amount1Out) = defiFactoryTokenAddress < WETH_TOKEN_ADDRESS? 
+                    (uint(0), amountOut): (amountOut, uint(0));
+                
+                IUniswapV2Pair(sellPair).swap(
+                    amount0Out, 
+                    amount1Out, 
+                    toAddress, 
                     new bytes(0)
                 );
             }
@@ -423,19 +514,31 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         uint burnAndRewardRealAmount;
         if (isHumanInfo.isHumanTransaction)
         {
+            // human on main pair
+            // buys - cycle tax
+            // sells - cycle tax
+            // transfers - 0% tax
+            
             if (
                     isHumanInfo.isSell
                 )
             {
-                // human on main pair
-                // buys - 0% tax
-                // sells - cycle tax
-                // transfers - 0% tax
-                
                 uint buyTimestampSender = 
                     getUpdatedBuyTimestampOfEarlyInvestor(taxAmountsInput.sender, taxAmountsInput.senderRealBalance);
                 uint timePassedSinceLastBuy = 
                     block.timestamp > buyTimestampSender? block.timestamp - buyTimestampSender: 0;
+                uint cycleTaxPercent = calculateCurrentCycleTax(timePassedSinceLastBuy);
+                burnAndRewardRealAmount = (realTransferAmount * cycleTaxPercent) / TAX_PERCENT_DENORM;
+            }
+            
+            if (
+                    isHumanInfo.isBuy
+                )
+            {
+                uint buyTimestampRecipient = 
+                    getUpdatedBuyTimestampOfEarlyInvestor(taxAmountsInput.recipient, taxAmountsInput.recipientRealBalance);
+                uint timePassedSinceLastBuy = 
+                    block.timestamp > buyTimestampRecipient? block.timestamp - buyTimestampRecipient: 0;
                 uint cycleTaxPercent = calculateCurrentCycleTax(timePassedSinceLastBuy);
                 burnAndRewardRealAmount = (realTransferAmount * cycleTaxPercent) / TAX_PERCENT_DENORM;
             }
@@ -459,9 +562,9 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             
             iDeftStorageContract.updateBuyTimestamp(defiFactoryTokenAddress, taxAmountsInput.recipient, newBuyTimestamp);
             
-            if (!isHumanInfo.isBuy)
+            if (!isHumanInfo.isBuy) // isTransfer
             {
-                payFeeToDeftHolders();
+                payAllFees();
             }
         }
         
@@ -498,11 +601,11 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             return  cycleTwoStartTaxPercent -
                     ((cycleTwoStartTaxPercent - cycleThreeStartTaxPercent) * (timePassedSinceLastBuy - cycleOneEnds)) /
                         (cycleTwoEnds - cycleOneEnds);
-        } else if (timePassedSinceLastBuy > howManyFirstMinutesIncreasedTax)
+        } else if (timePassedSinceLastBuy > 0)
         {
             return  cycleOneStartTaxPercent -
                     ((cycleOneStartTaxPercent - cycleTwoStartTaxPercent) * timePassedSinceLastBuy) / cycleOneEnds;
-        } else // timePassedSinceLastBuy < howManyFirstMinutesIncreasedTax
+        } else
         {
             return botTaxPercent;
         }
@@ -555,7 +658,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         if (buyTimeStampAddr != 0)
         {
             newBuyTimestamp = buyTimeStampAddr;
-        } else if (accountBalance != 0)
+        } else if (accountBalance > 0)
         {
             newBuyTimestamp = earlyInvestorTimestamp;
         }

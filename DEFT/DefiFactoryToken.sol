@@ -31,7 +31,6 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     bool public isPaused;
     
     address constant BURN_ADDRESS = address(0x0);
-    address constant DEAD_ADDRESS = 0xdEad000000000000000000000000000000000000;
     
     event VestedAmountClaimed(address recipient, uint amount);
     event UpdatedUtilsContracts(AccessSettings[] accessSettings);
@@ -43,8 +42,8 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     event BurnedByBridge(address sender, uint amount);
 
     constructor() 
-        ERC20Mod("Meme Defi Factory Token", "memeDEFT") 
-        ERC20Permit("Meme Defi Factory Token")
+        ERC20Mod("Your Test Token", "testToken") 
+        ERC20Permit("Your Test Token")
     {
         _setupRole(ROLE_ADMIN, _msgSender());
         _setupRole(ROLE_MINTER, _msgSender());

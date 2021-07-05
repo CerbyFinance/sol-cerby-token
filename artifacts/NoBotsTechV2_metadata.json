@@ -144,6 +144,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "DEFT_FEE_PERCENT",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE",
 				"outputs": [
 					{
@@ -189,6 +202,19 @@
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "buyBackWallet",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -356,19 +382,6 @@
 						"internalType": "address",
 						"name": "",
 						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "deftFeePercent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -642,20 +655,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "howManyFirstMinutesIncreasedTax",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "howOftenPayDeftFee",
+				"name": "howOftenToPayFee",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -687,6 +687,32 @@
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "marketingFeePercent",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "marketingWallet",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -730,7 +756,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "payFeeToDeftHolders",
+				"name": "payAllFees",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -903,7 +929,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "secondsBetweenRecacheUpdates",
+				"name": "secondsBetweenCacheUpdates",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -942,6 +968,19 @@
 					}
 				],
 				"name": "updateBotTaxSettings",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_wallet",
+						"type": "address"
+					}
+				],
+				"name": "updateBuyBackWallet",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1035,11 +1074,11 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_deftFeePercent",
+						"name": "_value",
 						"type": "uint256"
 					}
 				],
-				"name": "updateDeftFeeTaxSettings",
+				"name": "updateHowOftenToPayFee",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1048,11 +1087,11 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_howOftenPayDeftFee",
+						"name": "_fee",
 						"type": "uint256"
 					}
 				],
-				"name": "updateHowOftenPayDeftFee",
+				"name": "updateMarketingFeePercent",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1061,11 +1100,11 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_parentTokenAddress",
+						"name": "_wallet",
 						"type": "address"
 					}
 				],
-				"name": "updateParentTokenAddress",
+				"name": "updateMarketingWallet",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1074,11 +1113,11 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_secondsBetweenRecacheUpdates",
+						"name": "_value",
 						"type": "uint256"
 					}
 				],
-				"name": "updateSecondsBetweenUpdates",
+				"name": "updateSecondsBetweenCacheUpdates",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1155,11 +1194,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x7a7b240d4e9fbee9952504857d333ef4938db3acc1ffbd19393a2cd66d230b21",
+			"keccak256": "0x07ccb24642cfb27a15cd16fe5d2517c0e8cd3ad395f5db757a99c5f76daf66d9",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://08c9fc0024fb7c1b00a8b8679d9a8d777b9f605cbc93768ac891177460d691de",
-				"dweb:/ipfs/QmQ76UkghNEJXEYNkEecEZmmkg6oyD4TFWUCvXP2UbBfcJ"
+				"bzz-raw://0b7b8dbdd7b645e94470431c2979117c5897c380f8d64736506a3b610e631473",
+				"dweb:/ipfs/QmSE7KuATEPccnaB43Qs2gwwGFV5zdmWcFWjyN2Jjow9hv"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
