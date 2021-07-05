@@ -606,11 +606,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/LiquidityForwarderDistribution.sol": {
-			"keccak256": "0x1c746868d1891465e14538f9428137a5cd59772870a83317dd418947cc6e8cd3",
+			"keccak256": "0x9def8d88d5320647dff6da26dc2e7dc7a6233ccbf5981df4018c04f7ec653c1a",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://ec7c5b6650ce151b335fb04a806d3d808f1a1b7b8570d037f8a6d47789cbfc23",
-				"dweb:/ipfs/QmZZVCgb2iNJdZYzUVqfyry5jKmgxFrkeKWk7Ddrmc9pTy"
+				"bzz-raw://2f8789a6c267e11e2ac48404ee88eb17c16fff8ab20a9c2dd15977d6a4ba43eb",
+				"dweb:/ipfs/QmemAq91VLobQQ4zbc2gB3hDDgRvtfvbvus6h33tRmmKbz"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

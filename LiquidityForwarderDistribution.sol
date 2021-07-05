@@ -50,13 +50,13 @@ contract LiquidityForwarderDistribution is AccessControlEnumerable {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
             
-            tokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
+            tokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840; // TODO: Change on production
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73;
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
             
-            tokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
+            tokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840; // TODO: Change on production
         } else if (block.chainid == ETH_KOVAN_CHAIN_ID)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
