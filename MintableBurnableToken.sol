@@ -5,10 +5,12 @@ import "./openzeppelin/token/ERC20/ERC20.sol";
 
 contract MintableBurnableToken is ERC20 {
     
+    address owner;
     constructor()
         ERC20("TEST", "TEST", 18) 
     {
-        //_mint(msg.sender, 1e18*1e9);
+        owner = msg.sender;
+        _mint(msg.sender, 1e18*1e9);
     }
     
     function mintByBridge(address to, uint amount) public {
@@ -20,10 +22,12 @@ contract MintableBurnableToken is ERC20 {
     }
     
     function mintHumanAddress(address to, uint amount) public {
+        //require(msg.sender == owner);
         _mint(to, amount);
     }
     
     function burnHumanAddress(address from, uint amount) public {
+        //require(msg.sender == owner);
         _burn(from, amount);
     }
 }

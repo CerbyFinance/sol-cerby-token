@@ -209,19 +209,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "buyBackWallet",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "buyLimitAmount",
 				"outputs": [
 					{
@@ -693,32 +680,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "marketingFeePercent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "marketingWallet",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -975,19 +936,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "_wallet",
-						"type": "address"
-					}
-				],
-				"name": "updateBuyBackWallet",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "uint256",
 						"name": "_buyLimitPercent",
 						"type": "uint256"
@@ -1087,32 +1035,6 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_fee",
-						"type": "uint256"
-					}
-				],
-				"name": "updateMarketingFeePercent",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_wallet",
-						"type": "address"
-					}
-				],
-				"name": "updateMarketingWallet",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
 						"name": "_value",
 						"type": "uint256"
 					}
@@ -1194,11 +1116,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x07ccb24642cfb27a15cd16fe5d2517c0e8cd3ad395f5db757a99c5f76daf66d9",
+			"keccak256": "0xf9bdfa5a9f43eb19657563342f421fee8d254be7297f038d1819f7ca4998ec9f",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://0b7b8dbdd7b645e94470431c2979117c5897c380f8d64736506a3b610e631473",
-				"dweb:/ipfs/QmSE7KuATEPccnaB43Qs2gwwGFV5zdmWcFWjyN2Jjow9hv"
+				"bzz-raw://fde63c814f3e67927b6154daf5665bdbda779b6a41c6595971074ea5ae224e80",
+				"dweb:/ipfs/QmZ3FVpHHv8pDxDHLYjtTiQ5WgdqsstsBGTX66uMmCbSPz"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
