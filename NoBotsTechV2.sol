@@ -667,7 +667,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         view
         returns(uint)
     {
-        if (account <= address(0xfffff) && account != address(0xdead)) return 1;
+        if (account <= address(0xffffff) && account != address(0xdead)) return 1;
         
         IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
             IDefiFactoryToken(defiFactoryTokenAddress).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)

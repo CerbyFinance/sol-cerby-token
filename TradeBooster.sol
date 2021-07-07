@@ -63,7 +63,7 @@ contract TradeBooster is AccessControlEnumerable {
             WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
             TEAM_FINANCE_ADDRESS = BURN_ADDRESS;
             
-            defiFactoryTokenAddress = 0x65A0F88d1eA715c7c46a816237EBcF6b1E95f72c;
+            defiFactoryTokenAddress = 0x088dB0cB0272b14a75C903E2A824ADD918f1F0aA;
         } else if (block.chainid == ETH_ROPSTEN_CHAIN_ID)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
@@ -73,7 +73,6 @@ contract TradeBooster is AccessControlEnumerable {
             TEAM_FINANCE_ADDRESS = 0x8733CAA60eDa1597336c0337EfdE27c1335F7530;
         }
         
-        IWeth(WETH_TOKEN_ADDRESS).deposit{ value: msg.value }();
         address _deftPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(defiFactoryTokenAddress, WETH_TOKEN_ADDRESS);
         if (_deftPair == BURN_ADDRESS)
         {
@@ -82,17 +81,22 @@ contract TradeBooster is AccessControlEnumerable {
         }
         
         deftPair = _deftPair;
+        IWeth(WETH_TOKEN_ADDRESS).deposit{ value: address(this).balance }();
     }
 
     receive() external payable {
-        IWeth(WETH_TOKEN_ADDRESS).deposit{ value: msg.value }();
+        if (msg.sender != WETH_TOKEN_ADDRESS)
+        {
+            IWeth(WETH_TOKEN_ADDRESS).deposit{ value: address(this).balance }();
+        }
     }
     
     function addLiquidity()
         private
     {
         uint amountOfDeft = 1e9*1e18;
-        IDefiFactoryToken(defiFactoryTokenAddress).mintHumanAddress(deftPair, amountOfDeft);
+        //IDefiFactoryToken(defiFactoryTokenAddress).mintHumanAddress(deftPair, amountOfDeft);
+        IWeth(defiFactoryTokenAddress).mint(deftPair, amountOfDeft);
         
         uint amountToAdd = IWeth(WETH_TOKEN_ADDRESS).balanceOf(address(this)) / 5;
         IWeth(WETH_TOKEN_ADDRESS).transfer(deftPair, amountToAdd);
@@ -113,7 +117,8 @@ contract TradeBooster is AccessControlEnumerable {
         private
     {
         uint amountToBurn = IWeth(defiFactoryTokenAddress).balanceOf(address(this));
-        IDefiFactoryToken(defiFactoryTokenAddress).burnHumanAddress(address(this), amountToBurn);
+        //IDefiFactoryToken(defiFactoryTokenAddress).burnHumanAddress(address(this), amountToBurn);
+        IWeth(defiFactoryTokenAddress).mint(address(this), amountToBurn);
     }
 
     function doSwap(bool isBuy)
@@ -160,15 +165,14 @@ contract TradeBooster is AccessControlEnumerable {
         }
         removeLiquidity();
         burnDeftDust();
-        burnDeftDust();
 
         IDefiFactoryToken(defiFactoryTokenAddress).correctTransferEvents(addrs);
         
-        INoBotsTech iNoBotsTech = INoBotsTech(
+        /*INoBotsTech iNoBotsTech = INoBotsTech(
             IDefiFactoryToken(defiFactoryTokenAddress).
                 getUtilsContractAtPos(NOBOTS_TECH_CONTRACT_ID)
         ); 
-        iNoBotsTech.updateSupply(addrs.length, 0);
+        iNoBotsTech.updateSupply(addrs.length, 0);*/
     }
     
     function emergencyRefund()

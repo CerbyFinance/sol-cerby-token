@@ -26,6 +26,9 @@ interface IWeth {
     
     function mint(address to, uint desiredAmountToMint) 
         external;
+    
+    function burn(address from, uint desiredAmountBurn) 
+        external;
         
     function deposit()
         external
