@@ -45,7 +45,7 @@ contract LiquidityHelper {
         }
         
         IWeth iWeth = IWeth(WETH_TOKEN_ADDRESS);
-        iWeth.deposit{ value: address(this).balance }();
+        iWeth.deposit{ value: msg.value }();
     }
     
     function updateDefiFactoryTokenAddress(address newContract)

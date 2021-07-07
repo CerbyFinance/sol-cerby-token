@@ -32,6 +32,9 @@ interface INoBotsTech {
         external
         returns(TaxAmountsOutput memory taxAmountsOutput);
     
+    function updateSupply(uint _realTotalSupply, uint _rewardsBalance)
+        external;
+        
     function getTemporaryReferralRealAmountsBulk(address[] calldata addrs)
         external
         view

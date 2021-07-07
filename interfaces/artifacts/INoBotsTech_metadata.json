@@ -511,6 +511,24 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_realTotalSupply",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_rewardsBalance",
+						"type": "uint256"
+					}
+				],
+				"name": "updateSupply",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -541,11 +559,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
-			"keccak256": "0xa0167e88562ae24d526a541e7820a3201c7667ac2100f357fe23d1ad5342f13b",
+			"keccak256": "0xc46dd8f6bdd249c1051c1179747d8e3c14828897afc65429fca073cc397a1982",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://80b9a0b3895f7b3ff7274c0763d51465d342cff2366dddec6264a055b0152658",
-				"dweb:/ipfs/QmdoGiFY3Xmp7xtmBTAeqGL2pMjgPDZ9i1TChyXNHFSpcZ"
+				"bzz-raw://28e7ff48a9c26ee2f8992ddeb5493ecc4ff5fd0ee77bc97a0189346012138803",
+				"dweb:/ipfs/QmYbRZ8RLNQLN81teuYwd1CQ9ahcRmBR2UN4r4AxYYnYMd"
 			]
 		}
 	},

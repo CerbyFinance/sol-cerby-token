@@ -7,7 +7,7 @@
 		"abi": [
 			{
 				"inputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "payable",
 				"type": "constructor"
 			},
 			{
@@ -16,55 +16,17 @@
 					{
 						"indexed": false,
 						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "to",
+						"name": "investorAddr",
 						"type": "address"
 					},
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "transferAmount",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "taxedAmount",
+						"name": "investorAmountWeth",
 						"type": "uint256"
 					}
 				],
-				"name": "BotTransactionDetected",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "newBuyLimitAmount",
-						"type": "uint256"
-					}
-				],
-				"name": "BuyLimitAmountUpdated",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "newMultiplier",
-						"type": "uint256"
-					}
-				],
-				"name": "MultiplierUpdated",
+				"name": "InvestedAmount",
 				"type": "event"
 			},
 			{
@@ -143,26 +105,26 @@
 				"type": "event"
 			},
 			{
-				"inputs": [],
-				"name": "DEFT_FEE_PERCENT",
-				"outputs": [
+				"anonymous": false,
+				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
+						"indexed": false,
+						"internalType": "enum TradeN.States",
+						"name": "newState",
+						"type": "uint8"
 					}
 				],
-				"stateMutability": "view",
-				"type": "function"
+				"name": "StateChanged",
+				"type": "event"
 			},
 			{
 				"inputs": [],
-				"name": "MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE",
+				"name": "BURN_ADDRESS",
 				"outputs": [
 					{
-						"internalType": "uint256",
+						"internalType": "address",
 						"name": "",
-						"type": "uint256"
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -183,7 +145,79 @@
 			},
 			{
 				"inputs": [],
-				"name": "batchBurnAndReward",
+				"name": "TEAM_FINANCE_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "UNISWAP_V2_FACTORY_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "UNISWAP_V2_ROUTER_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "USDT_TOKEN_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "WETH_TOKEN_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "addLiquidityOnUniswapV2",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "amountOfDeftBurned",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -196,7 +230,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "botTaxPercent",
+				"name": "amountOfDeftForInvestors",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -209,7 +243,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "buyLimitAmount",
+				"name": "amountOfDeftForUniswap",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -222,20 +256,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "buyLimitPercent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "cachedMultiplier",
+				"name": "amountOfDeftMinted",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -250,29 +271,29 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "taxAmount",
+						"name": "normedDeftPriceInUSD",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "accountBalance",
+						"name": "PRICE_DENORM",
 						"type": "uint256"
 					}
 				],
-				"name": "chargeCustomTax",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
+				"name": "balancePairPrice",
+				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "cycleOneEnds",
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "cachedIndex",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -285,80 +306,9 @@
 			},
 			{
 				"inputs": [],
-				"name": "cycleOneStartTaxPercent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "cycleThreeEndTaxPercent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "cycleThreeEnds",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "cycleThreeStartTaxPercent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "cycleTwoEnds",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "cycleTwoStartTaxPercent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
+				"name": "checkIfPairIsCreated",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -375,61 +325,72 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "earlyInvestorTimestamp",
-				"outputs": [
+				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "",
+						"name": "offset",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "limit",
 						"type": "uint256"
 					}
 				],
-				"stateMutability": "view",
+				"name": "distributeInvestorsTokens",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "offset",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "limit",
+						"type": "uint256"
+					}
+				],
+				"name": "emergencyRefund",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "account",
+						"name": "addr",
 						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "accountBalance",
-						"type": "uint256"
 					}
 				],
-				"name": "getBalance",
+				"name": "getInvestorByAddr",
 				"outputs": [
 					{
-						"internalType": "uint256",
+						"components": [
+							{
+								"internalType": "address",
+								"name": "addr",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "wethValue",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "sentValue",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct TradeN.Investor",
 						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "account",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "accountBalance",
-						"type": "uint256"
-					}
-				],
-				"name": "getRealBalance",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
+						"type": "tuple"
 					}
 				],
 				"stateMutability": "view",
@@ -439,16 +400,33 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "accountBalance",
+						"name": "pos",
 						"type": "uint256"
 					}
 				],
-				"name": "getRealBalanceTeamVestingContract",
+				"name": "getInvestorByPos",
 				"outputs": [
 					{
-						"internalType": "uint256",
+						"components": [
+							{
+								"internalType": "address",
+								"name": "addr",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "wethValue",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "sentValue",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct TradeN.Investor",
 						"name": "",
-						"type": "uint256"
+						"type": "tuple"
 					}
 				],
 				"stateMutability": "view",
@@ -456,7 +434,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "getRewardsBalance",
+				"name": "getInvestorsCount",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -531,43 +509,12 @@
 			},
 			{
 				"inputs": [],
-				"name": "getTotalSupply",
+				"name": "getTotalMintedTokens",
 				"outputs": [
 					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "getWalletCurrentCycle",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "uint256",
-								"name": "currentCycleTax",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "howMuchTimeLeftTillEndOfCycleThree",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct NoBotsTechV2.CurrectCycle",
-						"name": "currentCycle",
-						"type": "tuple"
 					}
 				],
 				"stateMutability": "view",
@@ -641,46 +588,15 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "howOftenToPayFee",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "lastCachedTimestamp",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "lastPaidFeeTimestamp",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "investors",
+				"outputs": [
 					{
 						"internalType": "address",
 						"name": "addr",
@@ -688,28 +604,54 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "amount",
+						"name": "wethValue",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "realAmount",
+						"name": "sentValue",
 						"type": "uint256"
 					}
 				],
-				"name": "mintAmountAndUpdateTotalSupply",
-				"outputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "parentTokenAddress",
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "offset",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "limit",
+						"type": "uint256"
+					}
+				],
+				"name": "listInvestors",
 				"outputs": [
 					{
-						"internalType": "address",
+						"components": [
+							{
+								"internalType": "address",
+								"name": "addr",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "wethValue",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "sentValue",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct TradeN.Investor[]",
 						"name": "",
-						"type": "address"
+						"type": "tuple[]"
 					}
 				],
 				"stateMutability": "view",
@@ -717,118 +659,21 @@
 			},
 			{
 				"inputs": [],
-				"name": "payAllFees",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bool",
-						"name": "isMint",
-						"type": "bool"
-					},
-					{
-						"internalType": "address",
-						"name": "account",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "desiredAmountToMintOrBurn",
-						"type": "uint256"
-					}
-				],
-				"name": "prepareHumanAddressMintOrBurnRewardsAmounts",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "sender",
-								"type": "address"
-							},
-							{
-								"internalType": "address",
-								"name": "recipient",
-								"type": "address"
-							},
-							{
-								"internalType": "uint256",
-								"name": "transferAmount",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "senderRealBalance",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "recipientRealBalance",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct TaxAmountsInput",
-						"name": "taxAmountsInput",
-						"type": "tuple"
-					}
-				],
-				"name": "prepareTaxAmounts",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "uint256",
-								"name": "senderRealBalance",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "recipientRealBalance",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "burnAndRewardAmount",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "recipientGetsAmount",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct TaxAmountsOutput",
-						"name": "taxAmountsOutput",
-						"type": "tuple"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "publicForcedUpdateCacheMultiplier",
+				"name": "lockLPTokensAtTeamFinance",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "realTotalSupply",
+				"name": "markGoalAsReached",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "maxWethCap",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -837,6 +682,39 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "perWalletMaxWethCap",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "perWalletMinWethCap",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "prepareAddLiqudity",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -877,25 +755,47 @@
 			},
 			{
 				"inputs": [],
-				"name": "rewardsBalance",
-				"outputs": [
+				"name": "skipSteps1",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "",
+						"name": "price",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "priceDenorm",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "limit",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isLiquidityLocked",
+						"type": "bool"
 					}
 				],
-				"stateMutability": "view",
+				"name": "skipSteps2",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "secondsBetweenCacheUpdates",
+				"name": "state",
 				"outputs": [
 					{
-						"internalType": "uint256",
+						"internalType": "enum TradeN.States",
 						"name": "",
-						"type": "uint256"
+						"type": "uint8"
 					}
 				],
 				"stateMutability": "view",
@@ -921,86 +821,37 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
+				"inputs": [],
+				"name": "totalInvestedWeth",
+				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "_botTaxPercent",
+						"name": "",
 						"type": "uint256"
 					}
 				],
-				"name": "updateBotTaxSettings",
-				"outputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_buyLimitPercent",
-						"type": "uint256"
-					}
-				],
-				"name": "updateBuyLimitPercent",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_cycleOneStartTaxPercent",
+						"name": "_maxWethCap",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_cycleOneEnds",
-						"type": "uint256"
-					}
-				],
-				"name": "updateCycleOneSettings",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_cycleThreeStartTaxPercent",
+						"name": "_perWalletMinWethCap",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_cycleThreeEnds",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_cycleThreeEndTaxPercent",
+						"name": "_perWalletMaxWethCap",
 						"type": "uint256"
 					}
 				],
-				"name": "updateCycleThreeSettings",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_cycleTwoStartTaxPercent",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_cycleTwoEnds",
-						"type": "uint256"
-					}
-				],
-				"name": "updateCycleTwoSettings",
+				"name": "updateCaps",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1009,58 +860,31 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_defiFactoryTokenAddress",
+						"name": "newContract",
 						"type": "address"
 					}
 				],
-				"name": "updateDefiFactoryTokenAddress",
+				"name": "updateDefiFactoryContract",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
-				"inputs": [
+				"inputs": [],
+				"name": "wethAndTokenPairContract",
+				"outputs": [
 					{
-						"internalType": "uint256",
-						"name": "_value",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "",
+						"type": "address"
 					}
 				],
-				"name": "updateHowOftenToPayFee",
-				"outputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_value",
-						"type": "uint256"
-					}
-				],
-				"name": "updateSecondsBetweenCacheUpdates",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_realTotalSupply",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_rewardsBalance",
-						"type": "uint256"
-					}
-				],
-				"name": "updateSupply",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
+				"stateMutability": "payable",
+				"type": "receive"
 			}
 		],
 		"devdoc": {
@@ -1101,7 +925,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/NoBotsTechV2.sol": "NoBotsTechV2"
+			"sol-defifactory-token/TradeBooster.sol": "TradeN"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -1115,36 +939,28 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x4bcb114c09a1b923f483561b87d6e839394b4b7fd9a40ac3a9b98a937f8be2b2",
-			"license": "BUSL-1.1",
+		"sol-defifactory-token/TradeBooster.sol": {
+			"keccak256": "0xd0bf5c831330eabfc4dfbba365f2c4b5f105f47cc49c950f6702af976f82b178",
+			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://0c682c085616a709096f5a1aad1b046366f7c0d75dde6a4a818dce70dc0905c5",
-				"dweb:/ipfs/QmUbMzWQxekCYknzD5QcdzNN8oDjnujifqn1i4nFJhfPFt"
+				"bzz-raw://cfafe2f5a91a8eb39542ac55a3460479368c174c5fd4f7c803d00726a703e92f",
+				"dweb:/ipfs/QmRXvwdno4PAEmhoNTcpyysjSSVjrryAJz1gRjmScnfhry"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x5d5d5d1febdb2bc5dd3ead637f5de494dc870b67b9d5f4ceaf67e5904a2c15cc",
+			"keccak256": "0x5a43d3dd30c82e585ebdc78de529a1efa7c43e5aabda1dd598017d388d4ef6ec",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://feb4cbcb41635d19deac5104015c71b8b3aa2a9bb8dbbb5c9b6546017c6f72b4",
-				"dweb:/ipfs/QmahjHAdoZn8pBiHgcdpyRvNPYZTGmYqNKzwrwqYJ7tX8L"
+				"bzz-raw://aed836272507b878e2884f3b2162a968ecbcffb7314814efe2a381cf32294c4a",
+				"dweb:/ipfs/QmRo1TxhaNYgr7E4aLpBwsAUi7y6RcYw7j8Wk3EzvWjbAD"
 			]
 		},
-		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0xcee90fcacc8725ccd5b900437203750e7d5a4a98d81eacb0f3fa69a1be919e7e",
-			"license": "BUSL-1.1",
-			"urls": [
-				"bzz-raw://f2b23e30f5058f4e004b15e868b34df5c2248206adf07bfe2a5037eb283e26a4",
-				"dweb:/ipfs/QmaAChav6978W4YkckxwkEbMguuvE2wdaxXgW5AgyZBEEZ"
-			]
-		},
-		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
-			"keccak256": "0xa0167e88562ae24d526a541e7820a3201c7667ac2100f357fe23d1ad5342f13b",
+		"sol-defifactory-token/interfaces/ITeamFinance.sol": {
+			"keccak256": "0x6a63b8ce921e4a3ece16c6c8dd3bcd17536e4079d02b0f68891810f035bf9a24",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://80b9a0b3895f7b3ff7274c0763d51465d342cff2366dddec6264a055b0152658",
-				"dweb:/ipfs/QmdoGiFY3Xmp7xtmBTAeqGL2pMjgPDZ9i1TChyXNHFSpcZ"
+				"bzz-raw://0213eb180a0c35b27ece742707f49edfa9376fa1dab3b38d256473e495e891da",
+				"dweb:/ipfs/QmVzw8vwaBTbzRA5mvYEPL58uijq13CbfgnDTY6eWqhcUj"
 			]
 		},
 		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {
@@ -1156,11 +972,19 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
-			"keccak256": "0x8b11d0b070b3ea821880b21c336186d619892cd92cb90f05a9defebef8836624",
+			"keccak256": "0xf6d37d6190909e697683ef7de1d5f95a7e888f6373d2bd86e435d1364e9fdfe2",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f0598d56bb3b6a0ee15374a10ce2913e854af87f5c6845772ef505a31c0c9fa7",
-				"dweb:/ipfs/QmXH92UmaKz7qks5cXQbDae5gwnDWnAHvwmcS8vvgraA5Y"
+				"bzz-raw://1d482dd676944dccf72dbc329a5849fa53ca2c312b0a60fd2243c7c85abb444a",
+				"dweb:/ipfs/QmNiwQrpRfxcY7sQDvb4dgq7pHPxxKAz9sVyFCiXkF1F96"
+			]
+		},
+		"sol-defifactory-token/interfaces/IUniswapV2Router.sol": {
+			"keccak256": "0x590b9262136f0a0af7a7ba0c2f823624e8b5a70461b91822c404ce9fb0ab69dd",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://27cdcc84b36b3ded02e4db7bd50c4e3ca417c57b0937b6a01a730aa405e4ed72",
+				"dweb:/ipfs/QmQSu4eRtu1YKaS5bVRNizUZn2RHnhqBqXbjM4pgoauN7U"
 			]
 		},
 		"sol-defifactory-token/interfaces/IWeth.sol": {

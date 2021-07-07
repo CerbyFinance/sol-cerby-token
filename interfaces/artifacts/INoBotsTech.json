@@ -64,7 +64,8 @@
 			"prepareTaxAmounts((address,address,uint256,uint256,uint256))": "815a61e0",
 			"publicForcedUpdateCacheMultiplier()": "e8ac6e4e",
 			"registerReferral(address,address)": "5603b9f9",
-			"updateReferrersRewards(address[])": "3830551a"
+			"updateReferrersRewards(address[])": "3830551a",
+			"updateSupply(uint256,uint256)": "9e2dcbfd"
 		}
 	},
 	"abi": [
@@ -571,6 +572,24 @@
 				}
 			],
 			"name": "updateReferrersRewards",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_realTotalSupply",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_rewardsBalance",
+					"type": "uint256"
+				}
+			],
+			"name": "updateSupply",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"

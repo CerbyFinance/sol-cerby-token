@@ -14,25 +14,6 @@
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "investorAddr",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "investorAmountWeth",
-						"type": "uint256"
-					}
-				],
-				"name": "InvestedAmount",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
 						"indexed": true,
 						"internalType": "bytes32",
 						"name": "role",
@@ -105,32 +86,6 @@
 				"type": "event"
 			},
 			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "enum PresaleLambo.States",
-						"name": "newState",
-						"type": "uint8"
-					}
-				],
-				"name": "StateChanged",
-				"type": "event"
-			},
-			{
-				"inputs": [],
-				"name": "BURN_ADDRESS",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "ROLE_ADMIN",
 				"outputs": [
@@ -145,64 +100,12 @@
 			},
 			{
 				"inputs": [],
-				"name": "TEAM_ADDRESS1",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "TEAM_ADDRESS2",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "TEAM_FINANCE_ADDRESS",
 				"outputs": [
 					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "TEAM_WEIGHT1",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "TEAM_WEIGHT2",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -262,189 +165,53 @@
 			},
 			{
 				"inputs": [],
-				"name": "addLiquidityOnUniswapV2",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "amountOfDeftForInvestors",
+				"name": "defiFactoryTokenAddress",
 				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
 					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
 					}
 				],
-				"name": "cachedIndex",
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "deftPair",
 				"outputs": [
 					{
-						"internalType": "uint256",
+						"internalType": "address",
 						"name": "",
-						"type": "uint256"
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "checkIfPairIsCreated",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "offset",
+						"name": "cyclesCount",
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint256",
-						"name": "limit",
-						"type": "uint256"
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
 					}
 				],
-				"name": "distributeInvestorsTokens",
+				"name": "doBuyAndSell",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "distributeTeamTokens",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "offset",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "limit",
-						"type": "uint256"
-					}
-				],
 				"name": "emergencyRefund",
 				"outputs": [],
 				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "fixedPriceInUsd",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "getInvestorByAddr",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "addr",
-								"type": "address"
-							},
-							{
-								"internalType": "uint256",
-								"name": "wethValue",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "sentValue",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct PresaleLambo.Investor",
-						"name": "",
-						"type": "tuple"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "pos",
-						"type": "uint256"
-					}
-				],
-				"name": "getInvestorByPos",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "addr",
-								"type": "address"
-							},
-							{
-								"internalType": "uint256",
-								"name": "wethValue",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "sentValue",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct PresaleLambo.Investor",
-						"name": "",
-						"type": "tuple"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getInvestorsCount",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -579,149 +346,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "investors",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "wethValue",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "sentValue",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "lamboTokenAddress",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "offset",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "limit",
-						"type": "uint256"
-					}
-				],
-				"name": "listInvestors",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "addr",
-								"type": "address"
-							},
-							{
-								"internalType": "uint256",
-								"name": "wethValue",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "sentValue",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct PresaleLambo.Investor[]",
-						"name": "",
-						"type": "tuple[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "lockLPTokensAtTeamFinance",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "markGoalAsReached",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "maxWethCap",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "perWalletMaxWethCap",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "perWalletMinWethCap",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "prepareAddLiqudity",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -756,44 +380,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "skipSteps1",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "limit",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "isLiquidityLocked",
-						"type": "bool"
-					}
-				],
-				"name": "skipSteps2",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "state",
-				"outputs": [
-					{
-						"internalType": "enum PresaleLambo.States",
-						"name": "",
-						"type": "uint8"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "bytes4",
@@ -807,120 +393,6 @@
 						"internalType": "bool",
 						"name": "",
 						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "teamPercent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "teamReceived1",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "teamReceived2",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "totalInvestedWeth",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_maxWethCap",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_perWalletMinWethCap",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_perWalletMaxWethCap",
-						"type": "uint256"
-					}
-				],
-				"name": "updateCaps",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_fixedPriceInUsd",
-						"type": "uint256"
-					}
-				],
-				"name": "updateFixedPriceInUsd",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "newContract",
-						"type": "address"
-					}
-				],
-				"name": "updateLamboContract",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "wethAndTokenPairContract",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -969,7 +441,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/PresaleLambo.sol": "PresaleLambo"
+			"sol-defifactory-token/TradeBooster.sol": "TradeBooster"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -983,12 +455,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/PresaleLambo.sol": {
-			"keccak256": "0x96ae8a1ce3c41b8343aeed33d2762e6cc1c27fc1799b2d9bd9f1f747bc03deef",
+		"sol-defifactory-token/TradeBooster.sol": {
+			"keccak256": "0xd689e050e73d8f36bd53e321d958f906fb2d24dc88ddf29d47536f713b7b92b2",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://eecb0d91e265186abda0ac4f33609d41d451f5d0f36ee7b0d8e7f8867e713c26",
-				"dweb:/ipfs/QmTa3VSuRnNyya3n2eXzyPH8P6rmX3hvEbfVFpbyrbUKhb"
+				"bzz-raw://32610530969a3e45780c8b18ee9bea39a9f229ec52cbf5b2e6b80b5b0d484cc9",
+				"dweb:/ipfs/QmVYB3xRnXY5ofHCRZzE9jd4LK83q6sMRSXiddZzna1xaS"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
@@ -997,6 +469,14 @@
 			"urls": [
 				"bzz-raw://feb4cbcb41635d19deac5104015c71b8b3aa2a9bb8dbbb5c9b6546017c6f72b4",
 				"dweb:/ipfs/QmahjHAdoZn8pBiHgcdpyRvNPYZTGmYqNKzwrwqYJ7tX8L"
+			]
+		},
+		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
+			"keccak256": "0xc46dd8f6bdd249c1051c1179747d8e3c14828897afc65429fca073cc397a1982",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://28e7ff48a9c26ee2f8992ddeb5493ecc4ff5fd0ee77bc97a0189346012138803",
+				"dweb:/ipfs/QmYbRZ8RLNQLN81teuYwd1CQ9ahcRmBR2UN4r4AxYYnYMd"
 			]
 		},
 		"sol-defifactory-token/interfaces/ITeamFinance.sol": {

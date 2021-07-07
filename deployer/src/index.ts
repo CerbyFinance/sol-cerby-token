@@ -459,7 +459,7 @@ const start = async () => {
   
   await createPairOnUniswapV2();
   //await delay(1000);
-  await addLiquidityOnUniswapV2();
+  //await addLiquidityOnUniswapV2();
   
 };
 

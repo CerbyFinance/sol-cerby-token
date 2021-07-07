@@ -10,7 +10,7 @@ contract MintableBurnableToken is ERC20 {
         ERC20("TEST", "TEST", 18) 
     {
         owner = msg.sender;
-        _mint(msg.sender, 1e18*1e9);
+        //_mint(msg.sender, 1e18*1e9);
     }
     
     function mintByBridge(address to, uint amount) public {

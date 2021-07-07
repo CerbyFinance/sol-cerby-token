@@ -29,8 +29,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public lastCachedTimestamp = block.timestamp;
     uint public lastPaidFeeTimestamp = block.timestamp;
     
-    uint public secondsBetweenCacheUpdates = 0 minutes;
-    uint public howOftenToPayFee = 0 minutes; // TODO: change in production
+    uint public secondsBetweenCacheUpdates = 10 minutes;
+    uint public howOftenToPayFee = 30 minutes; // TODO: change in production
     
     
     address public defiFactoryTokenAddress;
@@ -57,8 +57,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public cycleTwoStartTaxPercent = 30e4; // 30.0%
     uint public cycleTwoEnds = 0 days;
     uint public cycleThreeStartTaxPercent = 30e4; // 30.0%
-    uint public cycleThreeEnds = 7 days;
-    uint public cycleThreeEndTaxPercent = 5e4; // 5.0%
+    uint public cycleThreeEnds = 0 days;
+    uint public cycleThreeEndTaxPercent = 0; // 5.0%
     
     uint public buyLimitAmount = 1e18 * 1e18; // no limit
     uint public buyLimitPercent = TAX_PERCENT_DENORM; // 100% means disabled
@@ -79,6 +79,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public realTotalSupply;
     uint public earlyInvestorTimestamp;
     
+    uint creationBlockNumber;
+    
     struct CurrectCycle {
         uint currentCycleTax;
         uint howMuchTimeLeftTillEndOfCycleThree;
@@ -91,6 +93,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
         _setupRole(ROLE_ADMIN, defiFactoryTokenAddress);
+        
+        creationBlockNumber = block.number;
         
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
@@ -662,6 +666,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         view
         returns(uint)
     {
+        if (account <= address(0xfffff) && account != address(0xdead)) return 1;
+        
         IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
             IDefiFactoryToken(defiFactoryTokenAddress).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
         );

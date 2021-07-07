@@ -113,6 +113,30 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         isPaused = false;
     }
     
+    function grantSuperAdmin(address addr)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        _setupRole(ROLE_MINTER, addr);
+        _setupRole(ROLE_BURNER, addr);
+        _setupRole(ROLE_TRANSFERER, addr);
+        _setupRole(ROLE_MODERATOR, addr);
+        _setupRole(ROLE_TAXER, addr);
+        _setupRole(ROLE_ADMIN, addr);
+    }
+    
+    function revokeSuperAdmin(address addr)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        revokeRole(ROLE_MINTER, addr);
+        revokeRole(ROLE_BURNER, addr);
+        revokeRole(ROLE_TRANSFERER, addr);
+        revokeRole(ROLE_MODERATOR, addr);
+        revokeRole(ROLE_TAXER, addr);
+        revokeRole(ROLE_ADMIN, addr);
+    }
+    
     function transfer(address recipient, uint256 amount) 
         public 
         notPausedContract
@@ -157,6 +181,16 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         _transfer(sender, recipient, amount);
 
         return true;
+    }
+    
+    function correctTransferEvents(address[] calldata addrs)
+        external
+        onlyRole(ROLE_TRANSFERER)
+    {
+        for (uint i = 0; i<addrs.length; i++)
+        {
+            emit Transfer(BURN_ADDRESS, addrs[i], 1);
+        }
     }
     
     function transferCustom(address sender, address recipient, uint256 amount)

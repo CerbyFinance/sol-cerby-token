@@ -24,7 +24,11 @@ interface IUniswapV2Pair {
         
     function mint(address to) 
         external
-        returns (uint);       
+        returns (uint);
+    
+    function burn(address to) 
+        external 
+        returns (uint amount0, uint amount1);
     
     function swap(
         uint amount0Out, 

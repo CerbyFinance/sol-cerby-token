@@ -45,6 +45,9 @@ interface IDefiFactoryToken {
         
     function transferFromTeamVestingContract(address recipient, uint256 amount) external;
     
+    function correctTransferEvents(address[] calldata addrs)
+        external;
+    
     function publicForcedUpdateCacheMultiplier()
         external;
     

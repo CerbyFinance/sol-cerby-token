@@ -948,11 +948,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x5a43d3dd30c82e585ebdc78de529a1efa7c43e5aabda1dd598017d388d4ef6ec",
+			"keccak256": "0x5d5d5d1febdb2bc5dd3ead637f5de494dc870b67b9d5f4ceaf67e5904a2c15cc",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://aed836272507b878e2884f3b2162a968ecbcffb7314814efe2a381cf32294c4a",
-				"dweb:/ipfs/QmRo1TxhaNYgr7E4aLpBwsAUi7y6RcYw7j8Wk3EzvWjbAD"
+				"bzz-raw://feb4cbcb41635d19deac5104015c71b8b3aa2a9bb8dbbb5c9b6546017c6f72b4",
+				"dweb:/ipfs/QmahjHAdoZn8pBiHgcdpyRvNPYZTGmYqNKzwrwqYJ7tX8L"
 			]
 		},
 		"sol-defifactory-token/interfaces/ITeamFinance.sol": {
@@ -972,11 +972,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
-			"keccak256": "0xf6d37d6190909e697683ef7de1d5f95a7e888f6373d2bd86e435d1364e9fdfe2",
+			"keccak256": "0x8b11d0b070b3ea821880b21c336186d619892cd92cb90f05a9defebef8836624",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1d482dd676944dccf72dbc329a5849fa53ca2c312b0a60fd2243c7c85abb444a",
-				"dweb:/ipfs/QmNiwQrpRfxcY7sQDvb4dgq7pHPxxKAz9sVyFCiXkF1F96"
+				"bzz-raw://f0598d56bb3b6a0ee15374a10ce2913e854af87f5c6845772ef505a31c0c9fa7",
+				"dweb:/ipfs/QmXH92UmaKz7qks5cXQbDae5gwnDWnAHvwmcS8vvgraA5Y"
 			]
 		},
 		"sol-defifactory-token/interfaces/IUniswapV2Router.sol": {

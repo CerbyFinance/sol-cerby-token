@@ -513,6 +513,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					}
+				],
+				"name": "correctTransferEvents",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "decimals",
 				"outputs": [
@@ -695,6 +708,19 @@
 					}
 				],
 				"name": "grantRolesBulk",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "grantSuperAdmin",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -946,6 +972,19 @@
 					}
 				],
 				"name": "revokeRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "revokeSuperAdmin",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1248,11 +1287,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DEFT/DefiFactoryToken.sol": {
-			"keccak256": "0x8ef4dcb0fe4315fb495e70609974a6f504d343c77f9d8d96f1175074c4ea4c65",
+			"keccak256": "0xcb29fbfa34276e1fb8ff1a51881ab453e35ac8c4dd99d3617b09da32b8ebffc8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f757de1a2682983091ef675cca8ff49c329be04ca89067df3d75fe066f83e975",
-				"dweb:/ipfs/QmaxLmu9nHGWQAuuSiCAvtyyJ71wkTdW1WYLDpYNxXsiqP"
+				"bzz-raw://5a5efa47207a836fe82a60c7beea8b1a09b3b551939dc956449a7a0101fe9aef",
+				"dweb:/ipfs/QmTq2KihMMB2SjBAjk8anaXxqXSr5dpBvUS7sC1Wpt1m2i"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

@@ -105,6 +105,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					}
+				],
+				"name": "correctTransferEvents",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "pos",
 						"type": "uint256"
@@ -279,11 +292,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x5a43d3dd30c82e585ebdc78de529a1efa7c43e5aabda1dd598017d388d4ef6ec",
+			"keccak256": "0x5d5d5d1febdb2bc5dd3ead637f5de494dc870b67b9d5f4ceaf67e5904a2c15cc",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://aed836272507b878e2884f3b2162a968ecbcffb7314814efe2a381cf32294c4a",
-				"dweb:/ipfs/QmRo1TxhaNYgr7E4aLpBwsAUi7y6RcYw7j8Wk3EzvWjbAD"
+				"bzz-raw://feb4cbcb41635d19deac5104015c71b8b3aa2a9bb8dbbb5c9b6546017c6f72b4",
+				"dweb:/ipfs/QmahjHAdoZn8pBiHgcdpyRvNPYZTGmYqNKzwrwqYJ7tX8L"
 			]
 		}
 	},
