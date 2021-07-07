@@ -456,11 +456,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/TradeBooster.sol": {
-			"keccak256": "0xd689e050e73d8f36bd53e321d958f906fb2d24dc88ddf29d47536f713b7b92b2",
+			"keccak256": "0xf65d52aea219beb06bbdacd81416ccd3ecb0c586362325c59bf210fcf94b4a0d",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://32610530969a3e45780c8b18ee9bea39a9f229ec52cbf5b2e6b80b5b0d484cc9",
-				"dweb:/ipfs/QmVYB3xRnXY5ofHCRZzE9jd4LK83q6sMRSXiddZzna1xaS"
+				"bzz-raw://66d3c9e5ab3985eb0f090265ebae3f1d57594e39d2499b6ede0b84a78864c65d",
+				"dweb:/ipfs/QmeuvHWken9h9YHk81H7XuZ4kabDCkxRvyf7vjjDJBQVSw"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

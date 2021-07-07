@@ -143,7 +143,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         realTotalSupply = _realTotalSupply;
         rewardsBalance = _rewardsBalance;
         
-        cachedMultiplier = BALANCE_MULTIPLIER_DENORM + 
+        cachedMultiplier = realTotalSupply == 0? BALANCE_MULTIPLIER_DENORM:
+            BALANCE_MULTIPLIER_DENORM + 
                 (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
         emit MultiplierUpdated(cachedMultiplier);
     }
