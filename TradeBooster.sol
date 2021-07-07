@@ -31,7 +31,6 @@ contract TradeBooster is AccessControlEnumerable {
     uint constant BSC_TESTNET_CHAIN_ID = 97;
     
     address constant BURN_ADDRESS = address(0x0);
-    address constant DEAD_ADDRESS = 0xdEad000000000000000000000000000000000000;
     
     // TODO: !!!!!! give access super admin to DEFT, admin to storage and admin to nobots !!!!
     
@@ -64,7 +63,7 @@ contract TradeBooster is AccessControlEnumerable {
             WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
             TEAM_FINANCE_ADDRESS = BURN_ADDRESS;
             
-            defiFactoryTokenAddress = 0xE7DE56430B7221b814b5f9a6F26F8448b79c62e4;
+            defiFactoryTokenAddress = 0x65A0F88d1eA715c7c46a816237EBcF6b1E95f72c;
         } else if (block.chainid == ETH_ROPSTEN_CHAIN_ID)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
@@ -117,7 +116,7 @@ contract TradeBooster is AccessControlEnumerable {
         IDefiFactoryToken(defiFactoryTokenAddress).burnHumanAddress(address(this), amountToBurn);
     }
 
-    function doSwap(bool isBuy, address destinationAddr)
+    function doSwap(bool isBuy)
         private
         returns (uint)
     {
@@ -142,7 +141,7 @@ contract TradeBooster is AccessControlEnumerable {
         IUniswapV2Pair(deftPair).swap(
             amount0Out, 
             amount1Out, 
-            destinationAddr, 
+            address(this), 
             new bytes(0)
         );
         
@@ -154,15 +153,11 @@ contract TradeBooster is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         addLiquidity();
-        for(uint i=0; i<cyclesCount-1; i++)
+        for(uint i=0; i<cyclesCount; i++)
         {
-            doSwap(true, address(this));
-            doSwap(false, address(this));
+            doSwap(true);
+            doSwap(false);
         }
-        
-        doSwap(true, address(this));
-        doSwap(false, DEAD_ADDRESS);
-        
         removeLiquidity();
         burnDeftDust();
         burnDeftDust();
