@@ -11,7 +11,7 @@ contract ShitCoin is ERC20, AccessControlEnumerable {
     
     address constant BURN_ADDRESS = address(0x0);
     constructor()
-        ERC20("Cheeto Freeto t.me/CheetoFreeto", "CHEETO", 18) 
+        ERC20("Doctor Doge", "DODOGE", 18) 
     {
         _setupRole(ROLE_ADMIN, msg.sender);
     }

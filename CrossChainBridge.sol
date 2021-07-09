@@ -6,12 +6,10 @@ import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/IDeftStorageContract.sol";
 
 contract CrossChainBridge is AccessControlEnumerable {
-    event ProofOfBurn(address addr, uint amount, uint currentNonce, uint sourceChain, uint destinationChain, bytes32 transactionHash);
-    event ProofOfMint(address addr, uint amountAsFee, uint finalAmount, bytes32 transactionHash);
+    event ProofOfBurn(address token, address addr, uint amount, uint currentNonce, uint sourceChain, uint destinationChain, bytes32 transactionHash);
+    event ProofOfMint(address token, address addr, uint amountAsFee, uint finalAmount, bytes32 transactionHash);
     event ApprovedTransaction(bytes32 transactionHash);
     event BulkApprovedTransactions(bytes32[] transactionHashes);
-    event FeeUpdated(uint feeAmount);
-    event MinimumAmountToBurnUpdated(uint newMinAmountToBurn);
     
     enum States{ Created, Burned, Approved, Executed }
     mapping(bytes32 => States) public transactionStorage;
@@ -20,18 +18,19 @@ contract CrossChainBridge is AccessControlEnumerable {
     uint constant NO_BOTS_TECH_CONTRACT_ID = 0;
     uint constant DEFT_STORAGE_CONTRACT_ID = 3;
     bytes32 public constant ROLE_APPROVER = keccak256("ROLE_APPROVER");
+    
     uint constant feeDenorm = 1e6;
-    uint public feePercent = 1e4;
+    mapping(address => uint) public feePercent;// = 1e4;
     
     uint constant BOT_TAX_PERCENT = 999e3;
     uint constant TAX_PERCENT_DENORM = 1e6;
     
-    uint public minAmountToBurn = 1 * 1e18;
-    uint public currentNonce;
-    address public mainTokenContract;
+    mapping(address => uint) public minAmountToBurn; // = 1 * 1e18;
+    mapping(address => uint) public currentNonce;
     address public beneficiaryAddress;
     
-    mapping (uint => bool) public isAllowedToBridgeToChainId;
+    mapping(address => mapping (uint => bool)) public isAllowedToBridgeToChainId;
+    mapping(address => bool) public isAllowedToken; // TODO: add get/set methods
     
     struct SourceProofOfBurn {
         uint amount;
@@ -40,6 +39,8 @@ contract CrossChainBridge is AccessControlEnumerable {
         bytes32 transactionHash;
     }
     
+    // TODO: check to have minimal fee > gas fee in WETH
+    
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
         _setupRole(ROLE_APPROVER, msg.sender);
@@ -47,7 +48,6 @@ contract CrossChainBridge is AccessControlEnumerable {
         
         beneficiaryAddress = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
         
-        mainTokenContract = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840; // mintable token
         /*if (block.chainid == 97)
         {
             updateMinimumAmountToBurn(1000e18); // min 1000 tokens to burn on bsc testnet

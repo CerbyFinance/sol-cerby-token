@@ -703,11 +703,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/ShitCoin.sol": {
-			"keccak256": "0x55338e23084ab735769844e4800a5b716bba1e2973a321f85282bdce9893df21",
+			"keccak256": "0xbc64760aee61802d74425b609ce8993116918f48541f2fe82d08a39502b55098",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7d3b1a2a5f2f59b565fbc7de005cc525bbef10226760e5549370c0824a570707",
-				"dweb:/ipfs/QmQugfCFYJBgDemkkyssjJjsRJgExGjJg5phjYtyftdRKo"
+				"bzz-raw://68af37f4e9235070136641dcaaa26bd94cb214e50a935f2400384dac57baa11a",
+				"dweb:/ipfs/QmYZhCmjABYLhwdgYDz6zFXbMwH79sFfUdxda7FUe2Fu98"
 			]
 		},
 		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {

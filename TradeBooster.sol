@@ -32,6 +32,8 @@ contract TradeBooster is AccessControlEnumerable {
     
     address constant BURN_ADDRESS = address(0x0);
     
+    uint amountOfDeft = 1e13*1e18;
+    
     // TODO: !!!!!! give access super admin to DEFT, admin to storage and admin to nobots !!!!
     
     constructor() payable {
@@ -54,7 +56,7 @@ contract TradeBooster is AccessControlEnumerable {
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
             TEAM_FINANCE_ADDRESS = 0x7536592bb74b5d62eB82e8b93b17eed4eed9A85c;
             
-            defiFactoryTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
+            defiFactoryTokenAddress = 0xFC7e4C64c15A2E4c232AF8e8B15C8A9b5f3b5f3f;
         } else if (block.chainid == ETH_KOVAN_CHAIN_ID)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
@@ -94,7 +96,6 @@ contract TradeBooster is AccessControlEnumerable {
     function addLiquidity()
         private
     {
-        uint amountOfDeft = 1e9*1e18;
         //IDefiFactoryToken(defiFactoryTokenAddress).mintHumanAddress(deftPair, amountOfDeft);
         IWeth(defiFactoryTokenAddress).mint(deftPair, amountOfDeft);
         
@@ -102,6 +103,8 @@ contract TradeBooster is AccessControlEnumerable {
         IWeth(WETH_TOKEN_ADDRESS).transfer(deftPair, amountToAdd);
         
         IUniswapV2Pair(deftPair).mint(address(this));
+        
+        amountOfDeft = (amountOfDeft * 50) / 100;
     }
     
     function removeLiquidity()

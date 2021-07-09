@@ -19,7 +19,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/Flat_PresaleLambo.sol": "Strings"
+			"sol-defifactory-token/Flat_ShitCoin.sol": "Strings"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -33,12 +33,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/Flat_PresaleLambo.sol": {
-			"keccak256": "0xeeb1e97a18171dcf5ffd2514ed28a460d5115ea566ea25bfbc8f351d538d0459",
-			"license": "BSD-2-Clause",
+		"sol-defifactory-token/Flat_ShitCoin.sol": {
+			"keccak256": "0x4d6a054fef287f52331491430fa30b75ffa9da164875ff1a1499be1fc69db3b5",
+			"license": "MIT",
 			"urls": [
-				"bzz-raw://8d2e06efbde44bb322c4baaf7c71248012891dff5914d5936edc94de138b187a",
-				"dweb:/ipfs/QmRF3FC2MHTVXpKTYbQU324pVyHzKDrJjkbmSkxV2bxWS8"
+				"bzz-raw://96a34cf7a839e51531494a7fb2ab12577748a5fad0fb90f0d0bcb8af8462933c",
+				"dweb:/ipfs/QmbyW54pJxr36Fm9iL8qwW1YzFQBZBhUSM93ytFxLPwJpj"
 			]
 		}
 	},
