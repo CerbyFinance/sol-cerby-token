@@ -5,6 +5,8 @@ import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./openzeppelin/utils/structs/EnumerableSet.sol";
 import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/IDeftStorageContract.sol";
+import "./interfaces/IUniswapV2Factory.sol";
+import "./interfaces/IUniswapV2Pair.sol";
 
 contract CrossChainBridge is AccessControlEnumerable {
     event ProofOfBurn(address addr, address token, uint amount, uint currentNonce, uint sourceChain, uint destinationChain, bytes32 transactionHash);
@@ -21,11 +23,14 @@ contract CrossChainBridge is AccessControlEnumerable {
     uint constant DEFT_STORAGE_CONTRACT_ID = 3;
     bytes32 public constant ROLE_APPROVER = keccak256("ROLE_APPROVER");
     
-    uint constant feeDenorm = 1e6;
+    uint constant FEE_DENORM = 1e6;
     uint public feePercent;
     
     uint constant BOT_TAX_PERCENT = 999e3;
     uint constant TAX_PERCENT_DENORM = 1e6;
+    
+    address UNISWAP_V2_FACTORY_ADDRESS;
+    address WETH_TOKEN_ADDRESS;
     
     mapping(address => uint) public currentNonce;
     address public beneficiaryAddress;
@@ -34,6 +39,13 @@ contract CrossChainBridge is AccessControlEnumerable {
     
     using EnumerableSet for EnumerableSet.AddressSet;
     EnumerableSet.AddressSet private allowedContracts;
+    
+    uint constant ETH_MAINNET_CHAIN_ID = 1;
+    uint constant ETH_ROPSTEN_CHAIN_ID = 3;
+    uint constant ETH_KOVAN_CHAIN_ID = 42;
+    uint constant BSC_MAINNET_CHAIN_ID = 56;
+    uint constant BSC_TESTNET_CHAIN_ID = 97;
+    uint constant MATIC_MAINNET_CHAIN_ID = 137;
     
     struct SourceProofOfBurn {
         uint amount;
@@ -48,37 +60,50 @@ contract CrossChainBridge is AccessControlEnumerable {
         _setupRole(ROLE_APPROVER, msg.sender);
         _setupRole(ROLE_APPROVER, 0xdEF78a28c78A461598d948bc0c689ce88f812AD8);
         
+        _setupRole(ROLE_ADMIN, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
+        _setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
+        
         beneficiaryAddress = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
         
-        updateFee(5e5); // 0.5% fee to any directions
+        updateFee(5e3); // 0.5% fee to any directions
         
-        address tokenAddr1 = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
-        address tokenAddr2 = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
-        if (block.chainid == 97)
+        address tokenAddr1 = 0x5564217Dd1e1255eA751C9C506Fac9eD25FA5240;
+        address tokenAddr2 = 0x60b6F75D513E3C60bd325AE6B64Ea08ca3217527;
+        allowedContracts.add(tokenAddr1);
+        allowedContracts.add(tokenAddr2);
+        if (block.chainid == BSC_TESTNET_CHAIN_ID)
         {
-            isAllowedToBridgeToChainId[tokenAddr1][42] = true; // allow to bridge to kovan
-            isAllowedToBridgeToChainId[tokenAddr2][42] = true; // allow to bridge to kovan
-        } else if (block.chainid == 42)
+            UNISWAP_V2_FACTORY_ADDRESS = 0x66aB77d5B1930b86875256b22ebD931EF34F81D7;
+            WETH_TOKEN_ADDRESS = 0xEE503374CBC152Aa339214FD41877622578bC6c2;
+            
+            isAllowedToBridgeToChainId[tokenAddr1][ETH_KOVAN_CHAIN_ID] = true; // allow to bridge to kovan
+            isAllowedToBridgeToChainId[tokenAddr2][ETH_KOVAN_CHAIN_ID] = true; // allow to bridge to kovan
+        } else if (block.chainid == ETH_KOVAN_CHAIN_ID)
         {
-            isAllowedToBridgeToChainId[tokenAddr1][97] = true; // allow to bridge to bsc testnet
-            isAllowedToBridgeToChainId[tokenAddr2][97] = true; // allow to bridge to bsc testnet
+            UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
+            WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
+            
+            isAllowedToBridgeToChainId[tokenAddr1][BSC_TESTNET_CHAIN_ID] = true; // allow to bridge to bsc testnet
+            isAllowedToBridgeToChainId[tokenAddr2][BSC_TESTNET_CHAIN_ID] = true; // allow to bridge to bsc testnet
         }
         
         /* MAINNET
         address tokenAddr1 = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
         address tokenAddr2 = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
-        if (block.chainid == 1)
+        if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
-            isAllowedToBridgeToChainId[tokenAddr1][56] = true; // allow to bridge to bsc
-            isAllowedToBridgeToChainId[tokenAddr2][137] = true; // allow to bridge to matic
-        } else if (block.chainid == 56)
+            UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
+            WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+            
+            isAllowedToBridgeToChainId[tokenAddr1][BSC_MAINNET_CHAIN_ID] = true; // allow to bridge to bsc
+            isAllowedToBridgeToChainId[tokenAddr2][BSC_MAINNET_CHAIN_ID] = true; // allow to bridge to bsc
+        } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
-            isAllowedToBridgeToChainId[tokenAddr1][1] = true; // allow to bridge to eth
-            isAllowedToBridgeToChainId[tokenAddr2][137] = true; // allow to bridge to matic
-        } else if (block.chainid == 137)
-        {
-            isAllowedToBridgeToChainId[tokenAddr1][1] = true; // allow to bridge to eth
-            isAllowedToBridgeToChainId[tokenAddr2][56] = true; // allow to bridge to bsc
+            UNISWAP_V2_FACTORY_ADDRESS = 0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73;
+            WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
+            
+            isAllowedToBridgeToChainId[tokenAddr1][ETH_MAINNET_CHAIN_ID] = true; // allow to bridge to eth
+            isAllowedToBridgeToChainId[tokenAddr2][ETH_MAINNET_CHAIN_ID] = true; // allow to bridge to eth
         }*/
     }
     
@@ -172,7 +197,7 @@ contract CrossChainBridge is AccessControlEnumerable {
         
         transactionStorage[sourceProofOfBurn.transactionHash] = States.Executed;
         
-        uint amountAsFee = (sourceProofOfBurn.amount*feePercent) / feeDenorm;
+        uint amountAsFee = (sourceProofOfBurn.amount*feePercent) / FEE_DENORM;
         uint finalAmount = sourceProofOfBurn.amount - amountAsFee; 
         
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(sourceProofOfBurn.sourceTokenAddr);
@@ -200,7 +225,7 @@ contract CrossChainBridge is AccessControlEnumerable {
         );
         
         require(
-            amount > getMinAmountToBurn(),
+            amount > getMinAmountToBurn(token),
             "CCB: Amount is lower than the minimum permitted amount"
         );
         require(
@@ -208,13 +233,14 @@ contract CrossChainBridge is AccessControlEnumerable {
             "CCB: Token address is not allowed"
         );
         
-        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
+        // TODO: enable code in production
+        /*IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
             iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
         );
         require(
             !iDeftStorageContract.isBotAddress(msg.sender),
             "CCB: Bots aren't allowed to bridge!"
-        );
+        );*/
         
         bytes32 transactionHash = keccak256(abi.encodePacked(
                 msg.sender, token, amount, block.chainid, destinationChainId, currentNonce[token]
@@ -228,13 +254,27 @@ contract CrossChainBridge is AccessControlEnumerable {
         currentNonce[token]++;
     }
     
-    //  TODO: add code
-    function getMinAmountToBurn()
+    function getMinAmountToBurn(address token)
         public
         view
         returns (uint)
     {
-        return 123;
+        uint validatorGasFee = (30000 * 100e9 * 130) / 100; // 30k gas limit * 100 gwei * 1.3 multiplier (for fee-on-transfer)
+        address pairAddress = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(token, WETH_TOKEN_ADDRESS);
+        if (pairAddress == address(0x0)) return 1e36;
+        
+        (uint reservesWeth, uint reservesToken, ) = IUniswapV2Pair(pairAddress).getReserves();
+        if (WETH_TOKEN_ADDRESS > token)
+        {
+            (reservesWeth, reservesToken) = (reservesToken, reservesWeth);
+        }
+        
+        if (reservesWeth < 1e15 || reservesToken <= 1) return 1e36;
+        
+        uint amountInWithFee = validatorGasFee * 997;
+        uint amountTokensOut = (amountInWithFee * reservesToken) / (reservesWeth * 1000 + amountInWithFee);
+        
+        return (amountTokensOut * FEE_DENORM) / feePercent;
     }
     
     function getSettings(address token)
@@ -242,6 +282,6 @@ contract CrossChainBridge is AccessControlEnumerable {
         view
         returns (bool, uint, uint)
     {
-        return (allowedContracts.contains(token), getMinAmountToBurn(), feePercent);
+        return (allowedContracts.contains(token), getMinAmountToBurn(token), feePercent);
     }
 }

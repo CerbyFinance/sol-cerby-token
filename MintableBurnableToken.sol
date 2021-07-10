@@ -7,7 +7,7 @@ contract MintableBurnableToken is ERC20 {
     
     address owner;
     constructor()
-        ERC20("TEST", "TEST", 18) 
+        ERC20("bscTEST2", "bscTEST2", 18) 
     {
         owner = msg.sender;
         //_mint(msg.sender, 1e18*1e9);

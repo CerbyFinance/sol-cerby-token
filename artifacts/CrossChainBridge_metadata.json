@@ -359,7 +359,13 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					}
+				],
 				"name": "getMinAmountToBurn",
 				"outputs": [
 					{
@@ -779,11 +785,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0x47a132d87f2e9340487de85f48db8da321dc64ed7bec9ea66573b71fda02ffe2",
+			"keccak256": "0x10371fb93f4b5c2ee57364a0e3a6bdc23f3db7cf495ed343cad90f4bb43dcc08",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ca1826f5151d939721d841b6e0a00ce19cc7007e3e8aba9b2bef794a35593adb",
-				"dweb:/ipfs/QmeNQtsT1Y7EFrMsh6wJfTrqFLMrKPjAoqYkDTRPCePtxT"
+				"bzz-raw://d36e7e44a021423f97a643c32d1bf76ccbf124c31141215187cf5c6e4c262854",
+				"dweb:/ipfs/QmZVhtWCjKmp89itcymkQDUocvfiCURNUWzKiu7ofq8M2p"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
@@ -800,6 +806,22 @@
 			"urls": [
 				"bzz-raw://f2b23e30f5058f4e004b15e868b34df5c2248206adf07bfe2a5037eb283e26a4",
 				"dweb:/ipfs/QmaAChav6978W4YkckxwkEbMguuvE2wdaxXgW5AgyZBEEZ"
+			]
+		},
+		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {
+			"keccak256": "0xcedf8f2d94a11375f62ab9e3c0cbca9e584de936dc974d84c0785935c08555fc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://355af2d26712d9ec44a3fc629162d8c0c3b40126b7916a1fc3f4e39ba42224f6",
+				"dweb:/ipfs/QmTataj3Mb5b6E6n5NU7GLtPC5N8ugJwUKJ5fR8LqT69m1"
+			]
+		},
+		"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
+			"keccak256": "0x8b11d0b070b3ea821880b21c336186d619892cd92cb90f05a9defebef8836624",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f0598d56bb3b6a0ee15374a10ce2913e854af87f5c6845772ef505a31c0c9fa7",
+				"dweb:/ipfs/QmXH92UmaKz7qks5cXQbDae5gwnDWnAHvwmcS8vvgraA5Y"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
