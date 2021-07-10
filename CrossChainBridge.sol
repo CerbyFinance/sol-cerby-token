@@ -2,14 +2,16 @@
 pragma solidity ^0.8.4;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
+import "./openzeppelin/utils/structs/EnumerableSet.sol";
 import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/IDeftStorageContract.sol";
 
 contract CrossChainBridge is AccessControlEnumerable {
-    event ProofOfBurn(address token, address addr, uint amount, uint currentNonce, uint sourceChain, uint destinationChain, bytes32 transactionHash);
-    event ProofOfMint(address token, address addr, uint amountAsFee, uint finalAmount, bytes32 transactionHash);
+    event ProofOfBurn(address addr, address token, uint amount, uint currentNonce, uint sourceChain, uint destinationChain, bytes32 transactionHash);
+    event ProofOfMint(address addr, address token, uint amountAsFee, uint finalAmount, bytes32 transactionHash);
     event ApprovedTransaction(bytes32 transactionHash);
     event BulkApprovedTransactions(bytes32[] transactionHashes);
+    event FeeUpdated(uint newFeePercent);
     
     enum States{ Created, Burned, Approved, Executed }
     mapping(bytes32 => States) public transactionStorage;
@@ -20,26 +22,26 @@ contract CrossChainBridge is AccessControlEnumerable {
     bytes32 public constant ROLE_APPROVER = keccak256("ROLE_APPROVER");
     
     uint constant feeDenorm = 1e6;
-    mapping(address => uint) public feePercent;// = 1e4;
+    uint public feePercent;
     
     uint constant BOT_TAX_PERCENT = 999e3;
     uint constant TAX_PERCENT_DENORM = 1e6;
     
-    mapping(address => uint) public minAmountToBurn; // = 1 * 1e18;
     mapping(address => uint) public currentNonce;
     address public beneficiaryAddress;
     
     mapping(address => mapping (uint => bool)) public isAllowedToBridgeToChainId;
-    mapping(address => bool) public isAllowedToken; // TODO: add get/set methods
+    
+    using EnumerableSet for EnumerableSet.AddressSet;
+    EnumerableSet.AddressSet private allowedContracts;
     
     struct SourceProofOfBurn {
         uint amount;
         uint sourceChainId;
         uint sourceNonce;
+        address sourceTokenAddr;
         bytes32 transactionHash;
     }
-    
-    // TODO: check to have minimal fee > gas fee in WETH
     
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
@@ -48,43 +50,64 @@ contract CrossChainBridge is AccessControlEnumerable {
         
         beneficiaryAddress = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
         
-        /*if (block.chainid == 97)
+        updateFee(5e5); // 0.5% fee to any directions
+        
+        address tokenAddr1 = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
+        address tokenAddr2 = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
+        if (block.chainid == 97)
         {
-            updateMinimumAmountToBurn(1000e18); // min 1000 tokens to burn on bsc testnet
-            updateFee(5e3); // to bsc testnet 0.5% fee
-            isAllowedToBridgeToChainId[42] = true; // allow to bridge to kovan
+            isAllowedToBridgeToChainId[tokenAddr1][42] = true; // allow to bridge to kovan
+            isAllowedToBridgeToChainId[tokenAddr2][42] = true; // allow to bridge to kovan
         } else if (block.chainid == 42)
         {
-            updateMinimumAmountToBurn(5000e18); // min 5000 tokens to burn on kovan
-            updateFee(1e4); // to kovan 1.0% fee
-            isAllowedToBridgeToChainId[97] = true; // allow to bridge to bsc testnet
-        }*/
+            isAllowedToBridgeToChainId[tokenAddr1][97] = true; // allow to bridge to bsc testnet
+            isAllowedToBridgeToChainId[tokenAddr2][97] = true; // allow to bridge to bsc testnet
+        }
+        
+        /* MAINNET
+        address tokenAddr1 = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
+        address tokenAddr2 = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
         if (block.chainid == 1)
         {
-            updateMinimumAmountToBurn(1500000e18); // min 1.5M tokens to burn on eth --> *
-            updateFee(1e4); // to eth mainnet 1% fee
-            isAllowedToBridgeToChainId[56] = true; // allow to bridge to bsc
-            isAllowedToBridgeToChainId[137] = true; // allow to bridge to matic
+            isAllowedToBridgeToChainId[tokenAddr1][56] = true; // allow to bridge to bsc
+            isAllowedToBridgeToChainId[tokenAddr2][137] = true; // allow to bridge to matic
         } else if (block.chainid == 56)
         {
-            updateMinimumAmountToBurn(1500000e18); // min 1.5M tokens to burn bsc --> *
-            updateFee(5e3); // to bsc 0.5% fee
-            isAllowedToBridgeToChainId[1] = true; // allow to bridge to eth
-            isAllowedToBridgeToChainId[137] = true; // allow to bridge to matic
+            isAllowedToBridgeToChainId[tokenAddr1][1] = true; // allow to bridge to eth
+            isAllowedToBridgeToChainId[tokenAddr2][137] = true; // allow to bridge to matic
         } else if (block.chainid == 137)
         {
-            updateMinimumAmountToBurn(1500000e18); // min 1.5M tokens to burn on matic --> *
-            updateFee(5e3); // to bsc 0.5% fee
-            isAllowedToBridgeToChainId[1] = true; // allow to bridge to eth
-            isAllowedToBridgeToChainId[56] = true; // allow to bridge to bsc
-        }
+            isAllowedToBridgeToChainId[tokenAddr1][1] = true; // allow to bridge to eth
+            isAllowedToBridgeToChainId[tokenAddr2][56] = true; // allow to bridge to bsc
+        }*/
     }
     
-    function allowChain(uint chainId, bool isAllowed)
+    function allowContract(address addr, bool isAllow)
         external
         onlyRole(ROLE_ADMIN)
     {
-        isAllowedToBridgeToChainId[chainId] = isAllowed;
+        if (isAllow)
+        {
+            allowedContracts.add(addr);
+        } else
+        {
+            allowedContracts.remove(addr);
+        }
+    }
+    
+    function isAllowedContract(address addr)
+        external
+        view
+        returns (bool)
+    {
+        return allowedContracts.contains(addr);
+    }
+    
+    function allowChain(address token, uint chainId, bool isAllowed)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        isAllowedToBridgeToChainId[token][chainId] = isAllowed;
     }
     
     function updateBeneficiaryAddress(address newBeneficiaryAddr)
@@ -100,21 +123,6 @@ contract CrossChainBridge is AccessControlEnumerable {
     {
         feePercent = newFeePercent;
         emit FeeUpdated(newFeePercent);
-    }
-    
-    function updateMinimumAmountToBurn(uint newMinAmountToBurn)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        minAmountToBurn = newMinAmountToBurn;
-        emit MinimumAmountToBurnUpdated(newMinAmountToBurn);
-    }
-    
-    function updateMainTokenContract(address newMainTokenContract) 
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        mainTokenContract = newMainTokenContract;
     }
     
     function markTransactionAsApproved(bytes32 transactionHash) 
@@ -155,7 +163,7 @@ contract CrossChainBridge is AccessControlEnumerable {
         );
         
         bytes32 transactionHash = keccak256(abi.encodePacked(
-                msg.sender, sourceProofOfBurn.amount, sourceProofOfBurn.sourceChainId, block.chainid, sourceProofOfBurn.sourceNonce
+                msg.sender, sourceProofOfBurn.sourceTokenAddr, sourceProofOfBurn.amount, sourceProofOfBurn.sourceChainId, block.chainid, sourceProofOfBurn.sourceNonce
             ));
         require(
             transactionHash == sourceProofOfBurn.transactionHash,
@@ -167,17 +175,17 @@ contract CrossChainBridge is AccessControlEnumerable {
         uint amountAsFee = (sourceProofOfBurn.amount*feePercent) / feeDenorm;
         uint finalAmount = sourceProofOfBurn.amount - amountAsFee; 
         
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(mainTokenContract);
+        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(sourceProofOfBurn.sourceTokenAddr);
         iDefiFactoryToken.mintByBridge(msg.sender, finalAmount);
         iDefiFactoryToken.mintByBridge(beneficiaryAddress, amountAsFee);
         
-        emit ProofOfMint(msg.sender, amountAsFee, finalAmount, transactionHash);
+        emit ProofOfMint(msg.sender, sourceProofOfBurn.sourceTokenAddr, amountAsFee, finalAmount, transactionHash);
     }
     
-    function burnAndCreateProof(uint amount, uint destinationChainId) 
+    function burnAndCreateProof(address token, uint amount, uint destinationChainId) 
         external
     {
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(mainTokenContract);
+        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(token);
         require(
             amount <= iDefiFactoryToken.balanceOf(msg.sender),
             "CCB: Amount must not exceed available balance. Try reducing the amount."
@@ -187,35 +195,53 @@ contract CrossChainBridge is AccessControlEnumerable {
             "CCB: Destination chain must be different from current chain"
         );
         require(
-            isAllowedToBridgeToChainId[destinationChainId],
+            isAllowedToBridgeToChainId[token][destinationChainId],
             "CCB: Destination chain is not allowed"
         );
+        
         require(
-            amount > minAmountToBurn,
+            amount > getMinAmountToBurn(),
             "CCB: Amount is lower than the minimum permitted amount"
+        );
+        require(
+            allowedContracts.contains(token),
+            "CCB: Token address is not allowed"
         );
         
         IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
             iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
         );
-        
-        if (iDeftStorageContract.isBotAddress(msg.sender))
-        {
-            uint amountToTax = (amount * BOT_TAX_PERCENT) / TAX_PERCENT_DENORM;
-            amount -= amountToTax;
-            
-            iDefiFactoryToken.chargeCustomTax(msg.sender, amountToTax);
-        }
+        require(
+            !iDeftStorageContract.isBotAddress(msg.sender),
+            "CCB: Bots aren't allowed to bridge!"
+        );
         
         bytes32 transactionHash = keccak256(abi.encodePacked(
-                msg.sender, amount, block.chainid, destinationChainId, currentNonce
+                msg.sender, token, amount, block.chainid, destinationChainId, currentNonce[token]
             ));
             
         transactionStorage[transactionHash] = States.Burned;
         
         iDefiFactoryToken.burnByBridge(msg.sender, amount);
         
-        emit ProofOfBurn(msg.sender, amount, currentNonce, block.chainid, destinationChainId, transactionHash);
-        currentNonce++;
+        emit ProofOfBurn(msg.sender, token, amount, currentNonce[token], block.chainid, destinationChainId, transactionHash);
+        currentNonce[token]++;
+    }
+    
+    //  TODO: add code
+    function getMinAmountToBurn()
+        public
+        view
+        returns (uint)
+    {
+        return 123;
+    }
+    
+    function getSettings(address token)
+        public
+        view
+        returns (bool, uint, uint)
+    {
+        return (allowedContracts.contains(token), getMinAmountToBurn(), feePercent);
     }
 }

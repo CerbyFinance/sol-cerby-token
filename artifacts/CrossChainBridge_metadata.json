@@ -42,7 +42,7 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "feeAmount",
+						"name": "newFeePercent",
 						"type": "uint256"
 					}
 				],
@@ -54,21 +54,14 @@
 				"inputs": [
 					{
 						"indexed": false,
-						"internalType": "uint256",
-						"name": "newMinAmountToBurn",
-						"type": "uint256"
-					}
-				],
-				"name": "MinimumAmountToBurnUpdated",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
 					{
 						"indexed": false,
 						"internalType": "address",
-						"name": "addr",
+						"name": "token",
 						"type": "address"
 					},
 					{
@@ -112,6 +105,12 @@
 						"indexed": false,
 						"internalType": "address",
 						"name": "addr",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "token",
 						"type": "address"
 					},
 					{
@@ -240,6 +239,11 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
 						"internalType": "uint256",
 						"name": "chainId",
 						"type": "uint256"
@@ -251,6 +255,24 @@
 					}
 				],
 				"name": "allowChain",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "isAllow",
+						"type": "bool"
+					}
+				],
+				"name": "allowContract",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -284,6 +306,11 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
 						"internalType": "uint256",
 						"name": "amount",
 						"type": "uint256"
@@ -300,7 +327,13 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
 				"name": "currentNonce",
 				"outputs": [
 					{
@@ -315,6 +348,19 @@
 			{
 				"inputs": [],
 				"name": "feePercent",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getMinAmountToBurn",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -378,6 +424,35 @@
 				],
 				"name": "getRoleMemberCount",
 				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "getSettings",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
 					{
 						"internalType": "uint256",
 						"name": "",
@@ -457,6 +532,30 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isAllowedContract",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
@@ -474,19 +573,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "mainTokenContract",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -497,19 +583,6 @@
 				"name": "markTransactionAsApproved",
 				"outputs": [],
 				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "minAmountToBurn",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -530,6 +603,11 @@
 								"internalType": "uint256",
 								"name": "sourceNonce",
 								"type": "uint256"
+							},
+							{
+								"internalType": "address",
+								"name": "sourceTokenAddr",
+								"type": "address"
 							},
 							{
 								"internalType": "bytes32",
@@ -646,32 +724,6 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "newMainTokenContract",
-						"type": "address"
-					}
-				],
-				"name": "updateMainTokenContract",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "newMinAmountToBurn",
-						"type": "uint256"
-					}
-				],
-				"name": "updateMinimumAmountToBurn",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -727,11 +779,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0x8d5d06b288e093eb4532e3c35a5c90871d7554d1116a9ef49df669edc1ea00f9",
+			"keccak256": "0x47a132d87f2e9340487de85f48db8da321dc64ed7bec9ea66573b71fda02ffe2",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://997411f5602464ee2c0422b9bf490d8badd1cc646997b83764fb76f4ba77737e",
-				"dweb:/ipfs/Qmf2Sd2fvvogoEv5mo7nXHVfGJ9GCrNTtspv24CFCTZrVb"
+				"bzz-raw://ca1826f5151d939721d841b6e0a00ce19cc7007e3e8aba9b2bef794a35593adb",
+				"dweb:/ipfs/QmeNQtsT1Y7EFrMsh6wJfTrqFLMrKPjAoqYkDTRPCePtxT"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
