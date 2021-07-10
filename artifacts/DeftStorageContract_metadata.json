@@ -734,11 +734,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IWeth.sol": {
-			"keccak256": "0x51f4f8e3e1a7ccd1c9f5e7bc309f45fdd5af8de587a69f6bdb1d58c5d8f3868b",
+			"keccak256": "0xf30f17c3689153f7d2c741581083ca990c735b3cd447552365ecae9a30c8784c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://26e24fca252fe03674b5af63dccf059e8d71ac83f7a38fa41111f3dc50cdf1cb",
-				"dweb:/ipfs/QmVnGwETXJqrd57kS6JMincsxnruwT6hCh4pMkxNEUCXtg"
+				"bzz-raw://afcb5877551cbb613c10b7e13a67997bddc532e33119c9809e13aa06bed65ad1",
+				"dweb:/ipfs/Qmciw1wkEtLM5eod62NY8mbCitPYyQ9ySYeh6c87Rsk5qz"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

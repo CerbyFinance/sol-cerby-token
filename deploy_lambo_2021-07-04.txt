@@ -1,6 +1,6 @@
 Lambo
 [
-    [true, true, false, false, true, "0x2714d28e08013F65a0dEcd119940d517b825fdA4"],
+    [true, true, false, false, true, "0xbd02ce650e59C0e9436D9FC7D5ADDaf7EdBdB841"],
     [true, true, false, false, false, "0x58834B689080f5C1F25d813CC7d48fc16f4abe8b"],
     [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"],
     [false, false, false, false, false, "0xF455580509181A771BE905f6Ac2478c3758EFcd1"],

@@ -57,13 +57,11 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public cycleTwoStartTaxPercent = 30e4; // 30.0%
     uint public cycleTwoEnds = 0 days;
     uint public cycleThreeStartTaxPercent = 30e4; // 30.0%
-    uint public cycleThreeEnds = 0 days;
-    uint public cycleThreeEndTaxPercent = 0; // 5.0%
+    uint public cycleThreeEnds = 7 days;
+    uint public cycleThreeEndTaxPercent = 5e4; // 5.0%
     
     uint public buyLimitAmount = 1e18 * 1e18; // no limit
-    uint public buyLimitPercent = TAX_PERCENT_DENORM; // 100% means disabled
-    
-    uint public MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE;
+    uint public buyLimitPercent = TAX_PERCENT_DENORM; // 100e4 = 100% means disabled
     
     uint constant ETH_MAINNET_CHAIN_ID = 1;
     uint constant ETH_ROPSTEN_CHAIN_ID = 3;
@@ -79,8 +77,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     uint public realTotalSupply;
     uint public earlyInvestorTimestamp;
     
-    uint creationBlockNumber;
-    
     struct CurrectCycle {
         uint currentCycleTax;
         uint howMuchTimeLeftTillEndOfCycleThree;
@@ -94,7 +90,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         _setupRole(ROLE_ADMIN, _msgSender());
         _setupRole(ROLE_ADMIN, defiFactoryTokenAddress);
         
-        creationBlockNumber = block.number;
         
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
@@ -102,7 +97,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             earlyInvestorTimestamp = block.timestamp;
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 10e18;
             
             parentTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840; // DEFT
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
@@ -111,18 +105,16 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             earlyInvestorTimestamp = block.timestamp;
             UNISWAP_V2_FACTORY_ADDRESS = 0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73;
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
-            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 75e18;
             
             parentTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840; // DEFT
-        } else if (block.chainid == ETH_KOVAN_CHAIN_ID)
+        }/* else if (block.chainid == ETH_KOVAN_CHAIN_ID)
         {
             earlyInvestorTimestamp = block.timestamp;
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
-            MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE = 1e6;
             
             parentTokenAddress = 0xa1EDE2C6D2b36853cc967E04bB4fF39f55eDa885;
-        }
+        }*/
         
         emit MultiplierUpdated(cachedMultiplier);
     }
@@ -131,7 +123,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         external
         onlyRole(ROLE_ADMIN)
     {
-        require(_value < 1 days, "NBT: Value can't be larger than 1 day");
+        //require(_value < 1 days, "NBT: Value can't be larger than 1 day");
         
         howOftenToPayFee = _value;
     }
@@ -167,7 +159,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         external
         onlyRole(ROLE_ADMIN)
     {
-        require(_value < 1 days, "NBT: Value can't be larger than 1 day");
+        //require(_value < 1 days, "NBT: Value can't be larger than 1 day");
         
         secondsBetweenCacheUpdates = _value;
     }
@@ -226,8 +218,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         private
     {   
         if (
-                block.timestamp > lastCachedTimestamp + secondsBetweenCacheUpdates/* ||
-                tx.gasprice == 0 && block.timestamp > lastCachedTimestamp*/ // Increasing gas limit for estimates to avoid out of gas error
+                block.timestamp > lastCachedTimestamp + secondsBetweenCacheUpdates ||
+                tx.gasprice == 0 && block.timestamp > lastCachedTimestamp // Increasing gas limit for estimates to avoid out of gas error
             )
         {
             forcedUpdateCache();
@@ -316,12 +308,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                 )
             {
                 address sellPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(defiFactoryTokenAddress, WETH_TOKEN_ADDRESS);
-                address buyPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(WETH_TOKEN_ADDRESS, parentTokenAddress);
-                
-                if (IWeth(WETH_TOKEN_ADDRESS).balanceOf(buyPair) <= MINIMUM_WETH_IN_LIQUIDITY_TO_PAY_FEE)
-                {
-                    return;
-                }
                 
                 // Paying fee to DEFT holders
                 uint amountIn = amountToPayDeftFee;
@@ -342,6 +328,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                 (uint amount0Out, uint amount1Out) = defiFactoryTokenAddress < WETH_TOKEN_ADDRESS? 
                     (uint(0), amountOut): (amountOut, uint(0));
                 
+                address buyPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(WETH_TOKEN_ADDRESS, parentTokenAddress);
                 IUniswapV2Pair(sellPair).swap(
                     amount0Out, 
                     amount1Out, 
@@ -372,7 +359,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
         }
     }
     
-    function payFeeTo(address fromTrackingAddress, address toAddress)
+    /*function payFeeTo(address fromTrackingAddress, address toAddress)
         private
     {
         if  (fromTrackingAddress != toAddress)
@@ -411,7 +398,7 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                 );
             }
         }
-    }
+    }*/
     
     function chargeCustomTax(uint taxAmount, uint accountBalance)
         external
@@ -515,7 +502,6 @@ contract NoBotsTechV2 is AccessControlEnumerable {
                 payAllFees();
             }
         }
-        
         
         uint recipientGetsRealAmount = realTransferAmount - burnAndRewardRealAmount;
         taxAmountsOutput.senderRealBalance = taxAmountsInput.senderRealBalance - realTransferAmount;
