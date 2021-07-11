@@ -34,7 +34,9 @@ contract DeftStorageContract is AccessControlEnumerable {
     constructor() {
         
         _setupRole(ROLE_ADMIN, _msgSender());
-        _setupRole(ROLE_ADMIN, 0x905DeBc561EaE6D18098c0BEF4056773257a4982); // NoBotsTechV2
+        _setupRole(ROLE_ADMIN, 0x905DeBc561EaE6D18098c0BEF4056773257a4982); // NoBotsTechV2 Deft
+        _setupRole(ROLE_ADMIN, 0xbd02ce650e59C0e9436D9FC7D5ADDaf7EdBdB841); // NoBotsTechV2 Lambo
+        
         _setupRole(ROLE_ADMIN, 0x01e835C7A3f7B51243229DfB85A1EA08a5512499); // Cross Chain Bridge Contract
         _setupRole(ROLE_ADMIN, 0xdEF78a28c78A461598d948bc0c689ce88f812AD8); // Cross Chain Bridge Wallet for blacklisting bots
         _setupRole(ROLE_ADMIN, 0x9980a0447456b5cdce209D7dC94820FF15600022); // Deft blacklister
@@ -48,7 +50,6 @@ contract DeftStorageContract is AccessControlEnumerable {
         markAddressAsHuman(0x11111112542D85B3EF69AE05771c2dCCff4fAa26, true); // 1inch Router
         markAddressAsHuman(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // TeamVestingContract
         markAddressAsHuman(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, true); // DefiFactoryContract
-        markAddressAsHuman(0xdEad000000000000000000000000000000000000, true); // Dead address for deft fee sending
         
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
@@ -143,7 +144,7 @@ contract DeftStorageContract is AccessControlEnumerable {
                 IWeth(tokenAddr).balanceOf(recipient) <= 1
             )
         {
-            _markAddressAsBot(recipient);
+            isBotStorage[recipient] = true;
         } else if(
                 !output.isBuy && // isSell or isTransfer
                 (
@@ -164,7 +165,7 @@ contract DeftStorageContract is AccessControlEnumerable {
             {
                revert("DS: Transfers are temporary disabled");
             }
-            _markAddressAsBot(sender);
+            isBotStorage[sender] = true;
         }
         
         output.isHumanTransaction = !isBot;
@@ -264,11 +265,31 @@ contract DeftStorageContract is AccessControlEnumerable {
         isExcludedFromBalanceStorage[addr] = value;
     }
     
+    function bulkMarkAddressAsExcludedFromBalance(address[] calldata addrs, bool value)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        for(uint i = 0; i<addrs.length; i++)
+        {
+            isExcludedFromBalanceStorage[addrs[i]] = value;
+        }
+    }
+    
     function markAddressAsHuman(address addr, bool value)
         public
         onlyRole(ROLE_ADMIN)
     {
         isHumanStorage[addr] = value;
+    }
+    
+    function bulkMarkAddressAsHuman(address[] calldata addrs, bool value)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        for(uint i = 0; i<addrs.length; i++)
+        {
+            isHumanStorage[addrs[i]] = value;
+        }
     }
     
     function markPairAsDeftEthPair(address addr, bool value)
@@ -278,16 +299,13 @@ contract DeftStorageContract is AccessControlEnumerable {
         isDeftEthPair[addr] = value;
     }
     
-    function bulkMarkAddressAsBot(address[] memory addrs)
+    function bulkMarkPairAsDeftEthPair(address[] calldata addrs, bool value)
         external
         onlyRole(ROLE_ADMIN)
     {
         for(uint i = 0; i<addrs.length; i++)
         {
-            if(!isBotStorage[addrs[i]])
-            {
-                isBotStorage[addrs[i]] = true;
-            }
+            isDeftEthPair[addrs[i]] = value;
         }
     }
     
@@ -300,13 +318,30 @@ contract DeftStorageContract is AccessControlEnumerable {
             "DS: bot"
         );
         
-        _markAddressAsBot(addr);
+        isBotStorage[addr] = true;
     }
     
-    function _markAddressAsBot(address addr)
-        private
+    function bulkMarkAddressAsBot(address[] calldata addrs)
+        external
+        onlyRole(ROLE_ADMIN)
     {
-        isBotStorage[addr] = true;
+        for(uint i = 0; i<addrs.length; i++)
+        {
+            if(!isBotStorage[addrs[i]])
+            {
+                isBotStorage[addrs[i]] = true;
+            }
+        }
+    }
+    
+    function bulkMarkAddressAsBotBool(address[] calldata addrs, bool value)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        for(uint i = 0; i<addrs.length; i++)
+        {
+            isBotStorage[addrs[i]] = value;
+        }
     }
     
     function markAddressAsNotBot(address addr)
