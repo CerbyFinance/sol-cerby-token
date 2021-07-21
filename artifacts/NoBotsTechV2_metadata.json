@@ -667,29 +667,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "realAmount",
-						"type": "uint256"
-					}
-				],
-				"name": "mintAmountAndUpdateTotalSupply",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "parentTokenAddress",
 				"outputs": [
@@ -700,13 +677,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "payAllFees",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -1013,7 +983,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "updateHowOftenToPayFee",
+				"name": "updateHowOftenPayDeftFee",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1103,11 +1073,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV2.sol": {
-			"keccak256": "0x0e8fe75a9aedaaa5dfd440a0e3298443fb6f9a3defb8178cda1adad8e2ea81b7",
+			"keccak256": "0xc1f8197024902994bcdb4a4abc4753c18a421b70f14bfde7ef813f4d83b53246",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://fb62ac4ebb944d30995363cf702bfb668e2337f7edf221b3852801ecb17efbcf",
-				"dweb:/ipfs/QmfBGbbKu2yTGokYJ6EoCxoq3WHHrcA5rQtTeL4a8kE7mk"
+				"bzz-raw://23bef83cf647b3c4d2c4292c794fcb3919a84f7076bc6cdd3d806a3963c362c2",
+				"dweb:/ipfs/QmVegrVnemcLEDeQhqAQni4D6SyB3cgDKrkLcgNr2XTCzM"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

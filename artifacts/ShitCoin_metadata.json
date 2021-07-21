@@ -228,7 +228,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "burn",
+				"name": "burger",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -449,7 +449,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "mint",
+				"name": "mentos",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -703,11 +703,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/ShitCoin.sol": {
-			"keccak256": "0xbc64760aee61802d74425b609ce8993116918f48541f2fe82d08a39502b55098",
+			"keccak256": "0x1c9cfbda0c7b1b886c57302dccc854eebef48fc0bb0ac749f84955ca2c56b2df",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://68af37f4e9235070136641dcaaa26bd94cb214e50a935f2400384dac57baa11a",
-				"dweb:/ipfs/QmYZhCmjABYLhwdgYDz6zFXbMwH79sFfUdxda7FUe2Fu98"
+				"bzz-raw://16f7ef4c6f6e03507a2d50963a09d44800349c4ccf64d2bef12c0c711247b58e",
+				"dweb:/ipfs/QmVUMpENJpHvdVJGCkjdB8GNbwAMHWHkqJpHody3UErcec"
 			]
 		},
 		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {

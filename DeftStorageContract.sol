@@ -34,7 +34,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     constructor() {
         
         _setupRole(ROLE_ADMIN, _msgSender());
-        _setupRole(ROLE_ADMIN, 0x905DeBc561EaE6D18098c0BEF4056773257a4982); // NoBotsTechV2 Deft
+        _setupRole(ROLE_ADMIN, 0x77EC5AF6FE83f90daAEb6F8bd2BE3d744813251b); // NoBotsTechV2 Deft
         _setupRole(ROLE_ADMIN, 0xbd02ce650e59C0e9436D9FC7D5ADDaf7EdBdB841); // NoBotsTechV2 Lambo
         
         _setupRole(ROLE_ADMIN, 0x01e835C7A3f7B51243229DfB85A1EA08a5512499); // Cross Chain Bridge Contract
@@ -79,7 +79,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
         returns (uint)
     {
-        return (cooldownPeriodSellStorage[tokenAddr]);
+        return cooldownPeriodSellStorage[tokenAddr] > 0? cooldownPeriodSellStorage[tokenAddr]: DEFAULT_SELL_COOLDOWN;
     }
     
     function updateCooldownPeriodSell(address tokenAddr, uint newCooldownSellPeriod)

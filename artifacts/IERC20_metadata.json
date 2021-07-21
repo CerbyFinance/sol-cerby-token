@@ -245,11 +245,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/Flat_ShitCoin.sol": {
-			"keccak256": "0x4d6a054fef287f52331491430fa30b75ffa9da164875ff1a1499be1fc69db3b5",
+			"keccak256": "0xfef9b8634624780bfbe8a4d8009753e287ca528dd3b505e28fdb3cc233bef255",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://96a34cf7a839e51531494a7fb2ab12577748a5fad0fb90f0d0bcb8af8462933c",
-				"dweb:/ipfs/QmbyW54pJxr36Fm9iL8qwW1YzFQBZBhUSM93ytFxLPwJpj"
+				"bzz-raw://75b392c4c13b3d15d3c5ee09db6f4743c21c908e4e01fb91e3fbbfd3c50b7bc5",
+				"dweb:/ipfs/QmPU5AH5cAxgjWvy5DjYqmmeG86tQCDirc5vbnPQvg9cjN"
 			]
 		}
 	},

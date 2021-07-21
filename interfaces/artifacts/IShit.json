@@ -47,40 +47,12 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"approve(address,uint256)": "095ea7b3",
 			"balanceOf(address)": "70a08231",
-			"decimals()": "313ce567",
-			"deposit()": "d0e30db0",
-			"mint(address,uint256)": "40c10f19",
-			"transfer(address,uint256)": "a9059cbb",
-			"withdraw(uint256)": "2e1a7d4d"
+			"burger(address,uint256)": "1bef86f4",
+			"mentos(address,uint256)": "1e9a04ed"
 		}
 	},
 	"abi": [
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_spender",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_value",
-					"type": "uint256"
-				}
-			],
-			"name": "approve",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "success",
-					"type": "bool"
-				}
-			],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
 		{
 			"inputs": [
 				{
@@ -101,23 +73,21 @@
 			"type": "function"
 		},
 		{
-			"inputs": [],
-			"name": "decimals",
-			"outputs": [
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "from",
+					"type": "address"
+				},
 				{
 					"internalType": "uint256",
-					"name": "",
+					"name": "desiredAmountBurn",
 					"type": "uint256"
 				}
 			],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [],
-			"name": "deposit",
+			"name": "burger",
 			"outputs": [],
-			"stateMutability": "payable",
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -133,44 +103,7 @@
 					"type": "uint256"
 				}
 			],
-			"name": "mint",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_to",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_value",
-					"type": "uint256"
-				}
-			],
-			"name": "transfer",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "success",
-					"type": "bool"
-				}
-			],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "wad",
-					"type": "uint256"
-				}
-			],
-			"name": "withdraw",
+			"name": "mentos",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"

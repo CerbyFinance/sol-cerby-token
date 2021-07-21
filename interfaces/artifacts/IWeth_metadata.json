@@ -155,7 +155,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/IWeth.sol": "IWeth"
+			"sol-defifactory-token/interfaces/IShit.sol": "IWeth"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -169,7 +169,7 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/interfaces/IWeth.sol": {
+		"sol-defifactory-token/interfaces/IShit.sol": {
 			"keccak256": "0xf30f17c3689153f7d2c741581083ca990c735b3cd447552365ecae9a30c8784c",
 			"license": "MIT",
 			"urls": [

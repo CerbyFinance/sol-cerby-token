@@ -49,6 +49,24 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "desiredAmountBurn",
+						"type": "uint256"
+					}
+				],
+				"name": "burn",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "decimals",
 				"outputs": [
@@ -137,7 +155,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/Flat_PresaleLambo.sol": "IWeth"
+			"sol-defifactory-token/interfaces/IShit.sol": "IS"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -151,12 +169,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/Flat_PresaleLambo.sol": {
-			"keccak256": "0xeeb1e97a18171dcf5ffd2514ed28a460d5115ea566ea25bfbc8f351d538d0459",
-			"license": "BSD-2-Clause",
+		"sol-defifactory-token/interfaces/IShit.sol": {
+			"keccak256": "0xd74c5c230254c07962e0a9a63d50fac92df59c2765031d00e3f24035fbb80165",
+			"license": "MIT",
 			"urls": [
-				"bzz-raw://8d2e06efbde44bb322c4baaf7c71248012891dff5914d5936edc94de138b187a",
-				"dweb:/ipfs/QmRF3FC2MHTVXpKTYbQU324pVyHzKDrJjkbmSkxV2bxWS8"
+				"bzz-raw://91e46dae4200a22288dfd7af8c9f40e83e2b47ca74af9fb686494a7e2d887a73",
+				"dweb:/ipfs/QmcNP67q7Zi8z72tGLdkeYevf8cmeBrqEEQaiFq3m91rFL"
 			]
 		}
 	},

@@ -164,6 +164,26 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "delimeter",
+						"type": "uint256"
+					}
+				],
+				"name": "addLiquidity",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "burnDeftDust",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "defiFactoryTokenAddress",
 				"outputs": [
@@ -192,6 +212,11 @@
 			{
 				"inputs": [
 					{
+						"internalType": "bool",
+						"name": "isRemoveLiq",
+						"type": "bool"
+					},
+					{
 						"internalType": "uint256",
 						"name": "cyclesCount",
 						"type": "uint256"
@@ -204,6 +229,25 @@
 				],
 				"name": "doBuyAndSell",
 				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "isBuy",
+						"type": "bool"
+					}
+				],
+				"name": "doSwap",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -344,6 +388,13 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "removeLiquidity",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -456,11 +507,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/TradeBooster.sol": {
-			"keccak256": "0xe32b0bc7c2163ca0dbc2d3320d868ed28d79f170fd230a7f83dac06823bdacdb",
+			"keccak256": "0xd0dd30046e1e9b711db50c2641da740b0be78aeba3f9dc68851e3d813241e7a2",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://0beb9af5bc4a51799192a457694583ddab36674877625ec761136b66bab9f901",
-				"dweb:/ipfs/QmNVRiTKcdGjcwwkzoEaNczT77f3AXjLYLVj5wiz6bVxoE"
+				"bzz-raw://4b9b5324f3f5c3f8063c8408aa51137362ab2051a235d36b6b18f8630dde23e4",
+				"dweb:/ipfs/QmfZ8msX63nDVTYfXrw8hzapByqto8vfeuRiohWVgwcwEa"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
@@ -477,6 +528,14 @@
 			"urls": [
 				"bzz-raw://28e7ff48a9c26ee2f8992ddeb5493ecc4ff5fd0ee77bc97a0189346012138803",
 				"dweb:/ipfs/QmYbRZ8RLNQLN81teuYwd1CQ9ahcRmBR2UN4r4AxYYnYMd"
+			]
+		},
+		"sol-defifactory-token/interfaces/IShit.sol": {
+			"keccak256": "0xe54975075e612de5dd2d911103d1e65c7827a7f3e31fbc6f3e30a36130db879f",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6a8aeb5f626cded504d5dee42cf2e03b0c7518a3dd93923e78b00b5b8cec9fe7",
+				"dweb:/ipfs/QmYhK2fbFczPA3Lv8GGNVEKgLyRBYdw7iYVNJ9DM8GwUTZ"
 			]
 		},
 		"sol-defifactory-token/interfaces/ITeamFinance.sol": {

@@ -239,7 +239,7 @@ contract CrossChainBridge is AccessControlEnumerable {
         );
         require(
             !iDeftStorageContract.isBotAddress(msg.sender),
-            "CCB: Bots aren't allowed to bridge!"
+            "CCB: Bridging is temporary disabled!"
         );*/
         
         bytes32 transactionHash = keccak256(abi.encodePacked(
@@ -282,6 +282,6 @@ contract CrossChainBridge is AccessControlEnumerable {
         view
         returns (bool, uint, uint)
     {
-        return (allowedContracts.contains(token), getMinAmountToBurn(token), feePercent);
+        return (allowedContracts.contains(token), (getMinAmountToBurn(token) * 105) / 100, feePercent);
     }
 }
