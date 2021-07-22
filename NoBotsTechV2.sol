@@ -72,8 +72,8 @@ contract NoBotsTechV2 is AccessControlEnumerable {
     address constant DEFT_TRACKING_ADDRESS = 0x1111111100000000000000000000000000000000;
     address constant DEAD_ADDRESS = 0xdEad000000000000000000000000000000000000;
     
-    uint public rewardsBalance = 24526078160407962929046994054;
-    uint public realTotalSupply = 51022582523933662905399964242;
+    uint public rewardsBalance;
+    uint public realTotalSupply;
     uint public earlyInvestorTimestamp;
     
     
@@ -107,6 +107,9 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             UNISWAP_V2_FACTORY_ADDRESS = 0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73;
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
             
+            rewardsBalance = 0;
+            realTotalSupply = 0;
+            
             //defiFactoryTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
             //parentTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840; // DEFT
         }/* else if (block.chainid == ETH_KOVAN_CHAIN_ID)
@@ -118,6 +121,9 @@ contract NoBotsTechV2 is AccessControlEnumerable {
             parentTokenAddress = 0xa1EDE2C6D2b36853cc967E04bB4fF39f55eDa885;
         }*/
         
+        cachedMultiplier = realTotalSupply == 0? BALANCE_MULTIPLIER_DENORM:
+            BALANCE_MULTIPLIER_DENORM + 
+                (BALANCE_MULTIPLIER_DENORM * rewardsBalance) / realTotalSupply;
         emit MultiplierUpdated(cachedMultiplier);
     }
     
