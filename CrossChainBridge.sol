@@ -15,9 +15,10 @@ contract CrossChainBridge is AccessControlEnumerable {
     event BulkApprovedTransactions(bytes32[] transactionHashes);
     event FeeUpdated(uint newFeePercent);
     
-    enum States{ Created, Burned, Approved, Executed }
+    enum States{ DefaultValue, Burned, Approved, Executed }
     mapping(bytes32 => States) public transactionStorage;
     
+    uint public maxGweiSupported = 50e9;
     
     uint constant NO_BOTS_TECH_CONTRACT_ID = 0;
     uint constant DEFT_STORAGE_CONTRACT_ID = 3;
@@ -47,6 +48,8 @@ contract CrossChainBridge is AccessControlEnumerable {
     uint constant BSC_TESTNET_CHAIN_ID = 97;
     uint constant MATIC_MAINNET_CHAIN_ID = 137;
     
+    address constant APPROVER_WALLET = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
+    
     struct SourceProofOfBurn {
         uint amount;
         uint sourceChainId;
@@ -58,16 +61,16 @@ contract CrossChainBridge is AccessControlEnumerable {
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
         _setupRole(ROLE_APPROVER, msg.sender);
-        _setupRole(ROLE_APPROVER, 0xdEF78a28c78A461598d948bc0c689ce88f812AD8);
+        _setupRole(ROLE_APPROVER, APPROVER_WALLET);
         
-        _setupRole(ROLE_ADMIN, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
-        _setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
+        //_setupRole(ROLE_ADMIN, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
+        //_setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
         
-        beneficiaryAddress = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
+        beneficiaryAddress = APPROVER_WALLET;
         
         updateFee(5e3); // 0.5% fee to any directions
         
-        address tokenAddr1 = 0x5564217Dd1e1255eA751C9C506Fac9eD25FA5240;
+        /*address tokenAddr1 = 0x5564217Dd1e1255eA751C9C506Fac9eD25FA5240;
         address tokenAddr2 = 0x60b6F75D513E3C60bd325AE6B64Ea08ca3217527;
         allowedContracts.add(tokenAddr1);
         allowedContracts.add(tokenAddr2);
@@ -85,11 +88,11 @@ contract CrossChainBridge is AccessControlEnumerable {
             
             isAllowedToBridgeToChainId[tokenAddr1][BSC_TESTNET_CHAIN_ID] = true; // allow to bridge to bsc testnet
             isAllowedToBridgeToChainId[tokenAddr2][BSC_TESTNET_CHAIN_ID] = true; // allow to bridge to bsc testnet
-        }
+        }*/
         
-        /* MAINNET
-        address tokenAddr1 = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
-        address tokenAddr2 = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
+        /* MAINNET */
+        address tokenAddr1 = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840; // DEFT
+        address tokenAddr2 = 0x44EB8f6C496eAA8e0321006d3c61d851f87685BD; // LAMBO
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
@@ -104,7 +107,14 @@ contract CrossChainBridge is AccessControlEnumerable {
             
             isAllowedToBridgeToChainId[tokenAddr1][ETH_MAINNET_CHAIN_ID] = true; // allow to bridge to eth
             isAllowedToBridgeToChainId[tokenAddr2][ETH_MAINNET_CHAIN_ID] = true; // allow to bridge to eth
-        }*/
+        }
+    }
+    
+    function updateMaxGweiSupported(uint _value)
+        external
+        onlyRole(ROLE_ADMIN)
+    {
+        maxGweiSupported = _value;
     }
     
     function allowContract(address addr, bool isAllow)
@@ -195,12 +205,20 @@ contract CrossChainBridge is AccessControlEnumerable {
             "CCB: Provided hash is invalid"
         );
         
+        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(sourceProofOfBurn.sourceTokenAddr);
+        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
+            iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+        );
+        require(
+            !iDeftStorageContract.isBotAddress(msg.sender),
+            "CCB: Minting is temporary disabled!"
+        );
+        
         transactionStorage[sourceProofOfBurn.transactionHash] = States.Executed;
         
         uint amountAsFee = (sourceProofOfBurn.amount*feePercent) / FEE_DENORM;
         uint finalAmount = sourceProofOfBurn.amount - amountAsFee; 
         
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(sourceProofOfBurn.sourceTokenAddr);
         iDefiFactoryToken.mintByBridge(msg.sender, finalAmount);
         iDefiFactoryToken.mintByBridge(beneficiaryAddress, amountAsFee);
         
@@ -233,14 +251,13 @@ contract CrossChainBridge is AccessControlEnumerable {
             "CCB: Token address is not allowed"
         );
         
-        // TODO: enable code in production
-        /*IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
+        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
             iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
         );
         require(
             !iDeftStorageContract.isBotAddress(msg.sender),
-            "CCB: Bridging is temporary disabled!"
-        );*/
+            "CCB: Burning is temporary disabled!"
+        );
         
         bytes32 transactionHash = keccak256(abi.encodePacked(
                 msg.sender, token, amount, block.chainid, destinationChainId, currentNonce[token]
@@ -259,7 +276,7 @@ contract CrossChainBridge is AccessControlEnumerable {
         view
         returns (uint)
     {
-        uint validatorGasFee = (30000 * 100e9 * 130) / 100; // 30k gas limit * 100 gwei * 1.3 multiplier (for fee-on-transfer)
+        uint validatorGasFee = (46000 * maxGweiSupported); // 46k gas limit * 50 gwei (for validating transaction)
         address pairAddress = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(token, WETH_TOKEN_ADDRESS);
         if (pairAddress == address(0x0)) return 1e36;
         

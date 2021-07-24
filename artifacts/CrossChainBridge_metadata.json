@@ -592,6 +592,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "maxGweiSupported",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"components": [
@@ -730,6 +743,19 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "updateMaxGweiSupported",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -785,11 +811,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0xa4e017cb23fb521d6ee62658d83ba3e79a5bbf021e5152a5f89feb84c04c894d",
+			"keccak256": "0x5fd2c2825d2c615982eb19df75f502abde1e6bba7c63aab32ec1954a63a56403",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d236a5fc71ae78ecf4ec460a5fb912ea065677b596b67c3b19f42b917d214212",
-				"dweb:/ipfs/QmSw7BKwnct7vYyS2W13GnNvymjS8j2ouq1x7kaUyUCL3Q"
+				"bzz-raw://c9babdd3e1bf1aa266ed14ff032978488171bf98a1e5b48e590b9d1f52dbb178",
+				"dweb:/ipfs/Qmd2cV3S9D7oGsyQj1AUq7QvghW5mzETEynWzb6PdY9D9Q"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

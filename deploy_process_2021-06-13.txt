@@ -11,7 +11,7 @@ Eth:
     [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"],
     [false, false, false, false, false, "0x2b6a3d2068773B53fC1aC0373Ef581b31d65B4Da"],
     [false, false, false, false, false, "0xfa6687922bf40ff51bcd45f9fd339215a4869d82"],
-    [true, true, false, false, true, "0x01e835C7A3f7B51243229DfB85A1EA08a5512499"]
+    [true, true, false, false, true, "0x1d2900622B5049D9479DC8BE06469A4ede3Fc96e"]
 ]
 
 Bsc:
@@ -21,5 +21,5 @@ Bsc:
     [false, false, false, false, false, "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73"],
     [false, false, false, false, false, "0x2b6a3d2068773B53fC1aC0373Ef581b31d65B4Da"],
     [false, false, false, false, false, "0x077324B361272dde2D757f8Ec6Eb59daAe794519"],
-    [true, true, false, false, true, "0x01e835C7A3f7B51243229DfB85A1EA08a5512499"]
+    [true, true, false, false, true, "0x1d2900622B5049D9479DC8BE06469A4ede3Fc96e"]
 ]
