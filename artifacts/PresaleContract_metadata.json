@@ -7,7 +7,7 @@
 		"abi": [
 			{
 				"inputs": [],
-				"stateMutability": "payable",
+				"stateMutability": "nonpayable",
 				"type": "constructor"
 			},
 			{
@@ -21,12 +21,37 @@
 					},
 					{
 						"indexed": false,
+						"internalType": "address",
+						"name": "referralAddr",
+						"type": "address"
+					},
+					{
+						"indexed": false,
 						"internalType": "uint256",
 						"name": "investorAmountWeth",
 						"type": "uint256"
 					}
 				],
 				"name": "InvestedAmount",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "referralAddr",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "earnings",
+						"type": "uint256"
+					}
+				],
+				"name": "ReferralEarned",
 				"type": "event"
 			},
 			{
@@ -109,7 +134,7 @@
 				"inputs": [
 					{
 						"indexed": false,
-						"internalType": "enum PresaleLambo.States",
+						"internalType": "enum PresaleContract.States",
 						"name": "newState",
 						"type": "uint8"
 					}
@@ -145,64 +170,12 @@
 			},
 			{
 				"inputs": [],
-				"name": "TEAM_ADDRESS1",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "TEAM_ADDRESS2",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "TEAM_FINANCE_ADDRESS",
 				"outputs": [
 					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "TEAM_WEIGHT1",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "TEAM_WEIGHT2",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -269,7 +242,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "amountOfDeftForInvestors",
+				"name": "amountOfTokensForInvestors",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -288,7 +261,26 @@
 						"type": "address"
 					}
 				],
-				"name": "cachedIndex",
+				"name": "cachedIndexInvestors",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "cachedIndexReferrals",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -325,8 +317,19 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "distributeTeamTokens",
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "offset",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "limit",
+						"type": "uint256"
+					}
+				],
+				"name": "distributeReferralsTokens",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -376,7 +379,12 @@
 						"components": [
 							{
 								"internalType": "address",
-								"name": "addr",
+								"name": "investorAddr",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "referralAddr",
 								"type": "address"
 							},
 							{
@@ -390,7 +398,7 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct PresaleLambo.Investor",
+						"internalType": "struct PresaleContract.Investor",
 						"name": "",
 						"type": "tuple"
 					}
@@ -412,7 +420,12 @@
 						"components": [
 							{
 								"internalType": "address",
-								"name": "addr",
+								"name": "investorAddr",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "referralAddr",
 								"type": "address"
 							},
 							{
@@ -426,7 +439,7 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct PresaleLambo.Investor",
+						"internalType": "struct PresaleContract.Investor",
 						"name": "",
 						"type": "tuple"
 					}
@@ -437,6 +450,91 @@
 			{
 				"inputs": [],
 				"name": "getInvestorsCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getReferralByAddr",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "referralAddr",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "earnings",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "sentValue",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct PresaleContract.Referral",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "pos",
+						"type": "uint256"
+					}
+				],
+				"name": "getReferralByPos",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "referralAddr",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "earnings",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "sentValue",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct PresaleContract.Referral",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getReferralsCount",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -500,6 +598,58 @@
 				],
 				"name": "getRoleMemberCount",
 				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getTotalInvestmentsStatistics",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getWalletStatistics",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
 					{
 						"internalType": "uint256",
 						"name": "",
@@ -579,6 +729,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "referralAddr",
+						"type": "address"
+					}
+				],
+				"name": "invest",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
@@ -588,7 +751,12 @@
 				"outputs": [
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "investorAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "referralAddr",
 						"type": "address"
 					},
 					{
@@ -600,19 +768,6 @@
 						"internalType": "uint256",
 						"name": "sentValue",
 						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "lamboTokenAddress",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -637,7 +792,12 @@
 						"components": [
 							{
 								"internalType": "address",
-								"name": "addr",
+								"name": "investorAddr",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "referralAddr",
 								"type": "address"
 							},
 							{
@@ -651,7 +811,48 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct PresaleLambo.Investor[]",
+						"internalType": "struct PresaleContract.Investor[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "offset",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "limit",
+						"type": "uint256"
+					}
+				],
+				"name": "listReferrals",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "referralAddr",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "earnings",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "sentValue",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct PresaleContract.Referral[]",
 						"name": "",
 						"type": "tuple[]"
 					}
@@ -675,48 +876,51 @@
 			},
 			{
 				"inputs": [],
-				"name": "maxWethCap",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "perWalletMaxWethCap",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "perWalletMinWethCap",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "prepareAddLiqudity",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "refPercent",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "referrals",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "referralAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "earnings",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "sentValue",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -757,6 +961,13 @@
 			},
 			{
 				"inputs": [],
+				"name": "sendLPTokensToAdminWallet",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "skipSteps1",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -785,7 +996,7 @@
 				"name": "state",
 				"outputs": [
 					{
-						"internalType": "enum PresaleLambo.States",
+						"internalType": "enum PresaleContract.States",
 						"name": "",
 						"type": "uint8"
 					}
@@ -814,51 +1025,12 @@
 			},
 			{
 				"inputs": [],
-				"name": "teamPercent",
+				"name": "tokenAddress",
 				"outputs": [
 					{
-						"internalType": "uint256",
+						"internalType": "address",
 						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "teamReceived1",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "teamReceived2",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "totalInvestedWeth",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -873,12 +1045,12 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "_perWalletMinWethCap",
+						"name": "_perWalletMinWeth",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_perWalletMaxWethCap",
+						"name": "_perWalletMaxWeth",
 						"type": "uint256"
 					}
 				],
@@ -891,7 +1063,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_fixedPriceInUsd",
+						"name": "_value",
 						"type": "uint256"
 					}
 				],
@@ -903,12 +1075,25 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "updateRefPercent",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
-						"name": "newContract",
+						"name": "_value",
 						"type": "address"
 					}
 				],
-				"name": "updateLamboContract",
+				"name": "updateTokenContract",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -969,7 +1154,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/PresaleContract.sol": "PresaleLambo"
+			"sol-defifactory-token/PresaleContract.sol": "PresaleContract"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -984,11 +1169,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleContract.sol": {
-			"keccak256": "0xc45d29706433f126e995914165f022b69badbd556b408d3dedefb4b9d3317506",
+			"keccak256": "0x3094be2baa513fad688654e38ae35da9e1415a5e5cbc43ef318de4fdbbed1476",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://630b177330986c486acdfb4eacf8a9f5f31e791dcab52f77909c65f2914e2253",
-				"dweb:/ipfs/QmZyxdDp97Zh5AbWDFcd6Sd81rYZ9p1PPYJTGDbxHQeifu"
+				"bzz-raw://357a834bf670312752aadb16723ac50038c7ac745932835aa8eedaf22c3f1da0",
+				"dweb:/ipfs/QmRcGZDvgsuA1oxDhqTngu2BJGSu1ytC2iAMAJ323kE31H"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

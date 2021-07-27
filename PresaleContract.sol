@@ -12,42 +12,61 @@ import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 /*
 TODO: Plan on presale contract
-- rename all Lambo references
-- rename all Deft references
-- replace investors type to enumerable mapping
-- add referrals tracking using enumerable mapping
-- add referral program
-- output total investment stats
-- output per investor stats
-- output limits, caps
++ rename all Lambo references
++ rename all Deft references
++ add referrals tracking to enumerable set
++ get referral earnings function
++ add referral program
++ add invest function
++ output total investment stats
++ output per investor stats
++ output limits, caps
++ distribute referral tokens
++ debug contract
 - add custom tokenomics
 - add token vesting schedule
 */
 
 
-contract PresaleLambo is AccessControlEnumerable {
+contract PresaleContract is AccessControlEnumerable {
     
     struct Investor {
-        address addr;
+        address investorAddr;
+        address referralAddr;
+        
         uint wethValue;
+        uint sentValue;
+    }
+    
+    struct Referral {
+        address referralAddr;
+        
+        uint earnings;
         uint sentValue;
     }
     
     enum States { AcceptingPayments, ReachedGoal, PreparedAddLiqudity, CreatedPair, AddedLiquidity, DistributedTokens }
     States public state;
     
-    mapping(address => uint) public cachedIndex;
+    mapping(address => uint) public cachedIndexInvestors;
     Investor[] public investors;
     
-    uint public totalInvestedWeth;
-    uint public maxWethCap = 5e18;
-    uint public perWalletMinWethCap = 10e16;
-    uint public perWalletMaxWethCap = 50e16;
-    uint public amountOfDeftForInvestors;
+    mapping(address => uint) public cachedIndexReferrals;
+    Referral[] public referrals;
     
-    uint public fixedPriceInUsd = 1e18; // 1 usd
+    uint public refPercent = 5e4; // 5%
+    uint constant PERCENT_DENORM = 1e6;
     
-    address public lamboTokenAddress;
+    uint totalInvestedWeth;
+    uint maxWethCap = 5e18;
+    uint perWalletMinWeth = 1e10;
+    uint perWalletMaxWeth = 50e20;
+    
+    uint public amountOfTokensForInvestors;
+    
+    uint public fixedPriceInUsd = 1e12; // 1e-6 usd
+    
+    address public tokenAddress;
     address public TEAM_FINANCE_ADDRESS;
     address public WETH_TOKEN_ADDRESS;
     address public USDT_TOKEN_ADDRESS;
@@ -61,27 +80,20 @@ contract PresaleLambo is AccessControlEnumerable {
     uint constant BSC_MAINNET_CHAIN_ID = 56;
     uint constant BSC_TESTNET_CHAIN_ID = 97;
     
-    uint constant DEFT_DECIMALS = 18;
+    uint constant TOKEN_DECIMALS = 18;
     uint constant WETH_DECIMALS = 18;
     uint USDT_DECIMALS;
     
     address public constant BURN_ADDRESS = address(0x0);
     
-    address public constant TEAM_ADDRESS1 = 0x43cFD604C3a59f2eE315d25D5D982257D9D28a3E;
-    uint public constant TEAM_WEIGHT1 = 30;
-    uint public teamReceived1;
     
-    address public constant TEAM_ADDRESS2 = 0x629cC87a549a529238a43cadBc2053d495339940;
-    uint public constant TEAM_WEIGHT2 = 5;
-    uint public teamReceived2;
-    
-    uint public constant teamPercent = 10;
-    uint constant PERCENT_DENORM = 100;
-    
-    event InvestedAmount(address investorAddr, uint investorAmountWeth);
+    event InvestedAmount(address investorAddr, address referralAddr, uint investorAmountWeth);
+    event ReferralEarned(address referralAddr, uint earnings);
     event StateChanged(States newState);
     
-    constructor() payable {
+    /* Referral wallet for tests: 0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6 */
+    
+    constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
         
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
@@ -108,6 +120,8 @@ contract PresaleLambo is AccessControlEnumerable {
             WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
             USDT_DECIMALS = 6;
             TEAM_FINANCE_ADDRESS = BURN_ADDRESS;
+            
+            tokenAddress = 0xD035096e0D5b47907707da81B326c1D40015b6AE; // TODO: set token address for debug
         } else if (block.chainid == ETH_ROPSTEN_CHAIN_ID)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
@@ -122,69 +136,126 @@ contract PresaleLambo is AccessControlEnumerable {
     }
 
     receive() external payable {
-        if (msg.sender != WETH_TOKEN_ADDRESS)
-        {
-            require(state == States.AcceptingPayments, "PR: Accepting payments has been stopped!");
-            require(totalInvestedWeth <= maxWethCap, "PR: Max cap reached!");
-            require(msg.value >= perWalletMinWethCap, "PR: Amount is below minimum permitted");
-            require(msg.value <= perWalletMaxWethCap, "PR: Amount is above maximum permitted");
-            
-            addInvestor(msg.sender, msg.value);
-        }
+    }
+    
+    function getTotalInvestmentsStatistics()
+        external
+        view
+        returns(uint, uint)
+    {
+        return (totalInvestedWeth, maxWethCap);
+    }
+    
+    function getWalletStatistics(address addr)
+        external
+        view
+        returns(uint, uint, uint, uint)
+    {
+        return (
+            investors[cachedIndexInvestors[addr] - 1].wethValue, 
+            referrals[cachedIndexReferrals[addr] - 1].earnings,
+            perWalletMinWeth, 
+            perWalletMaxWeth
+        );
+    }
+    
+    function invest(address referralAddr)
+        external
+        payable
+    {
+        require(state == States.AcceptingPayments, "PR: Accepting payments has been stopped!");
+        require(totalInvestedWeth <= maxWethCap, "PR: Max cap reached!");
+        require(msg.value >= perWalletMinWeth, "PR: Amount is below minimum permitted");
+        require(msg.value <= perWalletMaxWeth, "PR: Amount is above maximum permitted");
+        
+        addInvestor(msg.sender, referralAddr, msg.value);
+        
+        addReferral(
+            referralAddr, 
+            (msg.value * refPercent) / PERCENT_DENORM
+        );
     }
 
-    function addInvestor(address addr, uint wethValue)
+    function addInvestor(address investorAddr, address referralAddr, uint wethValue)
         internal
     {
-        if (cachedIndex[addr] == 0)
+        if (cachedIndexInvestors[investorAddr] == 0)
         {
             investors.push(
                 Investor(
-                    addr, 
+                    investorAddr, 
+                    referralAddr, 
                     wethValue,
                     0
                 )
             );
-            cachedIndex[addr] = investors.length;
+            cachedIndexInvestors[investorAddr] = investors.length;
         } else
         {
-            uint updatedWethValue = investors[cachedIndex[addr] - 1].wethValue + wethValue;
-            require(updatedWethValue <= perWalletMaxWethCap, "PR: Max cap per wallet exceeded");
+            uint updatedWethValue = investors[cachedIndexInvestors[investorAddr] - 1].wethValue + wethValue;
+            require(updatedWethValue <= perWalletMaxWeth, "PR: Max cap per wallet exceeded");
             
-            investors[cachedIndex[addr] - 1].wethValue = updatedWethValue;
+            investors[cachedIndexInvestors[investorAddr] - 1].wethValue = updatedWethValue;
         }
         totalInvestedWeth += wethValue;
-        emit InvestedAmount(addr, wethValue);
+        emit InvestedAmount(investorAddr, referralAddr, wethValue);
+    }
+
+    function addReferral(address referralAddr, uint earnings)
+        internal
+    {
+        if (cachedIndexReferrals[referralAddr] == 0)
+        {
+            referrals.push(
+                Referral(
+                    referralAddr, 
+                    earnings,
+                    0
+                )
+            );
+            cachedIndexReferrals[referralAddr] = referrals.length;
+        } else
+        {
+            referrals[cachedIndexReferrals[referralAddr] - 1].earnings += earnings;
+        }
+        emit ReferralEarned(referralAddr, earnings);
     }
     
-    function updateFixedPriceInUsd(uint _fixedPriceInUsd)
+    function updateRefPercent(uint _value)
         public
         onlyRole(ROLE_ADMIN)
     {
-        fixedPriceInUsd = _fixedPriceInUsd;
+        refPercent = _value;
     }
     
-    function updateCaps(uint _maxWethCap, uint _perWalletMinWethCap, uint _perWalletMaxWethCap)
+    function updateFixedPriceInUsd(uint _value)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        fixedPriceInUsd = _value;
+    }
+    
+    function updateCaps(uint _maxWethCap, uint _perWalletMinWeth, uint _perWalletMaxWeth)
         public
         onlyRole(ROLE_ADMIN)
     {
         maxWethCap = _maxWethCap;
-        perWalletMinWethCap = _perWalletMinWethCap;
-        perWalletMaxWethCap = _perWalletMaxWethCap;
+        perWalletMinWeth = _perWalletMinWeth;
+        perWalletMaxWeth = _perWalletMaxWeth;
     }
     
-    function updateLamboContract(address newContract)
+    function updateTokenContract(address _value)
         public
         onlyRole(ROLE_ADMIN)
     {
-        lamboTokenAddress = newContract;
+        tokenAddress = _value;
     }
     
-    function changeState(States newState)
+    function changeState(States _value)
         private
     {
-        state = newState;
-        emit StateChanged(newState);
+        state = _value;
+        emit StateChanged(_value);
     }
     
     function skipSteps1()
@@ -199,16 +270,19 @@ contract PresaleLambo is AccessControlEnumerable {
         public
     {
         addLiquidityOnUniswapV2();
-        if (isLiquidityLocked)
+        if (isLiquidityLocked && TEAM_FINANCE_ADDRESS != BURN_ADDRESS)
         {
             lockLPTokensAtTeamFinance();
+        } else
+        {
+            sendLPTokensToAdminWallet();
         }
-        
-        distributeTeamTokens();
         
         limit = limit == 0? investors.length: limit;
         distributeInvestorsTokens(0, limit);
         
+        limit = limit == 0? investors.length: limit;
+        distributeReferralsTokens(0, limit);
     }
     
     function markGoalAsReached()
@@ -238,15 +312,15 @@ contract PresaleLambo is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         require(state == States.PreparedAddLiqudity, "PR: Pair is already created!");
-        require(lamboTokenAddress != BURN_ADDRESS, "PR: Token address was not initialized yet!");
+        require(tokenAddress != BURN_ADDRESS, "PR: Token address was not initialized yet!");
 
         wethAndTokenPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
-            getPair(lamboTokenAddress, WETH_TOKEN_ADDRESS);
+            getPair(tokenAddress, WETH_TOKEN_ADDRESS);
         
         if (wethAndTokenPairContract == BURN_ADDRESS)
         {
             wethAndTokenPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
-                createPair(lamboTokenAddress, WETH_TOKEN_ADDRESS);
+                createPair(tokenAddress, WETH_TOKEN_ADDRESS);
         }
         
         changeState(States.CreatedPair);
@@ -266,7 +340,8 @@ contract PresaleLambo is AccessControlEnumerable {
             (usdtBalance, wethBalance1) = (wethBalance1, usdtBalance);
         }
         
-        uint amountOfTokensForUniswap = (usdtBalance * totalInvestedWeth * 10**(36-USDT_DECIMALS)) / (fixedPriceInUsd * wethBalance1);
+        uint amountOfTokensForUniswap = (usdtBalance * totalInvestedWeth * (PERCENT_DENORM - refPercent) * 10**(36-USDT_DECIMALS)) / (PERCENT_DENORM * fixedPriceInUsd * wethBalance1);
+        amountOfTokensForInvestors = (usdtBalance * totalInvestedWeth * 10**(36-USDT_DECIMALS)) / (fixedPriceInUsd * wethBalance1);
         
         IWeth iWeth = IWeth(WETH_TOKEN_ADDRESS);
         iWeth.transfer(
@@ -274,52 +349,12 @@ contract PresaleLambo is AccessControlEnumerable {
                 iWeth.balanceOf(address(this))
             );
         
-        amountOfDeftForInvestors += amountOfTokensForUniswap;
-        
-        IDefiFactoryToken(lamboTokenAddress).mintHumanAddress(wethAndTokenPairContract, amountOfTokensForUniswap);
+        IDefiFactoryToken(tokenAddress).mintHumanAddress(wethAndTokenPairContract, amountOfTokensForUniswap);
         
         IUniswapV2Pair iPair = IUniswapV2Pair(wethAndTokenPairContract);
         iPair.mint(address(this));
-        
-        uint dustLeftInContract = IDefiFactoryToken(lamboTokenAddress).balanceOf(address(this));
-        if (dustLeftInContract > 0)
-        {
-            amountOfDeftForInvestors -= dustLeftInContract;
-            IDefiFactoryToken(lamboTokenAddress).
-                burnHumanAddress(address(this), dustLeftInContract);
-        }
     
         changeState(States.AddedLiquidity);
-    }
-    
-    function distributeTeamTokens()
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        require(state == States.AddedLiquidity, "PR: Tokens have already been distributed!");
-        
-        uint amountForWholeTeam = (amountOfDeftForInvestors * 2 * teamPercent) / (PERCENT_DENORM - teamPercent);
-        uint amountForTeam1 = (amountForWholeTeam * TEAM_WEIGHT1) / (TEAM_WEIGHT1 + TEAM_WEIGHT2);
-        
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(lamboTokenAddress);
-        if (teamReceived1 < amountForTeam1)
-        {
-            iDefiFactoryToken.mintHumanAddress(
-                    TEAM_ADDRESS1, 
-                    amountForTeam1
-                );
-            teamReceived1 = amountForTeam1;
-        }
-        
-        uint amountForTeam2 = (amountForWholeTeam * TEAM_WEIGHT2) / (TEAM_WEIGHT1 + TEAM_WEIGHT2);
-        if (teamReceived2 < amountForTeam2)
-        {
-            iDefiFactoryToken.mintHumanAddress(
-                    TEAM_ADDRESS2, 
-                    amountForTeam2
-                );
-            teamReceived2 = amountForTeam2;
-        }
     }
 
     function distributeInvestorsTokens(uint offset, uint limit)
@@ -329,21 +364,48 @@ contract PresaleLambo is AccessControlEnumerable {
         require(state == States.AddedLiquidity, "PR: Tokens have already been distributed!");
         
         uint leftAmount;
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(lamboTokenAddress);
+        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(tokenAddress);
         Investor[] memory investorsList = listInvestors(offset, limit);
         for(uint i = 0; i < investorsList.length; i++)
         {
             leftAmount = 
-                (investorsList[i].wethValue * amountOfDeftForInvestors) / 
+                (investorsList[i].wethValue * amountOfTokensForInvestors) / 
                     (totalInvestedWeth);
                 
             if (leftAmount > investorsList[i].sentValue)
             {
                 iDefiFactoryToken.mintHumanAddress(
-                    investorsList[i].addr, 
+                    investorsList[i].investorAddr, 
                     leftAmount
                 );
                 investorsList[i].sentValue += leftAmount;
+            }
+        }
+    }
+    
+    
+    function distributeReferralsTokens(uint offset, uint limit)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        require(state == States.AddedLiquidity, "PR: Tokens have already been distributed!");
+        
+        uint leftAmount;
+        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(tokenAddress);
+        Referral[] memory referralsList = listReferrals(offset, limit);
+        for(uint i = 0; i < referralsList.length; i++)
+        {
+            leftAmount = 
+                (referralsList[i].earnings * amountOfTokensForInvestors) / 
+                    (totalInvestedWeth);
+                
+            if (leftAmount > referralsList[i].sentValue)
+            {
+                iDefiFactoryToken.mintHumanAddress(
+                    referralsList[i].referralAddr, 
+                    leftAmount
+                );
+                referralsList[i].sentValue += leftAmount;
             }
         }
     }
@@ -362,6 +424,17 @@ contract PresaleLambo is AccessControlEnumerable {
                 );
     }
     
+    function sendLPTokensToAdminWallet()
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        IWeth iPairLPTokens = IWeth(wethAndTokenPairContract);
+        iPairLPTokens.transfer(
+            msg.sender, 
+            iPairLPTokens.balanceOf(address(this))
+        );
+    }
+    
     function emergencyRefund(uint offset, uint limit)
         public
         onlyRole(ROLE_ADMIN)
@@ -377,11 +450,13 @@ contract PresaleLambo is AccessControlEnumerable {
         {
             uint amountToTransfer = investorsList[i].wethValue;
             investorsList[i].wethValue = 0;
-            payable(investorsList[i].addr).transfer(amountToTransfer);
+            payable(investorsList[i].investorAddr).transfer(amountToTransfer);
         }
         
         changeState(States.AcceptingPayments);
     }
+    
+    // --------------------------------------
     
     function getInvestorsCount()
         public
@@ -396,7 +471,7 @@ contract PresaleLambo is AccessControlEnumerable {
         view
         returns(Investor memory)
     {
-        return investors[cachedIndex[addr] - 1];
+        return investors[cachedIndexInvestors[addr] - 1];
     }
     
     function getInvestorByPos(uint pos)
@@ -424,5 +499,50 @@ contract PresaleLambo is AccessControlEnumerable {
         }
         
         return listOfInvestors;
+    }
+    
+    // --------------------------------------
+    
+    function getReferralsCount()
+        public
+        view
+        returns(uint)
+    {
+        return referrals.length;
+    }
+    
+    function getReferralByAddr(address addr)
+        public
+        view
+        returns(Referral memory)
+    {
+        return referrals[cachedIndexReferrals[addr] - 1];
+    }
+    
+    function getReferralByPos(uint pos)
+        public
+        view
+        returns(Referral memory)
+    {
+        return referrals[pos];
+    }
+    
+    function listReferrals(uint offset, uint limit)
+        public
+        view
+        returns(Referral[] memory)
+    {
+        uint start = offset;
+        uint end = offset + limit;
+        end = (end > referrals.length)? referrals.length: end;
+        uint numItems = (end > start)? end - start: 0;
+        
+        Referral[] memory listOfReferrals = new Referral[](numItems);
+        for(uint i = start; i < end; i++)
+        {
+            listOfReferrals[i - start] = referrals[i];
+        }
+        
+        return listOfReferrals;
     }
 }
