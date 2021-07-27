@@ -10,6 +10,20 @@ import "./interfaces/IUniswapV2Router.sol";
 import "./interfaces/IWeth.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 
+/*
+TODO: Plan on presale contract
+- rename all Lambo references
+- rename all Deft references
+- replace investors type to enumerable mapping
+- add referrals tracking using enumerable mapping
+- add referral program
+- output total investment stats
+- output per investor stats
+- output limits, caps
+- add custom tokenomics
+- add token vesting schedule
+*/
+
 
 contract PresaleLambo is AccessControlEnumerable {
     
