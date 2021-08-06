@@ -51,10 +51,13 @@ contract DeftStorageContract is AccessControlEnumerable {
         markAddressAsHuman(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // TeamVestingContract
         markAddressAsHuman(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, true); // DefiFactoryContract
         
+        isZeroGweiAllowed = true;
+            
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
             markAddressAsHuman(0x881D40237659C251811CEC9c364ef91dC08D300C, true); // Metamask Swap Router
             markAddressAsHuman(0x74de5d4FCbf63E00296fd95d33236B9794016631, true); // metamask router wallet
+            markAddressAsHuman(0xe122d2E14d35d794C977b4d6924232CAe7c8DbB5, true); // metamask fees
             markAddressAsHuman(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D, true); // uniswap router v2
             markPairAsDeftEthPair(0xFa6687922BF40FF51Bcd45F9FD339215a4869D82, true); // [deft, weth] uniswap pair
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
@@ -62,7 +65,6 @@ contract DeftStorageContract is AccessControlEnumerable {
             markAddressAsHuman(0x10ED43C718714eb63d5aA57B78B54704E256024E, true); // pancake router v2
             markPairAsDeftEthPair(0x077324B361272dde2D757f8Ec6Eb59daAe794519, true); // [deft, wbnb] pancake pair
             markPairAsDeftEthPair(0x493E990CcC67F59A3000EfFA9d5b1417D54B6f99, true); // [deft, busd] pancake pair
-            isZeroGweiAllowed = true;
         }
     }
     

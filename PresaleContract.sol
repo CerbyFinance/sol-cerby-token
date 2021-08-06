@@ -45,7 +45,16 @@ contract PresaleContract is AccessControlEnumerable {
         uint sentValue;
     }
     
-    enum States { AcceptingPayments, ReachedGoal, PreparedAddLiqudity, CreatedPair, AddedLiquidity, DistributedTokens }
+    struct Tokenomics {
+        address tokenomicsAddr;
+        string tokenomicsName;
+        uint tokenomicsPercentage;
+        uint tokenomicsLockedForXSeconds;
+        uint tokenomicsVestedForXSeconds;
+    }
+    
+    
+    enum States { AcceptingPayments, ReachedGoal, PreparedAddLiqudity, CreatedPair, AddedLiquidity, DistributedTokenomicsTokens, DistributedInvestorsTokens, DistributedReferralsTokens }
     States public state;
     
     mapping(address => uint) public cachedIndexInvestors;
@@ -53,6 +62,8 @@ contract PresaleContract is AccessControlEnumerable {
     
     mapping(address => uint) public cachedIndexReferrals;
     Referral[] public referrals;
+    
+    Tokenomics[] public tokenomics;
     
     uint public refPercent = 5e4; // 5%
     uint constant PERCENT_DENORM = 1e6;
@@ -63,6 +74,7 @@ contract PresaleContract is AccessControlEnumerable {
     uint perWalletMaxWeth = 50e20;
     
     uint public amountOfTokensForInvestors;
+    uint public totalTokenSupply;
     
     uint public fixedPriceInUsd = 1e12; // 1e-6 usd
     
@@ -86,6 +98,16 @@ contract PresaleContract is AccessControlEnumerable {
     
     address public constant BURN_ADDRESS = address(0x0);
     
+    string public website;
+    string public telegram;
+    
+    string public presaleName;
+    uint public uniswapLiquidityLockedFor;
+    uint public presaleLockedFor;
+    uint public presaleVestedFor;
+    uint public referralsLockedFor;
+    uint public referralsVestedFor;
+    
     
     event InvestedAmount(address investorAddr, address referralAddr, uint investorAmountWeth);
     event ReferralEarned(address referralAddr, uint earnings);
@@ -95,6 +117,45 @@ contract PresaleContract is AccessControlEnumerable {
     
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
+        
+        presaleName = "Lambo Token Presale";
+        website = "https://lambo.defifactory.finance";
+        telegram = "https://t.me/LamboTokenOwners";
+        
+        uniswapLiquidityLockedFor = 36500 days;
+        presaleLockedFor = 1 days;
+        presaleVestedFor = 7 days;
+        referralsLockedFor = 1 days;
+        referralsVestedFor = 7 days;
+        
+        tokenomics.push(
+            Tokenomics(
+                0x1111BEe701Ef814A2B6A3EDD4B1652cB9cc5aA6f,
+                "Development",
+                15e4,
+                1 minutes,
+                10 minutes
+            )  
+        );
+        tokenomics.push(
+            Tokenomics(
+                0x2222bEE701Ef814a2B6a3edD4B1652cB9Cc5Aa6F,
+                "Marketing",
+                10e4,
+                2 minutes,
+                20 minutes
+            )  
+        );
+        tokenomics.push(
+            Tokenomics(
+                0x2222bEE701Ef814a2B6a3edD4B1652cB9Cc5Aa6F,
+                "Advisors",
+                5e4,
+                3 minutes,
+                30 minutes
+            )  
+        );
+        
         
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
@@ -121,7 +182,7 @@ contract PresaleContract is AccessControlEnumerable {
             USDT_DECIMALS = 6;
             TEAM_FINANCE_ADDRESS = BURN_ADDRESS;
             
-            tokenAddress = 0xD035096e0D5b47907707da81B326c1D40015b6AE; // TODO: set token address for debug
+            tokenAddress = 0x24b398e20e2a2AB0e090dD1E3Fa27248896EC2fb; // TODO: set token address for debug
         } else if (block.chainid == ETH_ROPSTEN_CHAIN_ID)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
@@ -136,6 +197,19 @@ contract PresaleContract is AccessControlEnumerable {
     }
 
     receive() external payable {
+    }
+    
+    function getUniswapSupplyPercent()
+        public
+        view
+        returns(uint)
+    {
+        uint totalTeamPercent;
+        for(uint i; i<tokenomics.length; i++)
+        {
+            totalTeamPercent += tokenomics[i].tokenomicsPercentage;
+        }
+        return (PERCENT_DENORM - totalTeamPercent)*(2*PERCENT_DENORM - refPercent) / (4 * PERCENT_DENORM);
     }
     
     function getTotalInvestmentsStatistics()
@@ -220,6 +294,53 @@ contract PresaleContract is AccessControlEnumerable {
         }
         emit ReferralEarned(referralAddr, earnings);
     }
+
+    function updateTokenomics(Tokenomics[] calldata _tokenomics)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        delete tokenomics;
+        for(uint i; i<_tokenomics.length; i++)
+        {
+            tokenomics.push(_tokenomics[i]);
+        }
+    }
+    
+    function getTokenomics()
+        public
+        view
+        returns(Tokenomics[] memory)
+    {
+        uint uniswapSupplyPercent = getUniswapSupplyPercent();
+        Tokenomics[] memory output = new Tokenomics[](3 + tokenomics.length);
+        output[0] = Tokenomics(
+            address(0x1),
+            "Liquidity",
+            uniswapSupplyPercent,
+            uniswapLiquidityLockedFor,
+            0
+        );
+        output[1] = Tokenomics(
+            address(0x2),
+            "Presale",
+            uniswapSupplyPercent,
+            presaleLockedFor,
+            presaleVestedFor
+        );
+        output[2] = Tokenomics(
+            address(0x3),
+            "Referrals",
+            (uniswapSupplyPercent * refPercent) / PERCENT_DENORM,
+            referralsLockedFor,
+            referralsVestedFor
+        );
+        
+        for(uint i; i<tokenomics.length; i++)
+        {
+            output[i + 3] = tokenomics[i];
+        }
+        return (tokenomics);
+    }
     
     function updateRefPercent(uint _value)
         public
@@ -266,17 +387,12 @@ contract PresaleContract is AccessControlEnumerable {
         checkIfPairIsCreated();
     }
     
-    function skipSteps2(uint limit, bool isLiquidityLocked)
+    function skipSteps2(uint limit)
         public
     {
         addLiquidityOnUniswapV2();
-        if (isLiquidityLocked && TEAM_FINANCE_ADDRESS != BURN_ADDRESS)
-        {
-            lockLPTokensAtTeamFinance();
-        } else
-        {
-            sendLPTokensToAdminWallet();
-        }
+        
+        distributeTokenomicsTokens();
         
         limit = limit == 0? investors.length: limit;
         distributeInvestorsTokens(0, limit);
@@ -340,8 +456,9 @@ contract PresaleContract is AccessControlEnumerable {
             (usdtBalance, wethBalance1) = (wethBalance1, usdtBalance);
         }
         
-        uint amountOfTokensForUniswap = (usdtBalance * totalInvestedWeth * (PERCENT_DENORM - refPercent) * 10**(36-USDT_DECIMALS)) / (PERCENT_DENORM * fixedPriceInUsd * wethBalance1);
-        amountOfTokensForInvestors = (usdtBalance * totalInvestedWeth * 10**(36-USDT_DECIMALS)) / (fixedPriceInUsd * wethBalance1);
+        totalTokenSupply = (usdtBalance * totalInvestedWeth * 10**(36-USDT_DECIMALS)) / (fixedPriceInUsd * wethBalance1);
+        uint amountOfTokensForUniswap = (totalTokenSupply * getUniswapSupplyPercent()) / PERCENT_DENORM;
+        amountOfTokensForInvestors = amountOfTokensForUniswap;
         
         IWeth iWeth = IWeth(WETH_TOKEN_ADDRESS);
         iWeth.transfer(
@@ -353,15 +470,46 @@ contract PresaleContract is AccessControlEnumerable {
         
         IUniswapV2Pair iPair = IUniswapV2Pair(wethAndTokenPairContract);
         iPair.mint(address(this));
+        
+        if (TEAM_FINANCE_ADDRESS != BURN_ADDRESS)
+        {
+            IWeth(wethAndTokenPairContract).approve(TEAM_FINANCE_ADDRESS, type(uint).max);
+            ITeamFinance(TEAM_FINANCE_ADDRESS).
+                lockTokens(
+                        wethAndTokenPairContract, 
+                        _msgSender(), 
+                        IWeth(wethAndTokenPairContract).balanceOf(address(this)), 
+                        block.timestamp + uniswapLiquidityLockedFor
+                    );
+        }
     
         changeState(States.AddedLiquidity);
+    }
+
+    function distributeTokenomicsTokens()
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        require(state == States.AddedLiquidity, "PR: Tokenomics tokens have already been distributed!");
+        
+        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(tokenAddress);
+        for(uint i = 0; i < tokenomics.length; i++)
+        {  
+            iDefiFactoryToken.mintHumanAddress(
+                tokenomics[i].tokenomicsAddr, 
+                (tokenomics[i].tokenomicsPercentage * totalTokenSupply) / 
+                    (PERCENT_DENORM)
+            );
+        }
+        
+        changeState(States.DistributedTokenomicsTokens);
     }
 
     function distributeInvestorsTokens(uint offset, uint limit)
         public
         onlyRole(ROLE_ADMIN)
     {
-        require(state == States.AddedLiquidity, "PR: Tokens have already been distributed!");
+        require(state == States.DistributedTokenomicsTokens, "PR: Investors tokens have already been distributed!");
         
         uint leftAmount;
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(tokenAddress);
@@ -381,6 +529,8 @@ contract PresaleContract is AccessControlEnumerable {
                 investorsList[i].sentValue += leftAmount;
             }
         }
+        
+        changeState(States.DistributedInvestorsTokens);
     }
     
     
@@ -388,7 +538,7 @@ contract PresaleContract is AccessControlEnumerable {
         public
         onlyRole(ROLE_ADMIN)
     {
-        require(state == States.AddedLiquidity, "PR: Tokens have already been distributed!");
+        require(state == States.DistributedInvestorsTokens, "PR: Referrals tokens have already been distributed!");
         
         uint leftAmount;
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(tokenAddress);
@@ -408,32 +558,10 @@ contract PresaleContract is AccessControlEnumerable {
                 referralsList[i].sentValue += leftAmount;
             }
         }
+        
+        changeState(States.DistributedReferralsTokens);
     }
     
-    function lockLPTokensAtTeamFinance()
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        IWeth(wethAndTokenPairContract).approve(TEAM_FINANCE_ADDRESS, type(uint).max);
-        ITeamFinance(TEAM_FINANCE_ADDRESS).
-            lockTokens(
-                    wethAndTokenPairContract, 
-                    _msgSender(), 
-                    IWeth(wethAndTokenPairContract).balanceOf(address(this)), 
-                    block.timestamp + 36500 days
-                );
-    }
-    
-    function sendLPTokensToAdminWallet()
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        IWeth iPairLPTokens = IWeth(wethAndTokenPairContract);
-        iPairLPTokens.transfer(
-            msg.sender, 
-            iPairLPTokens.balanceOf(address(this))
-        );
-    }
     
     function emergencyRefund(uint offset, uint limit)
         public

@@ -335,6 +335,13 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "distributeTokenomicsTokens",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -609,6 +616,46 @@
 			},
 			{
 				"inputs": [],
+				"name": "getTokenomics",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "tokenomicsAddr",
+								"type": "address"
+							},
+							{
+								"internalType": "string",
+								"name": "tokenomicsName",
+								"type": "string"
+							},
+							{
+								"internalType": "uint256",
+								"name": "tokenomicsPercentage",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "tokenomicsLockedForXSeconds",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "tokenomicsVestedForXSeconds",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct PresaleContract.Tokenomics[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getTotalInvestmentsStatistics",
 				"outputs": [
 					{
@@ -616,6 +663,19 @@
 						"name": "",
 						"type": "uint256"
 					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getUniswapSupplyPercent",
+				"outputs": [
 					{
 						"internalType": "uint256",
 						"name": "",
@@ -862,13 +922,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "lockLPTokensAtTeamFinance",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "markGoalAsReached",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -879,6 +932,45 @@
 				"name": "prepareAddLiqudity",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "presaleLockedFor",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "presaleName",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "presaleVestedFor",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -924,6 +1016,32 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "referralsLockedFor",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "referralsVestedFor",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -961,13 +1079,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "sendLPTokensToAdminWallet",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "skipSteps1",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -979,11 +1090,6 @@
 						"internalType": "uint256",
 						"name": "limit",
 						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "isLiquidityLocked",
-						"type": "bool"
 					}
 				],
 				"name": "skipSteps2",
@@ -1025,12 +1131,90 @@
 			},
 			{
 				"inputs": [],
+				"name": "telegram",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "tokenAddress",
 				"outputs": [
 					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "tokenomics",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "tokenomicsAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "tokenomicsName",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenomicsPercentage",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenomicsLockedForXSeconds",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenomicsVestedForXSeconds",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalTokenSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "uniswapLiquidityLockedFor",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -1096,6 +1280,59 @@
 				"name": "updateTokenContract",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "tokenomicsAddr",
+								"type": "address"
+							},
+							{
+								"internalType": "string",
+								"name": "tokenomicsName",
+								"type": "string"
+							},
+							{
+								"internalType": "uint256",
+								"name": "tokenomicsPercentage",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "tokenomicsLockedForXSeconds",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "tokenomicsVestedForXSeconds",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct PresaleContract.Tokenomics[]",
+						"name": "_tokenomics",
+						"type": "tuple[]"
+					}
+				],
+				"name": "updateTokenomics",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "website",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -1169,11 +1406,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleContract.sol": {
-			"keccak256": "0x3094be2baa513fad688654e38ae35da9e1415a5e5cbc43ef318de4fdbbed1476",
+			"keccak256": "0xa44133596b51518542d042debd366ff31bac6bcefb7829a587ce205dc0ca75ae",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://357a834bf670312752aadb16723ac50038c7ac745932835aa8eedaf22c3f1da0",
-				"dweb:/ipfs/QmRcGZDvgsuA1oxDhqTngu2BJGSu1ytC2iAMAJ323kE31H"
+				"bzz-raw://ba0e49c70a406d8e315a3dbc9fa515c2417ebe84a62f393214bee437f4041eb6",
+				"dweb:/ipfs/QmcWEE6bDaXyN88x1LwB9axd8Gt6EhUhRJyNFSw6MhKySo"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

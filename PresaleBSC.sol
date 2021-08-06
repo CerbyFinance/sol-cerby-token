@@ -13,15 +13,15 @@ import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 contract PresaleBSC is AccessControlEnumerable {
     
+    
+    enum States { AcceptingPayments, ReachedGoal, PreparedAddLiqudity, CreatedPair, AddedLiquidity, DistributedTokens }
+    States public state;
+    
     struct Investor {
         address addr;
         uint wethValue;
         uint sentValue;
     }
-    
-    enum States { AcceptingPayments, ReachedGoal, PreparedAddLiqudity, CreatedPair, AddedLiquidity, DistributedTokens }
-    States public state;
-    
     mapping(address => uint) public cachedIndex;
     Investor[] public investors;
     

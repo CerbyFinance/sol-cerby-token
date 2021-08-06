@@ -790,11 +790,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x5288c034756f8be9b73049ec92d737848b30f078234b2b063a24a3d9e2b23d12",
+			"keccak256": "0xe86c5c13cdaac66251e756155b86764d2cbd934e1476f002aabbd71542dcca3b",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://94592e5dc049004a76d6023455e647198c07b2e0f513d14ecede3c1bfde2d560",
-				"dweb:/ipfs/QmdvTVzEkFG4BhbED4R6AEuFTH9LDzVGFP8414zK4SrvL4"
+				"bzz-raw://fe60ccdd99a4e6c26b2d27d455b2f623f3fcefb2c016c6cbdebe67f68e8e7c6f",
+				"dweb:/ipfs/QmebqUGq6VT4FAg4y78TDp28KGysonibUarW3YKh1pcKGK"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
