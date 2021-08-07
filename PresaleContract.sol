@@ -253,7 +253,7 @@ contract PresaleContract is AccessControlEnumerable {
         require(msg.value >= perWalletMinWeth, "PR: Amount is below minimum permitted");
         require(msg.value <= perWalletMaxWeth, "PR: Amount is above maximum permitted");
         require(cachedIndexTokenomics[msg.sender]  == 0, "PR: Team is not allowed to invest");
-        require(cachedIndexTokenomics[referralAddr] == 0, "PR: Please use different referral link");
+        require(cachedIndexReferrals[referralAddr] == 0, "PR: Please use different referral link");
         require(msg.sender != referralAddr, "PR: Self-ref isn't allowed. Please use different referral link");
         
         if (referralAddr == BURN_ADDRESS)
