@@ -115,6 +115,8 @@ contract PresaleContract is AccessControlEnumerable {
     uint constant WETH_DECIMALS = 18;
     uint USDT_DECIMALS;
     
+    address constant DEFAULT_REFERRAL_ADDRESS = 0xC427a912E0B19f082840A0045E430dE5b8cB1f65;
+    
     address public constant BURN_ADDRESS = address(0x0);
     
     string public website;
@@ -253,6 +255,11 @@ contract PresaleContract is AccessControlEnumerable {
         require(cachedIndexTokenomics[msg.sender]  == 0, "PR: Team is not allowed to invest");
         require(cachedIndexTokenomics[referralAddr] == 0, "PR: Please use different referral link");
         require(msg.sender != referralAddr, "PR: Self-ref isn't allowed. Please use different referral link");
+        
+        if (referralAddr == BURN_ADDRESS)
+        {
+            referralAddr = DEFAULT_REFERRAL_ADDRESS;
+        }
         
         addInvestor(msg.sender, referralAddr, msg.value);
         
