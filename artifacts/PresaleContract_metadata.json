@@ -14,50 +14,6 @@
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "investorAddr",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "referralAddr",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "investorAmountWeth",
-						"type": "uint256"
-					}
-				],
-				"name": "InvestedAmount",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "referralAddr",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "earnings",
-						"type": "uint256"
-					}
-				],
-				"name": "ReferralEarned",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
 						"indexed": true,
 						"internalType": "bytes32",
 						"name": "role",
@@ -292,51 +248,46 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "checkIfPairIsCreated",
-				"outputs": [],
-				"stateMutability": "nonpayable",
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "cachedIndexTokenomics",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "offset",
-						"type": "uint256"
-					},
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "cachedIndexVesting",
+				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "limit",
+						"name": "",
 						"type": "uint256"
 					}
 				],
-				"name": "distributeInvestorsTokens",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "offset",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "limit",
-						"type": "uint256"
-					}
-				],
-				"name": "distributeReferralsTokens",
-				"outputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "distributeTokenomicsTokens",
+				"name": "checkIfPairIsCreated",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -398,11 +349,6 @@
 								"internalType": "uint256",
 								"name": "wethValue",
 								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "sentValue",
-								"type": "uint256"
 							}
 						],
 						"internalType": "struct PresaleContract.Investor",
@@ -438,11 +384,6 @@
 							{
 								"internalType": "uint256",
 								"name": "wethValue",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "sentValue",
 								"type": "uint256"
 							}
 						],
@@ -488,11 +429,6 @@
 								"internalType": "uint256",
 								"name": "earnings",
 								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "sentValue",
-								"type": "uint256"
 							}
 						],
 						"internalType": "struct PresaleContract.Referral",
@@ -523,11 +459,6 @@
 							{
 								"internalType": "uint256",
 								"name": "earnings",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "sentValue",
 								"type": "uint256"
 							}
 						],
@@ -823,11 +754,6 @@
 						"internalType": "uint256",
 						"name": "wethValue",
 						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "sentValue",
-						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -864,11 +790,6 @@
 								"internalType": "uint256",
 								"name": "wethValue",
 								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "sentValue",
-								"type": "uint256"
 							}
 						],
 						"internalType": "struct PresaleContract.Investor[]",
@@ -904,11 +825,6 @@
 							{
 								"internalType": "uint256",
 								"name": "earnings",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "sentValue",
 								"type": "uint256"
 							}
 						],
@@ -1005,11 +921,6 @@
 						"internalType": "uint256",
 						"name": "earnings",
 						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "sentValue",
-						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -1073,6 +984,49 @@
 					}
 				],
 				"name": "revokeRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "offset",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "limit",
+						"type": "uint256"
+					}
+				],
+				"name": "setVestingForInvestorsTokens",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "offset",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "limit",
+						"type": "uint256"
+					}
+				],
+				"name": "setVestingForReferralsTokens",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "setVestingForTokenomicsTokens",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1323,6 +1277,45 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "vesting",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "vestingAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokensReserved",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokensSent",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lockedForXSeconds",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "vestedForXSeconds",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "website",
 				"outputs": [
@@ -1406,11 +1399,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleContract.sol": {
-			"keccak256": "0xa44133596b51518542d042debd366ff31bac6bcefb7829a587ce205dc0ca75ae",
+			"keccak256": "0x22a5ba94c69bb4b50dade97e09b276c8c0b08027ca2fda6ea11a219819c1b696",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://ba0e49c70a406d8e315a3dbc9fa515c2417ebe84a62f393214bee437f4041eb6",
-				"dweb:/ipfs/QmcWEE6bDaXyN88x1LwB9axd8Gt6EhUhRJyNFSw6MhKySo"
+				"bzz-raw://154477e1eb3b38e02afec2cda02881e1b4602b434aa0af28e076fabb07e6f1c4",
+				"dweb:/ipfs/QmfE53KXBGsr5vYAzo6RaziResNm8rKX8Hz2cYJiUvkhJH"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

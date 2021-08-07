@@ -35,14 +35,12 @@ contract PresaleContract is AccessControlEnumerable {
         address referralAddr;
         
         uint wethValue;
-        uint sentValue;
     }
     
     struct Referral {
         address referralAddr;
         
         uint earnings;
-        uint sentValue;
     }
     
     struct Tokenomics {
@@ -53,16 +51,37 @@ contract PresaleContract is AccessControlEnumerable {
         uint tokenomicsVestedForXSeconds;
     }
     
+    struct Vesting {
+        address vestingAddr;
+        uint tokensReserved;
+        uint tokensSent;
+        uint lockedForXSeconds;
+        uint vestedForXSeconds;
+    }
     
-    enum States { AcceptingPayments, ReachedGoal, PreparedAddLiqudity, CreatedPair, AddedLiquidity, DistributedTokenomicsTokens, DistributedInvestorsTokens, DistributedReferralsTokens }
+    
+    enum States { 
+        AcceptingPayments, 
+        ReachedGoal, 
+        PreparedAddLiqudity, 
+        CreatedPair, 
+        AddedLiquidity, 
+        SetVestingForTokenomicsTokens, 
+        SetVestingForInvestorsTokens, 
+        SetVestingForReferralsTokens
+    }
     States public state;
     
     mapping(address => uint) public cachedIndexInvestors;
     Investor[] public investors;
     
+    mapping(address => uint) public cachedIndexVesting;
+    Vesting[] public vesting;
+    
     mapping(address => uint) public cachedIndexReferrals;
     Referral[] public referrals;
     
+    mapping(address => uint) public cachedIndexTokenomics;
     Tokenomics[] public tokenomics;
     
     uint public refPercent = 5e4; // 5%
@@ -108,9 +127,6 @@ contract PresaleContract is AccessControlEnumerable {
     uint public referralsLockedFor;
     uint public referralsVestedFor;
     
-    
-    event InvestedAmount(address investorAddr, address referralAddr, uint investorAmountWeth);
-    event ReferralEarned(address referralAddr, uint earnings);
     event StateChanged(States newState);
     
     /* Referral wallet for tests: 0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6 */
@@ -128,34 +144,27 @@ contract PresaleContract is AccessControlEnumerable {
         referralsLockedFor = 1 days;
         referralsVestedFor = 7 days;
         
-        tokenomics.push(
-            Tokenomics(
-                0x1111BEe701Ef814A2B6A3EDD4B1652cB9cc5aA6f,
-                "Development",
-                15e4,
-                1 minutes,
-                10 minutes
-            )  
+        addTokenomics(
+            0x1111BEe701Ef814A2B6A3EDD4B1652cB9cc5aA6f,
+            "Development",
+            15e4,
+            1 minutes,
+            10 minutes
         );
-        tokenomics.push(
-            Tokenomics(
-                0x2222bEE701Ef814a2B6a3edD4B1652cB9Cc5Aa6F,
-                "Marketing",
-                10e4,
-                2 minutes,
-                20 minutes
-            )  
+        addTokenomics(
+            0x2222bEE701Ef814a2B6a3edD4B1652cB9Cc5Aa6F,
+            "Marketing",
+            10e4,
+            2 minutes,
+            20 minutes
         );
-        tokenomics.push(
-            Tokenomics(
-                0x2222bEE701Ef814a2B6a3edD4B1652cB9Cc5Aa6F,
-                "Advisors",
-                5e4,
-                3 minutes,
-                30 minutes
-            )  
+        addTokenomics(
+            0x3333BeE701EF814A2b6a3edD4B1652cb9Cc5AA6F,
+            "Advisors",
+            5e4,
+            3 minutes,
+            30 minutes
         );
-        
         
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
@@ -182,7 +191,7 @@ contract PresaleContract is AccessControlEnumerable {
             USDT_DECIMALS = 6;
             TEAM_FINANCE_ADDRESS = BURN_ADDRESS;
             
-            tokenAddress = 0x24b398e20e2a2AB0e090dD1E3Fa27248896EC2fb; // TODO: set token address for debug
+            tokenAddress = 0x94fFFf5EAe20544c00D4709918Ae07D2FB672a52; // TODO: set token address for debug
         } else if (block.chainid == ETH_ROPSTEN_CHAIN_ID)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
@@ -209,7 +218,7 @@ contract PresaleContract is AccessControlEnumerable {
         {
             totalTeamPercent += tokenomics[i].tokenomicsPercentage;
         }
-        return (PERCENT_DENORM - totalTeamPercent)*(2*PERCENT_DENORM - refPercent) / (4 * PERCENT_DENORM);
+        return (PERCENT_DENORM*(PERCENT_DENORM - totalTeamPercent)) / (2*PERCENT_DENORM + refPercent);
     }
     
     function getTotalInvestmentsStatistics()
@@ -241,6 +250,9 @@ contract PresaleContract is AccessControlEnumerable {
         require(totalInvestedWeth <= maxWethCap, "PR: Max cap reached!");
         require(msg.value >= perWalletMinWeth, "PR: Amount is below minimum permitted");
         require(msg.value <= perWalletMaxWeth, "PR: Amount is above maximum permitted");
+        require(cachedIndexTokenomics[msg.sender]  == 0, "PR: Team is not allowed to invest");
+        require(cachedIndexTokenomics[referralAddr] == 0, "PR: Please use different referral link");
+        require(msg.sender != referralAddr, "PR: Self-ref isn't allowed. Please use different referral link");
         
         addInvestor(msg.sender, referralAddr, msg.value);
         
@@ -259,8 +271,7 @@ contract PresaleContract is AccessControlEnumerable {
                 Investor(
                     investorAddr, 
                     referralAddr, 
-                    wethValue,
-                    0
+                    wethValue
                 )
             );
             cachedIndexInvestors[investorAddr] = investors.length;
@@ -272,7 +283,10 @@ contract PresaleContract is AccessControlEnumerable {
             investors[cachedIndexInvestors[investorAddr] - 1].wethValue = updatedWethValue;
         }
         totalInvestedWeth += wethValue;
-        emit InvestedAmount(investorAddr, referralAddr, wethValue);
+        
+        createVestingIfDoesNotExist(
+              investorAddr
+        );
     }
 
     function addReferral(address referralAddr, uint earnings)
@@ -283,8 +297,7 @@ contract PresaleContract is AccessControlEnumerable {
             referrals.push(
                 Referral(
                     referralAddr, 
-                    earnings,
-                    0
+                    earnings
                 )
             );
             cachedIndexReferrals[referralAddr] = referrals.length;
@@ -292,13 +305,68 @@ contract PresaleContract is AccessControlEnumerable {
         {
             referrals[cachedIndexReferrals[referralAddr] - 1].earnings += earnings;
         }
-        emit ReferralEarned(referralAddr, earnings);
+        
+        createVestingIfDoesNotExist(
+              referralAddr
+        );
+    }
+    
+    function addTokenomics(
+        address tokenomicsAddr,
+        string memory tokenomicsName,
+        uint tokenomicsPercentage,
+        uint tokenomicsLockedForXSeconds,
+        uint tokenomicsVestedForXSeconds
+    )
+        internal
+    {
+        if (cachedIndexTokenomics[tokenomicsAddr] == 0)
+        {
+            tokenomics.push(
+                Tokenomics(
+                    tokenomicsAddr,
+                    tokenomicsName,
+                    tokenomicsPercentage,
+                    tokenomicsLockedForXSeconds,
+                    tokenomicsVestedForXSeconds
+                )
+            );
+            cachedIndexTokenomics[tokenomicsAddr] = referrals.length;
+        } else
+        {
+            tokenomics[cachedIndexTokenomics[tokenomicsAddr] - 1].tokenomicsName = tokenomicsName;
+            tokenomics[cachedIndexTokenomics[tokenomicsAddr] - 1].tokenomicsPercentage = tokenomicsPercentage;
+            tokenomics[cachedIndexTokenomics[tokenomicsAddr] - 1].tokenomicsLockedForXSeconds = tokenomicsLockedForXSeconds;
+            tokenomics[cachedIndexTokenomics[tokenomicsAddr] - 1].tokenomicsVestedForXSeconds = tokenomicsVestedForXSeconds;
+        }
+    }
+
+    function createVestingIfDoesNotExist(
+        address vestingAddr
+    )
+        internal
+    {
+        if (cachedIndexVesting[vestingAddr] == 0)
+        {
+            vesting.push(
+                Vesting(
+                    vestingAddr,
+                    1,
+                    1,
+                    1,
+                    1
+                )
+            );
+            cachedIndexVesting[vestingAddr] = vesting.length;
+        }
     }
 
     function updateTokenomics(Tokenomics[] calldata _tokenomics)
         public
         onlyRole(ROLE_ADMIN)
     {
+        // TODO: only during investment state
+        
         delete tokenomics;
         for(uint i; i<_tokenomics.length; i++)
         {
@@ -392,13 +460,13 @@ contract PresaleContract is AccessControlEnumerable {
     {
         addLiquidityOnUniswapV2();
         
-        distributeTokenomicsTokens();
+        setVestingForTokenomicsTokens();
         
         limit = limit == 0? investors.length: limit;
-        distributeInvestorsTokens(0, limit);
+        setVestingForInvestorsTokens(0, limit);
         
         limit = limit == 0? investors.length: limit;
-        distributeReferralsTokens(0, limit);
+        setVestingForReferralsTokens(0, limit);
     }
     
     function markGoalAsReached()
@@ -482,84 +550,75 @@ contract PresaleContract is AccessControlEnumerable {
                         block.timestamp + uniswapLiquidityLockedFor
                     );
         }
+        
+        IDefiFactoryToken(tokenAddress).mintHumanAddress(address(this), totalTokenSupply - amountOfTokensForUniswap);
     
         changeState(States.AddedLiquidity);
     }
 
-    function distributeTokenomicsTokens()
+    function setVestingForTokenomicsTokens()
         public
         onlyRole(ROLE_ADMIN)
     {
         require(state == States.AddedLiquidity, "PR: Tokenomics tokens have already been distributed!");
         
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(tokenAddress);
         for(uint i = 0; i < tokenomics.length; i++)
-        {  
-            iDefiFactoryToken.mintHumanAddress(
-                tokenomics[i].tokenomicsAddr, 
-                (tokenomics[i].tokenomicsPercentage * totalTokenSupply) / 
-                    (PERCENT_DENORM)
+        {
+            vesting.push(
+                Vesting(
+                    tokenomics[i].tokenomicsAddr,
+                    (totalTokenSupply * tokenomics[i].tokenomicsPercentage ) / PERCENT_DENORM,
+                    0,
+                    block.timestamp + tokenomics[i].tokenomicsLockedForXSeconds,
+                    block.timestamp + tokenomics[i].tokenomicsVestedForXSeconds
+                )
             );
         }
         
-        changeState(States.DistributedTokenomicsTokens);
+        changeState(States.SetVestingForTokenomicsTokens);
     }
 
-    function distributeInvestorsTokens(uint offset, uint limit)
+    function setVestingForInvestorsTokens(uint offset, uint limit)
         public
         onlyRole(ROLE_ADMIN)
     {
-        require(state == States.DistributedTokenomicsTokens, "PR: Investors tokens have already been distributed!");
+        require(state == States.SetVestingForTokenomicsTokens, "PR: Investors tokens have already been distributed!");
         
-        uint leftAmount;
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(tokenAddress);
         Investor[] memory investorsList = listInvestors(offset, limit);
         for(uint i = 0; i < investorsList.length; i++)
         {
-            leftAmount = 
-                (investorsList[i].wethValue * amountOfTokensForInvestors) / 
-                    (totalInvestedWeth);
-                
-            if (leftAmount > investorsList[i].sentValue)
-            {
-                iDefiFactoryToken.mintHumanAddress(
-                    investorsList[i].investorAddr, 
-                    leftAmount
-                );
-                investorsList[i].sentValue += leftAmount;
-            }
+            vesting[cachedIndexVesting[investorsList[i].investorAddr] - 1] = Vesting(
+                investorsList[i].investorAddr,
+                (amountOfTokensForInvestors * investorsList[i].wethValue ) / totalInvestedWeth,
+                0,
+                block.timestamp + presaleLockedFor,
+                block.timestamp + presaleVestedFor
+            );
         }
         
-        changeState(States.DistributedInvestorsTokens);
+        changeState(States.SetVestingForInvestorsTokens);
     }
     
     
-    function distributeReferralsTokens(uint offset, uint limit)
+    function setVestingForReferralsTokens(uint offset, uint limit)
         public
         onlyRole(ROLE_ADMIN)
     {
-        require(state == States.DistributedInvestorsTokens, "PR: Referrals tokens have already been distributed!");
+        require(state == States.SetVestingForInvestorsTokens, "PR: Referrals tokens have already been distributed!");
         
-        uint leftAmount;
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(tokenAddress);
         Referral[] memory referralsList = listReferrals(offset, limit);
         for(uint i = 0; i < referralsList.length; i++)
         {
-            leftAmount = 
-                (referralsList[i].earnings * amountOfTokensForInvestors) / 
-                    (totalInvestedWeth);
-                
-            if (leftAmount > referralsList[i].sentValue)
-            {
-                iDefiFactoryToken.mintHumanAddress(
-                    referralsList[i].referralAddr, 
-                    leftAmount
-                );
-                referralsList[i].sentValue += leftAmount;
-            }
+            vesting[cachedIndexVesting[referralsList[i].referralAddr] - 1] = Vesting(
+                referralsList[i].referralAddr,
+                (referralsList[i].earnings * amountOfTokensForInvestors) / totalInvestedWeth,
+                0,
+                block.timestamp + referralsLockedFor,
+                block.timestamp + referralsVestedFor
+            );
         }
         
-        changeState(States.DistributedReferralsTokens);
+        changeState(States.SetVestingForReferralsTokens);
     }
     
     
