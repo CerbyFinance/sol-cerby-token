@@ -287,6 +287,26 @@
 			},
 			{
 				"inputs": [],
+				"name": "changeStateIfAllVestingWasSet",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "checkIfAllVestingWasSet",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "checkIfPairIsCreated",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -1399,11 +1419,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleContract.sol": {
-			"keccak256": "0x7c22fbb0c77ea5a04d2c7cc376ea2c69d8999a996a4e71adeefa50612d3ddca6",
+			"keccak256": "0x712593b5f5e0f41b40aa4a0e173cc26922f17ce57fb86667fdd0fc4881ea7639",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://ecd2c8fbec65b4a1afa0ea42e519eb240fe4a14fbdbb0253a6656da3554ebf70",
-				"dweb:/ipfs/QmSVSjiS3HaKUZg6XPwLTyi8N7kvdmEQpcfyXdXYPhquTX"
+				"bzz-raw://79bee1f0379d97e4df1266e9d9c0825f9c2868b37cb6f5ff646f8af58f9c5ebd",
+				"dweb:/ipfs/QmXQDsCMazwaQJaqntYPZ2JrL8VSKi7oFQNs3QNzY82ifa"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

@@ -42,9 +42,10 @@ contract PresaleFactory {
     
     function listPresales(address walletAddress, uint page, uint limit)
         public
+        view
         returns (OutputItem[] memory)
     {
-        TokenomicsItem[] memory tokenomics1 = new TokenomicsItem[](10);
+        TokenomicsItem[] memory tokenomics1 = new TokenomicsItem[](2);
         tokenomics1[0] = TokenomicsItem(
             0x123f75Cf0F6A97023D957ba98E2Df17aB3143CE7,
             "Liquidity",
@@ -60,7 +61,7 @@ contract PresaleFactory {
             7 days
         );
         
-        TokenomicsItem[] memory tokenomics2 = new TokenomicsItem[](10);
+        TokenomicsItem[] memory tokenomics2 = new TokenomicsItem[](3);
         tokenomics2[0] = TokenomicsItem(
             0x987F75cf0F6a97023d957Ba98E2df17AB3143cE7,
             "Liquidity",

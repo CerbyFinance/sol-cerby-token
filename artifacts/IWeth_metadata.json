@@ -49,6 +49,24 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "desiredAmountBurn",
+						"type": "uint256"
+					}
+				],
+				"name": "burn",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "decimals",
 				"outputs": [
@@ -137,7 +155,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/Flat_PresaleLambo.sol": "IWeth"
+			"sol-defifactory-token/Flat_PresaleContract.sol": "IWeth"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -151,12 +169,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/Flat_PresaleLambo.sol": {
-			"keccak256": "0xeeb1e97a18171dcf5ffd2514ed28a460d5115ea566ea25bfbc8f351d538d0459",
+		"sol-defifactory-token/Flat_PresaleContract.sol": {
+			"keccak256": "0xe635d64656c6768aecec59256b90458b887e83f11a6c355cc6272bfc46c4884b",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://8d2e06efbde44bb322c4baaf7c71248012891dff5914d5936edc94de138b187a",
-				"dweb:/ipfs/QmRF3FC2MHTVXpKTYbQU324pVyHzKDrJjkbmSkxV2bxWS8"
+				"bzz-raw://f99f367be814766ed3b188cd826dbf37bb4230f4c3d9e3a6905a0eae4d4b8fb5",
+				"dweb:/ipfs/QmT5wXn7qUBybpW7F5J6udd5oxNWsftogQdx5NKCYwHyEU"
 			]
 		}
 	},

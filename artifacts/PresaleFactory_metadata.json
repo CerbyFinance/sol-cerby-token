@@ -154,7 +154,7 @@
 						"type": "tuple[]"
 					}
 				],
-				"stateMutability": "nonpayable",
+				"stateMutability": "view",
 				"type": "function"
 			}
 		],
@@ -186,11 +186,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleFactory.sol": {
-			"keccak256": "0xd053a348643d44ad58a2fb532ac9f50a885bcef850f7f8998439e05556a85461",
+			"keccak256": "0x73f8a4d8c4e31457317254c6efa88afa1430ae837c3d725a48955e66c4fcc452",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://072a8ad201b1ed2b0c66695cd4ee96acfef20d5be839448d6e6e8829dc83689e",
-				"dweb:/ipfs/QmV8EXhdMzYsWLzS75mLxLSSZs12g1ze29fZXHmJ7Vyfjv"
+				"bzz-raw://7e8447758299780300f805c7cce9f07466f175cdf251efe3a919e9ec15334de8",
+				"dweb:/ipfs/QmNvZT2spCVwga5YuSBaJ914dt1zHSxox7JYDjoJmdw2dX"
 			]
 		}
 	},
