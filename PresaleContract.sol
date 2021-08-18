@@ -258,10 +258,10 @@ contract PresaleContract is AccessControlEnumerable {
         return availableByFormula - vest.tokensSent;
     }
     
-    function claimVesting(address scrapeAddr)
+    function claimVesting()
         public
     {
-        Vesting memory vest = vesting[cachedIndexVesting[scrapeAddr] - 1];
+        Vesting memory vest = vesting[cachedIndexVesting[msg.sender] - 1];
         require(
             block.timestamp >= vest.lockedUntilTimestamp,
             "PR: Locked period is not over yet"
@@ -271,14 +271,14 @@ contract PresaleContract is AccessControlEnumerable {
             "PR: You have already received 100% tokens"
         );
         
-        uint availableTokens = getAvailableVestingTokens(scrapeAddr);
+        uint availableTokens = getAvailableVestingTokens(msg.sender);
         require(
             availableTokens > 0,
             "PR: There are 0 tokens available to claim right now"
         );
         
-        vesting[cachedIndexVesting[scrapeAddr] - 1].tokensSent += availableTokens;
-        IDefiFactoryToken(tokenAddress).mintHumanAddress(scrapeAddr, availableTokens);
+        vesting[cachedIndexVesting[msg.sender] - 1].tokensSent += availableTokens;
+        IDefiFactoryToken(tokenAddress).mintHumanAddress(msg.sender, availableTokens);
     }
     
     function invest(address referralAddr)

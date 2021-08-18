@@ -313,13 +313,7 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "scrapeAddr",
-						"type": "address"
-					}
-				],
+				"inputs": [],
 				"name": "claimVesting",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -1451,11 +1445,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleContract.sol": {
-			"keccak256": "0x80c910c41cf3c7cfee5255c83550aa7d7125ba9df1bf0ca6b21e0cb79698496a",
+			"keccak256": "0x1f84b1f15b270ee9da8846f8de6b6f6dd3de22fc1f171410fbc5ea0cd4b00c77",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://fc4899e5a0eab0baec21cdd9bd0b8a075336a3881bdabc744a5d142300781262",
-				"dweb:/ipfs/QmcPmMEWVoyhXXRrfE3KZJjHrq7hVPxypfNQVMh5GoKHg4"
+				"bzz-raw://19edfa1d0488b264c117f792efc58cfb27fb718132d693ad5084bf22da947705",
+				"dweb:/ipfs/QmeidUQdxqoK52T8mvAgP8zQsH3i67VLsycTQTdhnDRBXY"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
