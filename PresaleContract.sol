@@ -235,7 +235,8 @@ contract PresaleContract is AccessControlEnumerable {
     {
         Vesting memory vest = vesting[cachedIndexVesting[addr] - 1];
         if  (
-                block.timestamp <= vest.lockedUntilTimestamp
+                block.timestamp <= vest.lockedUntilTimestamp ||
+                vest.lockedUntilTimestamp > vest.vestedUntilTimestamp
             )
         {
             return 0;
