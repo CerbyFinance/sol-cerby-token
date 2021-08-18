@@ -315,6 +315,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "scrapeAddr",
+						"type": "address"
+					}
+				],
+				"name": "claimVesting",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "offset",
 						"type": "uint256"
@@ -333,6 +346,25 @@
 			{
 				"inputs": [],
 				"name": "fixedPriceInUsd",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getAvailableVestingTokens",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -1323,12 +1355,12 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "lockedForXSeconds",
+						"name": "lockedUntilTimestamp",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "vestedForXSeconds",
+						"name": "vestedUntilTimestamp",
 						"type": "uint256"
 					}
 				],
@@ -1419,11 +1451,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleContract.sol": {
-			"keccak256": "0x712593b5f5e0f41b40aa4a0e173cc26922f17ce57fb86667fdd0fc4881ea7639",
+			"keccak256": "0x80c910c41cf3c7cfee5255c83550aa7d7125ba9df1bf0ca6b21e0cb79698496a",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://79bee1f0379d97e4df1266e9d9c0825f9c2868b37cb6f5ff646f8af58f9c5ebd",
-				"dweb:/ipfs/QmXQDsCMazwaQJaqntYPZ2JrL8VSKi7oFQNs3QNzY82ifa"
+				"bzz-raw://fc4899e5a0eab0baec21cdd9bd0b8a075336a3881bdabc744a5d142300781262",
+				"dweb:/ipfs/QmcPmMEWVoyhXXRrfE3KZJjHrq7hVPxypfNQVMh5GoKHg4"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

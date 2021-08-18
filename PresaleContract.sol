@@ -10,22 +10,6 @@ import "./interfaces/IUniswapV2Router.sol";
 import "./interfaces/IWeth.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 
-/*
-TODO: Plan on presale contract
-+ rename all Lambo references
-+ rename all Deft references
-+ add referrals tracking to enumerable set
-+ get referral earnings function
-+ add referral program
-+ add invest function
-+ output total investment stats
-+ output per investor stats
-+ output limits, caps
-+ distribute referral tokens
-+ debug contract
-- add custom tokenomics
-- add token vesting schedule
-*/
 
 
 contract PresaleContract is AccessControlEnumerable {
@@ -55,8 +39,8 @@ contract PresaleContract is AccessControlEnumerable {
         address vestingAddr;
         uint tokensReserved;
         uint tokensSent;
-        uint lockedForXSeconds;
-        uint vestedForXSeconds;
+        uint lockedUntilTimestamp;
+        uint vestedUntilTimestamp;
     }
     
     
@@ -141,10 +125,10 @@ contract PresaleContract is AccessControlEnumerable {
         telegram = "https://t.me/LamboTokenOwners";
         
         uniswapLiquidityLockedFor = 36500 days;
-        presaleLockedFor = 1 days;
-        presaleVestedFor = 7 days;
-        referralsLockedFor = 1 days;
-        referralsVestedFor = 7 days;
+        presaleLockedFor = 0;
+        presaleVestedFor = 1 minutes;
+        referralsLockedFor = 30 seconds;
+        referralsVestedFor = 2 minutes;
         
         addTokenomics(
             0x1111BEe701Ef814A2B6A3EDD4B1652cB9cc5aA6f,
@@ -244,6 +228,59 @@ contract PresaleContract is AccessControlEnumerable {
         );
     }
     
+    function getAvailableVestingTokens(address addr)
+        public
+        view
+        returns(uint)
+    {
+        Vesting memory vest = vesting[cachedIndexVesting[addr] - 1];
+        if  (
+                block.timestamp <= vest.lockedUntilTimestamp
+            )
+        {
+            return 0;
+        }
+        
+        if  (
+                block.timestamp >= vest.vestedUntilTimestamp
+            )
+        {
+            return vest.tokensReserved - vest.tokensSent;
+        }
+    
+        
+        uint availableByFormula = 
+            (vest.tokensReserved * (block.timestamp - vest.lockedUntilTimestamp)) / (vest.vestedUntilTimestamp - vest.lockedUntilTimestamp);
+        if (availableByFormula <= vest.tokensSent)
+        {
+            return 0;
+        }
+        return availableByFormula - vest.tokensSent;
+    }
+    
+    function claimVesting(address scrapeAddr)
+        public
+    {
+        Vesting memory vest = vesting[cachedIndexVesting[scrapeAddr] - 1];
+        require(
+            block.timestamp >= vest.lockedUntilTimestamp,
+            "PR: Locked period is not over yet"
+        );
+        require(
+            vest.tokensSent < vest.tokensReserved,
+            "PR: You have already received 100% tokens"
+        );
+        
+        uint availableTokens = getAvailableVestingTokens(scrapeAddr);
+        require(
+            availableTokens > 0,
+            "PR: There are 0 tokens available to claim right now"
+        );
+        
+        vesting[cachedIndexVesting[scrapeAddr] - 1].tokensSent += availableTokens;
+        IDefiFactoryToken(tokenAddress).mintHumanAddress(scrapeAddr, availableTokens);
+    }
+    
     function invest(address referralAddr)
         external
         payable
@@ -267,6 +304,8 @@ contract PresaleContract is AccessControlEnumerable {
             referralAddr, 
             (msg.value * refPercent) / PERCENT_DENORM
         );
+        
+        // TODO: check for hard cap and mark goal as reached
     }
 
     function addInvestor(address investorAddr, address referralAddr, uint wethValue)
@@ -577,7 +616,7 @@ contract PresaleContract is AccessControlEnumerable {
                     (totalTokenSupply * tokenomics[i].tokenomicsPercentage ) / PERCENT_DENORM,
                     0,
                     block.timestamp + tokenomics[i].tokenomicsLockedForXSeconds,
-                    block.timestamp + tokenomics[i].tokenomicsVestedForXSeconds
+                    block.timestamp + tokenomics[i].tokenomicsLockedForXSeconds + tokenomics[i].tokenomicsVestedForXSeconds
                 )
             );
         }
@@ -599,7 +638,7 @@ contract PresaleContract is AccessControlEnumerable {
                     (amountOfTokensForInvestors * investorsList[i].wethValue ) / totalInvestedWeth,
                     0,
                     block.timestamp + presaleLockedFor,
-                    block.timestamp + presaleVestedFor
+                    block.timestamp + presaleLockedFor + presaleVestedFor
                 );
             }
         }
@@ -621,7 +660,7 @@ contract PresaleContract is AccessControlEnumerable {
                     (referralsList[i].earnings * amountOfTokensForInvestors) / totalInvestedWeth,
                     0,
                     block.timestamp + referralsLockedFor,
-                    block.timestamp + referralsVestedFor
+                    block.timestamp + referralsLockedFor + referralsVestedFor
                 );
             }
         }
