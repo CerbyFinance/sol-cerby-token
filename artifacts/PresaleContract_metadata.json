@@ -113,6 +113,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "DEFT_TOKEN_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "ROLE_ADMIN",
 				"outputs": [
 					{
@@ -320,6 +333,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "deftAndTokenPairContract",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -339,7 +365,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "fixedPriceInUsd",
+				"name": "fixedPriceInDeft",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -1251,20 +1277,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "updateFixedPriceInUsd",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_value",
-						"type": "uint256"
-					}
-				],
-				"name": "updateRefPercent",
+				"name": "updateFixedPriceInDeft",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1278,46 +1291,6 @@
 					}
 				],
 				"name": "updateTokenContract",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "tokenomicsAddr",
-								"type": "address"
-							},
-							{
-								"internalType": "string",
-								"name": "tokenomicsName",
-								"type": "string"
-							},
-							{
-								"internalType": "uint256",
-								"name": "tokenomicsPercentage",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "tokenomicsLockedForXSeconds",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "tokenomicsVestedForXSeconds",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct PresaleContract.Tokenomics[]",
-						"name": "_tokenomics",
-						"type": "tuple[]"
-					}
-				],
-				"name": "updateTokenomics",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1344,7 +1317,7 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "tokensSent",
+						"name": "tokensClaimed",
 						"type": "uint256"
 					},
 					{
@@ -1369,19 +1342,6 @@
 						"internalType": "string",
 						"name": "",
 						"type": "string"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "wethAndTokenPairContract",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -1445,11 +1405,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleContract.sol": {
-			"keccak256": "0x29758bcef05d708e1ed922ef37ac77da65b0227947d812213d46e9723498bece",
+			"keccak256": "0x87c857aafd5b4371118ec4ba305546b5869079413ad85967b440360e64886072",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://0d033b97eac8600652ea8d048cb5727097b28e047a0105836280ceaed3aa5127",
-				"dweb:/ipfs/Qmf3CatoSoEtAYNCrh9MXrRyrwfftcaXt2jhh7Jw1w9wJs"
+				"bzz-raw://78465eb632f5e5c3e932dd1c51560fed5137db18f6f38b4f6a8ac83e984bf315",
+				"dweb:/ipfs/QmfGMunTth1A5i5ZznwNSUtKRgubUwdR6psumTWaGYnQgG"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

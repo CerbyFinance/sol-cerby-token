@@ -110,6 +110,38 @@
 								"components": [
 									{
 										"internalType": "address",
+										"name": "vestingAddr",
+										"type": "address"
+									},
+									{
+										"internalType": "uint256",
+										"name": "tokensReserved",
+										"type": "uint256"
+									},
+									{
+										"internalType": "uint256",
+										"name": "tokensClaimed",
+										"type": "uint256"
+									},
+									{
+										"internalType": "uint256",
+										"name": "lockedUntilTimestamp",
+										"type": "uint256"
+									},
+									{
+										"internalType": "uint256",
+										"name": "vestedUntilTimestamp",
+										"type": "uint256"
+									}
+								],
+								"internalType": "struct PresaleFactory.VestingItem",
+								"name": "vestingInfo",
+								"type": "tuple"
+							},
+							{
+								"components": [
+									{
+										"internalType": "address",
 										"name": "tokenomicsAddr",
 										"type": "address"
 									},
@@ -186,11 +218,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleFactory.sol": {
-			"keccak256": "0x73f8a4d8c4e31457317254c6efa88afa1430ae837c3d725a48955e66c4fcc452",
+			"keccak256": "0x598f5dbe6d07e74b9e7498acddccd1a5e8dc4c83dde3fa368cbb8b7cad40f6bb",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://7e8447758299780300f805c7cce9f07466f175cdf251efe3a919e9ec15334de8",
-				"dweb:/ipfs/QmNvZT2spCVwga5YuSBaJ914dt1zHSxox7JYDjoJmdw2dX"
+				"bzz-raw://c83d4c9e7d3c4d7e83acc5401946a95c7c010d9872bfcdfb850ec2c5a9cfb207",
+				"dweb:/ipfs/QmUpHpqNRofwi5Qt4755MbYLQiVMRDAxj4gYVA7tT7txkp"
 			]
 		}
 	},

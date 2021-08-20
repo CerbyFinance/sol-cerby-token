@@ -31,9 +31,18 @@ contract PresaleFactory {
         uint tokenomicsVestedForXSeconds;
     }
     
+    struct VestingItem {
+        address vestingAddr;
+        uint tokensReserved;
+        uint tokensClaimed;
+        uint lockedUntilTimestamp;
+        uint vestedUntilTimestamp;
+    }
+    
     struct OutputItem {
         PresaleListItem presaleItem;
         WalletInfoItem walletInfo;
+        VestingItem vestingInfo;
         TokenomicsItem[] tokenomics;
         uint listingPrice;
         uint createdAt;
@@ -87,7 +96,7 @@ contract PresaleFactory {
         OutputItem[] memory output = new OutputItem[](2);
         output[0] = OutputItem(
             PresaleListItem(
-               0x123f75Cf0F6A97023D957ba98E2Df17aB3143CE7,
+               0x132209d0F93eBFF185990D768126D32621F40c43,
                "Lambo presale",
                200e18,
                200e18,
@@ -103,13 +112,20 @@ contract PresaleFactory {
                 1e18,
                 200e18
             ),
-           tokenomics1,
-           123e13,
-           block.timestamp
+            VestingItem(
+                walletAddress,
+                125e18,
+                25e18,
+                block.timestamp + 1 days,
+                block.timestamp + 1 days + 365 days
+            ),
+            tokenomics1,
+            123e13,
+            block.timestamp
         );
         output[1] = OutputItem(
             PresaleListItem(
-               0x222f75Cf0F6A97023d957BA98E2df17ab3143cE7,
+               0x132209d0F93eBFF185990D768126D32621F40c43,
                "Deft presale",
                12e18,
                20e18,
@@ -125,9 +141,16 @@ contract PresaleFactory {
                 1e17,
                 10e18
             ),
-           tokenomics2,
-           987e17,
-           block.timestamp
+            VestingItem(
+                walletAddress,
+                125e18,
+                25e18,
+                block.timestamp + 48 days,
+                block.timestamp + 48 days + 365 days
+            ),
+            tokenomics2,
+            987e17,
+            block.timestamp
         );
         
         return output;

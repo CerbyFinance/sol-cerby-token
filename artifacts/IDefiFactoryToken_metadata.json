@@ -292,11 +292,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/Flat_PresaleContract.sol": {
-			"keccak256": "0xe635d64656c6768aecec59256b90458b887e83f11a6c355cc6272bfc46c4884b",
+			"keccak256": "0xf5dc1b984b88f396f5c687a21370f6840ed701555efcc8cd9d4cb260434dfccc",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://f99f367be814766ed3b188cd826dbf37bb4230f4c3d9e3a6905a0eae4d4b8fb5",
-				"dweb:/ipfs/QmT5wXn7qUBybpW7F5J6udd5oxNWsftogQdx5NKCYwHyEU"
+				"bzz-raw://03ff0df1428192c215baeac8fa1a12162052d1f9e14b9b4759876743dd6ff077",
+				"dweb:/ipfs/QmWGCCLd5HjZbNS111YCW3F1WJ8gVGj4aP6CyHknXjXMpv"
 			]
 		}
 	},

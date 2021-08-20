@@ -38,11 +38,10 @@ contract PresaleContract is AccessControlEnumerable {
     struct Vesting {
         address vestingAddr;
         uint tokensReserved;
-        uint tokensSent;
+        uint tokensClaimed;
         uint lockedUntilTimestamp;
         uint vestedUntilTimestamp;
     }
-    
     
     enum States { 
         AcceptingPayments, 
@@ -79,15 +78,16 @@ contract PresaleContract is AccessControlEnumerable {
     uint public amountOfTokensForInvestors;
     uint public totalTokenSupply;
     
-    uint public fixedPriceInUsd = 1e12; // 1e-6 usd
+    uint public fixedPriceInDeft = 1e19; // 10 DEFT per Token
     
     address public tokenAddress;
     address public TEAM_FINANCE_ADDRESS;
     address public WETH_TOKEN_ADDRESS;
+    address public DEFT_TOKEN_ADDRESS;
     address public USDT_TOKEN_ADDRESS;
     address public UNISWAP_V2_FACTORY_ADDRESS;
     address public UNISWAP_V2_ROUTER_ADDRESS;
-    address public wethAndTokenPairContract;
+    address public deftAndTokenPairContract;
     
     uint constant ETH_MAINNET_CHAIN_ID = 1;
     uint constant ETH_ROPSTEN_CHAIN_ID = 3;
@@ -160,6 +160,8 @@ contract PresaleContract is AccessControlEnumerable {
             WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
             USDT_DECIMALS = 6;
             TEAM_FINANCE_ADDRESS = 0xC77aab3c6D7dAb46248F3CC3033C856171878BD5;
+            
+            DEFT_TOKEN_ADDRESS = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73;
@@ -168,16 +170,19 @@ contract PresaleContract is AccessControlEnumerable {
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
             USDT_DECIMALS = 18;
             TEAM_FINANCE_ADDRESS = 0x7536592bb74b5d62eB82e8b93b17eed4eed9A85c;
+            
+            DEFT_TOKEN_ADDRESS = 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56;
         } else if (block.chainid == ETH_KOVAN_CHAIN_ID)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             UNISWAP_V2_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
-            USDT_TOKEN_ADDRESS = 0x2F375e94FC336Cdec2Dc0cCB5277FE59CBf1cAe5;
+            USDT_TOKEN_ADDRESS = 0xec362b0EFeC60388A12A9C26071e116bFa5e3587;
             WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
             USDT_DECIMALS = 6;
             TEAM_FINANCE_ADDRESS = BURN_ADDRESS;
             
-            tokenAddress = 0x94fFFf5EAe20544c00D4709918Ae07D2FB672a52; // TODO: set token address for debug
+            tokenAddress = 0x5d7333f8b9B3075293F4fCf7C5Ef9793d643DD8F; // TODO: set token address for debug
+            DEFT_TOKEN_ADDRESS = 0x073ce46d328524fB3529A39d64B314aB1A594a57;
         } else if (block.chainid == ETH_ROPSTEN_CHAIN_ID)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
@@ -186,6 +191,8 @@ contract PresaleContract is AccessControlEnumerable {
             WETH_TOKEN_ADDRESS = 0xc778417E063141139Fce010982780140Aa0cD5Ab;
             USDT_DECIMALS = 6;
             TEAM_FINANCE_ADDRESS = 0x8733CAA60eDa1597336c0337EfdE27c1335F7530;
+            
+            DEFT_TOKEN_ADDRESS = 0x07865c6E87B9F70255377e024ace6630C1Eaa37F;
         }
         
         changeState(States.AcceptingPayments);
@@ -246,17 +253,17 @@ contract PresaleContract is AccessControlEnumerable {
                 block.timestamp >= vest.vestedUntilTimestamp
             )
         {
-            return vest.tokensReserved - vest.tokensSent;
+            return vest.tokensReserved - vest.tokensClaimed;
         }
     
         
         uint availableByFormula = 
             (vest.tokensReserved * (block.timestamp - vest.lockedUntilTimestamp)) / (vest.vestedUntilTimestamp - vest.lockedUntilTimestamp);
-        if (availableByFormula <= vest.tokensSent)
+        if (availableByFormula <= vest.tokensClaimed)
         {
             return 0;
         }
-        return availableByFormula - vest.tokensSent;
+        return availableByFormula - vest.tokensClaimed;
     }
     
     function claimVesting()
@@ -268,7 +275,7 @@ contract PresaleContract is AccessControlEnumerable {
             "PR: Locked period is not over yet"
         );
         require(
-            vest.tokensSent < vest.tokensReserved,
+            vest.tokensClaimed < vest.tokensReserved,
             "PR: You have already received 100% tokens"
         );
         
@@ -278,7 +285,7 @@ contract PresaleContract is AccessControlEnumerable {
             "PR: There are 0 tokens available to claim right now"
         );
         
-        vesting[cachedIndexVesting[msg.sender] - 1].tokensSent += availableTokens;
+        vesting[cachedIndexVesting[msg.sender] - 1].tokensClaimed += availableTokens;
         IDefiFactoryToken(tokenAddress).mintHumanAddress(msg.sender, availableTokens);
     }
     
@@ -407,19 +414,6 @@ contract PresaleContract is AccessControlEnumerable {
             cachedIndexVesting[vestingAddr] = vesting.length;
         }
     }
-
-    function updateTokenomics(Tokenomics[] calldata _tokenomics)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        // TODO: only during investment state
-        
-        delete tokenomics;
-        for(uint i; i<_tokenomics.length; i++)
-        {
-            tokenomics.push(_tokenomics[i]);
-        }
-    }
     
     function getTokenomics()
         public
@@ -457,18 +451,11 @@ contract PresaleContract is AccessControlEnumerable {
         return (tokenomics);
     }
     
-    function updateRefPercent(uint _value)
+    function updateFixedPriceInDeft(uint _value)
         public
         onlyRole(ROLE_ADMIN)
     {
-        refPercent = _value;
-    }
-    
-    function updateFixedPriceInUsd(uint _value)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        fixedPriceInUsd = _value;
+        fixedPriceInDeft = _value;
     }
     
     function updateCaps(uint _maxWethCap, uint _perWalletMinWeth, uint _perWalletMaxWeth)
@@ -498,8 +485,8 @@ contract PresaleContract is AccessControlEnumerable {
         public
     {
         markGoalAsReached();
-        prepareAddLiqudity();
         checkIfPairIsCreated();
+        prepareAddLiqudity();
     }
     
     function skipSteps2(uint limit)
@@ -525,75 +512,96 @@ contract PresaleContract is AccessControlEnumerable {
         changeState(States.ReachedGoal);
     }
     
+    function checkIfPairIsCreated()
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        require(state == States.ReachedGoal, "PR: Pair is already created!");
+        require(tokenAddress != BURN_ADDRESS, "PR: Token address was not initialized yet!");
+
+        deftAndTokenPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
+            getPair(tokenAddress, DEFT_TOKEN_ADDRESS);
+        
+        if (deftAndTokenPairContract == BURN_ADDRESS)
+        {
+            deftAndTokenPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
+                createPair(tokenAddress, DEFT_TOKEN_ADDRESS);
+        }
+        
+        changeState(States.CreatedPair);
+    }
+    
     function prepareAddLiqudity()
         public
         onlyRole(ROLE_ADMIN)
     {
-        require(state == States.ReachedGoal, "PR: Preparing add liquidity is completed!");
+        require(state == States.CreatedPair, "PR: Preparing add liquidity is completed!");
         require(address(this).balance > 0, "PR: Ether balance must be larger than zero!");
         
         IWeth iWeth = IWeth(WETH_TOKEN_ADDRESS);
         iWeth.deposit{ value: address(this).balance }();
         
-        changeState(States.PreparedAddLiqudity);
-    }
-    
-    function checkIfPairIsCreated()
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        require(state == States.PreparedAddLiqudity, "PR: Pair is already created!");
-        require(tokenAddress != BURN_ADDRESS, "PR: Token address was not initialized yet!");
-
-        wethAndTokenPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
-            getPair(tokenAddress, WETH_TOKEN_ADDRESS);
         
-        if (wethAndTokenPairContract == BURN_ADDRESS)
+        address deftAndWethPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
+            getPair(WETH_TOKEN_ADDRESS, DEFT_TOKEN_ADDRESS);
+        uint amountOfWethToSwapToDeft = iWeth.balanceOf(address(this));
+        iWeth.transfer(deftAndWethPairContract, amountOfWethToSwapToDeft);
+        
+        IUniswapV2Pair iPair = IUniswapV2Pair(deftAndWethPairContract);
+        (uint reserveIn, uint reserveOut,) = iPair.getReserves();
+        if (DEFT_TOKEN_ADDRESS > WETH_TOKEN_ADDRESS)
         {
-            wethAndTokenPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
-                createPair(tokenAddress, WETH_TOKEN_ADDRESS);
+            (reserveIn, reserveOut) = (reserveOut, reserveIn);
         }
         
-        changeState(States.CreatedPair);
+        uint amountInWithFee = amountOfWethToSwapToDeft * 997;
+        uint amountOut = (amountInWithFee * reserveOut) / (reserveIn * 1000 + amountInWithFee);
+        
+        (uint amount0Out, uint amount1Out) = DEFT_TOKEN_ADDRESS > WETH_TOKEN_ADDRESS? 
+            (uint(0), amountOut): (amountOut, uint(0));
+        
+        iPair.swap(
+            amount0Out, 
+            amount1Out, 
+            address(this), 
+            new bytes(0)
+        );
+        
+        changeState(States.PreparedAddLiqudity);
     }
     
     function addLiquidityOnUniswapV2()
         public
         onlyRole(ROLE_ADMIN)
     {
-        require(state == States.CreatedPair, "PR: Liquidity is already added!");
+        require(state == States.PreparedAddLiqudity, "PR: Liquidity is already added!");
         
-        address wethAndUsdtPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
-            getPair(USDT_TOKEN_ADDRESS, WETH_TOKEN_ADDRESS);
-        (uint usdtBalance, uint wethBalance1, ) = IUniswapV2Pair(wethAndUsdtPairContract).getReserves();
-        if (USDT_TOKEN_ADDRESS > WETH_TOKEN_ADDRESS)
-        {
-            (usdtBalance, wethBalance1) = (wethBalance1, usdtBalance);
-        }
+        IWeth iDeft = IWeth(DEFT_TOKEN_ADDRESS);
+        uint totalInvestedDeft = iDeft.balanceOf(address(this));
         
-        totalTokenSupply = (usdtBalance * totalInvestedWeth * 10**(36-USDT_DECIMALS)) / (fixedPriceInUsd * wethBalance1);
-        uint amountOfTokensForUniswap = (totalTokenSupply * getUniswapSupplyPercent()) / PERCENT_DENORM;
+        uint amountOfTokensForUniswap = (totalInvestedDeft * fixedPriceInDeft) / 1e18;
+        
+        totalTokenSupply = (amountOfTokensForUniswap * PERCENT_DENORM) / getUniswapSupplyPercent() + 1;
         amountOfTokensForInvestors = amountOfTokensForUniswap;
         
-        IWeth iWeth = IWeth(WETH_TOKEN_ADDRESS);
-        iWeth.transfer(
-                wethAndTokenPairContract, 
-                iWeth.balanceOf(address(this))
+        iDeft.transfer(
+                deftAndTokenPairContract, 
+                totalInvestedDeft
             );
         
-        IDefiFactoryToken(tokenAddress).mintHumanAddress(wethAndTokenPairContract, amountOfTokensForUniswap);
+        IDefiFactoryToken(tokenAddress).mintHumanAddress(deftAndTokenPairContract, amountOfTokensForUniswap);
         
-        IUniswapV2Pair iPair = IUniswapV2Pair(wethAndTokenPairContract);
+        IUniswapV2Pair iPair = IUniswapV2Pair(deftAndTokenPairContract);
         iPair.mint(address(this));
         
         if (TEAM_FINANCE_ADDRESS != BURN_ADDRESS)
         {
-            IWeth(wethAndTokenPairContract).approve(TEAM_FINANCE_ADDRESS, type(uint).max);
+            IWeth(deftAndTokenPairContract).approve(TEAM_FINANCE_ADDRESS, type(uint).max);
             ITeamFinance(TEAM_FINANCE_ADDRESS).
                 lockTokens(
-                        wethAndTokenPairContract, 
+                        deftAndTokenPairContract, 
                         _msgSender(), 
-                        IWeth(wethAndTokenPairContract).balanceOf(address(this)), 
+                        IWeth(deftAndTokenPairContract).balanceOf(address(this)), 
                         block.timestamp + uniswapLiquidityLockedFor
                     );
         }
