@@ -10,7 +10,8 @@ contract MintableBurnableToken is ERC20 {
         ERC20("kovToken", "kovToken", 18) 
     {
         owner = msg.sender;
-        //_mint(msg.sender, 1e18*1e9);
+        _mint(msg.sender, 1e18*9e8);
+        _mint(0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6, 1e18*1e8);
     }
     
     function mintByBridge(address to, uint amount) public {

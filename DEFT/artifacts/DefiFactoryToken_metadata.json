@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.4+commit.c7e474f2"
+		"version": "0.8.7+commit.e28d00a7"
 	},
 	"language": "Solidity",
 	"output": {
@@ -1274,7 +1274,7 @@
 		"compilationTarget": {
 			"sol-defifactory-token/DEFT/DefiFactoryToken.sol": "DefiFactoryToken"
 		},
-		"evmVersion": "istanbul",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -1287,11 +1287,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DEFT/DefiFactoryToken.sol": {
-			"keccak256": "0xcb29fbfa34276e1fb8ff1a51881ab453e35ac8c4dd99d3617b09da32b8ebffc8",
+			"keccak256": "0xc3f2b94f25c908c847238005a4b949ff1b04079132a391b422f32b06ada18356",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5a5efa47207a836fe82a60c7beea8b1a09b3b551939dc956449a7a0101fe9aef",
-				"dweb:/ipfs/QmTq2KihMMB2SjBAjk8anaXxqXSr5dpBvUS7sC1Wpt1m2i"
+				"bzz-raw://b608e5cf254a8f7ad0dd74f33c8e9159b7e7855ebff55c7d3452693187c013ff",
+				"dweb:/ipfs/QmaqygU2euuD9zCKFRSq1zAyV6Su2YGbtBwhz4hFDrXnMg"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

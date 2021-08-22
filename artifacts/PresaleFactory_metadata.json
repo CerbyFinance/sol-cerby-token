@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.4+commit.c7e474f2"
+		"version": "0.8.7+commit.e28d00a7"
 	},
 	"language": "Solidity",
 	"output": {
@@ -205,7 +205,7 @@
 		"compilationTarget": {
 			"sol-defifactory-token/PresaleFactory.sol": "PresaleFactory"
 		},
-		"evmVersion": "istanbul",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -218,11 +218,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleFactory.sol": {
-			"keccak256": "0x598f5dbe6d07e74b9e7498acddccd1a5e8dc4c83dde3fa368cbb8b7cad40f6bb",
+			"keccak256": "0xb5abde16e1218cd44efeb5a24e0266125a413983a46aafd9fc82d7ac50976015",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://c83d4c9e7d3c4d7e83acc5401946a95c7c010d9872bfcdfb850ec2c5a9cfb207",
-				"dweb:/ipfs/QmUpHpqNRofwi5Qt4755MbYLQiVMRDAxj4gYVA7tT7txkp"
+				"bzz-raw://1b0aafa4b50967e9db9de622981cb2fcdb46df7e215b150988548183d151c0a4",
+				"dweb:/ipfs/QmVVFGtgRx927rfc9tZtHTnW5hqVWybipkW3JAbqKkAMrD"
 			]
 		}
 	},

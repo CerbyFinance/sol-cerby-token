@@ -80,7 +80,7 @@ const start = async () => {
     fs.readFileSync(path.resolve("../DEFT/artifacts/DefiFactoryToken.json"), "utf8"),
   );
   const noBotsTechJson = JSON.parse(
-    fs.readFileSync(path.resolve("../artifacts/NoBotsTechV2.json"), "utf8"),
+    fs.readFileSync(path.resolve("../artifacts/NoBotsTechV3.json"), "utf8"),
   );
   const liquidityHelperJson = JSON.parse(
     fs.readFileSync(path.resolve("../artifacts/LiquidityHelper.json"), "utf8"),
@@ -111,12 +111,12 @@ const start = async () => {
   console.log("DefiFactoryToken: ", defiFactoryTokenContract.options.address);
 
   const noBotsTechContract = await deployContract(
-    "NoBotsTechV2",
+    "NoBotsTechV3",
     noBotsTechJson,
     account,
     0,
   );
-  console.log("NoBotsTechV2: ", noBotsTechContract.options.address);
+  console.log("NoBotsTechV3: ", noBotsTechContract.options.address);
 
   const liquidityHelperContract = await deployContract(
     "LiquidityHelper",

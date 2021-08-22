@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.4+commit.c7e474f2"
+		"version": "0.8.7+commit.e28d00a7"
 	},
 	"language": "Solidity",
 	"output": {
@@ -402,7 +402,7 @@
 		"compilationTarget": {
 			"sol-defifactory-token/MintableBurnableToken.sol": "MintableBurnableToken"
 		},
-		"evmVersion": "istanbul",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -415,11 +415,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/MintableBurnableToken.sol": {
-			"keccak256": "0x1729df1407492d803b47ef5acdac548e14011476d17214b464d27fa82da1f859",
+			"keccak256": "0xa9da351ad47f43fa506831142e8a15992f882f5f961f4ab36e85aa18eda2ce64",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://a5f56dc793dcc0f37d90aa8dcfcb861a8ced58601ce19d5089082c947dd8fffd",
-				"dweb:/ipfs/QmWjnU2j6NYTs5WqannVv9a7gd4JCwanHUhB8Yd6KSAerK"
+				"bzz-raw://4b87942c088ccdb4943c97b2d9b4494d52d8d44e299c19efed7bfa23c1213875",
+				"dweb:/ipfs/QmRQXLYnSHuwHjegCLT9w7rQbAnjiQ5sa6DZVUETYjgNT1"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20.sol": {
