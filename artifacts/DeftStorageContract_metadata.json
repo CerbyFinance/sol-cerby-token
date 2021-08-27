@@ -99,6 +99,32 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "ROLE_EDITOR",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "ROLE_VIEWER",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address[]",
@@ -535,19 +561,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "isZeroGweiAllowed",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -722,19 +735,6 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bool",
-						"name": "_isZeroGweiAllowed",
-						"type": "bool"
-					}
-				],
-				"name": "updateIsZeroGweiAllowed",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -790,11 +790,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0xe86c5c13cdaac66251e756155b86764d2cbd934e1476f002aabbd71542dcca3b",
+			"keccak256": "0x4265a9a8ce35770663a91a92e91dee80347934985ae44f4b52f4b974c5cfca74",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://fe60ccdd99a4e6c26b2d27d455b2f623f3fcefb2c016c6cbdebe67f68e8e7c6f",
-				"dweb:/ipfs/QmebqUGq6VT4FAg4y78TDp28KGysonibUarW3YKh1pcKGK"
+				"bzz-raw://065d17981bdffbfb59cf4277e9b16e4fc6df0eb3bfbacd96959ea2f40a0131d0",
+				"dweb:/ipfs/QmUKjo8KnZ12St1DvoGuEdB9MAt7Z783GsP5Gknx5tz8DD"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {

@@ -327,6 +327,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "checkIfTokenomicsIsValid",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "claimVesting",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -1285,6 +1298,54 @@
 			{
 				"inputs": [
 					{
+						"internalType": "string",
+						"name": "_presaleName",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_website",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_telegram",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_uniswapLiquidityLockedFor",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_presaleLockedFor",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_presaleVestedFor",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_referralsLockedFor",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_referralsVestedFor",
+						"type": "uint256"
+					}
+				],
+				"name": "updateSettings",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "_value",
 						"type": "address"
@@ -1405,11 +1466,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleContract.sol": {
-			"keccak256": "0xa7a92fc10333c986e52e6683b2d663dc3b4349a620b4e4059951396c679ef99d",
+			"keccak256": "0xc8226fa70b6c97ddd8c7f2314d6b9858a24879eaa9c9467f289d28c95800461a",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://002c1460d071bad3bb0ca6f48a7a1f453cb6ba322e9903d1953bcc3e6100e234",
-				"dweb:/ipfs/QmfMQmeRnsGpkuHxYhZ7EfnKmLzFxynkY2TgALKrkQpm6n"
+				"bzz-raw://d124d1eeacfdbdb1ca75cbacbe0ee4f93e7a4c90dc1bce50037f15b94bef8301",
+				"dweb:/ipfs/QmPq5JZW8SksU85KqovLih3oijvHXChHYGxDc4ieqPcSDv"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

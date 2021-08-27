@@ -8,6 +8,9 @@ import "./interfaces/IWeth.sol";
 
 contract DeftStorageContract is AccessControlEnumerable {
     
+    bytes32 public constant ROLE_VIEWER = keccak256("ROLE_VIEWER");
+    bytes32 public constant ROLE_EDITOR = keccak256("ROLE_EDITOR");
+    
     mapping(address => bool) private isBotStorage;
     mapping(address => bool) private isHumanStorage;
     mapping(address => bool) private isExcludedFromBalanceStorage;
@@ -17,7 +20,6 @@ contract DeftStorageContract is AccessControlEnumerable {
     mapping(address => mapping(address => uint)) private buyTimestampStorage;
     
     mapping(address => bool) private isDeftEthPair;
-    bool public isZeroGweiAllowed = false;
     
     address constant EIGHT_LEADING_ZEROS_TO_COMPARE = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
     
@@ -34,24 +36,22 @@ contract DeftStorageContract is AccessControlEnumerable {
     constructor() {
         
         _setupRole(ROLE_ADMIN, _msgSender());
-        _setupRole(ROLE_ADMIN, 0x77EC5AF6FE83f90daAEb6F8bd2BE3d744813251b); // NoBotsTechV2 Deft
-        _setupRole(ROLE_ADMIN, 0xbd02ce650e59C0e9436D9FC7D5ADDaf7EdBdB841); // NoBotsTechV2 Lambo
+        _setupRole(ROLE_EDITOR, _msgSender());
+        _setupRole(ROLE_VIEWER, _msgSender());
+        _setupRole(ROLE_EDITOR, 0x77EC5AF6FE83f90daAEb6F8bd2BE3d744813251b); // NoBotsTechV2 Deft
+        markAddressAsHuman(0x77EC5AF6FE83f90daAEb6F8bd2BE3d744813251b, true); // NoBotsTechV2 Deft
         
-        _setupRole(ROLE_ADMIN, 0x01e835C7A3f7B51243229DfB85A1EA08a5512499); // Cross Chain Bridge Contract
-        _setupRole(ROLE_ADMIN, 0xdEF78a28c78A461598d948bc0c689ce88f812AD8); // Cross Chain Bridge Wallet for blacklisting bots
+        _setupRole(ROLE_EDITOR, 0x01e835C7A3f7B51243229DfB85A1EA08a5512499); // Cross Chain Bridge Contract
         _setupRole(ROLE_ADMIN, 0x9980a0447456b5cdce209D7dC94820FF15600022); // Deft blacklister
         
-        markAddressAsExcludedFromBalance(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // Team Vesting Tokens
         markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // Top1 listing bot
         
         markAddressAsHuman(0xdEF78a28c78A461598d948bc0c689ce88f812AD8, true); // Cross Chain Bridge Wallet
-        markAddressAsHuman(0x905DeBc561EaE6D18098c0BEF4056773257a4982, true); // NoBotsTechV2
         markAddressAsHuman(0xDef1C0ded9bec7F1a1670819833240f027b25EfF, true); // 0x: Exchange Proxy
         markAddressAsHuman(0x11111112542D85B3EF69AE05771c2dCCff4fAa26, true); // 1inch Router
         markAddressAsHuman(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // TeamVestingContract
         markAddressAsHuman(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, true); // DefiFactoryContract
         
-        isZeroGweiAllowed = true;
             
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
@@ -68,17 +68,29 @@ contract DeftStorageContract is AccessControlEnumerable {
         }
     }
     
-    function updateIsZeroGweiAllowed(bool _isZeroGweiAllowed)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        isZeroGweiAllowed = _isZeroGweiAllowed;
+    modifier onlyRoleEditor {
+        require(
+            hasRole(ROLE_ADMIN, _msgSender()) ||
+            hasRole(ROLE_EDITOR, _msgSender()),
+            "DS: !editor and !viewer"
+        );
+        _;
+    }
+    
+    modifier onlyRoleViewer {
+        require(
+            hasRole(ROLE_ADMIN, _msgSender()) ||
+            hasRole(ROLE_EDITOR, _msgSender()) ||
+            hasRole(ROLE_VIEWER, _msgSender()),
+            "DS: !editor and !viewer"
+        );
+        _;
     }
     
     function getCooldownPeriodSell(address tokenAddr)
         external
         view
-        onlyRole(ROLE_ADMIN)
+        onlyRoleViewer
         returns (uint)
     {
         return cooldownPeriodSellStorage[tokenAddr] > 0? cooldownPeriodSellStorage[tokenAddr]: DEFAULT_SELL_COOLDOWN;
@@ -86,7 +98,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     
     function updateCooldownPeriodSell(address tokenAddr, uint newCooldownSellPeriod)
         public
-        onlyRole(ROLE_ADMIN)
+        onlyRoleEditor
     {
         cooldownPeriodSellStorage[tokenAddr] = newCooldownSellPeriod;
     }
@@ -94,7 +106,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     function getBuyTimestamp(address tokenAddr, address addr)
         external
         view
-        onlyRole(ROLE_ADMIN)
+        onlyRoleViewer
         returns (uint)
     {
         return buyTimestampStorage[tokenAddr][addr];
@@ -102,7 +114,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     
     function updateBuyTimestamp(address tokenAddr, address addr, uint newBuyTimestamp)
         public
-        onlyRole(ROLE_ADMIN)
+        onlyRoleEditor
     {
         if (
                 !isContract(addr) &&
@@ -116,7 +128,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     function isBotAddress(address addr)
         external
         view
-        onlyRole(ROLE_ADMIN)
+        onlyRoleViewer
         returns (bool)
     {
         return 
@@ -127,7 +139,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     
     function isHumanTransaction(address tokenAddr, address sender, address recipient)
         external
-        onlyRole(ROLE_ADMIN)
+        onlyRoleEditor
         returns (IsHumanInfo memory output)
     {
         output.isSell = isDeftEthPair[recipient];
@@ -135,14 +147,12 @@ contract DeftStorageContract is AccessControlEnumerable {
         
         uint defaultSellCooldown = cooldownPeriodSellStorage[tokenAddr] > 0? cooldownPeriodSellStorage[tokenAddr]: DEFAULT_SELL_COOLDOWN;
         bool isBot;
-        bool isZeroGweiAllowedForBots = !(isZeroGweiAllowed && tx.gasprice == 0);
             
         if (
                 output.isBuy && 
                 tx.origin != recipient && // isOriginBot
                 !isContract(recipient) && 
                 !isHumanStorage[recipient] &&
-                isZeroGweiAllowedForBots &&
                 IWeth(tokenAddr).balanceOf(recipient) <= 1
             )
         {
@@ -156,8 +166,7 @@ contract DeftStorageContract is AccessControlEnumerable {
                         hasLeadingZerosInAddress(sender) ||
                         buyTimestampStorage[tokenAddr][sender] + defaultSellCooldown >= block.timestamp
                     ) && !isDeftEthPair[sender] && !isHumanStorage[sender]
-                ) &&
-                isZeroGweiAllowedForBots
+                )
             )
         {
             if (output.isSell) // 99.9% tax only on sells
@@ -195,7 +204,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     function isExcludedFromBalance(address addr)
         external
         view
-        onlyRole(ROLE_ADMIN)
+        onlyRoleViewer
         returns (bool)
     {
         return isExcludedFromBalanceStorage[addr];
@@ -204,7 +213,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     function isMarkedAsDeftEthPair(address addr)
         external
         view
-        onlyRole(ROLE_ADMIN)
+        onlyRoleViewer
         returns (bool)
     {
         return isDeftEthPair[addr];
@@ -213,7 +222,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     function isMarkedAsHumanStorage(address addr)
         external
         view
-        onlyRole(ROLE_ADMIN)
+        onlyRoleViewer
         returns (bool)
     {
         return isHumanStorage[addr];
@@ -222,7 +231,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     function isMarkedAsHumanStorageBulk(address[] memory addrs)
         external
         view
-        onlyRole(ROLE_ADMIN)
+        onlyRoleViewer
         returns (address[] memory)
     {
         for(uint i = 0; i < addrs.length; i++)
@@ -238,7 +247,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     function isMarkedAsBotStorage(address addr)
         external
         view
-        onlyRole(ROLE_ADMIN)
+        onlyRoleViewer
         returns (bool)
     {
         return isBotStorage[addr];
@@ -247,7 +256,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     function isMarkedAsBotStorageBulk(address[] memory addrs)
         external
         view
-        onlyRole(ROLE_ADMIN)
+        onlyRoleViewer
         returns (address[] memory)
     {
         for(uint i = 0; i < addrs.length; i++)

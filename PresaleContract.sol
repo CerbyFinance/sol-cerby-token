@@ -120,15 +120,16 @@ contract PresaleContract is AccessControlEnumerable {
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
         
-        presaleName = "Lambo Token Presale";
-        website = "https://lambo.defifactory.finance";
-        telegram = "https://t.me/LamboTokenOwners";
-        
-        uniswapLiquidityLockedFor = 36500 days;
-        presaleLockedFor = 0;
-        presaleVestedFor = 1 minutes;
-        referralsLockedFor = 30 seconds;
-        referralsVestedFor = 2 minutes;
+        updateSettings(
+            /*presaleName:*/ "Lambo Token Presale",
+            /*website:*/ "https://lambo.defifactory.finance",
+            /*telegram:*/ "https://t.me/LamboTokenOwners",
+            /*uniswapLiquidityLockedFor:*/ 36500 days,
+            /*presaleLockedFor:*/ 0,
+            /*presaleVestedFor:*/ 1 minutes,
+            /*referralsLockedFor:*/ 30 seconds,
+            /*referralsVestedFor:*/ 2 minutes
+        );
         
         addTokenomics(
             0x1111BEe701Ef814A2B6A3EDD4B1652cB9cc5aA6f,
@@ -151,6 +152,7 @@ contract PresaleContract is AccessControlEnumerable {
             3 minutes,
             30 minutes
         );
+        
         
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
@@ -199,6 +201,28 @@ contract PresaleContract is AccessControlEnumerable {
     }
 
     receive() external payable {
+    }
+    
+    function updateSettings(
+            string memory _presaleName, 
+            string memory _website, 
+            string memory _telegram,
+            uint _uniswapLiquidityLockedFor,
+            uint _presaleLockedFor,
+            uint _presaleVestedFor,
+            uint _referralsLockedFor,
+            uint _referralsVestedFor)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        presaleName = _presaleName;
+        website = _website;
+        telegram = _telegram;
+        uniswapLiquidityLockedFor = _uniswapLiquidityLockedFor;
+        presaleLockedFor = _presaleLockedFor;
+        presaleVestedFor = _presaleVestedFor;
+        referralsLockedFor = _referralsLockedFor;
+        referralsVestedFor = _referralsVestedFor;
     }
     
     function getUniswapSupplyPercent()
@@ -312,8 +336,6 @@ contract PresaleContract is AccessControlEnumerable {
             referralAddr, 
             (msg.value * refPercent) / PERCENT_DENORM
         );
-        
-        // TODO: check for hard cap and mark goal as reached
     }
 
     function addInvestor(address investorAddr, address referralAddr, uint wethValue)
@@ -393,6 +415,20 @@ contract PresaleContract is AccessControlEnumerable {
             tokenomics[cachedIndexTokenomics[tokenomicsAddr] - 1].tokenomicsLockedForXSeconds = tokenomicsLockedForXSeconds;
             tokenomics[cachedIndexTokenomics[tokenomicsAddr] - 1].tokenomicsVestedForXSeconds = tokenomicsVestedForXSeconds;
         }
+    }
+    
+    function checkIfTokenomicsIsValid()
+        public
+        view
+        returns (bool)
+    {
+        uint totalPercentage;
+        for(uint i; i<tokenomics.length; i++)
+        {
+            totalPercentage += tokenomics[i].tokenomicsPercentage;
+        }
+        
+        return totalPercentage <= (PERCENT_DENORM * 30 / 100);
     }
 
     function createVestingIfDoesNotExist(
@@ -613,7 +649,6 @@ contract PresaleContract is AccessControlEnumerable {
 
     function setVestingForTokenomicsTokens()
         public
-        onlyRole(ROLE_ADMIN)
     {
         require(state == States.AddedLiquidity, "PR: Tokenomics tokens have already been distributed!");
         
@@ -633,7 +668,6 @@ contract PresaleContract is AccessControlEnumerable {
 
     function setVestingForInvestorsTokens(uint offset, uint limit)
         public
-        onlyRole(ROLE_ADMIN)
     {
         require(state == States.AddedLiquidity, "PR: Investors tokens have already been distributed!");
         
@@ -655,7 +689,6 @@ contract PresaleContract is AccessControlEnumerable {
     
     function setVestingForReferralsTokens(uint offset, uint limit)
         public
-        onlyRole(ROLE_ADMIN)
     {
         require(state == States.AddedLiquidity, "PR: Referrals tokens have already been distributed!");
         
@@ -701,7 +734,6 @@ contract PresaleContract is AccessControlEnumerable {
     
     function changeStateIfAllVestingWasSet()
         public
-        onlyRole(ROLE_ADMIN)
     {
         for(uint i = 0; i<referrals.length; i++)
         {
@@ -727,6 +759,8 @@ contract PresaleContract is AccessControlEnumerable {
         public
         onlyRole(ROLE_ADMIN)
     {
+        changeState(States.Refunded);
+        
         uint wethBalance = IWeth(WETH_TOKEN_ADDRESS).balanceOf(address(this));
         if (wethBalance > 0)
         {
@@ -740,8 +774,6 @@ contract PresaleContract is AccessControlEnumerable {
             investorsList[i].wethValue = 0;
             payable(investorsList[i].investorAddr).transfer(amountToTransfer);
         }
-        
-        changeState(States.Refunded);
     }
     
     // --------------------------------------
