@@ -30,6 +30,7 @@ struct Settings {
     uint maxWethCap;
     uint perWalletMinWeth;
     uint perWalletMaxWeth;
+    uint fixedPriceInDeft;
 }
 
 struct PresaleItem {
@@ -117,8 +118,6 @@ contract PresaleContract is Ownable {
     uint public amountOfTokensForInvestors;
     uint public totalTokenSupply;
     
-    uint fixedPriceInDeft = 1e19; // 10 DEFT per Token
-    
     /* Kovan */
     /*address constant UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
     address constant USDT_TOKEN_ADDRESS = 0xec362b0EFeC60388A12A9C26071e116bFa5e3587;
@@ -129,7 +128,6 @@ contract PresaleContract is Ownable {
     
     /* Ropsten */
     address constant UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
-    address constant UNISWAP_V2_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
     address constant USDT_TOKEN_ADDRESS = 0x07865c6E87B9F70255377e024ace6630C1Eaa37F;
     address constant WETH_TOKEN_ADDRESS = 0xc778417E063141139Fce010982780140Aa0cD5Ab;
     uint constant USDT_DECIMALS = 6;
@@ -153,9 +151,13 @@ contract PresaleContract is Ownable {
     /* Referral wallet for tests: 0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6 */
     
     constructor(
+            address owner,
             Tokenomics[] memory _tokenomics,
             Settings memory _settings) 
     {
+        _owner = owner;
+        emit OwnershipTransferred(address(0), owner);
+        
         for(uint i; i<_tokenomics.length; i++)
         {
             addTokenomics(_tokenomics[i]);
@@ -233,7 +235,7 @@ contract PresaleContract is Ownable {
             _walletInfo,
             _vesting,
             getTokenomics(),
-            fixedPriceInDeft,
+            settings.fixedPriceInDeft,
             block.timestamp // TODO: change
         );
         
@@ -580,7 +582,7 @@ contract PresaleContract is Ownable {
         IWeth iDeft = IWeth(DEFT_TOKEN_ADDRESS);
         uint totalInvestedDeft = iDeft.balanceOf(address(this));
         
-        uint amountOfTokensForUniswap = (totalInvestedDeft * fixedPriceInDeft) / 1e18;
+        uint amountOfTokensForUniswap = (totalInvestedDeft * settings.fixedPriceInDeft) / 1e18;
         
         totalTokenSupply = (amountOfTokensForUniswap * PERCENT_DENORM) / getUniswapSupplyPercent() + 1;
         amountOfTokensForInvestors = amountOfTokensForUniswap;
