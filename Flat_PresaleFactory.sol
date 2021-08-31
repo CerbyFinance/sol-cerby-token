@@ -2,12 +2,286 @@
 
 pragma solidity ^0.8.7;
 
-import "./interfaces/ITeamFinance.sol";
-import "./interfaces/IDefiFactoryToken.sol";
-import "./interfaces/IUniswapV2Factory.sol";
-import "./interfaces/IUniswapV2Pair.sol";
-import "./interfaces/IWeth.sol";
-import "./openzeppelin/access/Ownable.sol";
+
+
+
+
+
+
+
+interface ITeamFinance {
+    function lockTokens(address _tokenAddress, address _withdrawalAddress, uint256 _amount, uint256 _unlockTime) external returns (uint256 _id);
+}
+
+
+
+
+struct AccessSettings {
+        bool isMinter;
+        bool isBurner;
+        bool isTransferer;
+        bool isModerator;
+        bool isTaxer;
+        
+        address addr;
+    }
+
+interface IDefiFactoryToken {
+    function approve(
+        address _spender,
+        uint _value
+    )  external returns (
+        bool success
+    );
+    
+    function balanceOf(
+        address account
+    )
+        external
+        view
+        returns (uint);
+        
+    function chargeCustomTax(address from, uint amount)
+        external;
+        
+    function mintHumanAddress(address to, uint desiredAmountToMint) external;
+
+    function burnHumanAddress(address from, uint desiredAmountToBurn) external;
+
+    function mintByBridge(address to, uint realAmountToMint) external;
+
+    function burnByBridge(address from, uint realAmountBurn) external;
+    
+    function getUtilsContractAtPos(uint pos)
+        external
+        view
+        returns (address);
+        
+    function transferFromTeamVestingContract(address recipient, uint256 amount) external;
+    
+    function correctTransferEvents(address[] calldata addrs)
+        external;
+    
+    function publicForcedUpdateCacheMultiplier()
+        external;
+    
+    function updateUtilsContracts(AccessSettings[] calldata accessSettings)
+        external;
+    
+    function transferCustom(address sender, address recipient, uint256 amount)
+        external;
+}
+
+
+
+
+interface IUniswapV2Factory {
+    function allPairs(uint) external view returns (address pair);
+    function allPairsLength() external view returns (uint);
+  
+    function getPair(
+        address tokenA,
+        address tokenB
+    )
+        external
+        view
+        returns (address);
+        
+    function createPair(
+        address tokenA,
+        address tokenB
+    ) 
+        external
+        returns (address);
+        
+}
+
+
+
+
+
+interface IUniswapV2Pair {
+    
+    function sync()
+        external;
+        
+    function getReserves()
+        external
+        view
+        returns (uint, uint, uint32);
+        
+    function token0()
+        external
+        view
+        returns (address);
+        
+    function token1()
+        external
+        view
+        returns (address);
+        
+    function mint(address to) 
+        external
+        returns (uint);
+    
+    function burn(address to) 
+        external 
+        returns (uint amount0, uint amount1);
+    
+    function swap(
+        uint amount0Out, 
+        uint amount1Out, 
+        address to, 
+        bytes calldata data
+    ) 
+        external;
+    
+    
+    function skim(address to) 
+        external;
+}
+
+
+
+
+
+
+interface IWeth {
+
+    function balanceOf(
+        address account
+    )
+        external
+        view
+        returns (uint);
+        
+    function decimals()
+        external
+        view
+        returns (uint);
+
+    function transfer(
+        address _to,
+        uint _value
+    )  external returns (
+        bool success
+    );
+    
+    function mint(address to, uint desiredAmountToMint) 
+        external;
+    
+    function burn(address from, uint desiredAmountBurn) 
+        external;
+        
+    function deposit()
+        external
+        payable;
+
+    function withdraw(
+        uint wad
+    ) external;
+
+    function approve(
+        address _spender,
+        uint _value
+    )  external returns (
+        bool success
+    );
+}
+
+
+
+
+
+
+
+
+
+/*
+ * @dev Provides information about the current execution context, including the
+ * sender of the transaction and its data. While these are generally available
+ * via msg.sender and msg.data, they should not be accessed in such a direct
+ * manner, since when dealing with meta-transactions the account sending and
+ * paying for execution may not be the actual sender (as far as an application
+ * is concerned).
+ *
+ * This contract is only required for intermediate, library-like contracts.
+ */
+abstract contract Context {
+    function _msgSender() internal view virtual returns (address) {
+        return msg.sender;
+    }
+
+    function _msgData() internal view virtual returns (bytes calldata) {
+        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
+        return msg.data;
+    }
+}
+
+/**
+ * @dev Contract module which provides a basic access control mechanism, where
+ * there is an account (an owner) that can be granted exclusive access to
+ * specific functions.
+ *
+ * By default, the owner account will be the one that deploys the contract. This
+ * can later be changed with {transferOwnership}.
+ *
+ * This module is used through inheritance. It will make available the modifier
+ * `onlyOwner`, which can be applied to your functions to restrict their use to
+ * the owner.
+ */
+abstract contract Ownable is Context {
+    address private _owner;
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /**
+     * @dev Initializes the contract setting the deployer as the initial owner.
+     */
+    constructor () {
+        address msgSender = _msgSender();
+        _owner = msgSender;
+        emit OwnershipTransferred(address(0), msgSender);
+    }
+
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function owner() public view virtual returns (address) {
+        return _owner;
+    }
+
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyOwner() {
+        require(owner() == _msgSender(), "Ownable: caller is not the owner");
+        _;
+    }
+
+    /**
+     * @dev Leaves the contract without owner. It will not be possible to call
+     * `onlyOwner` functions anymore. Can only be called by the current owner.
+     *
+     * NOTE: Renouncing ownership will leave the contract without an owner,
+     * thereby removing any functionality that is only available to the owner.
+     */
+    function renounceOwnership() public virtual onlyOwner {
+        emit OwnershipTransferred(_owner, address(0));
+        _owner = address(0);
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Can only be called by the current owner.
+     */
+    function transferOwnership(address newOwner) public virtual onlyOwner {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        emit OwnershipTransferred(_owner, newOwner);
+        _owner = newOwner;
+    }
+}
+
 
 struct Tokenomics {
     address tokenomicsAddr;
@@ -120,21 +394,12 @@ contract PresaleContract is Ownable {
     uint fixedPriceInDeft = 1e19; // 10 DEFT per Token
     
     /* Kovan */
-    /*address constant UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
+    address constant UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
     address constant USDT_TOKEN_ADDRESS = 0xec362b0EFeC60388A12A9C26071e116bFa5e3587;
     address constant WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
     uint constant USDT_DECIMALS = 6;
     address constant TEAM_FINANCE_ADDRESS = BURN_ADDRESS;
-    address constant DEFT_TOKEN_ADDRESS = 0x073ce46d328524fB3529A39d64B314aB1A594a57;*/
-    
-    /* Ropsten */
-    address constant UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
-    address constant UNISWAP_V2_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
-    address constant USDT_TOKEN_ADDRESS = 0x07865c6E87B9F70255377e024ace6630C1Eaa37F;
-    address constant WETH_TOKEN_ADDRESS = 0xc778417E063141139Fce010982780140Aa0cD5Ab;
-    uint constant USDT_DECIMALS = 6;
-    address constant TEAM_FINANCE_ADDRESS = 0x8733CAA60eDa1597336c0337EfdE27c1335F7530;
-    address constant DEFT_TOKEN_ADDRESS = 0x07865c6E87B9F70255377e024ace6630C1Eaa37F;
+    address constant DEFT_TOKEN_ADDRESS = 0x073ce46d328524fB3529A39d64B314aB1A594a57;
     
     address deftAndTokenPairContract;
     
@@ -806,5 +1071,53 @@ contract PresaleContract is Ownable {
         }
         
         return listOfReferrals;
+    }
+}
+
+contract PresaleFactory {
+    
+    
+    
+    PresaleContract[] public presaleContracts;
+    
+    
+    /*
+tuple(address,string,uint256,uint256,uint256)[]: 0x1111BEe701Ef814A2B6A3EDD4B1652cB9cc5aA6f,Development,150000,60,600,0x2222bEE701Ef814a2B6a3edD4B1652cB9Cc5Aa6F,Marketing,100000,120,1200,0x3333BeE701EF814A2b6a3edD4B1652cb9Cc5AA6F,Advisors,50000,180,1800
+1:
+tuple(address,string,string,string,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256): 0x5d7333f8b9B3075293F4fCf7C5Ef9793d643DD8F,Lambo Token Presale,https://lambo.defifactory.finance,https://t.me/LamboTokenOwners,3153600000,0,60,30,120,1000000000000000000000,1000000000000000,1000000000000000000*/
+    
+    function createPresale(
+            Tokenomics[] memory _tokenomics,
+            Settings memory _settings)
+        external
+        returns (address)
+    {
+        presaleContracts.push(
+            new PresaleContract(
+                _tokenomics,
+                _settings
+            )
+        );
+        
+        return (address(presaleContracts[presaleContracts.length - 1]));
+    }
+    
+    function listPresales(address walletAddress, uint page, uint limit)
+        external
+        view
+        returns (OutputItem[] memory output)
+    {
+        uint start = (page-1) * limit;
+        uint end = page * limit;
+        end = (end > presaleContracts.length)? presaleContracts.length: end;
+        uint numItems = (end > start)? end - start: 0;
+        
+        output = new OutputItem[](numItems);
+        for(uint i = start; i < end; i++)
+        {
+            output[i - start] = presaleContracts[i].getInformation(walletAddress);
+        }
+        
+        return output;
     }
 }
