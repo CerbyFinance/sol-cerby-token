@@ -7,7 +7,7 @@ contract MintableBurnableToken is ERC20 {
     
     address owner;
     constructor()
-        ERC20("ropToken", "ropToken", 18) 
+        ERC20("kovToken", "kovToken", 18) 
     {
         owner = msg.sender;
         _mint(msg.sender, 1e18*9e8);

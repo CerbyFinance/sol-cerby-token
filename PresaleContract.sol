@@ -114,6 +114,7 @@ contract PresaleContract is Ownable {
     uint constant PERCENT_DENORM = 1e6;
     
     uint totalInvestedWeth;
+    uint createdAt;
     
     uint public amountOfTokensForInvestors;
     uint public totalTokenSupply;
@@ -165,6 +166,8 @@ contract PresaleContract is Ownable {
         
         settings = _settings;
         
+        createdAt = block.timestamp;
+        
         changeState(States.AcceptingPayments);
     }
 
@@ -186,8 +189,8 @@ contract PresaleContract is Ownable {
                 wallet,
                 0,
                 0,
-                0,
-                0
+                block.timestamp,
+                block.timestamp
             );
         }
         
@@ -209,8 +212,8 @@ contract PresaleContract is Ownable {
                 wallet,
                 0,
                 0,
-                0,
-                0
+                settings.perWalletMinWeth,
+                settings.perWalletMaxWeth
             );
         }
         
@@ -236,7 +239,7 @@ contract PresaleContract is Ownable {
             _vesting,
             getTokenomics(),
             settings.fixedPriceInDeft,
-            block.timestamp // TODO: change
+            createdAt
         );
         
         return output;

@@ -1,0 +1,132 @@
+{
+	"compiler": {
+		"version": "0.8.7+commit.e28d00a7"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "stakePosition",
+						"type": "uint256"
+					}
+				],
+				"name": "endStake",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getCurrentDay",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "stakerAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "stakePosition",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "givenDay",
+						"type": "uint256"
+					}
+				],
+				"name": "getSharesCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "stakedAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lockedForXDays",
+						"type": "uint256"
+					}
+				],
+				"name": "startStake",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"sol-defifactory-token/StakingSystem.sol": "StakingSystem"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 5
+		},
+		"remappings": []
+	},
+	"sources": {
+		"sol-defifactory-token/StakingSystem.sol": {
+			"keccak256": "0x736af8996dc810fd7f93ab7f40c21b7fa9f5be73d6bf2b7af7ba3d21a44f1fb2",
+			"license": "BSD-2-Clause",
+			"urls": [
+				"bzz-raw://051ed84eccf396a25938a098864a03d445f4b6e96517440f9beb3f7c90075887",
+				"dweb:/ipfs/QmfGAFSEdz7z2WruFpa7mZfaAYYBqftkCvFfg5AoiCfEv7"
+			]
+		},
+		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
+			"keccak256": "0x5d5d5d1febdb2bc5dd3ead637f5de494dc870b67b9d5f4ceaf67e5904a2c15cc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://feb4cbcb41635d19deac5104015c71b8b3aa2a9bb8dbbb5c9b6546017c6f72b4",
+				"dweb:/ipfs/QmahjHAdoZn8pBiHgcdpyRvNPYZTGmYqNKzwrwqYJ7tX8L"
+			]
+		}
+	},
+	"version": 1
+}

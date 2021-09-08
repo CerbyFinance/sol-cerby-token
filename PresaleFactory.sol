@@ -20,9 +20,17 @@ contract PresaleFactory {
     ["0x3333BeE701EF814A2b6a3edD4B1652cb9Cc5AA6F","Advisors",50000,180,1800]
 ]
 
-Kovan: ["0x7A7492a8e888Ca3fe8e31cB2E34872FE0CE5309f","Deft2 Token Presale","https://defifactory.finance","https://t.me/DefiFactory",3153600000,0,60,30,120,"1000000000000000",1000000000000000,"1000000000000000000","1000000000000000000"]
-Ropsten: ["0xe9961895C8820A05964b8Edf21E57c671D7f3fE9","Lambo2 Token Presale","https://lambo.defifactory.finance","https://t.me/LamboTokenOwners",3153600000,0,60,30,120,"1000000000000000000000",1000000000000000,"1000000000000000000","1000000000000000000"]
+Kovan: ["0x7A7492a8e888Ca3fe8e31cB2E34872FE0CE5309f","Deft2 Token Presale","https://defifactory.finance","https://t.me/DefiFactory",3153600000,0,60,30,120,"100000000000000000",1000000000000000,"1000000000000000000","1000000000000000000"]
+Ropsten: ["0xe9961895C8820A05964b8Edf21E57c671D7f3fE9","Lambo Token Presale","https://lambo.defifactory.finance","https://t.me/LamboTokenOwners",3153600000,0,60,30,120,"1000000000000000000000",1000000000000000,"1000000000000000000","1000000000000000000"]
     */
+    
+    /* TODO: 
+        - add custom presales 
+        - max/min per wallet is zero
+        - tokenomics missing uniswap and ref
+        - 
+    */
+    
     function createPresale(
             Tokenomics[] memory _tokenomics,
             Settings memory _settings)

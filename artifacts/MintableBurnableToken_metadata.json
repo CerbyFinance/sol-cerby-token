@@ -415,11 +415,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/MintableBurnableToken.sol": {
-			"keccak256": "0x8c615f92faf8f51b9a27b19a8f5f929097afd239c23a64cd0689cbbd08131068",
+			"keccak256": "0x23b7702804c9d19f7c7c525c942d55de16d9efe48584ba66c086503e2cdfba13",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://78057d0434e56e6fa5e133612ee100d7c7d79d3b1797a1dae4218eadd1d6a5af",
-				"dweb:/ipfs/QmWMvCxbk5mzzqcdXqu5eSatoKYCzrZPpPzvWmNc6Z9AE2"
+				"bzz-raw://17884571868e3c384266246d3dca14ad8b27ba78e3324186129c6c5d34b076ae",
+				"dweb:/ipfs/QmRcRygPmvVQnk7CcTyL3Z2Md6UDJuu7B47pkRCy33exBU"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20.sol": {

@@ -355,19 +355,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleContract.sol": {
-			"keccak256": "0x753258fac31801029507e8ef7e3283b85f82d28b2f85d202245ad5973c5a36de",
+			"keccak256": "0xd4c82e11482caec1ac54d1ead0d7a53a23649cd0d3f65d1304b4f676139c847b",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://85c6194e0d384f825d2ca911fa8bd2eca1541b19a027857b6818a812f68f3661",
-				"dweb:/ipfs/QmbXgxxweRft1dy2tqRzdrNAPtFzWLrnK2yMa3CjJbtNYh"
+				"bzz-raw://6f55d33686ee3d873ae7e0679bc6928da9d0d9d5a0be6eccff383f2b22d431f6",
+				"dweb:/ipfs/QmSkwekkPYyRvDEut157fTPZ7DQFfN9Tm5AR4kC4GG3buV"
 			]
 		},
 		"sol-defifactory-token/PresaleFactory.sol": {
-			"keccak256": "0x66198ad402f807e00615b4dcd43a19d0d54e30a7e33f91b5ee2a6eef9bef79c4",
+			"keccak256": "0xf44f932ea5b7796d7eb3b93c42735e2a521b5bdd4a16fc362d23ff76dd4ef5e5",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://e0aee284a9554ce717455c92ef9b763eb57d000428a7dccf9cda7608b202b4ac",
-				"dweb:/ipfs/QmbyTy3qnDB1EYtJoPzgYUa38cm5PFNNpVsko8ZCwEdCVb"
+				"bzz-raw://ef20778423f4d8032e58736ad38e5125b2344e34360f262d30bd61ff09351eca",
+				"dweb:/ipfs/QmYPLMUvg2iJcJmj11Mx9wWDvfY1qDRbvfWU25JkXLFXyX"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
