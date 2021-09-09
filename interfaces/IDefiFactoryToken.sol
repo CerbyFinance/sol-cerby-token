@@ -26,6 +26,11 @@ interface IDefiFactoryToken {
         external
         view
         returns (uint);
+    
+    function totalSupply()
+        external
+        view
+        returns (uint);
         
     function chargeCustomTax(address from, uint amount)
         external;
