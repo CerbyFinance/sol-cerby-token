@@ -26,10 +26,15 @@ contract StakingSystem {
     mapping(address => Stake[]) public stakers;
     
     uint constant SHARE_PRICE_DENORM = 1e6;
+    uint constant END_STAKE_FROM = 60;
+    uint constant END_STAKE_TO = 360;
+    uint constant MINIMUM_STAKE_DAYS = 3;
+    uint constant MAXIMUM_STAKE_DAYS = 3650;
     
     IDefiFactoryToken mainToken = IDefiFactoryToken(0x7A7492a8e888Ca3fe8e31cB2E34872FE0CE5309f);
     
     uint launchTimestamp;
+    uint currentDay = 2; // TODO: remove on production
     constructor() 
     {
         launchTimestamp = block.timestamp - 2 minutes;
@@ -62,6 +67,8 @@ contract StakingSystem {
     function updateSnapshots(uint givenDay)
         public
     {
+        // TODO: require givenDay <= today
+        
         uint startDat = latestSealedSnapshotDay + 1;
         for (uint i = startDat; i<givenDay; i++)
         {
@@ -109,9 +116,15 @@ contract StakingSystem {
             "SS: StakedAmount exceeds balance"
         );
         require(
-            0 < lockedForXDays && lockedForXDays < 100000,
-            "SS: Wrong amount of days specified"
+            lockedForXDays >= MINIMUM_STAKE_DAYS,
+            "SS: Stake must be locked for more than 4 days"
         );
+        require(
+            lockedForXDays <= MAXIMUM_STAKE_DAYS,
+            "SS: Stake must be locked for less than 10 years (3650 days)"
+        );
+        
+        
         
         updateAllSnapshots();
         
@@ -142,7 +155,7 @@ contract StakingSystem {
             "SS: StakePosition exceeds staker length"
         );
         require(
-            stakers[msg.sender][stakePosition].endDay > 0,
+            stakers[msg.sender][stakePosition].endDay == 0,
             "SS: Stake was already ended"
         );
         
@@ -163,7 +176,7 @@ contract StakingSystem {
             payout = stake.stakedAmount - penalty;
             mainToken.burnHumanAddress(msg.sender, penalty);
             
-            snapshots[today].inflationAmount += penalty + interest;
+            snapshots[today].inflationAmount += penalty;
         } else if (interest > 0)
         {
             payout = stake.stakedAmount + interest;
@@ -171,11 +184,7 @@ contract StakingSystem {
         }
         
         uint roi = (payout * SHARE_PRICE_DENORM) / stake.stakedAmount;
-        if (roi > snapshots[today].sharePrice)
-        {
-            snapshots[today].sharePrice = roi;
-        }
-        
+        snapshots[today].sharePrice = maxOfTwoUints(roi, snapshots[today].sharePrice);
         snapshots[today].totalShares -= getSharesCount(msg.sender, stakePosition, 0);
         snapshots[today].totalStaked -= stake.stakedAmount;
     }
@@ -189,10 +198,13 @@ contract StakingSystem {
         Stake memory stake = stakers[stakerAddress][stakePosition];
         uint sharesCount = getSharesCount(stakerAddress, stakePosition, givenDay);
         
-        givenDay = 
-            givenDay > stake.startDay + stake.lockedForXDays? stake.startDay + stake.lockedForXDays: givenDay;
-        for(uint i = stake.startDay; i<givenDay; i++)
+        uint endDay = minOfTwoUints(givenDay, stake.startDay + stake.lockedForXDays);
+        if (endDay <= stake.startDay + 1) return 0;
+        
+        for(uint i = stake.startDay; i<endDay; i++)
         {
+            if (!snapshots[i].isSealed) continue;
+            
             interest += (snapshots[i].inflationAmount * sharesCount) / snapshots[i].totalShares;
         }
         
@@ -205,33 +217,41 @@ contract StakingSystem {
         returns (uint)
     {
         /*
+        0 days served => 100% principal back
         0-50% served --> 0-90% principal back
         50-100% served --> 90-100% principal back
-        100% + 14 days --> 100% principal back
-        100% + 14 days + 365 days --> 0% principal back
+        100% + 30 days --> 100% principal back
+        100% + 2*30 days + 30*10 days --> 0-100% principal back
         */
         uint penalty;
         Stake memory stake = stakers[stakerAddress][stakePosition];
         uint howManyDaysServed = givenDay - stake.startDay;
-        if (howManyDaysServed == 0)
-        {
-            penalty = 0;
-        } else if (stake.lockedForXDays / 2 < howManyDaysServed && howManyDaysServed <= stake.lockedForXDays)
-        {
-            penalty = ((howManyDaysServed - stake.lockedForXDays/2) * 10 * stake.stakedAmount * 2) / (100 * stake.lockedForXDays);
-        } else if (howManyDaysServed <= stake.lockedForXDays / 2)
-        {
-            penalty = (howManyDaysServed * 90 * stake.stakedAmount * 2) / (100 * stake.lockedForXDays);
+        if (
+                0 < howManyDaysServed &&
+                howManyDaysServed <= stake.lockedForXDays / 2
+        ) {
+            // 90-10%
+            penalty = 
+                (stake.stakedAmount * 9) / 10 - 
+                (stake.stakedAmount * 8 * (howManyDaysServed - 1)) / (5 * (stake.lockedForXDays - 2));
         } else if (
-            stake.lockedForXDays + 14 < howManyDaysServed && 
-            howManyDaysServed <= stake.lockedForXDays + 14 + 365
-        )
+                stake.lockedForXDays / 2 < howManyDaysServed &&
+                howManyDaysServed <= stake.lockedForXDays
+        ) {
+            // 10-0%
+            penalty = 
+                stake.stakedAmount / 10 - 
+                (stake.stakedAmount * (2*howManyDaysServed - stake.lockedForXDays)) / (10 * stake.lockedForXDays);
+        } else if (
+                stake.lockedForXDays + END_STAKE_FROM < howManyDaysServed &&
+                howManyDaysServed <= stake.lockedForXDays + END_STAKE_FROM + END_STAKE_TO
+        ) {
+            // 0-90%
+            penalty = 
+                (stake.stakedAmount * 9 * (howManyDaysServed - stake.lockedForXDays - END_STAKE_FROM)) / (10 * END_STAKE_TO);
+        } else if (howManyDaysServed > stake.lockedForXDays + END_STAKE_FROM + END_STAKE_TO)
         {
-            // TODO: add penalty formula
-            penalty = (howManyDaysServed - stake.lockedForXDays - 14);
-        } else if (howManyDaysServed > stake.lockedForXDays + 14 + 365)
-        {
-            penalty = stake.stakedAmount;
+            penalty = (stake.stakedAmount * 9) / 10; // 90%
         }
         
         return penalty;
@@ -258,12 +278,37 @@ contract StakingSystem {
         return sharesCount;
     }
     
+    function bumpDays(uint numDays)
+        public
+    {
+        currentDay += numDays;
+    }
+    
     function getCurrentDay()
         public
         view
         returns (uint)
     {
-        return (block.timestamp - launchTimestamp) / 60;
+        //return (block.timestamp - launchTimestamp) / 60;
+        return currentDay;
+    }
+    
+    function maxOfTwoUints(uint uint1, uint uint2)
+        private
+        pure
+        returns(uint)
+    {
+        if (uint1 > uint2) return uint1;
+        return uint2;
+    }
+    
+    function minOfTwoUints(uint uint1, uint uint2)
+        private
+        pure
+        returns(uint)
+    {
+        if (uint1 < uint2) return uint1;
+        return uint2;
     }
     
 }

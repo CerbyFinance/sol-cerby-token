@@ -14,6 +14,19 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "numDays",
+						"type": "uint256"
+					}
+				],
+				"name": "bumpDays",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "stakePosition",
 						"type": "uint256"
 					}
@@ -286,11 +299,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0x30481bd57e4f955ee61434751a825562d92f33d260395791d3c66b32fb0f3915",
+			"keccak256": "0xd40c25b242b396f10bd7db567d18aa528549f501d3b12b5f18b374f1757f79af",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://800f566d1bfd7c3044a00e491faa07fcf83409a3fe9a9d71e61ed751611ee768",
-				"dweb:/ipfs/QmT7ULLKyCrt6UeHNvDYqHpGKYfzNi15kQ3pos3jxAtX7W"
+				"bzz-raw://dafe4ae2100862e16014221a7ea97b7d94625c673b0bfb5280d55110e368b5b4",
+				"dweb:/ipfs/QmYsS5DL7CRxBrkaQsPWkZmX7qvvf5o9c5Bio9kRy9gCxT"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
