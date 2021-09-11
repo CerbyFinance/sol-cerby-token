@@ -28,8 +28,8 @@ contract StakingSystem {
     // TODO: 10days, 100 days, 1000 days snapshots
     
     uint constant SHARE_PRICE_DENORM = 1e6;
-    uint constant END_STAKE_FROM = 60;
-    uint constant END_STAKE_TO = 360;
+    uint constant END_STAKE_FROM = 30;
+    uint constant END_STAKE_TO = 365*2; // TODO: 5% per month penalty
     uint constant MINIMUM_STAKE_DAYS = 3;
     uint constant MAXIMUM_STAKE_DAYS = 3650;
     
@@ -39,7 +39,7 @@ contract StakingSystem {
     uint currentDay = 2; // TODO: remove on production
     constructor() 
     {
-        launchTimestamp = block.timestamp - 2 minutes;
+        launchTimestamp = block.timestamp - 2 minutes; // TODO: remove on production
         
         dailySnapshots[0] = DailySnapshot(
             true,
@@ -254,7 +254,8 @@ contract StakingSystem {
                 (stake.stakedAmount * 9 * (howManyDaysServed - stake.lockedForXDays - END_STAKE_FROM)) / (10 * END_STAKE_TO);
         } else if (howManyDaysServed > stake.lockedForXDays + END_STAKE_FROM + END_STAKE_TO)
         {
-            penalty = (stake.stakedAmount * 9) / 10; // 90%
+            // 90%
+            penalty = (stake.stakedAmount * 9) / 10;
         }
         
         return penalty;
