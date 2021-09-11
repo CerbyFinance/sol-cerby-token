@@ -27,6 +27,50 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "dailySnapshots",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "isSealed",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "inflationAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalSupply",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalShares",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalStaked",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "sharePrice",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "stakePosition",
 						"type": "uint256"
 					}
@@ -152,50 +196,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "snapshots",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "isSealed",
-						"type": "bool"
-					},
-					{
-						"internalType": "uint256",
-						"name": "inflationAmount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalSupply",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalShares",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalStaked",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "sharePrice",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
@@ -299,11 +299,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0xd40c25b242b396f10bd7db567d18aa528549f501d3b12b5f18b374f1757f79af",
+			"keccak256": "0xba5c70d1b19e17492945f317982e310f48cde43d5b509226f36024075bd72202",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://dafe4ae2100862e16014221a7ea97b7d94625c673b0bfb5280d55110e368b5b4",
-				"dweb:/ipfs/QmYsS5DL7CRxBrkaQsPWkZmX7qvvf5o9c5Bio9kRy9gCxT"
+				"bzz-raw://b2beaf538b86bf70ba5837f1cf6d64d2f152fab3cb26630a8fc17eec6c323aed",
+				"dweb:/ipfs/Qme7atPePFD7jLuKXtQkick5smQDEWzH15EBiytydnqGe1"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
