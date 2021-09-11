@@ -124,6 +124,102 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "latestSealedSnapshotDay",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "snapshots",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "isSealed",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "inflationAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalSupply",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalShares",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalStaked",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "sharePrice",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "stakers",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "stakedAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "startDay",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lockedForXDays",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "endDay",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -142,6 +238,13 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "updateAllSnapshots",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -149,7 +252,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "updateSnapshot",
+				"name": "updateSnapshots",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -183,11 +286,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0x4d8e74549b9697a3d23d956b51f9752cb82727c77355292fa172e847dd2dd96d",
+			"keccak256": "0x30481bd57e4f955ee61434751a825562d92f33d260395791d3c66b32fb0f3915",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://35f74b7ef09decc65d1709cd425344bcba44946695463c86fb037e5d853809a9",
-				"dweb:/ipfs/QmSAuH2ezq7DF2Ezr5iawq2HcjibVXQBBsuyh6f6DP7Y1a"
+				"bzz-raw://800f566d1bfd7c3044a00e491faa07fcf83409a3fe9a9d71e61ed751611ee768",
+				"dweb:/ipfs/QmT7ULLKyCrt6UeHNvDYqHpGKYfzNi15kQ3pos3jxAtX7W"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

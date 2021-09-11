@@ -21,8 +21,9 @@ struct Stake {
 }
 
 contract StakingSystem {
-    mapping(uint => DailySnapshot) snapshots;
-    mapping(address => Stake[]) stakers;
+    uint public latestSealedSnapshotDay;
+    mapping(uint => DailySnapshot) public snapshots;
+    mapping(address => Stake[]) public stakers;
     
     uint constant SHARE_PRICE_DENORM = 1e6;
     
@@ -31,10 +32,9 @@ contract StakingSystem {
     uint launchTimestamp;
     constructor() 
     {
-        launchTimestamp = block.timestamp;
+        launchTimestamp = block.timestamp - 2 minutes;
         
-        uint today = getCurrentDay();
-        snapshots[today] = DailySnapshot(
+        snapshots[0] = DailySnapshot(
             true,
             0,
             mainToken.totalSupply(),
@@ -43,7 +43,7 @@ contract StakingSystem {
             SHARE_PRICE_DENORM
         );
         
-        snapshots[today + 1] = DailySnapshot(
+        snapshots[1] = DailySnapshot(
             false,
             0,
             mainToken.totalSupply(),
@@ -53,36 +53,45 @@ contract StakingSystem {
         );
     }
     
-    function updateSnapshot(uint givenDay)
+    function updateAllSnapshots()
         public
     {
-        if (givenDay == 0) return;
-        
-        uint yesterday = givenDay - 1;
-        if (!snapshots[yesterday].isSealed)
+        updateSnapshots(getCurrentDay());
+    }
+    
+    function updateSnapshots(uint givenDay)
+        public
+    {
+        uint startDat = latestSealedSnapshotDay + 1;
+        for (uint i = startDat; i<givenDay; i++)
         {
+            if (snapshots[i].isSealed) continue;
+            
             uint inflationAmount = 
-                snapshots[yesterday].inflationAmount + 
-                    ((snapshots[yesterday].totalSupply + snapshots[yesterday].totalStaked) * 10) / 100;
+                snapshots[i].inflationAmount + 
+                    ((snapshots[i].totalSupply + snapshots[i].totalStaked) * 10) / 100;
                 
-            snapshots[yesterday] = DailySnapshot(
+            snapshots[i] = DailySnapshot(
                 true,
                 inflationAmount,
-                snapshots[yesterday].totalSupply,
-                snapshots[yesterday].totalShares,
-                snapshots[yesterday].totalStaked,
-                snapshots[yesterday].sharePrice
+                snapshots[i].totalSupply,
+                snapshots[i].totalShares,
+                snapshots[i].totalStaked,
+                snapshots[i].sharePrice
             );
             
-            snapshots[givenDay] = DailySnapshot(
+            snapshots[i+1] = DailySnapshot(
                 false,
                 0,
-                snapshots[yesterday].totalSupply,
-                snapshots[yesterday].totalShares,
-                snapshots[yesterday].totalStaked,
-                snapshots[yesterday].sharePrice
+                mainToken.totalSupply(),
+                snapshots[i].totalShares,
+                snapshots[i].totalStaked,
+                snapshots[i].sharePrice
             );
         }
+        
+        latestSealedSnapshotDay = 
+            givenDay > 0 && snapshots[givenDay - 1].isSealed? givenDay - 1: latestSealedSnapshotDay;
     }
     
     function startStake(
@@ -104,23 +113,23 @@ contract StakingSystem {
             "SS: Wrong amount of days specified"
         );
         
+        updateAllSnapshots();
+        
         mainToken.burnHumanAddress(msg.sender, stakedAmount);
         
         uint today = getCurrentDay();
-        uint tomorrow = today + 1;
         stakers[msg.sender].push(
             Stake(
                 stakedAmount,
-                tomorrow,
+                today,
                 lockedForXDays,
                 0
             )
         );
         
-        uint sharesCount = getSharesCount(msg.sender, stakers[msg.sender].length, 0);
+        uint sharesCount = getSharesCount(msg.sender, stakers[msg.sender].length - 1, 0);
         snapshots[today].totalShares += sharesCount;
         snapshots[today].totalStaked += stakedAmount;
-        snapshots[today].totalSupply = mainToken.totalSupply();
     }
     
     function endStake(
@@ -132,9 +141,15 @@ contract StakingSystem {
             stakePosition < stakers[msg.sender].length,
             "SS: StakePosition exceeds staker length"
         );
+        require(
+            stakers[msg.sender][stakePosition].endDay > 0,
+            "SS: Stake was already ended"
+        );
         
         uint today = getCurrentDay();
         stakers[msg.sender][stakePosition].endDay = today;
+        
+        updateAllSnapshots();
         
         uint penalty = getPrincipalPenalty(msg.sender, stakePosition, today);
         uint interest = getInterest(msg.sender, stakePosition, today);
@@ -151,7 +166,7 @@ contract StakingSystem {
             snapshots[today].inflationAmount += penalty + interest;
         } else if (interest > 0)
         {
-            payout = stake.stakedAmount - penalty + interest;
+            payout = stake.stakedAmount + interest;
             mainToken.mintHumanAddress(msg.sender, interest);
         }
         
@@ -163,7 +178,6 @@ contract StakingSystem {
         
         snapshots[today].totalShares -= getSharesCount(msg.sender, stakePosition, 0);
         snapshots[today].totalStaked -= stake.stakedAmount;
-        snapshots[today].totalSupply = mainToken.totalSupply();
     }
     
     function getInterest(address stakerAddress, uint stakePosition, uint givenDay)
@@ -174,6 +188,9 @@ contract StakingSystem {
         uint interest;
         Stake memory stake = stakers[stakerAddress][stakePosition];
         uint sharesCount = getSharesCount(stakerAddress, stakePosition, givenDay);
+        
+        givenDay = 
+            givenDay > stake.startDay + stake.lockedForXDays? stake.startDay + stake.lockedForXDays: givenDay;
         for(uint i = stake.startDay; i<givenDay; i++)
         {
             interest += (snapshots[i].inflationAmount * sharesCount) / snapshots[i].totalShares;
@@ -196,7 +213,10 @@ contract StakingSystem {
         uint penalty;
         Stake memory stake = stakers[stakerAddress][stakePosition];
         uint howManyDaysServed = givenDay - stake.startDay;
-        if (stake.lockedForXDays / 2 < howManyDaysServed && howManyDaysServed <= stake.lockedForXDays)
+        if (howManyDaysServed == 0)
+        {
+            penalty = 0;
+        } else if (stake.lockedForXDays / 2 < howManyDaysServed && howManyDaysServed <= stake.lockedForXDays)
         {
             penalty = ((howManyDaysServed - stake.lockedForXDays/2) * 10 * stake.stakedAmount * 2) / (100 * stake.lockedForXDays);
         } else if (howManyDaysServed <= stake.lockedForXDays / 2)
@@ -223,7 +243,7 @@ contract StakingSystem {
         returns (uint)
     {
         Stake memory stake = stakers[stakerAddress][stakePosition];
-        DailySnapshot memory startDaySnapshot = snapshots[stake.startDay];
+        DailySnapshot memory dayBeforeStartDaySnapshot = snapshots[stake.startDay-1];
         
         uint numberOfDaysServed = givenDay == 0? stake.lockedForXDays: givenDay - stake.startDay;
         
@@ -233,8 +253,8 @@ contract StakingSystem {
             1d - 0.0006849x
         */
         uint sharesCount = 
-            (stake.stakedAmount * SHARE_PRICE_DENORM) / startDaySnapshot.sharePrice +
-            (5 * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / (20 * 365 * startDaySnapshot.sharePrice);
+            (stake.stakedAmount * SHARE_PRICE_DENORM) / dayBeforeStartDaySnapshot.sharePrice +
+            (5 * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / (20 * 365 * dayBeforeStartDaySnapshot.sharePrice);
         return sharesCount;
     }
     
