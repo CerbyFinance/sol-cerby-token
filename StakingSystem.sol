@@ -224,7 +224,7 @@ contract StakingSystem {
         0-50% served --> 0-90% principal back
         50-100% served --> 90-100% principal back
         100% + 30 days --> 100% principal back
-        100% + 2*30 days + 30*10 days --> 0-100% principal back
+        100% + 30 days + 30*20 days --> 0-100% principal back
         */
         uint penalty;
         Stake memory stake = stakers[stakerAddress][stakePosition];

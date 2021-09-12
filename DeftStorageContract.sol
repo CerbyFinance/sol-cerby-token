@@ -36,7 +36,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         
         markAddressAsHuman(0x1EE133d3CC3fD5795DD4014579A36A6b7900102e, true); // NoBotsTechV3 Deft
         
-        _setupRole(ROLE_ADMIN, 0x01e835C7A3f7B51243229DfB85A1EA08a5512499); // Cross Chain Bridge Contract
+        _setupRole(ROLE_ADMIN, 0x1d2900622B5049D9479DC8BE06469A4ede3Fc96e); // Cross Chain Bridge Contract
         _setupRole(ROLE_ADMIN, 0x9980a0447456b5cdce209D7dC94820FF15600022); // Deft blacklister
         
         markAddressAsBot(0xeaa40F6B29CE35d8F53f6bF9b2A7397E3D8475Af);
