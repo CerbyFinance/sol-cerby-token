@@ -99,32 +99,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "ROLE_EDITOR",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "ROLE_VIEWER",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address[]",
@@ -151,24 +125,6 @@
 					}
 				],
 				"name": "bulkMarkAddressAsBotBool",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address[]",
-						"name": "addrs",
-						"type": "address[]"
-					},
-					{
-						"internalType": "bool",
-						"name": "value",
-						"type": "bool"
-					}
-				],
-				"name": "bulkMarkAddressAsExcludedFromBalance",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -404,25 +360,6 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "isExcludedFromBalance",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
 						"name": "tokenAddr",
 						"type": "address"
 					},
@@ -569,24 +506,6 @@
 					}
 				],
 				"name": "markAddressAsBot",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"internalType": "bool",
-						"name": "value",
-						"type": "bool"
-					}
-				],
-				"name": "markAddressAsExcludedFromBalance",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -790,11 +709,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x404478e7070fc00e2a9574cadce3f09d57cac835cb0b460899eb28a2a347f737",
+			"keccak256": "0xd0cbc4d30cb009b0784664d8dfea677a2c72bcbf452d0dfa5a917fd550c90229",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://5b522b981d536103a575f2c31e8f51e6c4711913e0e24b0bdb5bd54026328f72",
-				"dweb:/ipfs/QmaC2CvrThXych5pJ9vtzEwt87848Zquq4ZtYgr6d7Xu3Q"
+				"bzz-raw://90b9c58266acdaa2c647bc822d1f0387a27011592765249c4373b5dd2b77aefc",
+				"dweb:/ipfs/QmYDk1aoxjYyciAGRSq6T5ge4kSPyQvftDJqR5SAt3DUei"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {

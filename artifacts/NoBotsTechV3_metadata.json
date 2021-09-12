@@ -130,123 +130,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "botTaxPercent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "cycleOneEnds",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "cycleOneStartTaxPercent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "cycleThreeEndTaxPercent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "cycleThreeEnds",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "cycleThreeStartTaxPercent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "cycleTwoEnds",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "cycleTwoStartTaxPercent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "defiFactoryTokenAddress",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -367,37 +250,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "getWalletCurrentCycle",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "uint256",
-								"name": "currentCycleTax",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "howMuchTimeLeftTillEndOfCycleThree",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct NoBotsTechV3.CurrectCycle",
-						"name": "currentCycle",
-						"type": "tuple"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -457,32 +309,6 @@
 						"internalType": "bool",
 						"name": "",
 						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "lastCachedTimestamp",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "lastPaidFeeTimestamp",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -593,19 +419,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "realTotalSupply",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -669,65 +482,6 @@
 					}
 				],
 				"name": "updateBotTaxSettings",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_cycleOneStartTaxPercent",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_cycleOneEnds",
-						"type": "uint256"
-					}
-				],
-				"name": "updateCycleOneSettings",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_cycleThreeStartTaxPercent",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_cycleThreeEnds",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_cycleThreeEndTaxPercent",
-						"type": "uint256"
-					}
-				],
-				"name": "updateCycleThreeSettings",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_cycleTwoStartTaxPercent",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_cycleTwoEnds",
-						"type": "uint256"
-					}
-				],
-				"name": "updateCycleTwoSettings",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -806,25 +560,25 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 1000
+			"runs": 5
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV3.sol": {
-			"keccak256": "0x5fc4649a446bd13fa3525f90d1f9e69f713f61ac9ee46dfb20061e42f33c29e0",
+			"keccak256": "0x3d475349142d81e2d93a8e68c83f56fec57b8ec6e0ab0c589cc06c0f83f24515",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://e59cdefd031f0c697031623dcb2a533ab255ae7950b9b473bcb4bcc3bf1ffaf5",
-				"dweb:/ipfs/QmaJXTWGLRcutPDBtLtrDzuYe5KGbwP4CnsFZG8EBYR3Kf"
+				"bzz-raw://d98ba0bea8aa1591eb407182650511a4b1b9d56239d521d27e5d5b141ef87e5c",
+				"dweb:/ipfs/QmagypZenVMN1C4CYrtknHy7dVwNw9hFXn3HKMXQcdkiQG"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x5d5d5d1febdb2bc5dd3ead637f5de494dc870b67b9d5f4ceaf67e5904a2c15cc",
+			"keccak256": "0x66d5ab7fd3243597df6ed32828230154327dffcbf9f4dd3a30a998728ad45d76",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://feb4cbcb41635d19deac5104015c71b8b3aa2a9bb8dbbb5c9b6546017c6f72b4",
-				"dweb:/ipfs/QmahjHAdoZn8pBiHgcdpyRvNPYZTGmYqNKzwrwqYJ7tX8L"
+				"bzz-raw://25ea6cc145dd2b7c22d8f1496e4e60fb67313f641bff21eb97d8db17062649d1",
+				"dweb:/ipfs/QmUBx9qi5tmFcHe3HpaTSSfW3xxoNy7y751G7NSGqg2SrB"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
