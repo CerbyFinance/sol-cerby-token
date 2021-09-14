@@ -24,11 +24,9 @@ contract CrossChainBridge is AccessControlEnumerable {
     uint constant DEFT_STORAGE_CONTRACT_ID = 3;
     bytes32 public constant ROLE_APPROVER = keccak256("ROLE_APPROVER");
     
-    uint constant FEE_DENORM = 1e6;
-    uint public feePercent;
+    uint lastGasPrice = 100e9;
+    uint constant GAS_PER_APPROVE = 100e3;
     
-    uint constant BOT_TAX_PERCENT = 999e3;
-    uint constant TAX_PERCENT_DENORM = 1e6;
     
     address UNISWAP_V2_FACTORY_ADDRESS;
     address WETH_TOKEN_ADDRESS;
@@ -67,8 +65,6 @@ contract CrossChainBridge is AccessControlEnumerable {
         //_setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
         
         beneficiaryAddress = APPROVER_WALLET;
-        
-        updateFee(5e3); // 0.5% fee to any directions
         
         /*address tokenAddr1 = 0x5564217Dd1e1255eA751C9C506Fac9eD25FA5240;
         address tokenAddr2 = 0x60b6F75D513E3C60bd325AE6B64Ea08ca3217527;
@@ -110,13 +106,6 @@ contract CrossChainBridge is AccessControlEnumerable {
         }
     }
     
-    function updateMaxGweiSupported(uint _value)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        maxGweiSupported = _value;
-    }
-    
     function allowContract(address addr, bool isAllow)
         external
         onlyRole(ROLE_ADMIN)
@@ -152,12 +141,12 @@ contract CrossChainBridge is AccessControlEnumerable {
         beneficiaryAddress = newBeneficiaryAddr;
     }
     
-    function updateFee(uint newFeePercent)
+    function getCurrentMintFee()
         public
-        onlyRole(ROLE_ADMIN)
+        view
+        returns(uint)
     {
-        feePercent = newFeePercent;
-        emit FeeUpdated(newFeePercent);
+        return lastGasPrice * GAS_PER_APPROVE;
     }
     
     function markTransactionAsApproved(bytes32 transactionHash) 
@@ -170,6 +159,8 @@ contract CrossChainBridge is AccessControlEnumerable {
         );
         transactionStorage[transactionHash] = States.Approved;
         emit ApprovedTransaction(transactionHash);
+        
+        lastGasPrice = tx.gasprice;
     }
     
     function bulkMarkTransactionsAsApproved(bytes32[] memory transactionHashes) 
@@ -187,10 +178,13 @@ contract CrossChainBridge is AccessControlEnumerable {
             }
         }
         emit BulkApprovedTransactions(transactionHashes);
+        
+        lastGasPrice = tx.gasprice;
     }
     
     function mintWithBurnProof(SourceProofOfBurn memory sourceProofOfBurn) 
         external
+        payable
     {
         require(
             transactionStorage[sourceProofOfBurn.transactionHash] == States.Approved,
@@ -205,6 +199,13 @@ contract CrossChainBridge is AccessControlEnumerable {
             "CCB: Provided hash is invalid"
         );
         
+        uint amountAsFee = getCurrentMintFee();
+        require(
+            msg.value >= amountAsFee,
+            "CCB: Provided fee is too low"
+        );
+        payable(beneficiaryAddress).transfer(msg.value);
+        
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(sourceProofOfBurn.sourceTokenAddr);
         IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
             iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
@@ -216,13 +217,9 @@ contract CrossChainBridge is AccessControlEnumerable {
         
         transactionStorage[sourceProofOfBurn.transactionHash] = States.Executed;
         
-        uint amountAsFee = (sourceProofOfBurn.amount*feePercent) / FEE_DENORM;
-        uint finalAmount = sourceProofOfBurn.amount - amountAsFee; 
+        iDefiFactoryToken.mintByBridge(msg.sender, sourceProofOfBurn.amount);
         
-        iDefiFactoryToken.mintByBridge(msg.sender, finalAmount);
-        iDefiFactoryToken.mintByBridge(beneficiaryAddress, amountAsFee);
-        
-        emit ProofOfMint(msg.sender, sourceProofOfBurn.sourceTokenAddr, amountAsFee, finalAmount, transactionHash);
+        emit ProofOfMint(msg.sender, sourceProofOfBurn.sourceTokenAddr, amountAsFee, sourceProofOfBurn.amount, transactionHash);
     }
     
     function burnAndCreateProof(address token, uint amount, uint destinationChainId) 
@@ -242,10 +239,6 @@ contract CrossChainBridge is AccessControlEnumerable {
             "CCB: Destination chain is not allowed"
         );
         
-        require(
-            amount > getMinAmountToBurn(token),
-            "CCB: Amount is lower than the minimum permitted amount"
-        );
         require(
             allowedContracts.contains(token),
             "CCB: Token address is not allowed"
@@ -269,36 +262,5 @@ contract CrossChainBridge is AccessControlEnumerable {
         
         emit ProofOfBurn(msg.sender, token, amount, currentNonce[token], block.chainid, destinationChainId, transactionHash);
         currentNonce[token]++;
-    }
-    
-    function getMinAmountToBurn(address token)
-        public
-        view
-        returns (uint)
-    {
-        uint validatorGasFee = (46000 * maxGweiSupported); // 46k gas limit * 50 gwei (for validating transaction)
-        address pairAddress = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(token, WETH_TOKEN_ADDRESS);
-        if (pairAddress == address(0x0)) return 1e36;
-        
-        (uint reservesWeth, uint reservesToken, ) = IUniswapV2Pair(pairAddress).getReserves();
-        if (WETH_TOKEN_ADDRESS > token)
-        {
-            (reservesWeth, reservesToken) = (reservesToken, reservesWeth);
-        }
-        
-        if (reservesWeth < 1e15 || reservesToken <= 1) return 1e36;
-        
-        uint amountInWithFee = validatorGasFee * 997;
-        uint amountTokensOut = (amountInWithFee * reservesToken) / (reservesWeth * 1000 + amountInWithFee);
-        
-        return (amountTokensOut * FEE_DENORM) / feePercent;
-    }
-    
-    function getSettings(address token)
-        public
-        view
-        returns (bool, uint, uint)
-    {
-        return (allowedContracts.contains(token), (getMinAmountToBurn(token) * 105) / 100, feePercent);
     }
 }

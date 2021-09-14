@@ -347,26 +347,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "feePercent",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					}
-				],
-				"name": "getMinAmountToBurn",
+				"name": "getCurrentMintFee",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -430,35 +411,6 @@
 				],
 				"name": "getRoleMemberCount",
 				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					}
-				],
-				"name": "getSettings",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
 					{
 						"internalType": "uint256",
 						"name": "",
@@ -641,7 +593,7 @@
 				],
 				"name": "mintWithBurnProof",
 				"outputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
@@ -730,32 +682,6 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "newFeePercent",
-						"type": "uint256"
-					}
-				],
-				"name": "updateFee",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_value",
-						"type": "uint256"
-					}
-				],
-				"name": "updateMaxGweiSupported",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -804,18 +730,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
-			"runs": 5
+			"enabled": false,
+			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0x5fd2c2825d2c615982eb19df75f502abde1e6bba7c63aab32ec1954a63a56403",
+			"keccak256": "0x1baa213636d71647611d99253b67cc78a37805022e6f9087ec4f091ed7cf6d14",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c9babdd3e1bf1aa266ed14ff032978488171bf98a1e5b48e590b9d1f52dbb178",
-				"dweb:/ipfs/Qmd2cV3S9D7oGsyQj1AUq7QvghW5mzETEynWzb6PdY9D9Q"
+				"bzz-raw://77d9c2cb7931140c41f7f8ed4cea0d4e3b012604efdf8e58c1003fd0f70b5dac",
+				"dweb:/ipfs/QmNMaGZJpYTVPE1BedJ5LCUpUTs1renc9z2xqEEi8VD9ud"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
