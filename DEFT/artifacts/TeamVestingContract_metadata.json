@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.4+commit.c7e474f2"
+		"version": "0.8.7+commit.e28d00a7"
 	},
 	"language": "Solidity",
 	"output": {
@@ -520,6 +520,31 @@
 			{
 				"inputs": [
 					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "role",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "address",
+								"name": "addr",
+								"type": "address"
+							}
+						],
+						"internalType": "struct RoleAccess[]",
+						"name": "roles",
+						"type": "tuple[]"
+					}
+				],
+				"name": "grantRolesBulk",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -922,26 +947,122 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/DEFT/Flat_TeamVestingContract.sol": "TeamVestingContract"
+			"sol-defifactory-token/DEFT/TeamVestingContract.sol": "TeamVestingContract"
 		},
-		"evmVersion": "istanbul",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
-			"runs": 1000
+			"enabled": false,
+			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/DEFT/Flat_TeamVestingContract.sol": {
-			"keccak256": "0x0a2697229a1957e9ba8e9416d0bb599074e80a1a61332ecd30fba5612cace91d",
+		"sol-defifactory-token/DEFT/TeamVestingContract.sol": {
+			"keccak256": "0x4ecf39ca0fc00a1d5c87c5e23456838cea35f1b952b5057bae7044226b7fa002",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://dcb7a80912c30579e53c39214618e07b136d347c79ee98b5682ab2270d21e5f0",
-				"dweb:/ipfs/QmaQBGs6DysiwgAcTKN3DfGn9LKa75367CnUQ7rtHSLCS1"
+				"bzz-raw://cfd297651fdf9930104f3ccc0c7f6de9fc133ac6e9ae8fe7e8603ceff473cc8c",
+				"dweb:/ipfs/QmXuAVBjmWDd2tNxPKmGGjnRHEMBnXeZX9i4qFzb95h7dy"
+			]
+		},
+		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
+			"keccak256": "0x66d5ab7fd3243597df6ed32828230154327dffcbf9f4dd3a30a998728ad45d76",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://25ea6cc145dd2b7c22d8f1496e4e60fb67313f641bff21eb97d8db17062649d1",
+				"dweb:/ipfs/QmUBx9qi5tmFcHe3HpaTSSfW3xxoNy7y751G7NSGqg2SrB"
+			]
+		},
+		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
+			"keccak256": "0xc46dd8f6bdd249c1051c1179747d8e3c14828897afc65429fca073cc397a1982",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://28e7ff48a9c26ee2f8992ddeb5493ecc4ff5fd0ee77bc97a0189346012138803",
+				"dweb:/ipfs/QmYbRZ8RLNQLN81teuYwd1CQ9ahcRmBR2UN4r4AxYYnYMd"
+			]
+		},
+		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {
+			"keccak256": "0xcedf8f2d94a11375f62ab9e3c0cbca9e584de936dc974d84c0785935c08555fc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://355af2d26712d9ec44a3fc629162d8c0c3b40126b7916a1fc3f4e39ba42224f6",
+				"dweb:/ipfs/QmTataj3Mb5b6E6n5NU7GLtPC5N8ugJwUKJ5fR8LqT69m1"
+			]
+		},
+		"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
+			"keccak256": "0x8b11d0b070b3ea821880b21c336186d619892cd92cb90f05a9defebef8836624",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f0598d56bb3b6a0ee15374a10ce2913e854af87f5c6845772ef505a31c0c9fa7",
+				"dweb:/ipfs/QmXH92UmaKz7qks5cXQbDae5gwnDWnAHvwmcS8vvgraA5Y"
+			]
+		},
+		"sol-defifactory-token/interfaces/IWeth.sol": {
+			"keccak256": "0xf30f17c3689153f7d2c741581083ca990c735b3cd447552365ecae9a30c8784c",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://afcb5877551cbb613c10b7e13a67997bddc532e33119c9809e13aa06bed65ad1",
+				"dweb:/ipfs/Qmciw1wkEtLM5eod62NY8mbCitPYyQ9ySYeh6c87Rsk5qz"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
+			"keccak256": "0x216169e68f87c4f54a41e18c8b62d4d41a438db352bb5103e07ece489d3409e1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0a31be9f4c3c67f99b833f476c76a2b9d58efc75d24f5a150fc9e43d82e241d0",
+				"dweb:/ipfs/QmXCT1p75AnsZ5LexnBZFNbkBeisG2KjAoh8TMSSQdNeqz"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {
+			"keccak256": "0x0d616363c1a1e6f9f489303f94df0cbe606826ab4944d315c3801a07f9b8d4ee",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://976cf80d02556929369fc98196c4082f204e44e682e20d3f65cc61b31e29bf76",
+				"dweb:/ipfs/Qmeo1vvf7L3PLLDPNSVuVyirLB3FrCYKMFw3JZ7EXgC5YU"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/utils/Context.sol": {
+			"keccak256": "0xf930d2df426bfcfc1f7415be724f04081c96f4fb9ec8d0e3a521c07692dface0",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fc2bfdea0d2562c76fb3c4cf70a86c6ba25c5a30e8f8515c95aafdf8383f8395",
+				"dweb:/ipfs/QmTbFya18786ckJfLYUoWau9jBTKfmWnWm5XSViWvB7PXN"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/utils/Strings.sol": {
+			"keccak256": "0x456e9b3a2bfe189b5249857f624f4139e59331db518483b456c4e587a20552e0",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1123c9545decc48a011370ebab4bf53dda98524fa21f9498e68851ba8f0ffc0f",
+				"dweb:/ipfs/QmUpgMg8EFDnv87ePKUjXxXpJT3qwHRj9VDNSnRxu7T9sy"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/utils/introspection/ERC165.sol": {
+			"keccak256": "0x5718c5df9bd67ac68a796961df938821bb5dc0cd4c6118d77e9145afb187409b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d10e1d9b26042424789246603906ad06143bf9a928f4e99de8b5e3bdc662f549",
+				"dweb:/ipfs/Qmejonoaj5MLekPus229rJQHcC6E9dz2xorjHJR84fMfmn"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/utils/introspection/IERC165.sol": {
+			"keccak256": "0xa28007762d9da9db878dd421960c8cb9a10471f47ab5c1b3309bfe48e9e79ff4",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://796ab6e88af7bf0e78def0f059310c903af6a312b565344e0ff524a0f26e81c6",
+				"dweb:/ipfs/QmcsVgLgzWdor3UnAztUkXKNGcysm1MPneWksF72AvnwBx"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/utils/structs/EnumerableSet.sol": {
+			"keccak256": "0x641d1c42bddc802820044fc0297346d82411f1c86647c2994a5897199c7049c5",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a1a73b4d9b6065412e18d9e21e3ba6387d5dc6b69161d8527101c0041b62f762",
+				"dweb:/ipfs/QmQ51saPEQxKqbkLxfvpXz4x7uDzC49gyH4kVXK8exoAU2"
 			]
 		}
 	},

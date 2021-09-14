@@ -73,6 +73,12 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
+						"name": "amountAsFee",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
 						"name": "currentNonce",
 						"type": "uint256"
 					},
@@ -237,47 +243,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "chainId",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "isAllowed",
-						"type": "bool"
-					}
-				],
-				"name": "allowChain",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"internalType": "bool",
-						"name": "isAllow",
-						"type": "bool"
-					}
-				],
-				"name": "allowContract",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "beneficiaryAddress",
 				"outputs": [
@@ -346,12 +311,28 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "getCurrentMintFee",
-				"outputs": [
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
 					{
 						"internalType": "uint256",
 						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "directionSettings",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "isAllowedDirection",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountAsFee",
 						"type": "uint256"
 					}
 				],
@@ -490,49 +471,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "isAllowedContract",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "isAllowedToBridgeToChainId",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "bytes32",
 						"name": "transactionHash",
 						"type": "bytes32"
@@ -544,25 +482,17 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "maxGweiSupported",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "amount",
+								"name": "amountToBridge",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "amountAsFee",
 								"type": "uint256"
 							},
 							{
@@ -593,7 +523,7 @@
 				],
 				"name": "mintWithBurnProof",
 				"outputs": [],
-				"stateMutability": "payable",
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -682,6 +612,41 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "chainId",
+						"type": "uint256"
+					},
+					{
+						"components": [
+							{
+								"internalType": "bool",
+								"name": "isAllowedDirection",
+								"type": "bool"
+							},
+							{
+								"internalType": "uint256",
+								"name": "amountAsFee",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct DirectionSettings",
+						"name": "_directionSettings",
+						"type": "tuple"
+					}
+				],
+				"name": "updateDirectionSettings",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -737,11 +702,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0x1baa213636d71647611d99253b67cc78a37805022e6f9087ec4f091ed7cf6d14",
+			"keccak256": "0x575b0afcada4e8cf41515f0bf81405c614059cc4d605e3802379d46ca9a44b6c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://77d9c2cb7931140c41f7f8ed4cea0d4e3b012604efdf8e58c1003fd0f70b5dac",
-				"dweb:/ipfs/QmNMaGZJpYTVPE1BedJ5LCUpUTs1renc9z2xqEEi8VD9ud"
+				"bzz-raw://67fef6240ee292e1249030c53d66b97232969b0377fc3a2c3b8e7ee45c77b014",
+				"dweb:/ipfs/QmUYtULtFtvhUsdPGkiE65hzZN3q3FXkfU9FpcPqGuKdK5"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
