@@ -879,25 +879,25 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 5
+			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleContract.sol": {
-			"keccak256": "0x0f5597c2627bf3e6a2f1e2bfcd617cd417f7b95d80c3b78eeb938ec929f4fe27",
+			"keccak256": "0x4feda3c624edb6f1a4f3cfd927e8d67b40edb499b43a8a1cf45a0658deda97d0",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://a93b1b79b30cfe322c1907e10ce494e0bd5fcf1015e708714f4c9f134d89e01c",
-				"dweb:/ipfs/QmbWcFKonWYyDaN2vfvjzu47jGhhVwRusvWB2gFpfhy5mt"
+				"bzz-raw://452149546ab34de927efe5094b5fb8134a1fa55d775e37fac6b18ef4194018e4",
+				"dweb:/ipfs/QmVwbuG8r1GkJCZR8s5DUQnbCXuPYW464R59G5kwWhAoCR"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x5d5d5d1febdb2bc5dd3ead637f5de494dc870b67b9d5f4ceaf67e5904a2c15cc",
+			"keccak256": "0x66d5ab7fd3243597df6ed32828230154327dffcbf9f4dd3a30a998728ad45d76",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://feb4cbcb41635d19deac5104015c71b8b3aa2a9bb8dbbb5c9b6546017c6f72b4",
-				"dweb:/ipfs/QmahjHAdoZn8pBiHgcdpyRvNPYZTGmYqNKzwrwqYJ7tX8L"
+				"bzz-raw://25ea6cc145dd2b7c22d8f1496e4e60fb67313f641bff21eb97d8db17062649d1",
+				"dweb:/ipfs/QmUBx9qi5tmFcHe3HpaTSSfW3xxoNy7y751G7NSGqg2SrB"
 			]
 		},
 		"sol-defifactory-token/interfaces/ITeamFinance.sol": {

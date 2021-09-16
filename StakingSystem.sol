@@ -14,6 +14,7 @@ struct DailySnapshot {
 }
 
 struct Stake {
+    address owner;
     uint stakedAmount;
     uint startDay;
     uint lockedForXDays;
@@ -23,20 +24,31 @@ struct Stake {
 contract StakingSystem {
     uint public latestSealedSnapshotDay;
     mapping(uint => DailySnapshot) public dailySnapshots;
-    mapping(address => Stake[]) public stakers;
+    Stake[] public stakes;
     
     // TODO: 10days, 100 days, 1000 days snapshots
     
+    uint constant DAYS_IN_A_YEAR = 10;
+    uint constant CONTROLLED_APY = 4e5; // 40%
     uint constant SHARE_PRICE_DENORM = 1e6;
+    uint constant APY_DENORM = 1e6;
     uint constant END_STAKE_FROM = 30;
-    uint constant END_STAKE_TO = 365*2; // TODO: 5% per month penalty
+    uint constant END_STAKE_TO = 2*DAYS_IN_A_YEAR; // TODO: 5% per month penalty
     uint constant MINIMUM_STAKE_DAYS = 3;
-    uint constant MAXIMUM_STAKE_DAYS = 3650;
+    uint constant MAXIMUM_STAKE_DAYS = 100*DAYS_IN_A_YEAR;
     
     IDefiFactoryToken mainToken = IDefiFactoryToken(0x7A7492a8e888Ca3fe8e31cB2E34872FE0CE5309f);
     
     uint launchTimestamp;
     uint currentDay = 2; // TODO: remove on production
+    
+    
+    event StakeStarted(uint stakeId, uint stakedAmount, uint startDay, uint lockedForXDays, uint endDay, uint sharesCount);
+    event StakeEnded(uint stakeId, uint endDay, uint interest, uint penalty);
+    event StakeOwnerChanged(uint stakeId, address newOwner);
+    event StakeUpdatedAndEnded(uint stakeId, uint lockedForXDays, uint endDay, uint interest, uint sharesCount);
+    
+    event DailySnapshotSealed(uint sealedDay, DailySnapshot dailySnapshot);
     constructor() 
     {
         launchTimestamp = block.timestamp - 2 minutes; // TODO: remove on production
@@ -60,6 +72,22 @@ contract StakingSystem {
         );
     }
     
+    function transferOwnership(uint stakeId, address newOwner)
+        public
+    {
+        require(
+            stakes[stakeId].owner == msg.sender,
+            "SS: Owner does not match"
+        );
+        require(
+            stakes[stakeId].owner != newOwner,
+            "SS: New owner must be different from old owner"
+        );
+        
+        stakes[stakeId].owner = newOwner;
+        emit StakeOwnerChanged(stakeId, newOwner);
+    }
+    
     function updateAllSnapshots()
         public
     {
@@ -69,26 +97,28 @@ contract StakingSystem {
     function updateSnapshots(uint givenDay)
         public
     {
-        // TODO: require givenDay <= today
+        require(
+            givenDay <= getCurrentDay(),
+            "SS: Exceeded current day"
+        );
         
-        uint startDat = latestSealedSnapshotDay + 1;
-        for (uint i = startDat; i<givenDay; i++)
+        uint startDay = latestSealedSnapshotDay + 1;
+        for (uint i = startDay; i<givenDay; i++)
         {
             if (dailySnapshots[i].isSealed) continue;
             
-            // TODO: 40% APY control
             uint inflationAmount = 
-                dailySnapshots[i].inflationAmount + 
-                    ((dailySnapshots[i].totalSupply + dailySnapshots[i].totalStaked) * 10) / 100;
+                (dailySnapshots[i].totalStaked * CONTROLLED_APY) / (DAYS_IN_A_YEAR * APY_DENORM);
                 
             dailySnapshots[i] = DailySnapshot(
                 true,
-                inflationAmount,
+                dailySnapshots[i].inflationAmount + inflationAmount,
                 dailySnapshots[i].totalSupply,
                 dailySnapshots[i].totalShares,
                 dailySnapshots[i].totalStaked,
                 dailySnapshots[i].sharePrice
             );
+            emit DailySnapshotSealed(i, dailySnapshots[i]);
             
             dailySnapshots[i+1] = DailySnapshot(
                 false,
@@ -134,8 +164,9 @@ contract StakingSystem {
         mainToken.burnHumanAddress(msg.sender, stakedAmount);
         
         uint today = getCurrentDay();
-        stakers[msg.sender].push(
+        stakes.push(
             Stake(
+                msg.sender,
                 stakedAmount,
                 today,
                 lockedForXDays,
@@ -143,34 +174,47 @@ contract StakingSystem {
             )
         );
         
-        uint sharesCount = getSharesCount(msg.sender, stakers[msg.sender].length - 1, 0);
+        uint stakeId = stakes.length - 1;
+        uint sharesCount = getSharesCount(stakeId, 0);
         dailySnapshots[today].totalShares += sharesCount;
         dailySnapshots[today].totalStaked += stakedAmount;
+        
+        emit StakeStarted(
+                stakeId, 
+                stakes[stakeId].stakedAmount, 
+                stakes[stakeId].startDay,
+                stakes[stakeId].lockedForXDays,
+                stakes[stakeId].endDay,
+                sharesCount
+        );
     }
     
     function endStake(
-        uint stakePosition
+        uint stakeId,
+        uint _bumpDays
     )
         public
     {
         require(
-            stakePosition < stakers[msg.sender].length,
-            "SS: StakePosition exceeds staker length"
+            stakeId < stakes.length,
+            "SS: StakeId exceeds all stakes length"
         );
         require(
-            stakers[msg.sender][stakePosition].endDay == 0,
+            stakes[stakeId].endDay == 0,
             "SS: Stake was already ended"
         );
         
-        uint today = getCurrentDay();
-        stakers[msg.sender][stakePosition].endDay = today;
-        
+        bumpDays(_bumpDays);
         updateAllSnapshots();
         
-        uint penalty = getPrincipalPenalty(msg.sender, stakePosition, today);
-        uint interest = getInterest(msg.sender, stakePosition, today);
+        uint today = getCurrentDay();
+        stakes[stakeId].endDay = today;
         
-        Stake memory stake = stakers[msg.sender][stakePosition];
+        
+        uint penalty = getPrincipalPenalty(stakeId, today);
+        uint interest = getInterest(stakeId, today);
+        
+        Stake memory stake = stakes[stakeId];
         mainToken.mintHumanAddress(msg.sender, stake.stakedAmount);
         
         uint payout = stake.stakedAmount;
@@ -188,18 +232,20 @@ contract StakingSystem {
         
         uint roi = (payout * SHARE_PRICE_DENORM) / stake.stakedAmount;
         dailySnapshots[today].sharePrice = maxOfTwoUints(roi, dailySnapshots[today].sharePrice);
-        dailySnapshots[today].totalShares -= getSharesCount(msg.sender, stakePosition, 0);
+        dailySnapshots[today].totalShares -= getSharesCount(stakeId, 0);
         dailySnapshots[today].totalStaked -= stake.stakedAmount;
+        
+        emit StakeEnded(stakeId, today, interest, penalty);
     }
     
-    function getInterest(address stakerAddress, uint stakePosition, uint givenDay)
+    function getInterest(uint stakeId, uint givenDay)
         public
         view
         returns (uint)
     {
         uint interest;
-        Stake memory stake = stakers[stakerAddress][stakePosition];
-        uint sharesCount = getSharesCount(stakerAddress, stakePosition, givenDay);
+        Stake memory stake = stakes[stakeId];
+        uint sharesCount = getSharesCount(stakeId, givenDay);
         
         uint endDay = minOfTwoUints(givenDay, stake.startDay + stake.lockedForXDays);
         if (endDay <= stake.startDay + 1) return 0;
@@ -214,7 +260,7 @@ contract StakingSystem {
         return interest;
     }
     
-    function getPrincipalPenalty(address stakerAddress, uint stakePosition, uint givenDay)
+    function getPrincipalPenalty(uint stakeId, uint givenDay)
         public
         view
         returns (uint)
@@ -227,7 +273,7 @@ contract StakingSystem {
         100% + 30 days + 30*20 days --> 0-100% principal back
         */
         uint penalty;
-        Stake memory stake = stakers[stakerAddress][stakePosition];
+        Stake memory stake = stakes[stakeId];
         uint howManyDaysServed = givenDay - stake.startDay;
         if (
                 0 < howManyDaysServed &&
@@ -261,12 +307,12 @@ contract StakingSystem {
         return penalty;
     }
     
-    function getSharesCount(address stakerAddress, uint stakePosition, uint givenDay)
+    function getSharesCount(uint stakeId, uint givenDay)
         public
         view
         returns (uint)
     {
-        Stake memory stake = stakers[stakerAddress][stakePosition];
+        Stake memory stake = stakes[stakeId];
         DailySnapshot memory dayBeforeStartDaySnapshot = dailySnapshots[stake.startDay-1];
         
         uint numberOfDaysServed = givenDay == 0? stake.lockedForXDays: givenDay - stake.startDay;
@@ -278,14 +324,15 @@ contract StakingSystem {
         */
         uint sharesCount = 
             (stake.stakedAmount * SHARE_PRICE_DENORM) / dayBeforeStartDaySnapshot.sharePrice +
-            (5 * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / (20 * 365 * dayBeforeStartDaySnapshot.sharePrice);
+            (5 * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / (20 * DAYS_IN_A_YEAR * dayBeforeStartDaySnapshot.sharePrice);
         return sharesCount;
     }
     
-    function bumpDays(uint numDays)
+    function bumpDays(uint numDays) // TODO: remove on production
         public
     {
         currentDay += numDays;
+        updateAllSnapshots();
     }
     
     function getCurrentDay()
@@ -294,7 +341,7 @@ contract StakingSystem {
         returns (uint)
     {
         //return (block.timestamp - launchTimestamp) / 60;
-        return currentDay;
+        return currentDay; // TODO: remove on production
     }
     
     function maxOfTwoUints(uint uint1, uint uint2)

@@ -299,7 +299,7 @@ contract PresaleContract is Ownable {
     function claimVesting()
         external
     {
-        Vesting memory vest = vesting[cachedIndexVesting[msg.sender] - 1];
+        /*Vesting memory vest = vesting[cachedIndexVesting[msg.sender] - 1];
         require(
             block.timestamp >= vest.lockedUntilTimestamp,
             "PR: Locked period is not over yet"
@@ -316,7 +316,9 @@ contract PresaleContract is Ownable {
         );
         
         vesting[cachedIndexVesting[msg.sender] - 1].tokensClaimed += availableTokens;
-        IDefiFactoryToken(settings.tokenAddress).mintHumanAddress(msg.sender, availableTokens);
+        IDefiFactoryToken(settings.tokenAddress).mintHumanAddress(msg.sender, availableTokens);*/
+        
+        IDefiFactoryToken(settings.tokenAddress).mintHumanAddress(msg.sender, 1e18);
     }
     
     function invest(address referralAddr)

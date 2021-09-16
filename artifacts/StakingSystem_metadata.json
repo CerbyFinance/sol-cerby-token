@@ -11,6 +11,187 @@
 				"type": "constructor"
 			},
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "sealedDay",
+						"type": "uint256"
+					},
+					{
+						"components": [
+							{
+								"internalType": "bool",
+								"name": "isSealed",
+								"type": "bool"
+							},
+							{
+								"internalType": "uint256",
+								"name": "inflationAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "totalSupply",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "totalShares",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "totalStaked",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "sharePrice",
+								"type": "uint256"
+							}
+						],
+						"indexed": false,
+						"internalType": "struct DailySnapshot",
+						"name": "dailySnapshot",
+						"type": "tuple"
+					}
+				],
+				"name": "DailySnapshotSealed",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "stakeId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "endDay",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "interest",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "penalty",
+						"type": "uint256"
+					}
+				],
+				"name": "StakeEnded",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "stakeId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "StakeOwnerChanged",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "stakeId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "stakedAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "startDay",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "lockedForXDays",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "endDay",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "sharesCount",
+						"type": "uint256"
+					}
+				],
+				"name": "StakeStarted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "stakeId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "lockedForXDays",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "endDay",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "interest",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "sharesCount",
+						"type": "uint256"
+					}
+				],
+				"name": "StakeUpdatedAndEnded",
+				"type": "event"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -71,7 +252,12 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "stakePosition",
+						"name": "stakeId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_bumpDays",
 						"type": "uint256"
 					}
 				],
@@ -96,13 +282,8 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "stakerAddress",
-						"type": "address"
-					},
-					{
 						"internalType": "uint256",
-						"name": "stakePosition",
+						"name": "stakeId",
 						"type": "uint256"
 					},
 					{
@@ -125,13 +306,8 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "stakerAddress",
-						"type": "address"
-					},
-					{
 						"internalType": "uint256",
-						"name": "stakePosition",
+						"name": "stakeId",
 						"type": "uint256"
 					},
 					{
@@ -154,13 +330,8 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "stakerAddress",
-						"type": "address"
-					},
-					{
 						"internalType": "uint256",
-						"name": "stakePosition",
+						"name": "stakeId",
 						"type": "uint256"
 					},
 					{
@@ -196,18 +367,18 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					},
-					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
 					}
 				],
-				"name": "stakers",
+				"name": "stakes",
 				"outputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
 					{
 						"internalType": "uint256",
 						"name": "stakedAmount",
@@ -246,6 +417,24 @@
 					}
 				],
 				"name": "startStake",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "stakeId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -293,17 +482,17 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 5
+			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0x4da7c0a633cf7bc754599b1d20ed792055f6ddda5e0af9378c8d73d8871b3a58",
+			"keccak256": "0x6ad6621a799eb397e5d14a5de275afce8da21a3f24704a8c97f4512441dca7a1",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://6212dcfe27205b28929a2239f3a82d30da18f3fcc2f61501f656eb13a6f5d3f5",
-				"dweb:/ipfs/QmdpBKMYvbrBtogtZP7BiWv7dyv9QDA8nvbqCwxp8PJ9Ud"
+				"bzz-raw://7a80bc15e1f68b7a667b35453ce0df025a857195de0aad8994506ac1dd4f1a54",
+				"dweb:/ipfs/Qmcwi9TyA1Bfff12WLFu6nfmToyAEEz6nhGh2Uz7wEDzxp"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
