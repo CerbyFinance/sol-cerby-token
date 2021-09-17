@@ -122,6 +122,12 @@
 					},
 					{
 						"indexed": false,
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"indexed": false,
 						"internalType": "uint256",
 						"name": "stakedAmount",
 						"type": "uint256"
@@ -136,12 +142,6 @@
 						"indexed": false,
 						"internalType": "uint256",
 						"name": "lockedForXDays",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "endDay",
 						"type": "uint256"
 					},
 					{
@@ -481,18 +481,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0x6ad6621a799eb397e5d14a5de275afce8da21a3f24704a8c97f4512441dca7a1",
+			"keccak256": "0x06f2d33bb654ebd1f006f97cea462f90d7a57c7e44cd1954db31b8cf82589bad",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://7a80bc15e1f68b7a667b35453ce0df025a857195de0aad8994506ac1dd4f1a54",
-				"dweb:/ipfs/Qmcwi9TyA1Bfff12WLFu6nfmToyAEEz6nhGh2Uz7wEDzxp"
+				"bzz-raw://efb03c8fc0bb93bd23832020568b75d6acb46ef84b5678414fee34f0d3c263cc",
+				"dweb:/ipfs/QmVxcGJe92CAHBJ4kansiWgNWEzsjRwCcg6CsNwH7SNLxs"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

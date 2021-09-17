@@ -5,7 +5,7 @@ pragma solidity ^0.8.7;
 import "./interfaces/IDefiFactoryToken.sol";
 
 struct DailySnapshot {
-    bool isSealed;
+    bool isSealed; // TODO: remove it
     uint inflationAmount;
     uint totalSupply;
     uint totalShares;
@@ -32,7 +32,7 @@ contract StakingSystem {
     uint constant CONTROLLED_APY = 4e5; // 40%
     uint constant SHARE_PRICE_DENORM = 1e6;
     uint constant APY_DENORM = 1e6;
-    uint constant END_STAKE_FROM = 30;
+    uint constant END_STAKE_FROM = 7;
     uint constant END_STAKE_TO = 2*DAYS_IN_A_YEAR; // TODO: 5% per month penalty
     uint constant MINIMUM_STAKE_DAYS = 3;
     uint constant MAXIMUM_STAKE_DAYS = 100*DAYS_IN_A_YEAR;
@@ -43,7 +43,7 @@ contract StakingSystem {
     uint currentDay = 2; // TODO: remove on production
     
     
-    event StakeStarted(uint stakeId, uint stakedAmount, uint startDay, uint lockedForXDays, uint endDay, uint sharesCount);
+    event StakeStarted(uint stakeId, address owner, uint stakedAmount, uint startDay, uint lockedForXDays, uint sharesCount);
     event StakeEnded(uint stakeId, uint endDay, uint interest, uint penalty);
     event StakeOwnerChanged(uint stakeId, address newOwner);
     event StakeUpdatedAndEnded(uint stakeId, uint lockedForXDays, uint endDay, uint interest, uint sharesCount);
@@ -72,6 +72,7 @@ contract StakingSystem {
         );
     }
     
+    // 0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6
     function transferOwnership(uint stakeId, address newOwner)
         public
     {
@@ -120,6 +121,7 @@ contract StakingSystem {
             );
             emit DailySnapshotSealed(i, dailySnapshots[i]);
             
+            // TODO: remove it
             dailySnapshots[i+1] = DailySnapshot(
                 false,
                 0,
@@ -180,11 +182,11 @@ contract StakingSystem {
         dailySnapshots[today].totalStaked += stakedAmount;
         
         emit StakeStarted(
-                stakeId, 
+                stakeId,
+                stakes[stakeId].owner,
                 stakes[stakeId].stakedAmount, 
                 stakes[stakeId].startDay,
                 stakes[stakeId].lockedForXDays,
-                stakes[stakeId].endDay,
                 sharesCount
         );
     }

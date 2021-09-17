@@ -436,10 +436,10 @@ contract PresaleContract is Ownable {
             vesting.push(
                 Vesting(
                     vestingAddr,
-                    1,
-                    1,
-                    1,
-                    1
+                    0,
+                    0,
+                    block.timestamp,
+                    block.timestamp
                 )
             );
             cachedIndexVesting[vestingAddr] = vesting.length;
@@ -646,7 +646,7 @@ contract PresaleContract is Ownable {
         Investor[] memory investorsList = listInvestors(offset, limit);
         for(uint i = 0; i < investorsList.length; i++)
         {
-            if (vesting[cachedIndexVesting[investorsList[i].investorAddr] - 1].tokensReserved <= 1)
+            if (vesting[cachedIndexVesting[investorsList[i].investorAddr] - 1].tokensReserved == 0) // почему тут было <= 1 ?
             {
                 vesting[cachedIndexVesting[investorsList[i].investorAddr] - 1] = Vesting(
                     investorsList[i].investorAddr,

@@ -59,6 +59,7 @@
 			"mintByBridge(address,uint256)": "1f2eba24",
 			"mintHumanAddress(address,uint256)": "0bb9ff5d",
 			"publicForcedUpdateCacheMultiplier()": "e8ac6e4e",
+			"totalSupply()": "18160ddd",
 			"transferCustom(address,address,uint256)": "9cff2eba",
 			"transferFromTeamVestingContract(address,uint256)": "8cbfeb0c",
 			"updateUtilsContracts((bool,bool,bool,bool,bool,address)[])": "789210b3"
@@ -235,6 +236,19 @@
 			"name": "publicForcedUpdateCacheMultiplier",
 			"outputs": [],
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "totalSupply",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{

@@ -178,6 +178,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "totalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -277,7 +290,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/Flat_PresaleFactory.sol": "IDefiFactoryToken"
+			"sol-defifactory-token/StakingSystem.sol": "IDefiFactoryToken"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -285,18 +298,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
-			"runs": 5
+			"enabled": false,
+			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/Flat_PresaleFactory.sol": {
-			"keccak256": "0xa0358c8f2cc915895383b42f04f92c1594f27c85628aa1be34379c3b065c70b6",
+		"sol-defifactory-token/StakingSystem.sol": {
+			"keccak256": "0xb6f97a2404222f2da97178c74648979726a4889c4275cd2582b385fbe78cf2b0",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://f19948a0925c8b2f245776a9bf37980ff7c021069776f36aa82449d1c3892e6e",
-				"dweb:/ipfs/QmPSKiST8wkTKiLgi2LHCXcEWDLU4t35C61TuF9gqrJX1q"
+				"bzz-raw://a04a5c0add7414a058a4d66ce801f70ce95f93cb9db0f2f3f1db58aaff3e4e3a",
+				"dweb:/ipfs/QmR5SFwoMfyEEp3bh7FJm5cysPFMYgxXYscs2iuH32oTft"
 			]
 		}
 	},
