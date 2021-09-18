@@ -5,7 +5,6 @@ pragma solidity ^0.8.7;
 import "./interfaces/IDefiFactoryToken.sol";
 
 struct DailySnapshot {
-    bool isSealed; // TODO: remove it
     uint inflationAmount;
     uint totalSupply;
     uint totalShares;
@@ -22,20 +21,24 @@ struct Stake {
 }
 
 contract StakingSystem {
-    uint public latestSealedSnapshotDay;
-    mapping(uint => DailySnapshot) public dailySnapshots;
+    DailySnapshot[] public dailySnapshots;
+    uint[] public tenDaysInterestPerShare;
     Stake[] public stakes;
     
     // TODO: 10days, 100 days, 1000 days snapshots
+    // 1000000000000000000000
     
-    uint constant DAYS_IN_A_YEAR = 10;
+    uint constant DAYS_IN_A_YEAR = 5;
     uint constant CONTROLLED_APY = 4e5; // 40%
     uint constant SHARE_PRICE_DENORM = 1e6;
+    uint constant INTEREST_PER_SHARE_DENORM = 1e18;
     uint constant APY_DENORM = 1e6;
     uint constant END_STAKE_FROM = 7;
     uint constant END_STAKE_TO = 2*DAYS_IN_A_YEAR; // TODO: 5% per month penalty
     uint constant MINIMUM_STAKE_DAYS = 3;
     uint constant MAXIMUM_STAKE_DAYS = 100*DAYS_IN_A_YEAR;
+    uint constant SHARE_MULTIPLIER_NUMERATOR = 5;
+    uint constant SHARE_MULTIPLIER_DENOMINATOR = 2;
     
     IDefiFactoryToken mainToken = IDefiFactoryToken(0x7A7492a8e888Ca3fe8e31cB2E34872FE0CE5309f);
     
@@ -49,27 +52,28 @@ contract StakingSystem {
     event StakeUpdatedAndEnded(uint stakeId, uint lockedForXDays, uint endDay, uint interest, uint sharesCount);
     
     event DailySnapshotSealed(uint sealedDay, DailySnapshot dailySnapshot);
+    event TenDailySnapshotSealed(uint sealedDay, DailySnapshot tenDailySnapshot);
     constructor() 
     {
         launchTimestamp = block.timestamp - 2 minutes; // TODO: remove on production
         
-        dailySnapshots[0] = DailySnapshot(
-            true,
+        uint totalSupply = mainToken.totalSupply();
+        dailySnapshots.push(DailySnapshot(
             0,
-            mainToken.totalSupply(),
+            totalSupply,
             0,
             0,
             SHARE_PRICE_DENORM
-        );
+        ));
+        dailySnapshots.push(DailySnapshot(
+            0,
+            totalSupply,
+            0,
+            0,
+            SHARE_PRICE_DENORM
+        ));
         
-        dailySnapshots[1] = DailySnapshot(
-            false,
-            0,
-            mainToken.totalSupply(),
-            0,
-            0,
-            SHARE_PRICE_DENORM
-        );
+        tenDaysInterestPerShare.push(0);
     }
     
     // 0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6
@@ -92,48 +96,58 @@ contract StakingSystem {
     function updateAllSnapshots()
         public
     {
-        updateSnapshots(getCurrentDay());
+        updateSnapshots(getCurrentOneDay());
     }
     
     function updateSnapshots(uint givenDay)
         public
     {
         require(
-            givenDay <= getCurrentDay(),
+            givenDay <= getCurrentOneDay(),
             "SS: Exceeded current day"
         );
         
-        uint startDay = latestSealedSnapshotDay + 1;
+        uint stakedAmount = 1e18;
+        uint startDay = dailySnapshots.length-1; // last sealed day
         for (uint i = startDay; i<givenDay; i++)
         {
-            if (dailySnapshots[i].isSealed) continue;
-            
+            uint sharesCount = 
+                ((SHARE_MULTIPLIER_NUMERATOR + SHARE_MULTIPLIER_DENOMINATOR) * stakedAmount * SHARE_PRICE_DENORM) / 
+                    (SHARE_MULTIPLIER_DENOMINATOR * dailySnapshots[i].sharePrice);
             uint inflationAmount = 
-                (dailySnapshots[i].totalStaked * CONTROLLED_APY) / (DAYS_IN_A_YEAR * APY_DENORM);
+                (stakedAmount * CONTROLLED_APY * (dailySnapshots[i].totalShares + sharesCount)) / 
+                    (sharesCount * DAYS_IN_A_YEAR * APY_DENORM);
                 
-            dailySnapshots[i] = DailySnapshot(
-                true,
-                dailySnapshots[i].inflationAmount + inflationAmount,
+            dailySnapshots[i].inflationAmount += inflationAmount;
+            dailySnapshots[i].totalSupply = mainToken.totalSupply();
+            emit DailySnapshotSealed(i, dailySnapshots[i]);
+            
+            dailySnapshots.push(DailySnapshot(
+                0,
                 dailySnapshots[i].totalSupply,
                 dailySnapshots[i].totalShares,
                 dailySnapshots[i].totalStaked,
                 dailySnapshots[i].sharePrice
-            );
-            emit DailySnapshotSealed(i, dailySnapshots[i]);
-            
-            // TODO: remove it
-            dailySnapshots[i+1] = DailySnapshot(
-                false,
-                0,
-                mainToken.totalSupply(),
-                dailySnapshots[i].totalShares,
-                dailySnapshots[i].totalStaked,
-                dailySnapshots[i].sharePrice
-            );
+            ));
         }
         
-        latestSealedSnapshotDay = 
-            givenDay > 0 && dailySnapshots[givenDay - 1].isSealed? givenDay - 1: latestSealedSnapshotDay;
+        uint startTenDay = tenDaysInterestPerShare.length-1;
+        uint endTenDay = givenDay / 10;
+        for(uint i = startTenDay; i<endTenDay; i++)
+        {
+            uint interestPerShare;
+            for(uint j = i*10; j<(i+1)*10; j++)
+            {
+                if (dailySnapshots[j].totalShares == 0) continue;
+                
+                interestPerShare += 
+                    (dailySnapshots[j].inflationAmount * INTEREST_PER_SHARE_DENORM) / dailySnapshots[j].totalShares;
+            }
+            tenDaysInterestPerShare[tenDaysInterestPerShare.length - 1] = interestPerShare;
+            //emit TenDailySnapshotSealed(i, tenDaysInterestPerShare[i]);
+            
+            tenDaysInterestPerShare.push(0);
+        }
     }
     
     function startStake(
@@ -165,7 +179,7 @@ contract StakingSystem {
         
         mainToken.burnHumanAddress(msg.sender, stakedAmount);
         
-        uint today = getCurrentDay();
+        uint today = getCurrentOneDay();
         stakes.push(
             Stake(
                 msg.sender,
@@ -209,7 +223,7 @@ contract StakingSystem {
         bumpDays(_bumpDays);
         updateAllSnapshots();
         
-        uint today = getCurrentDay();
+        uint today = getCurrentOneDay();
         stakes[stakeId].endDay = today;
         
         
@@ -240,6 +254,14 @@ contract StakingSystem {
         emit StakeEnded(stakeId, today, interest, penalty);
     }
     
+    function getDailySnapshotsLength()
+        public
+        view
+        returns(uint)
+    {
+        return dailySnapshots.length;
+    }
+    
     function getInterest(uint stakeId, uint givenDay)
         public
         view
@@ -250,11 +272,27 @@ contract StakingSystem {
         uint sharesCount = getSharesCount(stakeId, givenDay);
         
         uint endDay = minOfTwoUints(givenDay, stake.startDay + stake.lockedForXDays);
-        if (endDay <= stake.startDay + 1) return 0;
+        endDay = minOfTwoUints(endDay, dailySnapshots.length);
         
-        for(uint i = stake.startDay; i<endDay; i++)
+        uint startTen = stake.startDay/10 + 1;
+        uint endBeforeFirstTen = startTen*10;
+        for(uint i = stake.startDay; i<endBeforeFirstTen; i++)
         {
-            if (!dailySnapshots[i].isSealed) continue;
+            if (dailySnapshots[i].totalShares == 0) continue;
+            
+            interest += (dailySnapshots[i].inflationAmount * sharesCount) / dailySnapshots[i].totalShares;
+        }
+        
+        uint endTen = endDay/10;
+        for(uint i = startTen; i<endTen; i++)
+        {
+            interest += (tenDaysInterestPerShare[i] * sharesCount) / INTEREST_PER_SHARE_DENORM;
+        }
+        
+        uint startAfterLastTen = endDay - endDay % 10;
+        for(uint i = startAfterLastTen; i<endDay; i++)
+        {
+            if (dailySnapshots[i].totalShares == 0) continue;
             
             interest += (dailySnapshots[i].inflationAmount * sharesCount) / dailySnapshots[i].totalShares;
         }
@@ -315,7 +353,10 @@ contract StakingSystem {
         returns (uint)
     {
         Stake memory stake = stakes[stakeId];
-        DailySnapshot memory dayBeforeStartDaySnapshot = dailySnapshots[stake.startDay-1];
+        require(
+            dailySnapshots[stake.startDay].sharePrice > 0,
+            "SS: Share price today is zero, wait for snapshot update"
+        );
         
         uint numberOfDaysServed = givenDay == 0? stake.lockedForXDays: givenDay - stake.startDay;
         
@@ -325,8 +366,9 @@ contract StakingSystem {
             1d - 0.0006849x
         */
         uint sharesCount = 
-            (stake.stakedAmount * SHARE_PRICE_DENORM) / dayBeforeStartDaySnapshot.sharePrice +
-            (5 * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / (20 * DAYS_IN_A_YEAR * dayBeforeStartDaySnapshot.sharePrice);
+            (stake.stakedAmount * SHARE_PRICE_DENORM) / dailySnapshots[stake.startDay].sharePrice +
+            (SHARE_MULTIPLIER_NUMERATOR * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / 
+                (SHARE_MULTIPLIER_DENOMINATOR * 10 * DAYS_IN_A_YEAR * dailySnapshots[stake.startDay].sharePrice);
         return sharesCount;
     }
     
@@ -337,13 +379,40 @@ contract StakingSystem {
         updateAllSnapshots();
     }
     
-    function getCurrentDay()
+    function getCurrentOneDay()
         public
         view
         returns (uint)
     {
         //return (block.timestamp - launchTimestamp) / 60;
         return currentDay; // TODO: remove on production
+    }
+    
+    function getCurrentTenDay()
+        public
+        view
+        returns (uint)
+    {
+        //return (block.timestamp - launchTimestamp) / 60;
+        return currentDay/10; // TODO: remove on production
+    }
+    
+    function getCurrentHundredDay()
+        public
+        view
+        returns (uint)
+    {
+        //return (block.timestamp - launchTimestamp) / 60;
+        return currentDay/100; // TODO: remove on production
+    }
+    
+    function getCurrentThousandDay()
+        public
+        view
+        returns (uint)
+    {
+        //return (block.timestamp - launchTimestamp) / 60;
+        return currentDay/1000; // TODO: remove on production
     }
     
     function maxOfTwoUints(uint uint1, uint uint2)

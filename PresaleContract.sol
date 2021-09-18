@@ -120,20 +120,20 @@ contract PresaleContract is Ownable {
     uint public totalTokenSupply;
     
     /* Kovan */
-    /*address constant UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
+    address constant UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
     address constant USDT_TOKEN_ADDRESS = 0xec362b0EFeC60388A12A9C26071e116bFa5e3587;
     address constant WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
     uint constant USDT_DECIMALS = 6;
     address constant TEAM_FINANCE_ADDRESS = BURN_ADDRESS;
-    address constant DEFT_TOKEN_ADDRESS = 0x073ce46d328524fB3529A39d64B314aB1A594a57;*/
+    address constant DEFT_TOKEN_ADDRESS = 0x073ce46d328524fB3529A39d64B314aB1A594a57;
     
     /* Ropsten */
-    address constant UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
+    /*address constant UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
     address constant USDT_TOKEN_ADDRESS = 0x07865c6E87B9F70255377e024ace6630C1Eaa37F;
     address constant WETH_TOKEN_ADDRESS = 0xc778417E063141139Fce010982780140Aa0cD5Ab;
     uint constant USDT_DECIMALS = 6;
     address constant TEAM_FINANCE_ADDRESS = 0x8733CAA60eDa1597336c0337EfdE27c1335F7530;
-    address constant DEFT_TOKEN_ADDRESS = 0x07865c6E87B9F70255377e024ace6630C1Eaa37F;
+    address constant DEFT_TOKEN_ADDRESS = 0x07865c6E87B9F70255377e024ace6630C1Eaa37F;*/
     
     address deftAndTokenPairContract;
     
@@ -330,7 +330,7 @@ contract PresaleContract is Ownable {
         require(msg.value >= settings.perWalletMinWeth, "PR: Amount is below minimum permitted");
         require(msg.value <= settings.perWalletMaxWeth, "PR: Amount is above maximum permitted");
         require(cachedIndexTokenomics[msg.sender]  == 0, "PR: Team is not allowed to invest");
-        require(cachedIndexReferrals[referralAddr] == 0, "PR: Please use different referral link");
+        require(cachedIndexReferrals[msg.sender] == 0, "PR: Investing for active referral addresses is forbidden");
         require(msg.sender != referralAddr, "PR: Self-ref isn't allowed. Please use different referral link");
         
         if (referralAddr == BURN_ADDRESS)
@@ -667,7 +667,7 @@ contract PresaleContract is Ownable {
         Referral[] memory referralsList = listReferrals(offset, limit);
         for(uint i = 0; i < referralsList.length; i++)
         {
-            if (vesting[cachedIndexVesting[referralsList[i].referralAddr] - 1].tokensReserved <= 1)
+            if (vesting[cachedIndexVesting[referralsList[i].referralAddr] - 1].tokensReserved == 0)
             {
                 vesting[cachedIndexVesting[referralsList[i].referralAddr] - 1] = Vesting(
                     referralsList[i].referralAddr,

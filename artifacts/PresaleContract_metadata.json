@@ -885,11 +885,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleContract.sol": {
-			"keccak256": "0x4feda3c624edb6f1a4f3cfd927e8d67b40edb499b43a8a1cf45a0658deda97d0",
+			"keccak256": "0x5043b9882efe4f6179cfd0d06453ae78bf3e71647546065950e8a2bbe38aea0f",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://452149546ab34de927efe5094b5fb8134a1fa55d775e37fac6b18ef4194018e4",
-				"dweb:/ipfs/QmVwbuG8r1GkJCZR8s5DUQnbCXuPYW464R59G5kwWhAoCR"
+				"bzz-raw://142cac216f29935be182df8520ff4f36cbe55fc3636e1826e6167ce8012d6be5",
+				"dweb:/ipfs/Qmec2vdS65CSSm5xmZFEi6i2BKFLXPJGN6FcfQBJLqQkDY"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

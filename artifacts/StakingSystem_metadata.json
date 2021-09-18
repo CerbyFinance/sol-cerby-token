@@ -22,11 +22,6 @@
 					{
 						"components": [
 							{
-								"internalType": "bool",
-								"name": "isSealed",
-								"type": "bool"
-							},
-							{
 								"internalType": "uint256",
 								"name": "inflationAmount",
 								"type": "uint256"
@@ -192,6 +187,52 @@
 				"type": "event"
 			},
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "sealedDay",
+						"type": "uint256"
+					},
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "inflationAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "totalSupply",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "totalShares",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "totalStaked",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "sharePrice",
+								"type": "uint256"
+							}
+						],
+						"indexed": false,
+						"internalType": "struct DailySnapshot",
+						"name": "tenDailySnapshot",
+						"type": "tuple"
+					}
+				],
+				"name": "TenDailySnapshotSealed",
+				"type": "event"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -214,11 +255,6 @@
 				],
 				"name": "dailySnapshots",
 				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "isSealed",
-						"type": "bool"
-					},
 					{
 						"internalType": "uint256",
 						"name": "inflationAmount",
@@ -268,7 +304,59 @@
 			},
 			{
 				"inputs": [],
-				"name": "getCurrentDay",
+				"name": "getCurrentHundredDay",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getCurrentOneDay",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getCurrentTenDay",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getCurrentThousandDay",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getDailySnapshotsLength",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -352,19 +440,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "latestSealedSnapshotDay",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -419,6 +494,25 @@
 				"name": "startStake",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "tenDaysInterestPerShare",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -481,18 +575,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0x06f2d33bb654ebd1f006f97cea462f90d7a57c7e44cd1954db31b8cf82589bad",
+			"keccak256": "0xde8055a23d8da9879afe07103f48ea2aaa5d99cfc38c240fac2d38dc6f292529",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://efb03c8fc0bb93bd23832020568b75d6acb46ef84b5678414fee34f0d3c263cc",
-				"dweb:/ipfs/QmVxcGJe92CAHBJ4kansiWgNWEzsjRwCcg6CsNwH7SNLxs"
+				"bzz-raw://11880b90ff4019075bd73f1b71aaef89aad7aae61cfec162de2a0f5ce96a7d8e",
+				"dweb:/ipfs/QmYxXuTaLsWA9qd4u8ZURadSGpfkTdPqHJ8h6emMCCXewZ"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
