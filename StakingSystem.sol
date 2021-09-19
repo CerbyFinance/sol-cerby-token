@@ -56,7 +56,6 @@ contract StakingSystem {
     {
         launchTimestamp = block.timestamp - 2 minutes; // TODO: remove on production
         
-        uint totalSupply = mainToken.totalSupply();
         dailySnapshots.push(DailySnapshot(
             0,
             0,
