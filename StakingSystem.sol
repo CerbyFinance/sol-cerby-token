@@ -322,6 +322,14 @@ contract StakingSystem {
         emit StakeEnded(stakeId, today, interest, penalty);
     }
     
+    /* 
+        TODO: (еще не запилил, в контракте этого нету пока) StakeUpdatedAndEnded обновляем поля
+        - lockedForXDays
+        - endDay
+        - interest
+        - sharesCount
+    */
+    
     function getDailySnapshotsLength()
         public
         view
