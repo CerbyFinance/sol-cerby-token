@@ -28,11 +28,6 @@
 							},
 							{
 								"internalType": "uint256",
-								"name": "totalSupply",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
 								"name": "totalShares",
 								"type": "uint256"
 							},
@@ -51,6 +46,12 @@
 						"internalType": "struct DailySnapshot",
 						"name": "dailySnapshot",
 						"type": "tuple"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "totalSupply",
+						"type": "uint256"
 					}
 				],
 				"name": "DailySnapshotSealed",
@@ -196,40 +197,13 @@
 						"type": "uint256"
 					},
 					{
-						"components": [
-							{
-								"internalType": "uint256",
-								"name": "inflationAmount",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "totalSupply",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "totalShares",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "totalStaked",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "sharePrice",
-								"type": "uint256"
-							}
-						],
 						"indexed": false,
-						"internalType": "struct DailySnapshot",
-						"name": "tenDailySnapshot",
-						"type": "tuple"
+						"internalType": "uint256",
+						"name": "_tenDaysInterestPerShare",
+						"type": "uint256"
 					}
 				],
-				"name": "TenDailySnapshotSealed",
+				"name": "TenDaysInterestPerShareSealed",
 				"type": "event"
 			},
 			{
@@ -258,11 +232,6 @@
 					{
 						"internalType": "uint256",
 						"name": "inflationAmount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalSupply",
 						"type": "uint256"
 					},
 					{
@@ -582,11 +551,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0xde8055a23d8da9879afe07103f48ea2aaa5d99cfc38c240fac2d38dc6f292529",
+			"keccak256": "0x9520f0cc3d94eec45deb537f07f57e23c35ec74cec46bf5c0a6b6c2ed4d5ab78",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://11880b90ff4019075bd73f1b71aaef89aad7aae61cfec162de2a0f5ce96a7d8e",
-				"dweb:/ipfs/QmYxXuTaLsWA9qd4u8ZURadSGpfkTdPqHJ8h6emMCCXewZ"
+				"bzz-raw://f37ea293319c26675baa2c2495e2eb6d578f15ef88c759ec430b726afc4d0910",
+				"dweb:/ipfs/Qmey2cuECe5aUun89UVprJSKkp1JBJHf5jhtstsxdC4px4"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
