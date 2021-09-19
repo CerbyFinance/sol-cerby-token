@@ -587,11 +587,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0x87b05119f750e82ab690460cbdf80efd77a068c7c336cd3895e083f7ed61b444",
+			"keccak256": "0xb0952621d6854cbed6cd810677c4ad4573fa262c700edef80c30c31bd7c98d60",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://5d00e3af1436bcd4a62cd828e63dcb673d9042639111acf92e260262107ba647",
-				"dweb:/ipfs/QmaiUQFMQ7kRQTrvaDMhcRWfzKAMK5TFQUzpJjAgGkksyk"
+				"bzz-raw://05cd935051db82dba537ce1d200eb75684e5b1e58098b7e598e00b5307bd6d50",
+				"dweb:/ipfs/QmZBvPfaoVtyQTu7q1PWuFEWRqjEYhtin9AQ6CADNhTqK3"
 			]
 		}
 	},

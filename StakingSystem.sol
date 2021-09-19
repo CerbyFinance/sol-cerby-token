@@ -49,7 +49,7 @@ contract StakingSystem {
     
     // TODO: 10days, 100 days, 1000 days snapshots
     // [["1000000000000000000000",10],["2000000000000000000000",20],["3000000000000000000000",30],["4000000000000000000000",40],["5000000000000000000000",100]]
-    // [["6000000000000000000000",200]
+    // [["6000000000000000000000",200]]
     // 0x123492a8E888Ca3fe8E31cb2e34872FE0ce5309F
     
     uint constant DAYS_IN_A_YEAR = 5;
@@ -204,6 +204,7 @@ contract StakingSystem {
         }
     }
     
+    // TODO: bulk end stake
     function bulkStartStake(StartStake[] calldata _startStakes)
         public
     {
