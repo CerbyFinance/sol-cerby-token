@@ -234,8 +234,6 @@ contract StakingSystem {
             "SS: Stake must be locked for less than 10 years (3650 days)"
         );
         
-        
-        
         updateAllSnapshots();
         
         mainToken.burnHumanAddress(msg.sender, _startStake.stakedAmount);
@@ -351,7 +349,7 @@ contract StakingSystem {
         }
         
         uint startAfterLastTen = endDay - endDay % 10; // TODO: replace 10 to constant
-        if (startAfterLastTen > stake.startDay)
+        if (startAfterLastTen > stake.startDay) // do not double iterate if numberOfDaysServed < 10 
         {
             for(uint i = startAfterLastTen; i<endDay; i++)
             {
