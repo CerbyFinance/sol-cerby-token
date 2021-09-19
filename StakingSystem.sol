@@ -290,6 +290,8 @@ contract StakingSystem {
         
         uint interest = getInterest(stakeId, today);
         uint penalty = getPenalty(stakeId, today);
+        
+        // TODO: late penalty has to cut interest too
         if (penalty > 0) 
         {
             mainToken.burnHumanAddress(msg.sender, penalty);
