@@ -195,11 +195,11 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "tenDaysInterestPerShare",
+						"name": "hundredDaysInterestPerShare",
 						"type": "uint256"
 					}
 				],
-				"name": "TenDaysInterestPerShareSealed",
+				"name": "hundredDaysInterestPerShareSealed",
 				"type": "event"
 			},
 			{
@@ -315,32 +315,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "getCurrentTenDay",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getCurrentThousandDay",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "getDailySnapshotsLength",
 				"outputs": [
 					{
@@ -432,6 +406,25 @@
 						"type": "uint256"
 					}
 				],
+				"name": "hundredDaysInterestPerShare",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
 				"name": "stakes",
 				"outputs": [
 					{
@@ -486,25 +479,6 @@
 				"name": "startStake",
 				"outputs": [],
 				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "tenDaysInterestPerShare",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -587,11 +561,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0xd78f98042ede7bc121f272189786bc74e363843a0b3016338a7dfcf1b1bcb388",
+			"keccak256": "0x8926dc6e22f5d6229ddf416b07d5494fc0c4735c274b6fd1a1e8d9c8c176aee3",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://c7c42cfdd43b23d3ec454845cae86675a08a09c6fc785db39e947f3b112427d4",
-				"dweb:/ipfs/QmWsXDbsgd2kmFoKidZhPWmbFbsXQrMxzcHFCBL6NoPFHs"
+				"bzz-raw://7b59699985e3ae5de7be081ce0b8791acb4a7c9fce70f569753536cef97e2c21",
+				"dweb:/ipfs/QmRhNvVWvFicnuriZxCQpm1wjxuyaoGsRW8Uki8sADuZLs"
 			]
 		}
 	},

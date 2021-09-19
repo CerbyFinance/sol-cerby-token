@@ -43,7 +43,7 @@ struct StartStake {
 
 contract StakingSystem {
     DailySnapshot[] public dailySnapshots;
-    uint[] public tenDaysInterestPerShare;
+    uint[] public hundredDaysInterestPerShare;
     Stake[] public stakes;
     uint public totalStaked;
     
@@ -52,6 +52,7 @@ contract StakingSystem {
     // [["6000000000000000000000",200]]
     // 0x123492a8E888Ca3fe8E31cb2e34872FE0ce5309F
     
+    uint constant CACHED_DAYS_INTEREST = 100;
     uint constant DAYS_IN_A_YEAR = 5;
     uint constant CONTROLLED_APY = 4e5; // 40%
     uint constant SHARE_PRICE_DENORM = 1e6;
@@ -104,9 +105,9 @@ contract StakingSystem {
         uint totalStaked,
         uint totalSupply
     );
-    event TenDaysInterestPerShareSealed(
+    event hundredDaysInterestPerShareSealed(
         uint sealedDay, 
-        uint tenDaysInterestPerShare
+        uint hundredDaysInterestPerShare
     );
     constructor() 
     {
@@ -123,7 +124,7 @@ contract StakingSystem {
             SHARE_PRICE_DENORM
         ));
         
-        tenDaysInterestPerShare.push(0);
+        hundredDaysInterestPerShare.push(0);
     }
     
     // 0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6
@@ -185,22 +186,22 @@ contract StakingSystem {
             ));
         }
         
-        uint startTenDay = tenDaysInterestPerShare.length-1;
-        uint endTenDay = givenDay / 10;
+        uint startTenDay = hundredDaysInterestPerShare.length-1;
+        uint endTenDay = givenDay / CACHED_DAYS_INTEREST;
         for(uint i = startTenDay; i<endTenDay; i++)
         {
             uint interestPerShare;
-            for(uint j = i*10; j<(i+1)*10; j++)
+            for(uint j = i*CACHED_DAYS_INTEREST; j<(i+1)*CACHED_DAYS_INTEREST; j++)
             {
                 if (dailySnapshots[j].totalShares == 0) continue;
                 
                 interestPerShare += 
                     (dailySnapshots[j].inflationAmount * INTEREST_PER_SHARE_DENORM) / dailySnapshots[j].totalShares;
             }
-            tenDaysInterestPerShare[tenDaysInterestPerShare.length - 1] = interestPerShare;
-            emit TenDaysInterestPerShareSealed(i, tenDaysInterestPerShare[i]);
+            hundredDaysInterestPerShare[hundredDaysInterestPerShare.length - 1] = interestPerShare;
+            emit hundredDaysInterestPerShareSealed(i, hundredDaysInterestPerShare[i]);
             
-            tenDaysInterestPerShare.push(0);
+            hundredDaysInterestPerShare.push(0);
         }
     }
     
@@ -335,8 +336,8 @@ contract StakingSystem {
         
         uint sharesCount = getSharesCount(stakeId, endDay);
         
-        uint startTen = stake.startDay/10 + 1; // TODO: replace 10 to constant 
-        uint endBeforeFirstTen = minOfTwoUints(endDay, startTen*10); // TODO: replace 10 to constant 
+        uint startTen = stake.startDay/CACHED_DAYS_INTEREST + 1; 
+        uint endBeforeFirstTen = minOfTwoUints(endDay, startTen*CACHED_DAYS_INTEREST); 
         for(uint i = stake.startDay; i<endBeforeFirstTen; i++)
         {
             if (dailySnapshots[i].totalShares == 0) continue;
@@ -344,14 +345,14 @@ contract StakingSystem {
             interest += (dailySnapshots[i].inflationAmount * sharesCount) / dailySnapshots[i].totalShares;
         }
         
-        uint endTen = endDay/10; // TODO: replace 10 to constant 
+        uint endTen = endDay/CACHED_DAYS_INTEREST; 
         for(uint i = startTen; i<endTen; i++)
         {
-            interest += (tenDaysInterestPerShare[i] * sharesCount) / INTEREST_PER_SHARE_DENORM;
+            interest += (hundredDaysInterestPerShare[i] * sharesCount) / INTEREST_PER_SHARE_DENORM;
         }
         
-        uint startAfterLastTen = endDay - endDay % 10; // TODO: replace 10 to constant
-        if (startAfterLastTen > stake.startDay) // do not double iterate if numberOfDaysServed < 10 
+        uint startAfterLastTen = endDay - endDay % CACHED_DAYS_INTEREST;
+        if (startAfterLastTen > stake.startDay) // do not double iterate if numberOfDaysServed < CACHED_DAYS_INTEREST 
         {
             for(uint i = startAfterLastTen; i<endDay; i++)
             {
@@ -457,15 +458,6 @@ contract StakingSystem {
         return currentDay; // TODO: remove on production
     }
     
-    function getCurrentTenDay()
-        public
-        view
-        returns (uint)
-    {
-        //return (block.timestamp - launchTimestamp) / 60;
-        return currentDay/10; // TODO: remove on production
-    }
-    
     function getCurrentHundredDay()
         public
         view
@@ -473,15 +465,6 @@ contract StakingSystem {
     {
         //return (block.timestamp - launchTimestamp) / 60;
         return currentDay/100; // TODO: remove on production
-    }
-    
-    function getCurrentThousandDay()
-        public
-        view
-        returns (uint)
-    {
-        //return (block.timestamp - launchTimestamp) / 60;
-        return currentDay/1000; // TODO: remove on production
     }
     
     function maxOfTwoUints(uint uint1, uint uint2)
