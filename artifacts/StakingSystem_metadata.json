@@ -551,19 +551,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0x018a6fe73c000a68888d7c55159d4028d79238a6f1d4f8ffdc26ab181d4870c2",
+			"keccak256": "0x9dd92c1814f676a640c66155216ddb9e311fc07aca3fda8b004f41702dc74200",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://cc9dbba97c7aa66d4de032323140c92e05fbb68358a9c00019a0b475f3460d95",
-				"dweb:/ipfs/QmcQvSCLXVyvkzowb2DaJeTvtG5AqMf9pdLn4fio8YkjEf"
-			]
-		},
-		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x66d5ab7fd3243597df6ed32828230154327dffcbf9f4dd3a30a998728ad45d76",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://25ea6cc145dd2b7c22d8f1496e4e60fb67313f641bff21eb97d8db17062649d1",
-				"dweb:/ipfs/QmUBx9qi5tmFcHe3HpaTSSfW3xxoNy7y751G7NSGqg2SrB"
+				"bzz-raw://4062800d4a180df7a2767291efe04feb8fd470d510bc86392bb2dbf6e87523c4",
+				"dweb:/ipfs/QmXLxE2V818iz5f4w4SykVnd2ELNum9JMmH7DZzRiKSkVn"
 			]
 		}
 	},
