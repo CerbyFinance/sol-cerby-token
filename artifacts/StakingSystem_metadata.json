@@ -189,23 +189,11 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "endDay",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "interest",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
 						"name": "sharesCount",
 						"type": "uint256"
 					}
 				],
-				"name": "StakeUpdatedAndEnded",
+				"name": "StakeUpdated",
 				"type": "event"
 			},
 			{
@@ -314,7 +302,20 @@
 			},
 			{
 				"inputs": [],
-				"name": "getCurrentHundredDay",
+				"name": "getCachedInterestPerShareLength",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getCurrentCachedPerShareDay",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -421,6 +422,19 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "stakeId",
+						"type": "uint256"
+					}
+				],
+				"name": "scrapeStake",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -567,11 +581,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0xd984ae7130443cda6f1e617359f99bbbfe402c9f2314b902b03a943293411718",
+			"keccak256": "0x7b4ab9ed60a6a9007f01b59b490b9b70dedbe62a9c1e9b283e6d582af10beeb4",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://68724f3c63d79c0b1523313e890a14cbca2093235d57fd60feb8f7616244da0c",
-				"dweb:/ipfs/QmTmeti7BM2Hc6gYbKy5S693kwFduTcz7f1EzmU3gVBXc5"
+				"bzz-raw://33c4626e6815fc9503a0046e36f5ed1cb55d44b61af68acbeb2bc98c35c326af",
+				"dweb:/ipfs/QmRxYwrJ92gAWtUgrPdiXDsXouFAyMFMbUXpqYk4LApsvS"
 			]
 		}
 	},

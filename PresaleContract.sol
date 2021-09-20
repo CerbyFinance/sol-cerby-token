@@ -479,7 +479,7 @@ contract PresaleContract is Ownable {
         {
             output[i + 3] = tokenomics[i];
         }
-        return (tokenomics);
+        return (output);
     }
     
     function changeState(States _value)

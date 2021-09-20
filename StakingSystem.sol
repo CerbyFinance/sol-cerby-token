@@ -62,7 +62,7 @@ contract StakingSystem {
     uint constant APY_DENORM = 1e6;
     uint constant END_STAKE_FROM = 7;
     uint constant END_STAKE_TO = 2*DAYS_IN_A_YEAR; // TODO: 5% per month penalty
-    uint constant MINIMUM_STAKE_DAYS = 3;
+    uint constant MINIMUM_STAKE_DAYS = 3; // TODO: reduce to 1 day minimum
     uint constant MAXIMUM_STAKE_DAYS = 100*DAYS_IN_A_YEAR;
     uint constant SHARE_MULTIPLIER_NUMERATOR = 5;
     uint constant SHARE_MULTIPLIER_DENOMINATOR = 2;
@@ -91,11 +91,9 @@ contract StakingSystem {
         uint stakeId, 
         address newOwner
     );
-    event StakeUpdatedAndEnded(
+    event StakeUpdated(
         uint stakeId, 
-        uint lockedForXDays, 
-        uint endDay, 
-        uint interest, 
+        uint lockedForXDays,
         uint sharesCount
     );
     
@@ -130,14 +128,43 @@ contract StakingSystem {
         cachedInterestPerShare.push(0);
     }
     
+    modifier onlyStakeOwners(uint stakeId)
+    {
+        require(
+            msg.sender == stakes[stakeId].owner,
+            "SS: Stake owner does not match"
+        );
+        _;
+    }
+    
+    modifier onlyExistingStake(uint stakeId)
+    {
+        require(
+            stakeId < stakes.length,
+            "SS: Stake does not exist"
+        );
+        _;
+    }
+    
+    modifier onlyActiveStake(uint stakeId)
+    {
+        require(
+            stakes[stakeId].endDay == 0,
+            "SS: Stake was already ended"
+        );
+        _;
+    }
+    
+    
+    // TODO: send deft payout to stakers
+    
     // 0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6
     function transferOwnership(uint stakeId, address newOwner)
         public
+        onlyStakeOwners(stakeId)
+        onlyExistingStake(stakeId)
+        onlyActiveStake(stakeId)
     {
-        require(
-            stakes[stakeId].owner == msg.sender,
-            "SS: Owner does not match"
-        );
         require(
             stakes[stakeId].owner != newOwner,
             "SS: New owner must be different from old owner"
@@ -204,7 +231,7 @@ contract StakingSystem {
             cachedInterestPerShare[cachedInterestPerShare.length - 1] = interestPerShare;
             emit CachedInterestPerShareSealed(
                 i, // sealedDay
-                cachedInterestPerShare.length - 1, // sealedHundredDay
+                cachedInterestPerShare.length - 1, // sealedCachedDay
                 cachedInterestPerShare[i]
             );
             
@@ -222,7 +249,7 @@ contract StakingSystem {
         }
     }
     
-    function startStake(StartStake calldata _startStake)
+    function startStake(StartStake memory _startStake)
         public
     {
         require(
@@ -230,16 +257,16 @@ contract StakingSystem {
             "SS: StakedAmount has to be larger than zero"
         );
         require(
-            mainToken.balanceOf(msg.sender) >= _startStake.stakedAmount,
+            _startStake.stakedAmount <= mainToken.balanceOf(msg.sender),
             "SS: StakedAmount exceeds balance"
         );
         require(
             _startStake.lockedForXDays >= MINIMUM_STAKE_DAYS,
-            "SS: Stake must be locked for more than 4 days"
+            "SS: Stake must be locked for more than MINIMUM_STAKE_DAYS" // TODO: update on production
         );
         require(
             _startStake.lockedForXDays <= MAXIMUM_STAKE_DAYS,
-            "SS: Stake must be locked for less than 10 years (3650 days)"
+            "SS: Stake must be locked for less than MAXIMUM_STAKE_DAYS" // TODO: update on production
         );
         
         updateAllSnapshots();
@@ -277,16 +304,10 @@ contract StakingSystem {
         uint _bumpDays // TODO: remove on production
     )
         public
+        onlyStakeOwners(stakeId)
+        onlyExistingStake(stakeId)
+        onlyActiveStake(stakeId)
     {
-        require(
-            stakeId < stakes.length,
-            "SS: StakeId exceeds all stakes length"
-        );
-        require(
-            stakes[stakeId].endDay == 0,
-            "SS: Stake was already ended"
-        );
-        
         bumpDays(_bumpDays); // TODO: remove on production
         updateAllSnapshots();
         
@@ -322,13 +343,34 @@ contract StakingSystem {
         emit StakeEnded(stakeId, today, interest, penalty);
     }
     
-    /* 
-        TODO: (еще не запилил, в контракте этого нету пока) StakeUpdatedAndEnded обновляем поля
-        - lockedForXDays
-        - endDay
-        - interest
-        - sharesCount
-    */
+    function scrapeStake(uint stakeId)
+        public
+        onlyStakeOwners(stakeId)
+        onlyExistingStake(stakeId)
+        onlyActiveStake(stakeId)
+    {
+        uint stakeAmount = stakes[stakeId].stakedAmount;
+        uint lockedForXDays = stakes[stakeId].lockedForXDays;
+        
+        uint today = getCurrentOneDay();
+        
+        uint oldSharesCount = getSharesCount(stakeId, 0);
+        stakes[stakeId].lockedForXDays = today - stakes[stakeId].startDay;
+        uint newSharesCount = getSharesCount(stakeId, 0);
+        
+        dailySnapshots[today].totalShares -= oldSharesCount - newSharesCount;
+        
+        emit StakeUpdated(
+            stakeId, 
+            stakes[stakeId].lockedForXDays,
+            newSharesCount
+        );
+        
+        endStake(stakeId, 0);
+        
+        uint newLockedForXDays = lockedForXDays - stakes[stakeId].lockedForXDays;
+        startStake(StartStake(stakeAmount, newLockedForXDays));
+    }
     
     function getDailySnapshotsLength()
         public
@@ -336,6 +378,14 @@ contract StakingSystem {
         returns(uint)
     {
         return dailySnapshots.length;
+    }
+    
+    function getCachedInterestPerShareLength()
+        public
+        view
+        returns(uint)
+    {
+        return cachedInterestPerShare.length;
     }
     
     function getInterest(uint stakeId, uint givenDay)
@@ -473,13 +523,13 @@ contract StakingSystem {
         return currentDay; // TODO: remove on production
     }
     
-    function getCurrentHundredDay()
+    function getCurrentCachedPerShareDay()
         public
         view
         returns (uint)
     {
         //return (block.timestamp - launchTimestamp) / 60;
-        return currentDay/100; // TODO: remove on production
+        return currentDay/CACHED_DAYS_INTEREST; // TODO: remove on production
     }
     
     function maxOfTwoUints(uint uint1, uint uint2)
