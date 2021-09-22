@@ -843,6 +843,45 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "vesting",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "vestingAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokensReserved",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokensClaimed",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lockedUntilTimestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "vestedUntilTimestamp",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"stateMutability": "payable",
 				"type": "receive"
 			}
@@ -885,11 +924,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/PresaleContract.sol": {
-			"keccak256": "0x6f0dce4f90d0fc7939ecdc844ef54f68b1ed8acf3318632ec0e750b214c4294a",
+			"keccak256": "0x54eb722e2a1beb786ad00e76872f9a686902f063aa2e814ad9ebe1aac841a0a3",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://c70de21098288b000d9b20da31ea61183d62e106a2e081ca6f9951f946e2a2c2",
-				"dweb:/ipfs/QmWwbvqaJsVdbEitj3HYnxT4kG2QJntzTELbrBWGG6Kxs2"
+				"bzz-raw://8bbc010be224616dd0826fe575d8cb8212c960fcf76091d332bc095fb8cebd51",
+				"dweb:/ipfs/QmPcukdU8GNKwiv3SJFGXPvb7NHpXgVSmUtjumPNA15pDe"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
@@ -916,12 +955,12 @@
 				"dweb:/ipfs/QmTataj3Mb5b6E6n5NU7GLtPC5N8ugJwUKJ5fR8LqT69m1"
 			]
 		},
-		"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
-			"keccak256": "0x8b11d0b070b3ea821880b21c336186d619892cd92cb90f05a9defebef8836624",
+		"sol-defifactory-token/interfaces/IUniswapV2Router.sol": {
+			"keccak256": "0x590b9262136f0a0af7a7ba0c2f823624e8b5a70461b91822c404ce9fb0ab69dd",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f0598d56bb3b6a0ee15374a10ce2913e854af87f5c6845772ef505a31c0c9fa7",
-				"dweb:/ipfs/QmXH92UmaKz7qks5cXQbDae5gwnDWnAHvwmcS8vvgraA5Y"
+				"bzz-raw://27cdcc84b36b3ded02e4db7bd50c4e3ca417c57b0937b6a01a730aa405e4ed72",
+				"dweb:/ipfs/QmQSu4eRtu1YKaS5bVRNizUZn2RHnhqBqXbjM4pgoauN7U"
 			]
 		},
 		"sol-defifactory-token/interfaces/IWeth.sol": {

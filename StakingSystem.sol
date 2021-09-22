@@ -317,6 +317,7 @@ contract StakingSystem {
         Stake memory stake = stakes[stakeId];
         mainToken.mintHumanAddress(msg.sender, stake.stakedAmount);
         
+        // TODO: add interest same as in scraping
         uint interest = getInterest(stakeId, today);
         uint penalty = getPenalty(stakeId, today);
         

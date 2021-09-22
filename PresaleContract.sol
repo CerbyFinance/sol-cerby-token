@@ -5,7 +5,7 @@ pragma solidity ^0.8.7;
 import "./interfaces/ITeamFinance.sol";
 import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/IUniswapV2Factory.sol";
-import "./interfaces/IUniswapV2Pair.sol";
+import "./interfaces/IUniswapV2Router.sol";
 import "./interfaces/IWeth.sol";
 import "./openzeppelin/access/Ownable.sol";
 
@@ -102,7 +102,7 @@ contract PresaleContract is Ownable {
     Investor[] investors;
     
     mapping(address => uint) cachedIndexVesting;
-    Vesting[] vesting;
+    Vesting[] public vesting;
     
     mapping(address => uint) cachedIndexReferrals;
     Referral[] referrals;
@@ -121,11 +121,12 @@ contract PresaleContract is Ownable {
     
     /* Kovan */
     address constant UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
+    address constant UNISWAP_V2_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
     address constant USDT_TOKEN_ADDRESS = 0xec362b0EFeC60388A12A9C26071e116bFa5e3587;
     address constant WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
     uint constant USDT_DECIMALS = 6;
     address constant TEAM_FINANCE_ADDRESS = BURN_ADDRESS;
-    address constant DEFT_TOKEN_ADDRESS = 0x073ce46d328524fB3529A39d64B314aB1A594a57;
+    address constant DEFT_TOKEN_ADDRESS = 0xDBd240d23A5c3041b0f26BDd8888DEDE6f58a12A;
     
     /* Ropsten */
     /*address constant UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
@@ -226,7 +227,7 @@ contract PresaleContract is Ownable {
             address(this),
             settings.presaleName,
             totalInvestedWeth,
-            settings.maxWethCap,
+            settings.maxWethCap, // TODO: calculate max weth cap based on 5% of deft liquidity
             /*isActive:*/ totalInvestedWeth < settings.maxWethCap,
             /*isEnabled:*/ true,
             settings.website,
@@ -299,7 +300,7 @@ contract PresaleContract is Ownable {
     function claimVesting()
         external
     {
-        /*Vesting memory vest = vesting[cachedIndexVesting[msg.sender] - 1];
+        Vesting memory vest = vesting[cachedIndexVesting[msg.sender] - 1];
         require(
             block.timestamp >= vest.lockedUntilTimestamp,
             "PR: Locked period is not over yet"
@@ -316,9 +317,9 @@ contract PresaleContract is Ownable {
         );
         
         vesting[cachedIndexVesting[msg.sender] - 1].tokensClaimed += availableTokens;
-        IDefiFactoryToken(settings.tokenAddress).mintHumanAddress(msg.sender, availableTokens);*/
+        IDefiFactoryToken(settings.tokenAddress).mintHumanAddress(msg.sender, availableTokens);
         
-        IDefiFactoryToken(settings.tokenAddress).mintHumanAddress(msg.sender, 1e18);
+        //IDefiFactoryToken(settings.tokenAddress).mintHumanAddress(msg.sender, 1e18);
     }
     
     function invest(address referralAddr)
@@ -410,6 +411,8 @@ contract PresaleContract is Ownable {
         {
             tokenomics[cachedIndexTokenomics[_input.tokenomicsAddr] - 1] = _input;
         }
+        
+        createVestingIfDoesNotExist(_input.tokenomicsAddr);
     }
     
     function checkIfTokenomicsIsValid()
@@ -517,6 +520,8 @@ contract PresaleContract is Ownable {
     {
         require(state == States.AcceptingPayments, "PR: Goal is already reached!");
         
+        settings.maxWethCap = totalInvestedWeth;
+        
         changeState(States.ReachedGoal);
     }
     
@@ -549,10 +554,28 @@ contract PresaleContract is Ownable {
         IWeth iWeth = IWeth(WETH_TOKEN_ADDRESS);
         iWeth.deposit{ value: address(this).balance }();
         
-        
-        address deftAndWethPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
-            getPair(WETH_TOKEN_ADDRESS, DEFT_TOKEN_ADDRESS);
         uint amountOfWethToSwapToDeft = iWeth.balanceOf(address(this));
+        
+        
+        address[] memory path = new address[](2);
+        path[0] = WETH_TOKEN_ADDRESS;
+        path[1] = DEFT_TOKEN_ADDRESS;
+        
+        iWeth.approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
+        IWeth(DEFT_TOKEN_ADDRESS).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
+        IWeth(settings.tokenAddress).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
+        
+        IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).
+            swapExactTokensForTokensSupportingFeeOnTransferTokens(
+                amountOfWethToSwapToDeft,
+                0,
+                path,
+                address(this),
+                block.timestamp + 8640000
+            );
+        
+        /*address deftAndWethPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
+            getPair(WETH_TOKEN_ADDRESS, DEFT_TOKEN_ADDRESS);
         iWeth.transfer(deftAndWethPairContract, amountOfWethToSwapToDeft);
         
         IUniswapV2Pair iPair = IUniswapV2Pair(deftAndWethPairContract);
@@ -573,7 +596,7 @@ contract PresaleContract is Ownable {
             amount1Out, 
             address(this), 
             new bytes(0)
-        );
+        );*/
         
         changeState(States.PreparedAddLiqudity);
     }
@@ -587,20 +610,35 @@ contract PresaleContract is Ownable {
         IWeth iDeft = IWeth(DEFT_TOKEN_ADDRESS);
         uint totalInvestedDeft = iDeft.balanceOf(address(this));
         
-        uint amountOfTokensForUniswap = (totalInvestedDeft * settings.fixedPriceInDeft) / 1e18;
+        uint amountOfTokensForUniswap = (totalInvestedDeft * 1e18) / settings.fixedPriceInDeft;
         
         totalTokenSupply = (amountOfTokensForUniswap * PERCENT_DENORM) / getUniswapSupplyPercent() + 1;
         amountOfTokensForInvestors = amountOfTokensForUniswap;
         
-        iDeft.transfer(
+        IDefiFactoryToken(settings.tokenAddress).mintHumanAddress(address(this), amountOfTokensForUniswap); 
+        
+        IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).
+            addLiquidity(
+                DEFT_TOKEN_ADDRESS,
+                settings.tokenAddress,
+                totalInvestedDeft,
+                amountOfTokensForUniswap,
+                0,
+                0,
+                address(this),
+                block.timestamp + 8640000
+            );
+        
+        /*iDeft.transfer(
                 deftAndTokenPairContract, 
                 totalInvestedDeft
             );
         
+        
         IDefiFactoryToken(settings.tokenAddress).mintHumanAddress(deftAndTokenPairContract, amountOfTokensForUniswap);
         
         IUniswapV2Pair iPair = IUniswapV2Pair(deftAndTokenPairContract);
-        iPair.mint(address(this));
+        iPair.mint(address(this));*/
         
         if (TEAM_FINANCE_ADDRESS != BURN_ADDRESS)
         {
@@ -626,15 +664,14 @@ contract PresaleContract is Ownable {
         
         for(uint i = 0; i < tokenomics.length; i++)
         {
-            vesting.push(
+            vesting[cachedIndexVesting[tokenomics[i].tokenomicsAddr] - 1] =
                 Vesting(
                     tokenomics[i].tokenomicsAddr,
                     (totalTokenSupply * tokenomics[i].tokenomicsPercentage ) / PERCENT_DENORM,
                     0,
                     block.timestamp + tokenomics[i].tokenomicsLockedForXSeconds,
                     block.timestamp + tokenomics[i].tokenomicsLockedForXSeconds + tokenomics[i].tokenomicsVestedForXSeconds
-                )
-            );
+                );
         }
     }
 
@@ -648,13 +685,14 @@ contract PresaleContract is Ownable {
         {
             if (vesting[cachedIndexVesting[investorsList[i].investorAddr] - 1].tokensReserved == 0) // почему тут было <= 1 ?
             {
-                vesting[cachedIndexVesting[investorsList[i].investorAddr] - 1] = Vesting(
-                    investorsList[i].investorAddr,
-                    (amountOfTokensForInvestors * investorsList[i].wethValue ) / totalInvestedWeth,
-                    0,
-                    block.timestamp + settings.presaleLockedFor,
-                    block.timestamp + settings.presaleLockedFor + settings.presaleVestedFor
-                );
+                vesting[cachedIndexVesting[investorsList[i].investorAddr] - 1] = 
+                    Vesting(
+                        investorsList[i].investorAddr,
+                        (amountOfTokensForInvestors * investorsList[i].wethValue ) / totalInvestedWeth,
+                        0,
+                        block.timestamp + settings.presaleLockedFor,
+                        block.timestamp + settings.presaleLockedFor + settings.presaleVestedFor
+                    );
             }
         }
     }
@@ -669,13 +707,14 @@ contract PresaleContract is Ownable {
         {
             if (vesting[cachedIndexVesting[referralsList[i].referralAddr] - 1].tokensReserved == 0)
             {
-                vesting[cachedIndexVesting[referralsList[i].referralAddr] - 1] = Vesting(
-                    referralsList[i].referralAddr,
-                    (referralsList[i].earnings * amountOfTokensForInvestors) / totalInvestedWeth,
-                    0,
-                    block.timestamp + settings.referralsLockedFor,
-                    block.timestamp + settings.referralsLockedFor + settings.referralsVestedFor
-                );
+                vesting[cachedIndexVesting[referralsList[i].referralAddr] - 1] = 
+                    Vesting(
+                        referralsList[i].referralAddr,
+                        (referralsList[i].earnings * amountOfTokensForInvestors) / totalInvestedWeth,
+                        0,
+                        block.timestamp + settings.referralsLockedFor,
+                        block.timestamp + settings.referralsLockedFor + settings.referralsVestedFor
+                    );
             }
         }
     }
