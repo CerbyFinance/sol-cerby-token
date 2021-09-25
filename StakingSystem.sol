@@ -47,7 +47,7 @@ contract StakingSystem {
     Stake[] public stakes;
     uint public totalStaked;
     
-    uint constant CACHED_DAYS_INTEREST = 100;
+    uint constant CACHED_DAYS_INTEREST = 10;
     uint[] public cachedInterestPerShare;
     
     // TODO: 10days, 100 days, 1000 days snapshots
@@ -55,16 +55,17 @@ contract StakingSystem {
     // [["6000000000000000000000",200]]
     // 0x123492a8E888Ca3fe8E31cb2e34872FE0ce5309F
     
-    uint constant DAYS_IN_A_YEAR = 5;
+    uint constant MINIMUM_DAYS_FOR_HIGH_PENALTY = 2;
+    uint constant DAYS_IN_A_YEAR = 10;
     uint constant CONTROLLED_APY = 4e5; // 40%
     uint constant SHARE_PRICE_DENORM = 1e6;
     uint constant INTEREST_PER_SHARE_DENORM = 1e18;
     uint constant APY_DENORM = 1e6;
     uint constant END_STAKE_FROM = 7;
     uint constant END_STAKE_TO = 2*DAYS_IN_A_YEAR; // TODO: 5% per month penalty
-    uint constant MINIMUM_STAKE_DAYS = 3; // TODO: reduce to 1 day minimum
+    uint constant MINIMUM_STAKE_DAYS = 1;
     uint constant MAXIMUM_STAKE_DAYS = 100*DAYS_IN_A_YEAR;
-    uint constant SHARE_MULTIPLIER_NUMERATOR = 5;
+    uint constant SHARE_MULTIPLIER_NUMERATOR = 5; // 5/2 = 250% bonus max
     uint constant SHARE_MULTIPLIER_DENOMINATOR = 2;
     
     IDefiFactoryToken mainToken = IDefiFactoryToken(0x7A7492a8e888Ca3fe8e31cB2E34872FE0CE5309f);
@@ -158,6 +159,15 @@ contract StakingSystem {
     
     // TODO: send deft payout to stakers
     
+    function bulkTransferOwnership(uint[] calldata stakeIds, address newOwner)
+        public
+    {
+        for(uint i = 0; i<stakeIds.length; i++)
+        {
+            transferOwnership(stakeIds[i], newOwner);
+        }
+    }
+    
     // 0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6
     function transferOwnership(uint stakeId, address newOwner)
         public
@@ -239,13 +249,12 @@ contract StakingSystem {
         }
     }
     
-    // TODO: bulk end stake
-    function bulkStartStake(StartStake[] calldata _startStakes)
+    function bulkStartStake(StartStake[] calldata startStakes)
         public
     {
-        for(uint i; i<_startStakes.length; i++)
+        for(uint i; i<startStakes.length; i++)
         {
-            startStake(_startStakes[i]);
+            startStake(startStakes[i]);
         }
     }
     
@@ -262,11 +271,11 @@ contract StakingSystem {
         );
         require(
             _startStake.lockedForXDays >= MINIMUM_STAKE_DAYS,
-            "SS: Stake must be locked for more than MINIMUM_STAKE_DAYS" // TODO: update on production
+            "SS: Stake must be locked for more than 1 days"
         );
         require(
             _startStake.lockedForXDays <= MAXIMUM_STAKE_DAYS,
-            "SS: Stake must be locked for less than MAXIMUM_STAKE_DAYS" // TODO: update on production
+            "SS: Stake must be locked for less than 100 years"
         );
         
         updateAllSnapshots();
@@ -285,7 +294,7 @@ contract StakingSystem {
         );
         
         uint stakeId = stakes.length - 1;
-        uint sharesCount = getSharesCount(stakeId, 0);
+        uint sharesCount = getSharesCountByStake(stakes[stakeId], 0);
         dailySnapshots[today].totalShares += sharesCount;
         totalStaked += _startStake.stakedAmount;
         
@@ -297,6 +306,15 @@ contract StakingSystem {
             stakes[stakeId].lockedForXDays,
             sharesCount
         );
+    }
+    
+    function bulkEndStake(uint[] calldata stakeIds)
+        public
+    {
+        for(uint i; i<stakeIds.length; i++)
+        {
+            endStake(stakeIds[i], 0);
+        }
     }
     
     function endStake(
@@ -314,52 +332,75 @@ contract StakingSystem {
         uint today = getCurrentOneDay();
         stakes[stakeId].endDay = today;
         
-        Stake memory stake = stakes[stakeId];
-        mainToken.mintHumanAddress(msg.sender, stake.stakedAmount);
+        mainToken.mintHumanAddress(msg.sender, stakes[stakeId].stakedAmount);
         
-        // TODO: add interest same as in scraping
-        uint interest = getInterest(stakeId, today);
-        uint penalty = getPenalty(stakeId, today);
+        uint interest = getInterestByStake(stakes[stakeId], today);
+        uint penalty = getPenaltyByStake(stakes[stakeId], today, interest);
         
-        // TODO: late penalty has to cut interest too
         if (penalty > 0) 
         {
-            mainToken.burnHumanAddress(msg.sender, penalty);
+            // Calculating interest similar to scrapeStake one
+            Stake memory modifiedStakeToGetInterest = stakes[stakeId];
+            modifiedStakeToGetInterest.lockedForXDays = today - stakes[stakeId].startDay;
+            interest = getInterestByStake(modifiedStakeToGetInterest, today);
             
+            mainToken.burnHumanAddress(msg.sender, penalty);
             dailySnapshots[today].inflationAmount += penalty;
-        } 
+        }
         
         if (interest > 0)
         {
-            mainToken.mintHumanAddress(msg.sender, interest);
-            
-            uint payout = stake.stakedAmount + interest;
-            uint roi = (payout * SHARE_PRICE_DENORM) / stake.stakedAmount;
+            uint payout = stakes[stakeId].stakedAmount + interest;
+            uint roi = (payout * SHARE_PRICE_DENORM) / stakes[stakeId].stakedAmount;
             dailySnapshots[today].sharePrice = maxOfTwoUints(roi, dailySnapshots[today].sharePrice);
+            
+            mainToken.mintHumanAddress(msg.sender, interest);
         }
         
-        dailySnapshots[today].totalShares -= getSharesCount(stakeId, 0);
-        totalStaked -= stake.stakedAmount;
+        totalStaked -= stakes[stakeId].stakedAmount;
+        dailySnapshots[today].totalShares -= getSharesCountByStake(stakes[stakeId], 0);
         
         emit StakeEnded(stakeId, today, interest, penalty);
     }
     
-    function scrapeStake(uint stakeId)
+    function bulkScrapeStake(uint[] calldata stakeIds)
+        public
+    {
+        for(uint i; i<stakeIds.length; i++)
+        {
+            scrapeStake(stakeIds[i], 0);
+        }
+    }
+    
+    function scrapeStake(uint stakeId, uint _bumpDays)
         public
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
+        
+        bumpDays(_bumpDays); // TODO: remove on productio
+        updateAllSnapshots();
+        
+        uint today = getCurrentOneDay();
+        require(
+            today > MINIMUM_DAYS_FOR_HIGH_PENALTY + stakes[stakeId].startDay,
+            "SS: Scraping is available once in MINIMUM_DAYS_FOR_HIGH_PENALTY days"
+        );
+        require(
+            today < stakes[stakeId].startDay + stakes[stakeId].lockedForXDays,
+            "SS: Scraping is available once while stake is In Progress"
+        );
+        
         uint stakeAmount = stakes[stakeId].stakedAmount;
         uint lockedForXDays = stakes[stakeId].lockedForXDays;
         
-        uint today = getCurrentOneDay();
         
-        uint oldSharesCount = getSharesCount(stakeId, 0);
+        uint oldSharesCount = getSharesCountByStake(stakes[stakeId], 0);
         stakes[stakeId].lockedForXDays = today - stakes[stakeId].startDay;
-        uint newSharesCount = getSharesCount(stakeId, 0);
+        uint newSharesCount = getSharesCountByStake(stakes[stakeId], 0);
         
-        dailySnapshots[today].totalShares -= oldSharesCount - newSharesCount;
+        dailySnapshots[today].totalShares = dailySnapshots[today].totalShares - oldSharesCount + newSharesCount;
         
         emit StakeUpdated(
             stakeId, 
@@ -371,6 +412,8 @@ contract StakingSystem {
         
         uint newLockedForXDays = lockedForXDays - stakes[stakeId].lockedForXDays;
         startStake(StartStake(stakeAmount, newLockedForXDays));
+        
+        // TODO: add event stake child created???
     }
     
     function getDailySnapshotsLength()
@@ -389,18 +432,25 @@ contract StakingSystem {
         return cachedInterestPerShare.length;
     }
     
-    function getInterest(uint stakeId, uint givenDay)
+    function getInterestById(uint stakeId, uint givenDay)
+        public
+        view
+        returns (uint)
+    {
+        return getInterestByStake(stakes[stakeId], givenDay);
+    }
+    
+    function getInterestByStake(Stake memory stake, uint givenDay)
         public
         view
         returns (uint)
     {
         uint interest;
-        Stake memory stake = stakes[stakeId];
         
         uint endDay = minOfTwoUints(givenDay, stake.startDay + stake.lockedForXDays);
         endDay = minOfTwoUints(endDay, dailySnapshots.length-1);
         
-        uint sharesCount = getSharesCount(stakeId, endDay);
+        uint sharesCount = getSharesCountByStake(stake, endDay);
         
         uint startCachedDay = stake.startDay/CACHED_DAYS_INTEREST + 1; 
         uint endBeforeFirstCachedDay = minOfTwoUints(endDay, startCachedDay*CACHED_DAYS_INTEREST); 
@@ -411,6 +461,7 @@ contract StakingSystem {
             interest += (dailySnapshots[i].inflationAmount * sharesCount) / dailySnapshots[i].totalShares;
         }
         
+        // TODO: check first cached day = 0
         uint endCachedDay = endDay/CACHED_DAYS_INTEREST; 
         for(uint i = startCachedDay; i<endCachedDay; i++)
         {
@@ -431,59 +482,73 @@ contract StakingSystem {
         return interest;
     }
     
-    function getPenalty(uint stakeId, uint givenDay)
+    function getPenaltyById(uint stakeId, uint givenDay, uint interest)
         public
         view
         returns (uint)
     {
+        return getPenaltyByStake(stakes[stakeId], givenDay, interest);
+    }
+    
+    function getPenaltyByStake(Stake memory stake, uint givenDay, uint interest)
+        public
+        pure
+        returns (uint)
+    {
         /*
-        0 days served => 100% principal back
-        0-50% served --> 0-90% principal back
+        0 -- 7 days served => 10% principal back
+        7 days -- 50% served --> 10-90% principal back
         50-100% served --> 90-100% principal back
         100% + 30 days --> 100% principal back
-        100% + 30 days + 30*20 days --> 0-100% principal back
+        100% + 30 days -- 100% + 30 days + 30*20 days --> 90-10% principal back
+        > 100% + 30 days + 30*20 days --> 10% principal back
         */
         uint penalty;
-        Stake memory stake = stakes[stakeId];
         uint howManyDaysServed = givenDay - stake.startDay;
-        if (
-                0 < howManyDaysServed &&
-                howManyDaysServed <= stake.lockedForXDays / 2
-        ) {
+        
+        if (howManyDaysServed <= MINIMUM_DAYS_FOR_HIGH_PENALTY) // Stake just started or less than 7 days passed)
+        {
+            penalty = (stake.stakedAmount * 9) / 10;
+        } else if (howManyDaysServed <= stake.lockedForXDays / 2) 
+        {
             // 90-10%
             penalty = 
                 (stake.stakedAmount * 9) / 10 - 
-                (stake.stakedAmount * 8 * (howManyDaysServed - 1)) / (5 * (stake.lockedForXDays - 2));
-        } else if (
-                stake.lockedForXDays / 2 < howManyDaysServed &&
-                howManyDaysServed <= stake.lockedForXDays
-        ) {
+                (stake.stakedAmount * 8 * (howManyDaysServed - MINIMUM_DAYS_FOR_HIGH_PENALTY)) / (5 * (stake.lockedForXDays - 2));
+        } else if (howManyDaysServed <= stake.lockedForXDays) {
             // 10-0%
             penalty = 
                 stake.stakedAmount / 10 - 
                 (stake.stakedAmount * (2*howManyDaysServed - stake.lockedForXDays)) / (10 * stake.lockedForXDays);
-        } else if (
-                stake.lockedForXDays + END_STAKE_FROM < howManyDaysServed &&
-                howManyDaysServed <= stake.lockedForXDays + END_STAKE_FROM + END_STAKE_TO
-        ) {
-            // 0-90%
-            penalty = 
-                (stake.stakedAmount * 9 * (howManyDaysServed - stake.lockedForXDays - END_STAKE_FROM)) / (10 * END_STAKE_TO);
-        } else if (howManyDaysServed > stake.lockedForXDays + END_STAKE_FROM + END_STAKE_TO)
+        } else if (howManyDaysServed <= stake.lockedForXDays + END_STAKE_FROM)
         {
-            // 90%
-            penalty = (stake.stakedAmount * 9) / 10;
-        }
+            penalty = 0;
+        } else if (howManyDaysServed <= stake.lockedForXDays + END_STAKE_FROM + END_STAKE_TO) {
+            // 0-90% + interest
+            penalty = 
+                ((stake.stakedAmount + interest) * 9 * (howManyDaysServed - stake.lockedForXDays - END_STAKE_FROM)) / (10 * END_STAKE_TO);
+        } else // if (howManyDaysServed > stake.lockedForXDays + END_STAKE_FROM + END_STAKE_TO)
+        {
+            // 90% + interest
+            penalty = ((stake.stakedAmount + interest) * 9) / 10;
+        } 
         
         return penalty;
     }
     
-    function getSharesCount(uint stakeId, uint givenDay)
+    function getSharesCountById(uint stakeId, uint givenDay)
+        public
+        view
+        returns(uint)
+    {
+        return getSharesCountByStake(stakes[stakeId], givenDay);
+    }
+    
+    function getSharesCountByStake(Stake memory stake, uint givenDay)
         public
         view
         returns (uint)
     {
-        Stake memory stake = stakes[stakeId];
         require(
             dailySnapshots[stake.startDay].sharePrice > 0,
             "SS: Share price on start day is zero, wait for snapshot update"
