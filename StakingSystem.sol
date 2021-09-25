@@ -344,27 +344,39 @@ contract StakingSystem is AccessControlEnumerable {
         
         mainToken.mintHumanAddress(msg.sender, stakes[stakeId].stakedAmount);
         
-        uint interest = getInterestByStake(stakes[stakeId], today);
-        uint penalty = getPenaltyByStake(stakes[stakeId], today, interest);
-        
-        if (penalty > 0) 
-        {
-            // Calculating interest similar to scrapeStake one
+        uint interest;
+        if (
+                today < stakes[stakeId].startDay + stakes[stakeId].lockedForXDays
+        ) { // Early end stake: Calculating interest similar to scrapeStake one
             Stake memory modifiedStakeToGetInterest = stakes[stakeId];
             modifiedStakeToGetInterest.lockedForXDays = today - stakes[stakeId].startDay;
             interest = getInterestByStake(modifiedStakeToGetInterest, today);
-            
-            mainToken.burnHumanAddress(msg.sender, penalty);
-            dailySnapshots[today].inflationAmount += penalty;
+        } else { // Late or correct end stake
+            interest = getInterestByStake(stakes[stakeId], today);
         }
         
         if (interest > 0)
         {
-            uint payout = stakes[stakeId].stakedAmount + interest;
-            uint roi = (payout * SHARE_PRICE_DENORM) / stakes[stakeId].stakedAmount;
-            dailySnapshots[today].sharePrice = maxOfTwoUints(roi, dailySnapshots[today].sharePrice);
-            
             mainToken.mintHumanAddress(msg.sender, interest);
+        }
+        
+        uint penalty = getPenaltyByStake(stakes[stakeId], today, interest);
+        if (penalty > 0) 
+        {
+            mainToken.burnHumanAddress(msg.sender, penalty);
+            dailySnapshots[today].inflationAmount += penalty;
+        }
+        
+        
+        
+        uint payout = stakes[stakeId].stakedAmount + interest - penalty;
+        uint maxROI = maxOfTwoUints(
+                (payout * SHARE_PRICE_DENORM) / stakes[stakeId].stakedAmount,
+                dailySnapshots[today].sharePrice
+            );
+        if (maxROI > dailySnapshots[today].sharePrice) 
+        {
+           dailySnapshots[today].sharePrice = maxROI;
         }
         
         totalStaked -= stakes[stakeId].stakedAmount;
