@@ -2,6 +2,7 @@
 
 pragma solidity ^0.8.7;
 
+import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 interface IDefiFactoryToken {
     
@@ -41,7 +42,7 @@ struct StartStake {
     uint lockedForXDays;
 }
 
-contract StakingSystem {
+contract StakingSystem is AccessControlEnumerable {
     DailySnapshot[] public dailySnapshots;
     
     Stake[] public stakes;
@@ -111,6 +112,7 @@ contract StakingSystem {
         uint sealedCachedDay, 
         uint cachedInterestPerShare
     );
+    
     constructor() 
     {
         launchTimestamp = block.timestamp - 2 minutes; // TODO: remove on production
@@ -127,6 +129,7 @@ contract StakingSystem {
         ));
         
         cachedInterestPerShare.push(0);
+        _setupRole(ROLE_ADMIN, msg.sender);
     }
     
     modifier onlyStakeOwners(uint stakeId)
@@ -156,8 +159,15 @@ contract StakingSystem {
         _;
     }
     
-    
-    // TODO: send deft payout to stakers
+    function adminBurnAndAddToStakersInflation(address fromAddr, uint amountToBurn)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        mainToken.burnHumanAddress(fromAddr, amountToBurn);
+        
+        uint today = getCurrentOneDay();
+        dailySnapshots[today].inflationAmount += amountToBurn;
+    }
     
     function bulkTransferOwnership(uint[] calldata stakeIds, address newOwner)
         public
@@ -461,7 +471,6 @@ contract StakingSystem {
             interest += (dailySnapshots[i].inflationAmount * sharesCount) / dailySnapshots[i].totalShares;
         }
         
-        // TODO: check first cached day = 0
         uint endCachedDay = endDay/CACHED_DAYS_INTEREST; 
         for(uint i = startCachedDay; i<endCachedDay; i++)
         {
@@ -500,8 +509,8 @@ contract StakingSystem {
         7 days -- 50% served --> 10-90% principal back
         50-100% served --> 90-100% principal back
         100% + 30 days --> 100% principal back
-        100% + 30 days -- 100% + 30 days + 30*20 days --> 90-10% principal back
-        > 100% + 30 days + 30*20 days --> 10% principal back
+        100% + 30 days -- 100% + 30 days + 30*20 days --> 100-10% (principal+interest) back
+        > 100% + 30 days + 30*20 days --> 10% (principal+interest) back
         */
         uint penalty;
         uint howManyDaysServed = givenDay - stake.startDay;
