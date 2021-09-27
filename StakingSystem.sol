@@ -56,7 +56,7 @@ contract StakingSystem is AccessControlEnumerable {
     // [["6000000000000000000000",200]]
     // 0x123492a8E888Ca3fe8E31cb2e34872FE0ce5309F
     
-    uint constant MINIMUM_DAYS_FOR_HIGH_PENALTY = 2;
+    uint constant MINIMUM_DAYS_FOR_HIGH_PENALTY = 0;
     uint constant DAYS_IN_A_YEAR = 10;
     uint constant CONTROLLED_APY = 4e5; // 40%
     uint constant SHARE_PRICE_DENORM = 1e6;
@@ -407,11 +407,11 @@ contract StakingSystem is AccessControlEnumerable {
         uint today = getCurrentOneDay();
         require(
             today > MINIMUM_DAYS_FOR_HIGH_PENALTY + stakes[stakeId].startDay,
-            "SS: Scraping is available once in MINIMUM_DAYS_FOR_HIGH_PENALTY days"
+            "SS: Scraping is available once in a day"
         );
         require(
             today < stakes[stakeId].startDay + stakes[stakeId].lockedForXDays,
-            "SS: Scraping is available once while stake is In Progress"
+            "SS: Scraping is available once while stake is In Progress status"
         );
         
         uint stakeAmount = stakes[stakeId].stakedAmount;
