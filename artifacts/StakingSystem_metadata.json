@@ -1101,18 +1101,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0xa11a1fa40727bef82b144b75ae9ef0058d0d1abff8b80cfbcc7feabfcdbcdbf5",
+			"keccak256": "0x0ff870325aafe30ac5463770177fcc5d30f7f6c123370ed6d4222c938f7790c6",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://0ce7b965fbbbb02751f67194af1362ce2c51cca895910001292f821b64b6c09e",
-				"dweb:/ipfs/QmRn47EDPEPZRTLgvfG8jjk1fHYfjyraT6fhzrgcF52WuD"
+				"bzz-raw://e673851ae983d97836e4f26e8700ee88ccc940732018496abfa53c83dfc4e043",
+				"dweb:/ipfs/QmcS2RSHYDL1wBL58qqz6Xp9KK5Cy1m2Jr1K7SW3Q2Dm2E"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
