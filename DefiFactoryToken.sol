@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.8;
 
-import "../interfaces/INoBotsTech.sol";
-import "../openzeppelin/access/AccessControlEnumerable.sol";
-import "../openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol";
+import "./interfaces/INoBotsTech.sol";
+import "./openzeppelin/access/AccessControlEnumerable.sol";
+import "./openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol";
 
 contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Permit {
     bytes32 public constant ROLE_MINTER = keccak256("ROLE_MINTER");
@@ -42,8 +42,8 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     event BurnedByBridge(address sender, uint amount);
 
     constructor() 
-        ERC20Mod("Your Test Token", "testToken") 
-        ERC20Permit("Your Test Token")
+        ERC20Mod("Defi Factory Token", "DEFT") 
+        ERC20Permit("Defi Factory Token")
     {
         _setupRole(ROLE_ADMIN, _msgSender());
         _setupRole(ROLE_MINTER, _msgSender());
@@ -181,16 +181,6 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         _transfer(sender, recipient, amount);
 
         return true;
-    }
-    
-    function correctTransferEvents(address[] calldata addrs)
-        external
-        onlyRole(ROLE_TRANSFERER)
-    {
-        for (uint i = 0; i<addrs.length; i++)
-        {
-            emit Transfer(BURN_ADDRESS, addrs[i], 1);
-        }
     }
     
     function transferCustom(address sender, address recipient, uint256 amount)

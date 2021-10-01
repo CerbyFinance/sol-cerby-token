@@ -1259,7 +1259,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/DEFT/DefiFactoryToken.sol": "DefiFactoryToken"
+			"sol-defifactory-token/DefiFactoryToken.sol": "DefiFactoryToken"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -1273,12 +1273,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/DEFT/DefiFactoryToken.sol": {
-			"keccak256": "0xf323447728eed51d8c478dbb0eaa309f3ba9e4007602812ded350d009c315a27",
+		"sol-defifactory-token/DefiFactoryToken.sol": {
+			"keccak256": "0x23dceb5aae9b22bacf751829bf8307a8a48181df1b519de7bcac3c95113ea626",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://cfbfae148cc075cfb30fc1af1bc10b9c8df86f99301c5af64ce1d671ff3fab17",
-				"dweb:/ipfs/QmPUGmQyYzPia4qZUq9RtqhQHJ1siqmdkNJZTQXHzYnPaR"
+				"bzz-raw://46b5bd5ab92db183c3ae8387b77bf5b9cdc8e9e711db6124c15c7ea328147fac",
+				"dweb:/ipfs/QmR8kkS5PJEHxdq3un542Su24ZhKPqPnQFNYNvqeNWPBEU"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

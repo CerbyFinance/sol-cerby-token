@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.8;
 
 struct TaxAmountsInput {
     address sender;
@@ -14,10 +14,6 @@ struct TaxAmountsOutput {
     uint recipientRealBalance;
     uint burnAndRewardAmount;
     uint recipientGetsAmount;
-}
-struct TemporaryReferralRealAmountsBulk {
-    address addr;
-    uint realBalance;
 }
 
 interface INoBotsTech {
@@ -34,11 +30,6 @@ interface INoBotsTech {
     
     function updateSupply(uint _realTotalSupply, uint _rewardsBalance)
         external;
-        
-    function getTemporaryReferralRealAmountsBulk(address[] calldata addrs)
-        external
-        view
-        returns (TemporaryReferralRealAmountsBulk[] memory);
         
     function prepareHumanAddressMintOrBurnRewardsAmounts(bool isMint, address account, uint desiredAmountToMintOrBurn)
         external
@@ -67,22 +58,6 @@ interface INoBotsTech {
     function grantRole(bytes32 role, address account) 
         external;
         
-    function getCalculatedReferrerRewards(address addr, address[] calldata referrals)
-        external
-        view
-        returns (uint);
-        
-    function getCachedReferrerRewards(address addr)
-        external
-        view
-        returns (uint);
-    
-    function updateReferrersRewards(address[] calldata referrals)
-        external;
-    
-    function clearReferrerRewards(address addr)
-        external;
-    
     function chargeCustomTax(uint taxAmount, uint accountBalance)
         external
         returns (uint);
@@ -91,20 +66,7 @@ interface INoBotsTech {
         external
         returns (uint);
         
-    function registerReferral(address referral, address referrer)
-        external;
-        
-    function filterNonZeroReferrals(address[] calldata referrals)
-        external
-        view
-        returns (address[] memory);
-        
     function publicForcedUpdateCacheMultiplier()
         external;
     
-    event MultiplierUpdated(uint newMultiplier);
-    event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);
-    event ReferrerRewardUpdated(address referrer, uint amount);
-    event ReferralRegistered(address referral, address referrer);
-    event ReferrerReplaced(address referral, address referrerFrom, address referrerTo);
 }
