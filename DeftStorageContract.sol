@@ -24,10 +24,12 @@ contract DeftStorageContract is AccessControlEnumerable {
     uint constant BALANCE_DENORM = 1e18;
     
     uint constant ETH_MAINNET_CHAIN_ID = 1;
+    uint constant BSC_MAINNET_CHAIN_ID = 56;
+    uint constant POLYGON_MAINNET_CHAIN_ID = 137;
+    
+    uint constant BSC_TESTNET_CHAIN_ID = 97;
     uint constant ETH_ROPSTEN_CHAIN_ID = 3;
     uint constant ETH_KOVAN_CHAIN_ID = 42;
-    uint constant BSC_MAINNET_CHAIN_ID = 56;
-    uint constant BSC_TESTNET_CHAIN_ID = 97;
     
     constructor() {
         
@@ -102,13 +104,13 @@ contract DeftStorageContract is AccessControlEnumerable {
         markAddressAsHuman(0x27239549DD40E1D60F5B80B0C4196923745B1FD2, true); // 1inch Helper
         markAddressAsHuman(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // TeamVestingContract
         markAddressAsHuman(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, true); // DefiFactoryContract
+        markAddressAsHuman(0x881D40237659C251811CEC9c364ef91dC08D300C, true); // Metamask Swap Router
+        markAddressAsHuman(0x74de5d4FCbf63E00296fd95d33236B9794016631, true); // metamask router wallet
+        markAddressAsHuman(0xe122d2E14d35d794C977b4d6924232CAe7c8DbB5, true); // metamask fees
         
             
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
-            markAddressAsHuman(0x881D40237659C251811CEC9c364ef91dC08D300C, true); // Metamask Swap Router
-            markAddressAsHuman(0x74de5d4FCbf63E00296fd95d33236B9794016631, true); // metamask router wallet
-            markAddressAsHuman(0xe122d2E14d35d794C977b4d6924232CAe7c8DbB5, true); // metamask fees
             markAddressAsHuman(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D, true); // uniswap router v2
             markPairAsDeftEthPair(0xFa6687922BF40FF51Bcd45F9FD339215a4869D82, true); // [deft, weth] uniswap pair
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
@@ -116,6 +118,11 @@ contract DeftStorageContract is AccessControlEnumerable {
             markAddressAsHuman(0x10ED43C718714eb63d5aA57B78B54704E256024E, true); // pancake router v2
             markPairAsDeftEthPair(0x077324B361272dde2D757f8Ec6Eb59daAe794519, true); // [deft, wbnb] pancake pair
             markPairAsDeftEthPair(0x493E990CcC67F59A3000EfFA9d5b1417D54B6f99, true); // [deft, busd] pancake pair
+        } else if (block.chainid == POLYGON_MAINNET_CHAIN_ID)
+        {
+            markAddressAsHuman(0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff, true); // quick router v2
+            markPairAsDeftEthPair(0x3bcb4ED7132E2f1B7b0fa9966663F24b8210f8b6, true); // [deft, wmatic] quick pair
+            markPairAsDeftEthPair(0xF92b726b10956ff95EbABDd6fd92d180d1e920DA, true); // [deft, usdc] quick pair
         }
     }
     

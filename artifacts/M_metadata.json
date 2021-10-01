@@ -273,7 +273,7 @@
 							}
 						],
 						"indexed": false,
-						"internalType": "struct DefiFactoryToken.AccessSettings[]",
+						"internalType": "struct M.AccessSettings[]",
 						"name": "accessSettings",
 						"type": "tuple[]"
 					}
@@ -1168,7 +1168,7 @@
 								"type": "address"
 							}
 						],
-						"internalType": "struct DefiFactoryToken.AccessSettings[]",
+						"internalType": "struct M.AccessSettings[]",
 						"name": "accessSettings",
 						"type": "tuple[]"
 					}
@@ -1259,7 +1259,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/MintableBurnableToken.sol": "DefiFactoryToken"
+			"sol-defifactory-token/MintableBurnableToken.sol": "M"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -1274,11 +1274,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/MintableBurnableToken.sol": {
-			"keccak256": "0xecd372fe181940c009314a1404a531da03c471798ac055f585ec75f0fc364257",
+			"keccak256": "0x023345fb798ddb2c306a2b6cf6f33a0df8ee0f4307b0f4e5d6e75c96d3e627e3",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e118d8d0370d7f7205f32847a1c041eac922b90f72a73ed2d5fe7a6f97875010",
-				"dweb:/ipfs/QmW7AppKtH7JZRbjHSaWcUztkmGLGjasoTGYBfJQpH49Nj"
+				"bzz-raw://eae289232cb0377ce770dccd2b831945285885c2c2614c08407657e68aeded80",
+				"dweb:/ipfs/QmPHjekvdfEQrGs3cf5NvAYF8PfrQKgpGAxEtb8WKXTywv"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {

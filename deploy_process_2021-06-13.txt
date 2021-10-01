@@ -23,3 +23,13 @@ Bsc:
     [false, false, false, false, false, "0x077324B361272dde2D757f8Ec6Eb59daAe794519"],
     [true, true, false, false, true, "0x1d2900622B5049D9479DC8BE06469A4ede3Fc96e"]
 ]
+
+Poly:
+[
+    [true, true, false, false, true, "0x1EE133d3CC3fD5795DD4014579A36A6b7900102e"],
+    [true, true, false, false, false, "0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9"],
+    [false, false, false, false, false, "0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32"],
+    [false, false, false, false, false, "0x1Ebd5EDe5aAaFaDb35b597346B39a5c1814Aa8Ef"],
+    [false, false, false, false, false, "0xF92b726b10956ff95EbABDd6fd92d180d1e920DA"],
+    [true, true, false, false, true, "0x1d2900622B5049D9479DC8BE06469A4ede3Fc96e"]
+]

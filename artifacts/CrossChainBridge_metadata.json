@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.8+commit.dddeac2f"
 	},
 	"language": "Solidity",
 	"output": {
@@ -314,25 +314,20 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "",
+						"name": "tokenAddr",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "",
+						"name": "destinationChainId",
 						"type": "uint256"
 					}
 				],
-				"name": "directionSettings",
+				"name": "getFeeDependingOnDestinationChainId",
 				"outputs": [
 					{
-						"internalType": "bool",
-						"name": "isAllowedDirection",
-						"type": "bool"
-					},
-					{
 						"internalType": "uint256",
-						"name": "amountAsFee",
+						"name": "",
 						"type": "uint256"
 					}
 				],
@@ -626,24 +621,12 @@
 						"type": "uint256"
 					},
 					{
-						"components": [
-							{
-								"internalType": "bool",
-								"name": "isAllowedDirection",
-								"type": "bool"
-							},
-							{
-								"internalType": "uint256",
-								"name": "amountAsFee",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct DirectionSettings",
-						"name": "_directionSettings",
-						"type": "tuple"
+						"internalType": "uint256",
+						"name": "amountAsFee",
+						"type": "uint256"
 					}
 				],
-				"name": "updateDirectionSettings",
+				"name": "updateFeeDependingOnDestinationChainId",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -695,18 +678,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0x575b0afcada4e8cf41515f0bf81405c614059cc4d605e3802379d46ca9a44b6c",
+			"keccak256": "0x23d1ce18d5bdf62fd3ed7188120613f83f04459adffe1b7f0e7118fdc2165d9e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://67fef6240ee292e1249030c53d66b97232969b0377fc3a2c3b8e7ee45c77b014",
-				"dweb:/ipfs/QmUYtULtFtvhUsdPGkiE65hzZN3q3FXkfU9FpcPqGuKdK5"
+				"bzz-raw://4ac8857a4c85482940495a15ef87ebb5f1dfc5cbf5a226903c295b84f1c80937",
+				"dweb:/ipfs/QmXAe4ZAYcV2jjKrJ9wKiHqDtM5epHkqt7HbZmoSZXC84H"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

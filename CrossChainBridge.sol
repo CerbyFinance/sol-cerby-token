@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.8;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./interfaces/IDefiFactoryToken.sol";
@@ -7,10 +7,6 @@ import "./interfaces/IDeftStorageContract.sol";
 import "./interfaces/IUniswapV2Factory.sol";
 import "./interfaces/IUniswapV2Pair.sol";
 
-struct DirectionSettings {
-    bool isAllowedDirection;
-    uint amountAsFee;
-}
 
 contract CrossChainBridge is AccessControlEnumerable {
     event ProofOfBurn(address addr, address token, uint amount, uint amountAsFee, uint currentNonce, uint sourceChain, uint destinationChain, bytes32 transactionHash);
@@ -33,7 +29,7 @@ contract CrossChainBridge is AccessControlEnumerable {
     mapping(address => uint) public currentNonce;
     address public beneficiaryAddress;
     
-    mapping(address => mapping (uint => DirectionSettings)) public directionSettings;
+    mapping(address => mapping (uint => uint)) feeDependingOnDestinationChainId;
     
     uint constant ETH_MAINNET_CHAIN_ID = 1;
     uint constant ETH_ROPSTEN_CHAIN_ID = 3;
@@ -58,8 +54,6 @@ contract CrossChainBridge is AccessControlEnumerable {
         _setupRole(ROLE_APPROVER, msg.sender);
         _setupRole(ROLE_APPROVER, APPROVER_WALLET);
         
-        //_setupRole(ROLE_ADMIN, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
-        //_setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
         
         beneficiaryAddress = APPROVER_WALLET;
         
@@ -67,34 +61,47 @@ contract CrossChainBridge is AccessControlEnumerable {
         /* Testnet */
         if (block.chainid == ETH_KOVAN_CHAIN_ID)
         {
-            directionSettings[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_TESTNET_CHAIN_ID] = DirectionSettings(true, 1e23); // allow to bridge to bsc
+            _setupRole(ROLE_ADMIN, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
+            _setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
+            
+            feeDependingOnDestinationChainId[0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248][BSC_TESTNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to bsc
         } else if (block.chainid == BSC_TESTNET_CHAIN_ID)
         {
-            directionSettings[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_KOVAN_CHAIN_ID] = DirectionSettings(true, 15e23); // allow to bridge to eth
+            _setupRole(ROLE_ADMIN, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
+            _setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
+            
+            feeDependingOnDestinationChainId[0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248][ETH_KOVAN_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
         }
         
         /* MAINNET */
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
-            directionSettings[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = DirectionSettings(true, 1e23); // allow to bridge to bsc
-            directionSettings[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = DirectionSettings(true, 1e23); // allow to bridge to polygon
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to bsc
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to polygon
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
-            directionSettings[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = DirectionSettings(true, 15e23); // allow to bridge to eth
-            directionSettings[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = DirectionSettings(true, 1e23); // allow to bridge to polygon
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to polygon
         } else if (block.chainid == MATIC_MAINNET_CHAIN_ID)
         {
-            directionSettings[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = DirectionSettings(true, 15e23); // allow to bridge to eth
-            directionSettings[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = DirectionSettings(true, 1e23); // allow to bridge to bsc
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to bsc
         }
     }
     
+    function getFeeDependingOnDestinationChainId(address tokenAddr, uint destinationChainId)
+        public
+        view
+        returns(uint)
+    {
+        return feeDependingOnDestinationChainId[tokenAddr][destinationChainId];
+    }
     
-    function updateDirectionSettings(address token, uint chainId, DirectionSettings calldata _directionSettings)
+    function updateFeeDependingOnDestinationChainId(address token, uint chainId, uint amountAsFee)
         external
         onlyRole(ROLE_ADMIN)
     {
-        directionSettings[token][chainId] = _directionSettings;
+        feeDependingOnDestinationChainId[token][chainId] = amountAsFee;
     }
     
     function updateBeneficiaryAddress(address newBeneficiaryAddr)
@@ -149,6 +156,12 @@ contract CrossChainBridge is AccessControlEnumerable {
             "CCB: Provided hash is invalid"
         );
         
+        uint amountAsFeeHasToBeLargerThanZero = feeDependingOnDestinationChainId[sourceProofOfBurn.sourceTokenAddr][sourceProofOfBurn.sourceChainId];
+        require(
+            amountAsFeeHasToBeLargerThanZero > 0,
+            "CCB: Destination is forbidden (mint)"
+        );
+        
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(sourceProofOfBurn.sourceTokenAddr);
         IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
             iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
@@ -164,7 +177,6 @@ contract CrossChainBridge is AccessControlEnumerable {
         uint finalAmount = sourceProofOfBurn.amountToBridge - amountAsFee; 
         
         iDefiFactoryToken.mintByBridge(msg.sender, finalAmount);
-        iDefiFactoryToken.mintByBridge(beneficiaryAddress, amountAsFee);
         
         emit ProofOfMint(msg.sender, sourceProofOfBurn.sourceTokenAddr, amountAsFee, finalAmount, transactionHash);
     }
@@ -181,13 +193,14 @@ contract CrossChainBridge is AccessControlEnumerable {
             block.chainid != destinationChainId,
             "CCB: Destination chain must be different from current chain"
         );
-        require(
-            directionSettings[token][destinationChainId].isAllowedDirection,
-            "CCB: Destination chain is not allowed"
-        );
         
+        uint amountAsFee = feeDependingOnDestinationChainId[token][destinationChainId];
         require(
-            amount > directionSettings[token][destinationChainId].amountAsFee,
+            amountAsFee > 0,
+            "CCB: Destination is forbidden (burn)"
+        );
+        require(
+            amount > amountAsFee,
             "CCB: Amount is lower than the minimum permitted amount"
         );
         
@@ -200,14 +213,15 @@ contract CrossChainBridge is AccessControlEnumerable {
         );
         
         bytes32 transactionHash = keccak256(abi.encodePacked(
-                msg.sender, token, amount, directionSettings[token][destinationChainId].amountAsFee, block.chainid, destinationChainId, currentNonce[token]
+                msg.sender, token, amount, amountAsFee, block.chainid, destinationChainId, currentNonce[token]
             ));
             
         transactionStorage[transactionHash] = States.Burned;
         
         iDefiFactoryToken.burnByBridge(msg.sender, amount);
+        iDefiFactoryToken.mintHumanAddress(beneficiaryAddress, amountAsFee);
         
-        emit ProofOfBurn(msg.sender, token, amount, directionSettings[token][destinationChainId].amountAsFee, currentNonce[token], block.chainid, destinationChainId, transactionHash);
+        emit ProofOfBurn(msg.sender, token, amount, amountAsFee, currentNonce[token], block.chainid, destinationChainId, transactionHash);
         currentNonce[token]++;
     }
 }

@@ -6,6 +6,7 @@
 	"output": {
 		"abi": [],
 		"devdoc": {
+			"details": "String operations.",
 			"kind": "dev",
 			"methods": {},
 			"version": 1
@@ -18,7 +19,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/Flat_DefiFactoryToken.sol": "Context"
+			"sol-defifactory-token/Flat_DefiFactoryToken.sol": "Strings"
 		},
 		"evmVersion": "london",
 		"libraries": {},

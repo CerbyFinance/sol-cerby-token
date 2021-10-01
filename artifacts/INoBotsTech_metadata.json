@@ -1,19 +1,85 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.8+commit.dddeac2f"
 	},
 	"language": "Solidity",
 	"output": {
 		"abi": [
 			{
+				"inputs": [],
+				"name": "botTaxPercent",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taxAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "accountBalance",
+						"type": "uint256"
+					}
+				],
+				"name": "chargeCustomTax",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "taxAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "accountBalance",
+						"type": "uint256"
+					}
+				],
+				"name": "chargeCustomTaxTeamVestingContract",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "account",
 						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "accountBalance",
+						"type": "uint256"
 					}
 				],
-				"name": "balanceOf",
+				"name": "getBalance",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -28,44 +94,178 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "from",
+						"name": "account",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "amount",
+						"name": "accountBalance",
 						"type": "uint256"
 					}
 				],
-				"name": "burnHumanAddress",
+				"name": "getRealBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "accountBalance",
+						"type": "uint256"
+					}
+				],
+				"name": "getRealBalanceTeamVestingContract",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getTotalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "grantRole",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "cachedMultiplier",
-				"outputs": [
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "isMint",
+						"type": "bool"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
 					{
 						"internalType": "uint256",
-						"name": "",
+						"name": "desiredAmountToMintOrBurn",
 						"type": "uint256"
 					}
 				],
-				"stateMutability": "view",
+				"name": "prepareHumanAddressMintOrBurnRewardsAmounts",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "realAmountToMintOrBurn",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "sender",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "recipient",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "transferAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "senderRealBalance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "recipientRealBalance",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct TaxAmountsInput",
+						"name": "taxAmountsInput",
+						"type": "tuple"
+					}
+				],
+				"name": "prepareTaxAmounts",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "senderRealBalance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "recipientRealBalance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "burnAndRewardAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "recipientGetsAmount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct TaxAmountsOutput",
+						"name": "taxAmountsOutput",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "realTotalSupply",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
+				"name": "publicForcedUpdateCacheMultiplier",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -85,19 +285,6 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_realTotalSupply",
-						"type": "uint256"
-					}
-				],
-				"name": "updateTotalSupply",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -113,7 +300,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/NoBotsMigration.sol": "INoBotsTech"
+			"sol-defifactory-token/Flat_DefiFactoryToken.sol": "INoBotsTech"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -122,25 +309,17 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 5
+			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/NoBotsMigration.sol": {
-			"keccak256": "0x9713a697c591508d5c8a8a6a4641480071ae591dcb3c46af87aa7d4c04ce91e4",
-			"license": "BUSL-1.1",
-			"urls": [
-				"bzz-raw://753eb74741b92f198b0feb177cc621c3a5a69e2ab62a373253bb0db623222e6e",
-				"dweb:/ipfs/QmTtpeSPMrbXH5aorWw7ZjC8wncGrRz3Weu9KDzkZ7UyVa"
-			]
-		},
-		"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
-			"keccak256": "0x8b11d0b070b3ea821880b21c336186d619892cd92cb90f05a9defebef8836624",
+		"sol-defifactory-token/Flat_DefiFactoryToken.sol": {
+			"keccak256": "0xed3a266ae4b9ab4317b2d7f173ff072691c26ce69e41e56b6a6aaa30e9c70cd6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f0598d56bb3b6a0ee15374a10ce2913e854af87f5c6845772ef505a31c0c9fa7",
-				"dweb:/ipfs/QmXH92UmaKz7qks5cXQbDae5gwnDWnAHvwmcS8vvgraA5Y"
+				"bzz-raw://b9d50d6aec7c27399e509506cee5162c70d53ac3cbca6b457ae0ec8be91c6f93",
+				"dweb:/ipfs/QmQZULgzLczxpDXBvyhDabAhCNXogZ9DjAfByEbukg2Thd"
 			]
 		}
 	},
