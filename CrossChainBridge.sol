@@ -4,8 +4,6 @@ pragma solidity ^0.8.8;
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/IDeftStorageContract.sol";
-import "./interfaces/IUniswapV2Factory.sol";
-import "./interfaces/IUniswapV2Pair.sol";
 
 
 contract CrossChainBridge is AccessControlEnumerable {
