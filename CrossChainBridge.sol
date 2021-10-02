@@ -59,7 +59,7 @@ contract CrossChainBridge is AccessControlEnumerable {
         
         
         /* Testnet */
-        if (block.chainid == ETH_KOVAN_CHAIN_ID)
+        /*if (block.chainid == ETH_KOVAN_CHAIN_ID)
         {
             _setupRole(ROLE_ADMIN, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
             _setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
@@ -71,7 +71,7 @@ contract CrossChainBridge is AccessControlEnumerable {
             _setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
             
             feeDependingOnDestinationChainId[0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248][ETH_KOVAN_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
-        }
+        }*/
         
         /* MAINNET */
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
