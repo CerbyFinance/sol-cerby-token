@@ -1259,7 +1259,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/MintableBurnableToken.sol": "DefiFactoryToken"
+			"sol-defifactory-token/DefiFactoryToken.sol": "DefiFactoryToken"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -1273,12 +1273,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/MintableBurnableToken.sol": {
-			"keccak256": "0xecd372fe181940c009314a1404a531da03c471798ac055f585ec75f0fc364257",
+		"sol-defifactory-token/DefiFactoryToken.sol": {
+			"keccak256": "0x23dceb5aae9b22bacf751829bf8307a8a48181df1b519de7bcac3c95113ea626",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e118d8d0370d7f7205f32847a1c041eac922b90f72a73ed2d5fe7a6f97875010",
-				"dweb:/ipfs/QmW7AppKtH7JZRbjHSaWcUztkmGLGjasoTGYBfJQpH49Nj"
+				"bzz-raw://46b5bd5ab92db183c3ae8387b77bf5b9cdc8e9e711db6124c15c7ea328147fac",
+				"dweb:/ipfs/QmR8kkS5PJEHxdq3un542Su24ZhKPqPnQFNYNvqeNWPBEU"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
