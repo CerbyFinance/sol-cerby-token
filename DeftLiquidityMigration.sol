@@ -12,12 +12,16 @@ import "./interfaces/IWeth.sol";
 
 contract DeftLiquidityMigration {
     
+    address owner;
     address constant UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
     address constant UNISWAP_V2_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
-    address constant WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
-    uint constant DENORM = 1e18;
     
-    address owner;
+    /* Mainnet
+    address constant WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+    address constant DEFT_TOKEN_ADDRESS = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;*/
+    
+    /* Kovan */
+    address constant WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
     address constant DEFT_TOKEN_ADDRESS = 0x7A7492a8e888Ca3fe8e31cB2E34872FE0CE5309f;
     
     constructor() {
@@ -32,6 +36,7 @@ contract DeftLiquidityMigration {
         _;
     }
     
+    uint constant DENORM = 1e18;
     function getPrice()
         public
         view
@@ -72,7 +77,7 @@ contract DeftLiquidityMigration {
             amountToMint,
             0,
             path,
-            address(this),
+            owner,
             block.timestamp + 365 days
         );
         uint finalWethBalance = IWeth(WETH_TOKEN_ADDRESS).balanceOf(pairAddr);
