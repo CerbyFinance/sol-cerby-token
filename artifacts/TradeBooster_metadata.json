@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.8+commit.dddeac2f"
 	},
 	"language": "Solidity",
 	"output": {
@@ -501,7 +501,7 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 5
+			"runs": 200
 		},
 		"remappings": []
 	},
@@ -515,19 +515,19 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x5d5d5d1febdb2bc5dd3ead637f5de494dc870b67b9d5f4ceaf67e5904a2c15cc",
+			"keccak256": "0x66d5ab7fd3243597df6ed32828230154327dffcbf9f4dd3a30a998728ad45d76",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://feb4cbcb41635d19deac5104015c71b8b3aa2a9bb8dbbb5c9b6546017c6f72b4",
-				"dweb:/ipfs/QmahjHAdoZn8pBiHgcdpyRvNPYZTGmYqNKzwrwqYJ7tX8L"
+				"bzz-raw://25ea6cc145dd2b7c22d8f1496e4e60fb67313f641bff21eb97d8db17062649d1",
+				"dweb:/ipfs/QmUBx9qi5tmFcHe3HpaTSSfW3xxoNy7y751G7NSGqg2SrB"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
-			"keccak256": "0xc46dd8f6bdd249c1051c1179747d8e3c14828897afc65429fca073cc397a1982",
+			"keccak256": "0xd18065280d57f7a855e3b3cb371afc1b170f4eed6dd0488fdda1f8cbddf561ed",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://28e7ff48a9c26ee2f8992ddeb5493ecc4ff5fd0ee77bc97a0189346012138803",
-				"dweb:/ipfs/QmYbRZ8RLNQLN81teuYwd1CQ9ahcRmBR2UN4r4AxYYnYMd"
+				"bzz-raw://d399593010fe566d8620cecbcc2aa42a117f0cb56cdace6324640f7fbf8c970a",
+				"dweb:/ipfs/QmQUZHbVeLiFHpZHgdVTru6MnigNvjgtqizbpaBE98Dp9D"
 			]
 		},
 		"sol-defifactory-token/interfaces/IShit.sol": {

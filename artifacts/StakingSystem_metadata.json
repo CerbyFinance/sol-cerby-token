@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.8+commit.dddeac2f"
 	},
 	"language": "Solidity",
 	"output": {
@@ -1108,11 +1108,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0x0ff870325aafe30ac5463770177fcc5d30f7f6c123370ed6d4222c938f7790c6",
+			"keccak256": "0x9db80f6645e6f6824112fb213916e8fe5b83e8faedd7541eae0fffe07655c1f7",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://e673851ae983d97836e4f26e8700ee88ccc940732018496abfa53c83dfc4e043",
-				"dweb:/ipfs/QmcS2RSHYDL1wBL58qqz6Xp9KK5Cy1m2Jr1K7SW3Q2Dm2E"
+				"bzz-raw://03bc61be9c299dbc19092bbbc480542c42bc66ddf61f03e9dbfe2ea28e0e2423",
+				"dweb:/ipfs/QmWDASbu94MYhkCX8rUbf4j1CSDrxWBHgW3BmiQyuBHUat"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

@@ -56,6 +56,8 @@ contract StakingSystem is AccessControlEnumerable {
     // [["6000000000000000000000",200]]
     // 0x123492a8E888Ca3fe8E31cb2e34872FE0ce5309F
     
+    
+    // TODO: update apy variables
     uint constant MINIMUM_DAYS_FOR_HIGH_PENALTY = 0;
     uint constant DAYS_IN_A_YEAR = 10;
     uint constant CONTROLLED_APY = 4e5; // 40%
@@ -69,7 +71,9 @@ contract StakingSystem is AccessControlEnumerable {
     uint constant SHARE_MULTIPLIER_NUMERATOR = 5; // 5/2 = 250% bonus max
     uint constant SHARE_MULTIPLIER_DENOMINATOR = 2;
     
-    IDefiFactoryToken mainToken = IDefiFactoryToken(0x7A7492a8e888Ca3fe8e31cB2E34872FE0CE5309f);
+    IDefiFactoryToken mainToken = IDefiFactoryToken(
+        0x7A7492a8e888Ca3fe8e31cB2E34872FE0CE5309f // TODO: change to deft token on production
+    );
     
     uint launchTimestamp;
     uint currentDay = 2; // TODO: remove on production

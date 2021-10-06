@@ -11,32 +11,8 @@
 				"type": "constructor"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "amountToMint",
-						"type": "uint256"
-					}
-				],
-				"name": "destroyLambo",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "amountToMint",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "wallet",
-						"type": "address"
-					}
-				],
-				"name": "getAmountWalletWillReceive",
+				"inputs": [],
+				"name": "getPrice",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -45,6 +21,19 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amountToMint",
+						"type": "uint256"
+					}
+				],
+				"name": "migrateDeft",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -65,7 +54,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/LamboDestroyer.sol": "LamboDestroyer"
+			"sol-defifactory-token/DeftLiquidityMigration.sol": "DeftLiquidityMigration"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -79,12 +68,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/LamboDestroyer.sol": {
-			"keccak256": "0x903fb988bcd80d9c7721fbab3fd19ddf700da3e5d3c8f33f6efa553e67313fa1",
+		"sol-defifactory-token/DeftLiquidityMigration.sol": {
+			"keccak256": "0x0cb7d4d491e37ac45336d6ba7f7f59b06e8c27ef0d7ccc29dd7d361f41421f8e",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://e2620c4a9c0076db6bd6385059f46c90b26bd763279e0a658df2566f41333a7a",
-				"dweb:/ipfs/QmZRFHatSWoCdUVCmq6M2JYwKeBVqaBojhSJdwfYmrS4bK"
+				"bzz-raw://37f19319f73b17fcf40e880490360e5f814ce53e65a482c4f2860d2887a20846",
+				"dweb:/ipfs/QmYJ5hKXS5ygqXsJwBrcmuL3giG6mx2wxHjDggByGKQfyW"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
@@ -93,6 +82,22 @@
 			"urls": [
 				"bzz-raw://25ea6cc145dd2b7c22d8f1496e4e60fb67313f641bff21eb97d8db17062649d1",
 				"dweb:/ipfs/QmUBx9qi5tmFcHe3HpaTSSfW3xxoNy7y751G7NSGqg2SrB"
+			]
+		},
+		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {
+			"keccak256": "0xcedf8f2d94a11375f62ab9e3c0cbca9e584de936dc974d84c0785935c08555fc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://355af2d26712d9ec44a3fc629162d8c0c3b40126b7916a1fc3f4e39ba42224f6",
+				"dweb:/ipfs/QmTataj3Mb5b6E6n5NU7GLtPC5N8ugJwUKJ5fR8LqT69m1"
+			]
+		},
+		"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
+			"keccak256": "0x8b11d0b070b3ea821880b21c336186d619892cd92cb90f05a9defebef8836624",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f0598d56bb3b6a0ee15374a10ce2913e854af87f5c6845772ef505a31c0c9fa7",
+				"dweb:/ipfs/QmXH92UmaKz7qks5cXQbDae5gwnDWnAHvwmcS8vvgraA5Y"
 			]
 		},
 		"sol-defifactory-token/interfaces/IUniswapV2Router.sol": {

@@ -65,7 +65,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/LamboDestroyer.sol": "LamboDestroyer"
+			"sol-defifactory-token/DeftLiquidityMigration.sol": "Deft"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -79,12 +79,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/LamboDestroyer.sol": {
-			"keccak256": "0x903fb988bcd80d9c7721fbab3fd19ddf700da3e5d3c8f33f6efa553e67313fa1",
+		"sol-defifactory-token/DeftLiquidityMigration.sol": {
+			"keccak256": "0xffbdeaa44589eaa2288430062559ce19fd47567998b10af22a69d1164835e601",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://e2620c4a9c0076db6bd6385059f46c90b26bd763279e0a658df2566f41333a7a",
-				"dweb:/ipfs/QmZRFHatSWoCdUVCmq6M2JYwKeBVqaBojhSJdwfYmrS4bK"
+				"bzz-raw://7051f9cf97d27171b83f1ef0522076246769bd5c6afe6b1b853262a04c8990af",
+				"dweb:/ipfs/QmXM3mnNWkAYPVkPYKwdWzUDdTkGpGxvvejpmXiyrnnmDV"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

@@ -57,7 +57,7 @@ contract CrossChainBridge is AccessControlEnumerable {
         
         
         /* Testnet */
-        /*if (block.chainid == ETH_KOVAN_CHAIN_ID)
+        if (block.chainid == ETH_KOVAN_CHAIN_ID)
         {
             _setupRole(ROLE_ADMIN, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
             _setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
@@ -69,7 +69,7 @@ contract CrossChainBridge is AccessControlEnumerable {
             _setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
             
             feeDependingOnDestinationChainId[0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248][ETH_KOVAN_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
-        }*/
+        }
         
         /* MAINNET */
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
@@ -161,13 +161,20 @@ contract CrossChainBridge is AccessControlEnumerable {
         );
         
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(sourceProofOfBurn.sourceTokenAddr);
-        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-            iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
-        );
-        require(
-            !iDeftStorageContract.isBotAddress(msg.sender),
-            "CCB: Minting is temporary disabled!"
-        );
+        if (
+                block.chainid == ETH_MAINNET_CHAIN_ID ||
+                block.chainid == MATIC_MAINNET_CHAIN_ID ||
+                block.chainid == BSC_MAINNET_CHAIN_ID
+            )
+        {
+            IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
+                iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+            );
+            require(
+                !iDeftStorageContract.isBotAddress(msg.sender),
+                "CCB: Minting is temporary disabled!"
+            );
+        }
         
         transactionStorage[sourceProofOfBurn.transactionHash] = States.Executed;
         
@@ -202,13 +209,20 @@ contract CrossChainBridge is AccessControlEnumerable {
             "CCB: Amount is lower than the minimum permitted amount"
         );
         
-        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-            iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
-        );
-        require(
-            !iDeftStorageContract.isBotAddress(msg.sender),
-            "CCB: Burning is temporary disabled!"
-        );
+        if (
+                block.chainid == ETH_MAINNET_CHAIN_ID ||
+                block.chainid == MATIC_MAINNET_CHAIN_ID ||
+                block.chainid == BSC_MAINNET_CHAIN_ID
+            )
+        {
+            IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
+                iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+            );
+            require(
+                !iDeftStorageContract.isBotAddress(msg.sender),
+                "CCB: Burning is temporary disabled!"
+            );
+        }
         
         bytes32 transactionHash = keccak256(abi.encodePacked(
                 msg.sender, token, amount, amountAsFee, block.chainid, destinationChainId, currentNonce[token]
