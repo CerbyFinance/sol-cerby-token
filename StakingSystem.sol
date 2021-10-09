@@ -70,13 +70,14 @@ contract StakingSystem is AccessControlEnumerable {
     uint constant MAXIMUM_STAKE_DAYS = 100*DAYS_IN_A_YEAR;
     uint constant SHARE_MULTIPLIER_NUMERATOR = 5; // 5/2 = 250% bonus max
     uint constant SHARE_MULTIPLIER_DENOMINATOR = 2;
+    uint constant SECONDS_IN_ONE_DAY = 600;
     
     IDefiFactoryToken mainToken = IDefiFactoryToken(
         0x7A7492a8e888Ca3fe8e31cB2E34872FE0CE5309f // TODO: change to deft token on production
     );
     
-    uint launchTimestamp;
-    uint currentDay = 2; // TODO: remove on production
+    uint public launchTimestamp;
+    //uint currentDay = 2; // TODO: remove on production
     
     
     event StakeStarted(
@@ -119,7 +120,7 @@ contract StakingSystem is AccessControlEnumerable {
     
     constructor() 
     {
-        launchTimestamp = block.timestamp - 2 minutes; // TODO: remove on production
+        launchTimestamp = block.timestamp - 20 minutes; // TODO: remove on production
         
         dailySnapshots.push(DailySnapshot(
             0,
@@ -327,20 +328,20 @@ contract StakingSystem is AccessControlEnumerable {
     {
         for(uint i; i<stakeIds.length; i++)
         {
-            endStake(stakeIds[i], 0);
+            endStake(stakeIds[i]/*, 0*/);
         }
     }
     
     function endStake(
-        uint stakeId,
-        uint _bumpDays // TODO: remove on production
+        uint stakeId/*,
+        uint _bumpDays*/ // TODO: remove on production
     )
         public
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
-        bumpDays(_bumpDays); // TODO: remove on production
+        //bumpDays(_bumpDays); // TODO: remove on production
         updateAllSnapshots();
         
         uint today = getCurrentOneDay();
@@ -394,18 +395,17 @@ contract StakingSystem is AccessControlEnumerable {
     {
         for(uint i; i<stakeIds.length; i++)
         {
-            scrapeStake(stakeIds[i], 0);
+            scrapeStake(stakeIds[i]/*, 0*/);
         }
     }
     
-    function scrapeStake(uint stakeId, uint _bumpDays)
+    function scrapeStake(uint stakeId/*, uint _bumpDays*/)
         public
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
-        
-        bumpDays(_bumpDays); // TODO: remove on productio
+        //bumpDays(_bumpDays); // TODO: remove on productio
         updateAllSnapshots();
         
         uint today = getCurrentOneDay();
@@ -434,7 +434,7 @@ contract StakingSystem is AccessControlEnumerable {
             newSharesCount
         );
         
-        endStake(stakeId, 0);
+        endStake(stakeId/*, 0*/);
         
         uint newLockedForXDays = lockedForXDays - stakes[stakeId].lockedForXDays;
         startStake(StartStake(stakeAmount, newLockedForXDays));
@@ -471,6 +471,8 @@ contract StakingSystem is AccessControlEnumerable {
         view
         returns (uint)
     {
+        if (givenDay <= stake.startDay) return 0;
+        
         uint interest;
         
         uint endDay = minOfTwoUints(givenDay, stake.startDay + stake.lockedForXDays);
@@ -528,6 +530,8 @@ contract StakingSystem is AccessControlEnumerable {
         100% + 30 days -- 100% + 30 days + 30*20 days --> 100-10% (principal+interest) back
         > 100% + 30 days + 30*20 days --> 10% (principal+interest) back
         */
+        if (givenDay <= stake.startDay) return 0;
+        
         uint penalty;
         uint howManyDaysServed = givenDay - stake.startDay;
         
@@ -574,6 +578,8 @@ contract StakingSystem is AccessControlEnumerable {
         view
         returns (uint)
     {
+        if (givenDay <= stake.startDay) return 0;
+        
         require(
             dailySnapshots[stake.startDay].sharePrice > 0,
             "SS: Share price on start day is zero, wait for snapshot update"
@@ -598,20 +604,20 @@ contract StakingSystem is AccessControlEnumerable {
         return sharesCount;
     }
     
-    function bumpDays(uint numDays) // TODO: remove on production
+    /*function bumpDays(uint numDays) // TODO: remove on production
         public
     {
         currentDay += numDays;
         updateAllSnapshots();
-    }
+    }*/
     
     function getCurrentOneDay()
         public
         view
         returns (uint)
     {
-        //return (block.timestamp - launchTimestamp) / 60;
-        return currentDay; // TODO: remove on production
+        return (block.timestamp - launchTimestamp) / SECONDS_IN_ONE_DAY;
+        //return currentDay; // TODO: remove on production
     }
     
     function getCurrentCachedPerShareDay()
@@ -619,8 +625,8 @@ contract StakingSystem is AccessControlEnumerable {
         view
         returns (uint)
     {
-        //return (block.timestamp - launchTimestamp) / 60;
-        return currentDay/CACHED_DAYS_INTEREST; // TODO: remove on production
+        return (block.timestamp - launchTimestamp) / SECONDS_IN_ONE_DAY;
+        //return currentDay/CACHED_DAYS_INTEREST; // TODO: remove on production
     }
     
     function maxOfTwoUints(uint uint1, uint uint2)
