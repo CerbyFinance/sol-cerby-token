@@ -41,6 +41,7 @@ contract DeftLiquidityMigration {
         - deposit 100% ETH to binance.com + screenshot
         - deposit 100% BNB to binance.com + screenshot
         - convert BNB to ETH + screenshot
+        - show total eth + screenshot
         - convert 50% ETH to BUSD + screenshot
         - convert 40% ETH to Matic + screenshot
         - convert 10% ETH to USDC + screenshot

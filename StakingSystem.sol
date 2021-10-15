@@ -276,6 +276,8 @@ contract StakingSystem is AccessControlEnumerable {
     function startStake(StartStake memory _startStake)
         public
     {
+        // TODO: check for bots
+        
         require(
             _startStake.stakedAmount > 0,
             "SS: StakedAmount has to be larger than zero"
@@ -405,6 +407,15 @@ contract StakingSystem is AccessControlEnumerable {
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
+        
+        /*
+        100 days
+        15 days scrapeStake
+        15 days end stake
+        85 days start stake
+        
+        */
+        
         //bumpDays(_bumpDays); // TODO: remove on productio
         updateAllSnapshots();
         
@@ -487,6 +498,13 @@ contract StakingSystem is AccessControlEnumerable {
             if (dailySnapshots[i].totalShares == 0) continue;
             
             interest += (dailySnapshots[i].inflationAmount * sharesCount) / dailySnapshots[i].totalShares;
+            
+            // (dailySnapshots[0].inflationAmount * sharesCount) / dailySnapshots[0].totalShares + 
+            // (dailySnapshots[1].inflationAmount * sharesCount) / dailySnapshots[1].totalShares
+            
+            // SUM[dailySnapshots[i].inflationAmount / dailySnapshots[i].totalShares]
+            // from day0 to day99 = 100 days
+            // interest = SUM * sharesCount
         }
         
         uint endCachedDay = endDay/CACHED_DAYS_INTEREST; 

@@ -102,11 +102,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0x4de25141a32f1a85df982a61c0eed367cedeab7e3ce17d22d1245547ad60d618",
+			"keccak256": "0x2d5f3628861d6df13c04a7470155e39b50c6ed16bf87d087b02cf21616e8ac51",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://7e6013d5ab1d08dc87ac23d724cb3e46f9706f59825de2b5233e5e45869f7c82",
-				"dweb:/ipfs/QmaeeETG57bsb5KYX8Uau27bd9tE8xGFW8Cqbcsaqbf1DX"
+				"bzz-raw://0aa9e7d78949cb0285f6b266c68e1ee8cb0b1155498254f9217ad0650d03eb29",
+				"dweb:/ipfs/QmRjdtf97kXZVJNbsM3weEWMzWV5oavVAHxvcBWr268LMT"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
