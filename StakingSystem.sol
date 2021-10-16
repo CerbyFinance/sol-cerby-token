@@ -498,13 +498,6 @@ contract StakingSystem is AccessControlEnumerable {
             if (dailySnapshots[i].totalShares == 0) continue;
             
             interest += (dailySnapshots[i].inflationAmount * sharesCount) / dailySnapshots[i].totalShares;
-            
-            // (dailySnapshots[0].inflationAmount * sharesCount) / dailySnapshots[0].totalShares + 
-            // (dailySnapshots[1].inflationAmount * sharesCount) / dailySnapshots[1].totalShares
-            
-            // SUM[dailySnapshots[i].inflationAmount / dailySnapshots[i].totalShares]
-            // from day0 to day99 = 100 days
-            // interest = SUM * sharesCount
         }
         
         uint endCachedDay = endDay/CACHED_DAYS_INTEREST; 
@@ -596,7 +589,7 @@ contract StakingSystem is AccessControlEnumerable {
         view
         returns (uint)
     {
-        if (givenDay <= stake.startDay) return 0;
+        if (0 < givenDay && givenDay <= stake.startDay) return 0;
         
         require(
             dailySnapshots[stake.startDay].sharePrice > 0,
