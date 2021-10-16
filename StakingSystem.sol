@@ -190,6 +190,8 @@ contract StakingSystem is AccessControlEnumerable {
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
+        // TODO: check for bots
+        
         require(
             stakes[stakeId].owner != newOwner,
             "SS: New owner must be different from old owner"
