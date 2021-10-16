@@ -275,6 +275,7 @@ contract StakingSystem is AccessControlEnumerable {
     
     function startStake(StartStake memory _startStake)
         public
+        returns(uint stakeId)
     {
         // TODO: check for bots
         
@@ -310,7 +311,7 @@ contract StakingSystem is AccessControlEnumerable {
             )
         );
         
-        uint stakeId = stakes.length - 1;
+        stakeId = stakes.length - 1;
         uint sharesCount = getSharesCountByStake(stakes[stakeId], 0);
         dailySnapshots[today].totalShares += sharesCount;
         totalStaked += _startStake.stakedAmount;
@@ -323,6 +324,8 @@ contract StakingSystem is AccessControlEnumerable {
             stakes[stakeId].lockedForXDays,
             sharesCount
         );
+        
+        return stakeId;
     }
     
     function bulkEndStake(uint[] calldata stakeIds)
