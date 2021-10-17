@@ -594,17 +594,21 @@ contract StakingSystem is AccessControlEnumerable {
         view
         returns (uint)
     {
-        if (0 < givenDay && givenDay <= stake.startDay) return 0;
+        uint numberOfDaysServed;
+        if (givenDay == 0)
+        {
+            numberOfDaysServed = stake.lockedForXDays;
+        } else if (givenDay > stake.startDay)
+        {
+            numberOfDaysServed = givenDay - stake.startDay;
+        } else // givenDay > 0 && givenDay < stake.startDay
+        {
+            return 0;
+        }
         
         require(
             dailySnapshots[stake.startDay].sharePrice > 0,
             "SS: Share price on start day is zero, wait for snapshot update"
-        );
-        
-        uint numberOfDaysServed = givenDay == 0? stake.lockedForXDays: givenDay - stake.startDay;
-        require(
-            numberOfDaysServed >= 0,
-            "SS: NumberOfDaysServed must be larger than zero"
         );
         
         
