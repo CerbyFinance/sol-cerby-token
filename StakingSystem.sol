@@ -59,15 +59,15 @@ contract StakingSystem is AccessControlEnumerable {
     
     // TODO: update apy variables
     uint constant MINIMUM_DAYS_FOR_HIGH_PENALTY = 0;
-    uint constant DAYS_IN_A_YEAR = 10;
+    uint constant DAYS_IN_ONE_YEAR = 10;
     uint constant CONTROLLED_APY = 4e5; // 40%
     uint constant SHARE_PRICE_DENORM = 1e6;
     uint constant INTEREST_PER_SHARE_DENORM = 1e18;
     uint constant APY_DENORM = 1e6;
     uint constant END_STAKE_FROM = 7;
-    uint constant END_STAKE_TO = 2*DAYS_IN_A_YEAR; // TODO: 5% per month penalty
+    uint constant END_STAKE_TO = 2*DAYS_IN_ONE_YEAR; // TODO: 5% per month penalty
     uint constant MINIMUM_STAKE_DAYS = 1;
-    uint constant MAXIMUM_STAKE_DAYS = 100*DAYS_IN_A_YEAR;
+    uint constant MAXIMUM_STAKE_DAYS = 100*DAYS_IN_ONE_YEAR;
     uint constant SHARE_MULTIPLIER_NUMERATOR = 5; // 5/2 = 250% bonus max
     uint constant SHARE_MULTIPLIER_DENOMINATOR = 2;
     uint constant SECONDS_IN_ONE_DAY = 600;
@@ -224,7 +224,7 @@ contract StakingSystem is AccessControlEnumerable {
                     (SHARE_MULTIPLIER_DENOMINATOR * dailySnapshots[i].sharePrice);
             uint inflationAmount = 
                 (stakedAmount * CONTROLLED_APY * (dailySnapshots[i].totalShares + sharesCount)) / 
-                    (sharesCount * DAYS_IN_A_YEAR * APY_DENORM);
+                    (sharesCount * DAYS_IN_ONE_YEAR * APY_DENORM);
                 
             dailySnapshots[i].inflationAmount += inflationAmount;
             emit DailySnapshotSealed(
@@ -546,7 +546,7 @@ contract StakingSystem is AccessControlEnumerable {
         100% + 30 days -- 100% + 30 days + 30*20 days --> 100-10% (principal+interest) back
         > 100% + 30 days + 30*20 days --> 10% (principal+interest) back
         */
-        if (givenDay <= stake.startDay) return 0;
+        if (givenDay < stake.startDay) return 0;
         
         uint penalty;
         uint howManyDaysServed = givenDay - stake.startDay;
@@ -616,7 +616,7 @@ contract StakingSystem is AccessControlEnumerable {
         uint sharesCount = 
             (stake.stakedAmount * SHARE_PRICE_DENORM) / dailySnapshots[stake.startDay].sharePrice +
             (SHARE_MULTIPLIER_NUMERATOR * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / 
-                (SHARE_MULTIPLIER_DENOMINATOR * 10 * DAYS_IN_A_YEAR * dailySnapshots[stake.startDay].sharePrice);
+                (SHARE_MULTIPLIER_DENOMINATOR * 10 * DAYS_IN_ONE_YEAR * dailySnapshots[stake.startDay].sharePrice);
         return sharesCount;
     }
     
