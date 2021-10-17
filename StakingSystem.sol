@@ -539,43 +539,35 @@ contract StakingSystem is AccessControlEnumerable {
         returns (uint)
     {
         /*
-        0 -- 7 days served => 10% principal back
-        7 days -- 50% served --> 10-90% principal back
-        50-100% served --> 90-100% principal back
+        0 -- 0 days served => 0% principal back
+        0 days -- 100% served --> 0-100% principal back
         100% + 30 days --> 100% principal back
         100% + 30 days -- 100% + 30 days + 30*20 days --> 100-10% (principal+interest) back
         > 100% + 30 days + 30*20 days --> 10% (principal+interest) back
         */
-        if (givenDay < stake.startDay) return 0;
-        
         uint penalty;
-        uint howManyDaysServed = givenDay - stake.startDay;
+        uint howManyDaysServed = givenDay > stake.startDay? givenDay - stake.startDay: 0;
+        uint riskAmount = stake.stakedAmount + interest;
         
         if (howManyDaysServed <= MINIMUM_DAYS_FOR_HIGH_PENALTY) // Stake just started or less than 7 days passed)
         {
-            penalty = (stake.stakedAmount * 9) / 10;
-        } else if (howManyDaysServed <= stake.lockedForXDays / 2) 
+            penalty = riskAmount; // 100%
+        } else if (howManyDaysServed <= stake.lockedForXDays) 
         {
-            // 90-10%
+            // 100-0%
             penalty = 
-                (stake.stakedAmount * 9) / 10 - 
-                (stake.stakedAmount * 8 * (howManyDaysServed - MINIMUM_DAYS_FOR_HIGH_PENALTY)) / (5 * (stake.lockedForXDays - 2));
-        } else if (howManyDaysServed <= stake.lockedForXDays) {
-            // 10-0%
-            penalty = 
-                stake.stakedAmount / 10 - 
-                (stake.stakedAmount * (2*howManyDaysServed - stake.lockedForXDays)) / (10 * stake.lockedForXDays);
+                (riskAmount * (stake.lockedForXDays - howManyDaysServed)) / (stake.lockedForXDays - MINIMUM_DAYS_FOR_HIGH_PENALTY);
         } else if (howManyDaysServed <= stake.lockedForXDays + END_STAKE_FROM)
         {
             penalty = 0;
         } else if (howManyDaysServed <= stake.lockedForXDays + END_STAKE_FROM + END_STAKE_TO) {
-            // 0-90% + interest
+            // 0-90%
             penalty = 
-                ((stake.stakedAmount + interest) * 9 * (howManyDaysServed - stake.lockedForXDays - END_STAKE_FROM)) / (10 * END_STAKE_TO);
+                (riskAmount * 9 * (howManyDaysServed - stake.lockedForXDays - END_STAKE_FROM)) / (10 * END_STAKE_TO);
         } else // if (howManyDaysServed > stake.lockedForXDays + END_STAKE_FROM + END_STAKE_TO)
         {
-            // 90% + interest
-            penalty = ((stake.stakedAmount + interest) * 9) / 10;
+            // 90%
+            penalty = (riskAmount * 9) / 10;
         } 
         
         return penalty;
@@ -645,7 +637,7 @@ contract StakingSystem is AccessControlEnumerable {
         view
         returns (uint)
     {
-        return (block.timestamp - launchTimestamp) / SECONDS_IN_ONE_DAY;
+        return (block.timestamp - launchTimestamp) / (CACHED_DAYS_INTEREST * SECONDS_IN_ONE_DAY);
         //return currentDay/CACHED_DAYS_INTEREST; // TODO: remove on production
     }
     
