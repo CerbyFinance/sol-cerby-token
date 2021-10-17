@@ -197,6 +197,8 @@ contract StakingSystem is AccessControlEnumerable {
             "SS: New owner must be different from old owner"
         );
         
+        updateAllSnapshots();
+        
         stakes[stakeId].owner = newOwner;
         emit StakeOwnerChanged(stakeId, newOwner);
     }
@@ -638,7 +640,7 @@ contract StakingSystem is AccessControlEnumerable {
         returns (uint)
     {
         return (block.timestamp - launchTimestamp) / (CACHED_DAYS_INTEREST * SECONDS_IN_ONE_DAY);
-        //return currentDay/CACHED_DAYS_INTEREST; // TODO: remove on production
+        //return currentDay/(CACHED_DAYS_INTEREST * SECONDS_IN_ONE_DAY); // TODO: remove on production
     }
     
     function maxOfTwoUints(uint uint1, uint uint2)
