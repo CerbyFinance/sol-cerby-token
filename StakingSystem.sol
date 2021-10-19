@@ -3,25 +3,7 @@
 pragma solidity ^0.8.7;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
-
-interface IDefiFactoryToken {
-    
-    function balanceOf(
-        address account
-    )
-        external
-        view
-        returns (uint);
-    
-    function totalSupply()
-        external
-        view
-        returns (uint);
-        
-    function mintHumanAddress(address to, uint desiredAmountToMint) external;
-
-    function burnHumanAddress(address from, uint desiredAmountToBurn) external;
-}
+import "./interfaces/IDefiFactoryTokenMinterBurner.sol";
 
 struct DailySnapshot {
     uint inflationAmount;
@@ -61,7 +43,7 @@ contract StakingSystem is AccessControlEnumerable {
     uint constant MINIMUM_DAYS_FOR_HIGH_PENALTY = 0;
     uint constant DAYS_IN_ONE_YEAR = 10;
     uint constant CONTROLLED_APY = 4e5; // 40%
-    uint constant SHARE_PRICE_DENORM = 1e6;
+    uint constant SHARE_PRICE_DENORM = 1e9;
     uint constant INTEREST_PER_SHARE_DENORM = 1e18;
     uint constant APY_DENORM = 1e6;
     uint constant END_STAKE_FROM = 7;
@@ -281,8 +263,6 @@ contract StakingSystem is AccessControlEnumerable {
         public
         returns(uint stakeId)
     {
-        // TODO: check for bots
-        
         require(
             _startStake.stakedAmount > 0,
             "SS: StakedAmount has to be larger than zero"

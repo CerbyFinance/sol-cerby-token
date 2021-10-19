@@ -1104,11 +1104,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0xa1c168f43d928598f63206ad0ef82a099eac13fa7ddc7657f951605043e83939",
+			"keccak256": "0x72b3847acb2816fb5d019d3063a2d60648e7f2161ef08b3ebf25c7f81671b99f",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://318b4d731c2763ecfde8a31c046d35f1574b1893bfc4f96b7f254d60d1f64f6b",
-				"dweb:/ipfs/QmaucpmfzJvavy2D5CTwngAmCmBCTiUmBDbMR3iq7p1Lj1"
+				"bzz-raw://bae492f19e47e2b26bc33ae4f8c2090cd8a9d68a98d4e45a7f053222aaf3d471",
+				"dweb:/ipfs/QmP2viBkY7kRKkHTCXZZdGeuE5og4zPZ6Kokpnx7S2bTm1"
+			]
+		},
+		"sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": {
+			"keccak256": "0xd155eef55d775f4f8a305ae54eb3de4103b674d81cc94770747a625643aff049",
+			"license": "BSD-2-Clause",
+			"urls": [
+				"bzz-raw://89136a657288f3694028ec2ee60716efebc88e908f41dc993dccf82383a6b7dd",
+				"dweb:/ipfs/Qmbd4VRTYsiQRQ3AtA1SmNgw1gi3t54gMY5MuLuUzhBU3j"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
