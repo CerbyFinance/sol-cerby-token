@@ -43,7 +43,7 @@ contract StakingSystem is AccessControlEnumerable {
     uint constant MINIMUM_DAYS_FOR_HIGH_PENALTY = 0;
     uint constant DAYS_IN_ONE_YEAR = 10;
     uint constant CONTROLLED_APY = 4e5; // 40%
-    uint constant SHARE_PRICE_DENORM = 1e9;
+    uint constant SHARE_PRICE_DENORM = 1e18;
     uint constant INTEREST_PER_SHARE_DENORM = 1e18;
     uint constant APY_DENORM = 1e6;
     uint constant END_STAKE_FROM = 7;
@@ -580,8 +580,9 @@ contract StakingSystem is AccessControlEnumerable {
             return 0;
         }
         
+        uint dayBeforeStakeStart = stake.startDay - 1;
         require(
-            dailySnapshots[stake.startDay].sharePrice > 0,
+            dailySnapshots[dayBeforeStakeStart].sharePrice > 0,
             "SS: Share price on start day is zero, wait for snapshot update"
         );
         
@@ -592,9 +593,9 @@ contract StakingSystem is AccessControlEnumerable {
             1d - 0.0006849x
         */
         uint sharesCount = 
-            (stake.stakedAmount * SHARE_PRICE_DENORM) / dailySnapshots[stake.startDay].sharePrice +
+            (stake.stakedAmount * SHARE_PRICE_DENORM) / dailySnapshots[dayBeforeStakeStart].sharePrice +
             (SHARE_MULTIPLIER_NUMERATOR * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / 
-                (SHARE_MULTIPLIER_DENOMINATOR * 10 * DAYS_IN_ONE_YEAR * dailySnapshots[stake.startDay].sharePrice);
+                (SHARE_MULTIPLIER_DENOMINATOR * 10 * DAYS_IN_ONE_YEAR * dailySnapshots[dayBeforeStakeStart].sharePrice);
         return sharesCount;
     }
     
