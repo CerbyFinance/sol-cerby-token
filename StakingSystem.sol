@@ -580,7 +580,7 @@ contract StakingSystem is AccessControlEnumerable {
             return 0;
         }
         
-        numberOfDaysServed = maxOfTwoUints(numberOfDaysServed, 10 * DAYS_IN_ONE_YEAR);
+        numberOfDaysServed = minOfTwoUints(numberOfDaysServed, 10 * DAYS_IN_ONE_YEAR);
         
         uint dayBeforeStakeStart = stake.startDay - 1;
         require(
