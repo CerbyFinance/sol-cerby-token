@@ -34,7 +34,7 @@ contract StakingSystem is AccessControlEnumerable {
     uint[] public cachedInterestPerShare;
     
     // TODO: 10days, 100 days, 1000 days snapshots
-    // [["1000000000000000000000",10],["2000000000000000000000",20],["3000000000000000000000",30],["4000000000000000000000",40],["5000000000000000000000",100]]
+    // [["1000000000000000000000",1],["2000000000000000000000",2],["3000000000000000000000",3],["4000000000000000000000",4],["5000000000000000000000",10]]
     // [["6000000000000000000000",200]]
     // 0x123492a8E888Ca3fe8E31cb2e34872FE0ce5309F
     
@@ -579,6 +579,8 @@ contract StakingSystem is AccessControlEnumerable {
         {
             return 0;
         }
+        
+        numberOfDaysServed = maxOfTwoUints(numberOfDaysServed, 10 * DAYS_IN_ONE_YEAR);
         
         uint dayBeforeStakeStart = stake.startDay - 1;
         require(
