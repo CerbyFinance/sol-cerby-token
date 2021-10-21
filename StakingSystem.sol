@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.9;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./interfaces/IDefiFactoryTokenMinterBurner.sol";
@@ -26,27 +26,26 @@ struct StartStake {
 
 contract StakingSystem is AccessControlEnumerable {
     DailySnapshot[] public dailySnapshots;
+    uint[] public cachedInterestPerShare;
     
     Stake[] public stakes;
     uint public totalStaked;
     
-    uint constant CACHED_DAYS_INTEREST = 10;
-    uint[] public cachedInterestPerShare;
     
-    // TODO: 10days, 100 days, 1000 days snapshots
     // [["1000000000000000000000",1],["2000000000000000000000",2],["3000000000000000000000",3],["4000000000000000000000",4],["5000000000000000000000",10]]
     // [["6000000000000000000000",200]]
     // 0x123492a8E888Ca3fe8E31cb2e34872FE0ce5309F
     
     
     // TODO: update apy variables
+    uint constant CACHED_DAYS_INTEREST = 10;
     uint constant MINIMUM_DAYS_FOR_HIGH_PENALTY = 0;
-    uint constant DAYS_IN_ONE_YEAR = 10;
+    uint constant DAYS_IN_ONE_YEAR = 365;
     uint constant CONTROLLED_APY = 4e5; // 40%
     uint constant SHARE_PRICE_DENORM = 1e18;
     uint constant INTEREST_PER_SHARE_DENORM = 1e18;
     uint constant APY_DENORM = 1e6;
-    uint constant END_STAKE_FROM = 7;
+    uint constant END_STAKE_FROM = 30;
     uint constant END_STAKE_TO = 2*DAYS_IN_ONE_YEAR; // TODO: 5% per month penalty
     uint constant MINIMUM_STAKE_DAYS = 1;
     uint constant MAXIMUM_STAKE_DAYS = 100*DAYS_IN_ONE_YEAR;
@@ -59,7 +58,7 @@ contract StakingSystem is AccessControlEnumerable {
     );
     
     uint public launchTimestamp;
-    //uint currentDay = 2; // TODO: remove on production
+    uint currentDay = 2; // TODO: remove on production
     
     
     event StakeStarted(
@@ -102,20 +101,30 @@ contract StakingSystem is AccessControlEnumerable {
     
     constructor() 
     {
-        launchTimestamp = block.timestamp - 20 minutes; // TODO: remove on production
+        launchTimestamp = block.timestamp - 15 minutes; // TODO: remove on production
         
         dailySnapshots.push(DailySnapshot(
             0,
             0,
             SHARE_PRICE_DENORM
         ));
+        emit DailySnapshotSealed(
+            0,
+            0,
+            0,
+            SHARE_PRICE_DENORM,
+            0,
+            mainToken.totalSupply()
+        );
         dailySnapshots.push(DailySnapshot(
             0,
             0,
             SHARE_PRICE_DENORM
         ));
-        
         cachedInterestPerShare.push(0);
+        
+        updateAllSnapshots();
+        
         _setupRole(ROLE_ADMIN, msg.sender);
     }
     
@@ -201,29 +210,45 @@ contract StakingSystem is AccessControlEnumerable {
         
         uint stakedAmount = 1e18;
         uint startDay = dailySnapshots.length-1; // last sealed day
+        if (startDay == givenDay) return;
+        
         for (uint i = startDay; i<givenDay; i++)
         {
+            uint currentSnapshotIndex = dailySnapshots.length > i? i: dailySnapshots.length-1;
             uint sharesCount = 
                 ((SHARE_MULTIPLIER_NUMERATOR + SHARE_MULTIPLIER_DENOMINATOR) * stakedAmount * SHARE_PRICE_DENORM) / 
-                    (SHARE_MULTIPLIER_DENOMINATOR * dailySnapshots[i].sharePrice);
+                    (SHARE_MULTIPLIER_DENOMINATOR * dailySnapshots[currentSnapshotIndex].sharePrice);
             uint inflationAmount = 
-                (stakedAmount * CONTROLLED_APY * (dailySnapshots[i].totalShares + sharesCount)) / 
+                (stakedAmount * CONTROLLED_APY * (dailySnapshots[currentSnapshotIndex].totalShares + sharesCount)) / 
                     (sharesCount * DAYS_IN_ONE_YEAR * APY_DENORM);
-                
-            dailySnapshots[i].inflationAmount += inflationAmount;
+            
+            if (dailySnapshots.length > i)
+            {
+                dailySnapshots[currentSnapshotIndex].inflationAmount += inflationAmount;
+            } else
+            {
+                dailySnapshots.push(DailySnapshot(
+                    inflationAmount,
+                    dailySnapshots[currentSnapshotIndex].totalShares,
+                    dailySnapshots[currentSnapshotIndex].sharePrice
+                ));
+            }
             emit DailySnapshotSealed(
                 i,
-                dailySnapshots[i].inflationAmount,
-                dailySnapshots[i].totalShares,
-                dailySnapshots[i].sharePrice,
+                dailySnapshots[currentSnapshotIndex].inflationAmount,
+                dailySnapshots[currentSnapshotIndex].totalShares,
+                dailySnapshots[currentSnapshotIndex].sharePrice,
                 totalStaked,
                 mainToken.totalSupply()
             );
-            
+        }
+        
+        if (dailySnapshots.length == givenDay)
+        {
             dailySnapshots.push(DailySnapshot(
                 0,
-                dailySnapshots[i].totalShares,
-                dailySnapshots[i].sharePrice
+                dailySnapshots[givenDay-1].totalShares,
+                dailySnapshots[givenDay-1].sharePrice
             ));
         }
         
@@ -239,13 +264,21 @@ contract StakingSystem is AccessControlEnumerable {
                 interestPerShare += 
                     (dailySnapshots[j].inflationAmount * INTEREST_PER_SHARE_DENORM) / dailySnapshots[j].totalShares;
             }
-            cachedInterestPerShare[cachedInterestPerShare.length - 1] = interestPerShare;
+            
+            if (cachedInterestPerShare.length > i)
+            {
+                cachedInterestPerShare[cachedInterestPerShare.length - 1] = interestPerShare;
+            } else {
+                cachedInterestPerShare.push(0);
+            }
             emit CachedInterestPerShareSealed(
                 i, // sealedDay
                 cachedInterestPerShare.length - 1, // sealedCachedDay
                 cachedInterestPerShare[i]
             );
-            
+        }
+        if (cachedInterestPerShare.length == endCachedDay)
+        {
             cachedInterestPerShare.push(0);
         }
     }
@@ -317,20 +350,20 @@ contract StakingSystem is AccessControlEnumerable {
     {
         for(uint i; i<stakeIds.length; i++)
         {
-            endStake(stakeIds[i]/*, 0*/);
+            endStake(stakeIds[i], 0);
         }
     }
     
     function endStake(
-        uint stakeId/*,
-        uint _bumpDays*/ // TODO: remove on production
+        uint stakeId,
+        uint _bumpDays // TODO: remove on production
     )
         public
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
-        //bumpDays(_bumpDays); // TODO: remove on production
+        bumpDays(_bumpDays); // TODO: remove on production
         updateAllSnapshots();
         
         uint today = getCurrentOneDay();
@@ -384,11 +417,11 @@ contract StakingSystem is AccessControlEnumerable {
     {
         for(uint i; i<stakeIds.length; i++)
         {
-            scrapeStake(stakeIds[i]/*, 0*/);
+            scrapeStake(stakeIds[i], 0);
         }
     }
     
-    function scrapeStake(uint stakeId/*, uint _bumpDays*/)
+    function scrapeStake(uint stakeId, uint _bumpDays)
         public
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
@@ -403,7 +436,7 @@ contract StakingSystem is AccessControlEnumerable {
         
         */
         
-        //bumpDays(_bumpDays); // TODO: remove on productio
+        bumpDays(_bumpDays); // TODO: remove on productio
         updateAllSnapshots();
         
         uint today = getCurrentOneDay();
@@ -432,7 +465,7 @@ contract StakingSystem is AccessControlEnumerable {
             newSharesCount
         );
         
-        endStake(stakeId/*, 0*/);
+        endStake(stakeId, 0);
         
         uint newLockedForXDays = lockedForXDays - stakes[stakeId].lockedForXDays;
         startStake(StartStake(stakeAmount, newLockedForXDays));
@@ -474,7 +507,7 @@ contract StakingSystem is AccessControlEnumerable {
         uint interest;
         
         uint endDay = minOfTwoUints(givenDay, stake.startDay + stake.lockedForXDays);
-        endDay = minOfTwoUints(endDay, dailySnapshots.length-1);
+        endDay = minOfTwoUints(endDay, dailySnapshots.length); // TODO: подумать
         
         uint sharesCount = getSharesCountByStake(stake, endDay);
         
@@ -601,20 +634,20 @@ contract StakingSystem is AccessControlEnumerable {
         return sharesCount;
     }
     
-    /*function bumpDays(uint numDays) // TODO: remove on production
+    function bumpDays(uint numDays) // TODO: remove on production
         public
     {
         currentDay += numDays;
         updateAllSnapshots();
-    }*/
+    }
     
     function getCurrentOneDay()
         public
         view
         returns (uint)
     {
-        return (block.timestamp - launchTimestamp) / SECONDS_IN_ONE_DAY;
-        //return currentDay; // TODO: remove on production
+        //return (block.timestamp - launchTimestamp) / SECONDS_IN_ONE_DAY;
+        return currentDay; // TODO: remove on production
     }
     
     function getCurrentCachedPerShareDay()
@@ -622,8 +655,7 @@ contract StakingSystem is AccessControlEnumerable {
         view
         returns (uint)
     {
-        return (block.timestamp - launchTimestamp) / (CACHED_DAYS_INTEREST * SECONDS_IN_ONE_DAY);
-        //return currentDay/(CACHED_DAYS_INTEREST * SECONDS_IN_ONE_DAY); // TODO: remove on production
+        return getCurrentOneDay() / CACHED_DAYS_INTEREST;
     }
     
     function maxOfTwoUints(uint uint1, uint uint2)

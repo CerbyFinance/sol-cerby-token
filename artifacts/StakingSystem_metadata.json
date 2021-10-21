@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.8+commit.dddeac2f"
+		"version": "0.8.9+commit.e5eed63a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -375,6 +375,19 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "numDays",
+						"type": "uint256"
+					}
+				],
+				"name": "bumpDays",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
 					}
@@ -424,6 +437,11 @@
 					{
 						"internalType": "uint256",
 						"name": "stakeId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_bumpDays",
 						"type": "uint256"
 					}
 				],
@@ -903,6 +921,11 @@
 						"internalType": "uint256",
 						"name": "stakeId",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_bumpDays",
+						"type": "uint256"
 					}
 				],
 				"name": "scrapeStake",
@@ -1104,11 +1127,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0xe7f5cc8f8a6600cb5449452494251e2fe8da735db8cdf17ce02af8a2712a3a8b",
+			"keccak256": "0xda391823b798209e09d8bb7df130a389b8e569018f6f14094589da1d0774ad9a",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://c7f66bf425ff4c15817b04720c01737e5e4ce4715c285407dfcae7f32d97bd9b",
-				"dweb:/ipfs/QmSGz1mZ9Fjns1CNfzWdcVnGAwSqg6kpaNrFbpYGho6bA2"
+				"bzz-raw://ff9df9bc7ba9789646a2f05cd1ad9eb46ba70f39fde6596658133dfdddb965c8",
+				"dweb:/ipfs/QmbuU6H7hHWCSKEpsXhrTYtP8h9a6rXcZijHXhcMrkW5ok"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": {
