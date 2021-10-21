@@ -45,7 +45,7 @@ contract StakingSystem is AccessControlEnumerable {
     Settings public settings;
     
     
-    // [["1000000000000000000000",1],["2000000000000000000000",2],["3000000000000000000000",3],["4000000000000000000000",4],["5000000000000000000000",10]]
+    // [["1000000000000000000000",1],["2000000000000000000000",2],["3000000000000000000000",3],["10000000000000000000000",365],["10000000000000000000000",730],["10000000000000000000000",1095],["10000000000000000000000",1460],["10000000000000000000000",1825],["10000000000000000000000",2190],["10000000000000000000000",2555],["10000000000000000000000",2920],["10000000000000000000000",3650],["10000000000000000000000",7300]]
     // [["6000000000000000000000",3650]]
     // 0x123492a8E888Ca3fe8E31cb2e34872FE0ce5309F
     
@@ -651,11 +651,12 @@ contract StakingSystem is AccessControlEnumerable {
             numberOfDaysServed = stake.lockedForXDays;
         } else if (givenDay > stake.startDay)
         {
-            numberOfDaysServed = minOfTwoUints(givenDay - stake.startDay, 10*DAYS_IN_ONE_YEAR);
+            numberOfDaysServed = givenDay - stake.startDay;
         } else // givenDay > 0 && givenDay < stake.startDay
         {
             return 0;
         }
+        numberOfDaysServed = minOfTwoUints(numberOfDaysServed, 10*DAYS_IN_ONE_YEAR);
         
         /*
             10yr - 2.5x
