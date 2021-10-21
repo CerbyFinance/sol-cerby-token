@@ -51,19 +51,11 @@ contract StakingSystem is AccessControlEnumerable {
     
     
     // TODO: update apy variables
-    uint constant CACHED_DAYS_INTEREST = 10;
-    uint constant MINIMUM_DAYS_FOR_HIGH_PENALTY = 0;
+    uint constant CACHED_DAYS_INTEREST = 100;
     uint constant DAYS_IN_ONE_YEAR = 365;
-    uint constant CONTROLLED_APY = 4e5; // 40%
     uint constant SHARE_PRICE_DENORM = 1e18;
     uint constant INTEREST_PER_SHARE_DENORM = 1e18;
     uint constant APY_DENORM = 1e6;
-    uint constant END_STAKE_FROM = 30;
-    uint constant END_STAKE_TO = 2*DAYS_IN_ONE_YEAR; // TODO: 5% per month penalty
-    uint constant MINIMUM_STAKE_DAYS = 1;
-    uint constant MAXIMUM_STAKE_DAYS = 100*DAYS_IN_ONE_YEAR;
-    uint constant SHARE_MULTIPLIER_NUMERATOR = 5; // 5/2 = 250% bonus max
-    uint constant SHARE_MULTIPLIER_DENOMINATOR = 2;
     uint constant SECONDS_IN_ONE_DAY = 600;
     
     IDefiFactoryToken mainToken = IDefiFactoryToken(
@@ -71,7 +63,6 @@ contract StakingSystem is AccessControlEnumerable {
     );
     
     uint public launchTimestamp;
-    uint currentDay = 2; // TODO: remove on production
     
     
     event StakeStarted(
@@ -251,10 +242,10 @@ contract StakingSystem is AccessControlEnumerable {
         {
             uint currentSnapshotIndex = dailySnapshots.length > i? i: dailySnapshots.length-1;
             uint sharesCount = 
-                ((SHARE_MULTIPLIER_NUMERATOR + SHARE_MULTIPLIER_DENOMINATOR) * stakedAmount * SHARE_PRICE_DENORM) / 
-                    (SHARE_MULTIPLIER_DENOMINATOR * dailySnapshots[currentSnapshotIndex].sharePrice);
+                ((settings.SHARE_MULTIPLIER_NUMERATOR + settings.SHARE_MULTIPLIER_DENOMINATOR) * stakedAmount * SHARE_PRICE_DENORM) / 
+                    (settings.SHARE_MULTIPLIER_DENOMINATOR * dailySnapshots[currentSnapshotIndex].sharePrice);
             uint inflationAmount = 
-                (stakedAmount * CONTROLLED_APY * (dailySnapshots[currentSnapshotIndex].totalShares + sharesCount)) / 
+                (stakedAmount * settings.CONTROLLED_APY * (dailySnapshots[currentSnapshotIndex].totalShares + sharesCount)) / 
                     (sharesCount * DAYS_IN_ONE_YEAR * APY_DENORM);
             
             if (dailySnapshots.length > i)
@@ -340,12 +331,12 @@ contract StakingSystem is AccessControlEnumerable {
             "SS: StakedAmount exceeds balance"
         );
         require(
-            _startStake.lockedForXDays >= MINIMUM_STAKE_DAYS,
-            "SS: Stake must be locked for more than 1 days"
+            _startStake.lockedForXDays >= settings.MINIMUM_STAKE_DAYS,
+            "SS: Stake must be locked for more than min days"
         );
         require(
-            _startStake.lockedForXDays <= MAXIMUM_STAKE_DAYS,
-            "SS: Stake must be locked for less than 100 years"
+            _startStake.lockedForXDays <= settings.MAXIMUM_STAKE_DAYS,
+            "SS: Stake must be locked for less than max years"
         );
         
         updateAllSnapshots();
@@ -385,20 +376,21 @@ contract StakingSystem is AccessControlEnumerable {
     {
         for(uint i; i<stakeIds.length; i++)
         {
-            endStake(stakeIds[i], 0);
+            //endStake(stakeIds[i], 0); // TODO: remove on production
+            endStake(stakeIds[i]);
         }
     }
     
     function endStake(
-        uint stakeId,
-        uint _bumpDays // TODO: remove on production
+        uint stakeId/*,
+        uint _bumpDays*/ // TODO: remove on production
     )
         public
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
-        bumpDays(_bumpDays); // TODO: remove on production
+        //bumpDays(_bumpDays); // TODO: remove on production
         updateAllSnapshots();
         
         uint today = getCurrentOneDay();
@@ -452,11 +444,12 @@ contract StakingSystem is AccessControlEnumerable {
     {
         for(uint i; i<stakeIds.length; i++)
         {
-            scrapeStake(stakeIds[i], 0);
+            //scrapeStake(stakeIds[i], 0); // TODO: remove on production
+            scrapeStake(stakeIds[i]);
         }
     }
     
-    function scrapeStake(uint stakeId, uint _bumpDays)
+    function scrapeStake(uint stakeId/*, uint _bumpDays*/)
         public
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
@@ -471,13 +464,13 @@ contract StakingSystem is AccessControlEnumerable {
         
         */
         
-        bumpDays(_bumpDays); // TODO: remove on productio
+        //bumpDays(_bumpDays); // TODO: remove on productio
         updateAllSnapshots();
         
         uint today = getCurrentOneDay();
         require(
-            today > MINIMUM_DAYS_FOR_HIGH_PENALTY + stakes[stakeId].startDay,
-            "SS: Scraping is available once in a day"
+            today > settings.MINIMUM_DAYS_FOR_HIGH_PENALTY + stakes[stakeId].startDay,
+            "SS: Scraping is available once in MINIMUM_DAYS_FOR_HIGH_PENALTY"
         );
         require(
             today < stakes[stakeId].startDay + stakes[stakeId].lockedForXDays,
@@ -500,7 +493,8 @@ contract StakingSystem is AccessControlEnumerable {
             newSharesCount
         );
         
-        endStake(stakeId, 0);
+        //endStake(stakeId, 0); // TODO: remove on production
+        endStake(stakeId);
         
         uint newLockedForXDays = lockedForXDays - stakes[stakeId].lockedForXDays;
         startStake(StartStake(stakeAmount, newLockedForXDays));
@@ -593,7 +587,7 @@ contract StakingSystem is AccessControlEnumerable {
     
     function getPenaltyByStake(Stake memory stake, uint givenDay, uint interest)
         public
-        pure
+        view
         returns (uint)
     {
         /*
@@ -607,22 +601,22 @@ contract StakingSystem is AccessControlEnumerable {
         uint howManyDaysServed = givenDay > stake.startDay? givenDay - stake.startDay: 0;
         uint riskAmount = stake.stakedAmount + interest;
         
-        if (howManyDaysServed <= MINIMUM_DAYS_FOR_HIGH_PENALTY) // Stake just started or less than 7 days passed)
+        if (howManyDaysServed <= settings.MINIMUM_DAYS_FOR_HIGH_PENALTY) // Stake just started or less than 7 days passed)
         {
             penalty = riskAmount; // 100%
         } else if (howManyDaysServed <= stake.lockedForXDays) 
         {
             // 100-0%
             penalty = 
-                (riskAmount * (stake.lockedForXDays - howManyDaysServed)) / (stake.lockedForXDays - MINIMUM_DAYS_FOR_HIGH_PENALTY);
-        } else if (howManyDaysServed <= stake.lockedForXDays + END_STAKE_FROM)
+                (riskAmount * (stake.lockedForXDays - howManyDaysServed)) / (stake.lockedForXDays - settings.MINIMUM_DAYS_FOR_HIGH_PENALTY);
+        } else if (howManyDaysServed <= stake.lockedForXDays + settings.END_STAKE_FROM)
         {
             penalty = 0;
-        } else if (howManyDaysServed <= stake.lockedForXDays + END_STAKE_FROM + END_STAKE_TO) {
+        } else if (howManyDaysServed <= stake.lockedForXDays + settings.END_STAKE_FROM + settings.END_STAKE_TO) {
             // 0-90%
             penalty = 
-                (riskAmount * 9 * (howManyDaysServed - stake.lockedForXDays - END_STAKE_FROM)) / (10 * END_STAKE_TO);
-        } else // if (howManyDaysServed > stake.lockedForXDays + END_STAKE_FROM + END_STAKE_TO)
+                (riskAmount * 9 * (howManyDaysServed - stake.lockedForXDays - settings.END_STAKE_FROM)) / (10 * settings.END_STAKE_TO);
+        } else // if (howManyDaysServed > stake.lockedForXDays + settings.END_STAKE_FROM + settings.END_STAKE_TO)
         {
             // 90%
             penalty = (riskAmount * 9) / 10;
@@ -672,25 +666,26 @@ contract StakingSystem is AccessControlEnumerable {
         */
         uint sharesCount = 
             (stake.stakedAmount * SHARE_PRICE_DENORM) / dailySnapshots[dayBeforeStakeStart].sharePrice +
-            (SHARE_MULTIPLIER_NUMERATOR * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / 
-                (SHARE_MULTIPLIER_DENOMINATOR * 10 * DAYS_IN_ONE_YEAR * dailySnapshots[dayBeforeStakeStart].sharePrice);
+            (settings.SHARE_MULTIPLIER_NUMERATOR * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / 
+                (settings.SHARE_MULTIPLIER_DENOMINATOR * 10 * DAYS_IN_ONE_YEAR * dailySnapshots[dayBeforeStakeStart].sharePrice);
         return sharesCount;
     }
     
+    /*uint currentDay = 2; // TODO: remove on production
     function bumpDays(uint numDays) // TODO: remove on production
         public
     {
         currentDay += numDays;
         updateAllSnapshots();
-    }
+    }*/
     
     function getCurrentOneDay()
         public
         view
         returns (uint)
     {
-        //return (block.timestamp - launchTimestamp) / SECONDS_IN_ONE_DAY;
-        return currentDay; // TODO: remove on production
+        return (block.timestamp - launchTimestamp) / SECONDS_IN_ONE_DAY;
+        //return currentDay; // TODO: remove on production
     }
     
     function getCurrentCachedPerShareDay()
