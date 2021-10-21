@@ -47,7 +47,7 @@ contract StakingSystem is AccessControlEnumerable {
     
     
     // [["1000000000000000000000",1],["2000000000000000000000",2],["3000000000000000000000",3],["4000000000000000000000",4],["5000000000000000000000",10]]
-    // [["6000000000000000000000",200]]
+    // [["6000000000000000000000",3650]]
     // 0x123492a8E888Ca3fe8E31cb2e34872FE0ce5309F
     
     
@@ -662,6 +662,7 @@ contract StakingSystem is AccessControlEnumerable {
             10yr - 2.5x
             1yr - 0.25x
             1d - 0.0006849x
+            TODO: smaller pays better???
         */
         uint sharesCount = 
             (stake.stakedAmount * SHARE_PRICE_DENORM) / dailySnapshots[stake.startDay].sharePrice +
