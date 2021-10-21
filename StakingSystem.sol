@@ -118,7 +118,7 @@ contract StakingSystem is AccessControlEnumerable {
         settings.SHARE_MULTIPLIER_NUMERATOR = 300; // 300/100 = 300% shares bonus max
         settings.SHARE_MULTIPLIER_DENOMINATOR = 100;
         
-        launchTimestamp = block.timestamp - 29 minutes; // TODO: remove on production
+        launchTimestamp = block.timestamp; // TODO: remove on production
         
         dailySnapshots.push(DailySnapshot(
             0,
@@ -189,7 +189,7 @@ contract StakingSystem is AccessControlEnumerable {
         
         mainToken.burnHumanAddress(fromAddr, amountToBurn);
         
-        uint today = getCurrentOneDay();
+        uint today = getCurrentDaySinceLaunch();
         dailySnapshots[today].inflationAmount += amountToBurn;
     }
     
@@ -225,14 +225,14 @@ contract StakingSystem is AccessControlEnumerable {
     function updateAllSnapshots()
         public
     {
-        updateSnapshots(getCurrentOneDay());
+        updateSnapshots(getCurrentDaySinceLaunch());
     }
     
     function updateSnapshots(uint givenDay)
         public
     {
         require(
-            givenDay <= getCurrentOneDay(),
+            givenDay <= getCurrentDaySinceLaunch(),
             "SS: Exceeded current day"
         );
         
@@ -345,7 +345,7 @@ contract StakingSystem is AccessControlEnumerable {
         
         mainToken.burnHumanAddress(msg.sender, _startStake.stakedAmount);
         
-        uint today = getCurrentOneDay();
+        uint today = getCurrentDaySinceLaunch();
         Stake memory stake = Stake(
             msg.sender,
             _startStake.stakedAmount,
@@ -398,7 +398,7 @@ contract StakingSystem is AccessControlEnumerable {
         //bumpDays(_bumpDays); // TODO: remove on production
         updateAllSnapshots();
         
-        uint today = getCurrentOneDay();
+        uint today = getCurrentDaySinceLaunch();
         stakes[stakeId].endDay = today;
         
         mainToken.mintHumanAddress(msg.sender, stakes[stakeId].stakedAmount);
@@ -472,7 +472,7 @@ contract StakingSystem is AccessControlEnumerable {
         //bumpDays(_bumpDays); // TODO: remove on productio
         updateAllSnapshots();
         
-        uint today = getCurrentOneDay();
+        uint today = getCurrentDaySinceLaunch();
         require(
             today > settings.MINIMUM_DAYS_FOR_HIGH_PENALTY + stakes[stakeId].startDay,
             "SS: Scraping is available once in MINIMUM_DAYS_FOR_HIGH_PENALTY"
@@ -549,7 +549,7 @@ contract StakingSystem is AccessControlEnumerable {
         uint interest;
         
         uint endDay = minOfTwoUints(givenDay, stake.startDay + stake.lockedForXDays);
-        endDay = minOfTwoUints(endDay, dailySnapshots.length); // TODO: подумать
+        endDay = minOfTwoUints(endDay, dailySnapshots.length); // TODO: correct???
         
         uint startCachedDay = stake.startDay/CACHED_DAYS_INTEREST + 1; 
         uint endBeforeFirstCachedDay = minOfTwoUints(endDay, startCachedDay*CACHED_DAYS_INTEREST); 
@@ -560,6 +560,9 @@ contract StakingSystem is AccessControlEnumerable {
             interest += (dailySnapshots[i].inflationAmount * stake.sharesCount) / dailySnapshots[i].totalShares;
         }
         
+        // TODO: make two contracts
+        // TODO: one with CACHED_DAYS_INTEREST = 10, second with CACHED_DAYS_INTEREST = 1000
+        // TODO: compare interest formula for both
         uint endCachedDay = endDay/CACHED_DAYS_INTEREST; 
         for(uint i = startCachedDay; i<endCachedDay; i++)
         {
@@ -675,12 +678,12 @@ contract StakingSystem is AccessControlEnumerable {
         updateAllSnapshots();
     }*/
     
-    function getCurrentOneDay()
+    function getCurrentDaySinceLaunch()
         public
         view
         returns (uint)
     {
-        return (block.timestamp - launchTimestamp) / SECONDS_IN_ONE_DAY;
+        return block.timestamp / SECONDS_IN_ONE_DAY - launchTimestamp / SECONDS_IN_ONE_DAY + 1;
         //return currentDay; // TODO: remove on production
     }
     
@@ -689,7 +692,7 @@ contract StakingSystem is AccessControlEnumerable {
         view
         returns (uint)
     {
-        return getCurrentOneDay() / CACHED_DAYS_INTEREST;
+        return getCurrentDaySinceLaunch() / CACHED_DAYS_INTEREST;
     }
     
     function maxOfTwoUints(uint uint1, uint uint2)
