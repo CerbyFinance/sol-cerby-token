@@ -651,7 +651,7 @@ contract StakingSystem is AccessControlEnumerable {
             numberOfDaysServed = stake.lockedForXDays;
         } else if (givenDay > stake.startDay)
         {
-            numberOfDaysServed = minOfTwoUints(givenDay - stake.startDay, stake.lockedForXDays);
+            numberOfDaysServed = minOfTwoUints(givenDay - stake.startDay, 10*DAYS_IN_ONE_YEAR);
         } else // givenDay > 0 && givenDay < stake.startDay
         {
             return 0;
