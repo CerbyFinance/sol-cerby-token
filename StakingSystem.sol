@@ -670,10 +670,15 @@ contract StakingSystem is AccessControlEnumerable {
             TODO: smaller pays better???
         */
         uint dayBeforeStakeStart = minOfTwoUints(stake.startDay - 1, dailySnapshots.length - 1);
-        uint sharesCount = 
-            (stake.stakedAmount * SHARE_PRICE_DENORM) / dailySnapshots[dayBeforeStakeStart].sharePrice +
+        uint initialSharesCount = 
+            (stake.stakedAmount * SHARE_PRICE_DENORM) / dailySnapshots[dayBeforeStakeStart].sharePrice;
+        uint longerPaysBetterSharesCount =
             (settings.SHARE_MULTIPLIER_NUMERATOR * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / 
                 (settings.SHARE_MULTIPLIER_DENOMINATOR * 10 * DAYS_IN_ONE_YEAR * dailySnapshots[dayBeforeStakeStart].sharePrice);
+        uint smallerPaysBetterSharesCountMultiplier = SHARE_PRICE_DENORM;
+        uint sharesCount = 
+            ((initialSharesCount + longerPaysBetterSharesCount) * smallerPaysBetterSharesCountMultiplier) / 
+                SHARE_PRICE_DENORM;
         return sharesCount;
     }
     

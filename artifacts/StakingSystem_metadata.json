@@ -1275,11 +1275,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0xd8036cb756ee7e15c65e3b12dbfce9d7797da138188239caf476a5f4044e598b",
+			"keccak256": "0x5f20718123e224fc4c3378bf639eb9ff37c0a56d33a8318d0a5b4414e709bae4",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://997cba2b585ef44a770aa5548fddddb092afb4537534bb1ba1c684ad90fadf4c",
-				"dweb:/ipfs/QmYQjsbzusdwzdEnSXzNxQ9nxX8RnVGBbGQjX9iWf5TwXs"
+				"bzz-raw://f6ba81c091ad23655c3fe3e86d546db82e5e4d912e0cf648b6dc4a84e0119ff0",
+				"dweb:/ipfs/QmeuiXcB6VytNagVjdZCc5WJY42BfzU1V9u3FTJ9njuCrb"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": {
