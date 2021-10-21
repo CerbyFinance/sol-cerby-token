@@ -24,12 +24,25 @@ struct StartStake {
     uint lockedForXDays;
 }
 
+struct Settings {
+    uint MINIMUM_DAYS_FOR_HIGH_PENALTY;
+    uint CONTROLLED_APY;
+    uint END_STAKE_FROM;
+    uint END_STAKE_TO;
+    uint MINIMUM_STAKE_DAYS;
+    uint MAXIMUM_STAKE_DAYS;
+    uint SHARE_MULTIPLIER_NUMERATOR;
+    uint SHARE_MULTIPLIER_DENOMINATOR;
+}
+
 contract StakingSystem is AccessControlEnumerable {
     DailySnapshot[] public dailySnapshots;
     uint[] public cachedInterestPerShare;
     
     Stake[] public stakes;
     uint public totalStaked;
+    
+    Settings public settings;
     
     
     // [["1000000000000000000000",1],["2000000000000000000000",2],["3000000000000000000000",3],["4000000000000000000000",4],["5000000000000000000000",10]]
@@ -99,8 +112,21 @@ contract StakingSystem is AccessControlEnumerable {
         uint cachedInterestPerShare
     );
     
+    event SettingsUpdated(
+        Settings Settings
+    );
+    
     constructor() 
     {
+        settings.MINIMUM_DAYS_FOR_HIGH_PENALTY = 0;
+        settings.CONTROLLED_APY = 4e5; // 40%
+        settings.END_STAKE_FROM = 30;
+        settings.END_STAKE_TO = 2*DAYS_IN_ONE_YEAR; // TODO: 5% per month penalty
+        settings.MINIMUM_STAKE_DAYS = 1;
+        settings.MAXIMUM_STAKE_DAYS = 100*DAYS_IN_ONE_YEAR;
+        settings.SHARE_MULTIPLIER_NUMERATOR = 250; // 250/100 = 250% shares bonus max
+        settings.SHARE_MULTIPLIER_DENOMINATOR = 100;
+        
         launchTimestamp = block.timestamp - 15 minutes; // TODO: remove on production
         
         dailySnapshots.push(DailySnapshot(
@@ -153,6 +179,15 @@ contract StakingSystem is AccessControlEnumerable {
             "SS: Stake was already ended"
         );
         _;
+    }
+    
+    function adminUpdateSettings(Settings calldata _settings)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        settings = _settings;
+        
+        emit SettingsUpdated(_settings);
     }
     
     function adminBurnAndAddToStakersInflation(address fromAddr, uint amountToBurn)
@@ -487,6 +522,14 @@ contract StakingSystem is AccessControlEnumerable {
         returns(uint)
     {
         return cachedInterestPerShare.length;
+    }
+    
+    function getStakesLength()
+        public
+        view
+        returns(uint)
+    {
+        return stakes.length;
     }
     
     function getInterestById(uint stakeId, uint givenDay)

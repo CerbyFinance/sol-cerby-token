@@ -157,6 +157,61 @@
 				"anonymous": false,
 				"inputs": [
 					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "MINIMUM_DAYS_FOR_HIGH_PENALTY",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "CONTROLLED_APY",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "END_STAKE_FROM",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "END_STAKE_TO",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "MINIMUM_STAKE_DAYS",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "MAXIMUM_STAKE_DAYS",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "SHARE_MULTIPLIER_NUMERATOR",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "SHARE_MULTIPLIER_DENOMINATOR",
+								"type": "uint256"
+							}
+						],
+						"indexed": false,
+						"internalType": "struct Settings",
+						"name": "Settings",
+						"type": "tuple"
+					}
+				],
+				"name": "SettingsUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
 						"indexed": false,
 						"internalType": "uint256",
 						"name": "stakeId",
@@ -298,6 +353,61 @@
 					}
 				],
 				"name": "adminBurnAndAddToStakersInflation",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "MINIMUM_DAYS_FOR_HIGH_PENALTY",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "CONTROLLED_APY",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "END_STAKE_FROM",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "END_STAKE_TO",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "MINIMUM_STAKE_DAYS",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "MAXIMUM_STAKE_DAYS",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "SHARE_MULTIPLIER_NUMERATOR",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "SHARE_MULTIPLIER_DENOMINATOR",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct Settings",
+						"name": "_settings",
+						"type": "tuple"
+					}
+				],
+				"name": "adminUpdateSettings",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -800,6 +910,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "getStakesLength",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -931,6 +1054,54 @@
 				"name": "scrapeStake",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "settings",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "MINIMUM_DAYS_FOR_HIGH_PENALTY",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "CONTROLLED_APY",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "END_STAKE_FROM",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "END_STAKE_TO",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "MINIMUM_STAKE_DAYS",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "MAXIMUM_STAKE_DAYS",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "SHARE_MULTIPLIER_NUMERATOR",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "SHARE_MULTIPLIER_DENOMINATOR",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -1127,11 +1298,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0xda391823b798209e09d8bb7df130a389b8e569018f6f14094589da1d0774ad9a",
+			"keccak256": "0x16302e6d6e3db9763bdc7fcbeec4148caa2d63a193cf0783ccc718cc6bd5c18c",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://ff9df9bc7ba9789646a2f05cd1ad9eb46ba70f39fde6596658133dfdddb965c8",
-				"dweb:/ipfs/QmbuU6H7hHWCSKEpsXhrTYtP8h9a6rXcZijHXhcMrkW5ok"
+				"bzz-raw://0db6cb5c864084064028026031d61b0ecd56ed489e3fccf4ddc3142fa7484595",
+				"dweb:/ipfs/QmRVc122qUF17qhAJ1AL8g1siAjBrwrBkioRu4XGfve1Ut"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": {
