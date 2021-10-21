@@ -17,7 +17,6 @@ struct Stake {
     uint startDay;
     uint lockedForXDays;
     uint endDay;
-    uint sharesCount;
 }
 
 struct StartStake {
@@ -351,17 +350,16 @@ contract StakingSystem is AccessControlEnumerable {
             _startStake.stakedAmount,
             today,
             _startStake.lockedForXDays,
-            0,
             0
         );
-        stake.sharesCount = getSharesCountByStake(stake, 0);
         
         stakes.push(
             stake
         );
-        
         stakeId = stakes.length - 1;
-        dailySnapshots[today].totalShares += stake.sharesCount;
+        
+        uint sharesCount = getSharesCountByStake(stake, 0);
+        dailySnapshots[today].totalShares += sharesCount;
         totalStaked += _startStake.stakedAmount;
         
         emit StakeStarted(
@@ -370,7 +368,7 @@ contract StakingSystem is AccessControlEnumerable {
             stakes[stakeId].stakedAmount, 
             stakes[stakeId].startDay,
             stakes[stakeId].lockedForXDays,
-            stake.sharesCount
+            sharesCount
         );
         
         return stakeId;
@@ -409,6 +407,7 @@ contract StakingSystem is AccessControlEnumerable {
         ) { // Early end stake: Calculating interest similar to scrapeStake one
             Stake memory modifiedStakeToGetInterest = stakes[stakeId];
             modifiedStakeToGetInterest.lockedForXDays = today - stakes[stakeId].startDay;
+            
             interest = getInterestByStake(modifiedStakeToGetInterest, today);
         } else { // Late or correct end stake
             interest = getInterestByStake(stakes[stakeId], today);
@@ -439,7 +438,8 @@ contract StakingSystem is AccessControlEnumerable {
         }
         
         totalStaked -= stakes[stakeId].stakedAmount;
-        dailySnapshots[today].totalShares -= stakes[stakeId].sharesCount;
+        uint sharesCount = getSharesCountByStake(stakes[stakeId], 0);
+        dailySnapshots[today].totalShares -= sharesCount;
         
         emit StakeEnded(stakeId, today, interest, penalty);
     }
@@ -486,16 +486,16 @@ contract StakingSystem is AccessControlEnumerable {
         uint lockedForXDays = stakes[stakeId].lockedForXDays;
         
         
-        uint oldSharesCount = stakes[stakeId].sharesCount;
+        uint oldSharesCount = getSharesCountByStake(stakes[stakeId], 0);
         stakes[stakeId].lockedForXDays = today - stakes[stakeId].startDay;
-        stakes[stakeId].sharesCount = getSharesCountByStake(stakes[stakeId], 0);
+        uint newSharesCount = getSharesCountByStake(stakes[stakeId], 0);
         
-        dailySnapshots[today].totalShares = dailySnapshots[today].totalShares - oldSharesCount + stakes[stakeId].sharesCount;
+        dailySnapshots[today].totalShares = dailySnapshots[today].totalShares - oldSharesCount + newSharesCount;
         
         emit StakeUpdated(
             stakeId, 
             stakes[stakeId].lockedForXDays,
-            stakes[stakeId].sharesCount
+            newSharesCount
         );
         
         //endStake(stakeId, 0); // TODO: remove on production
@@ -551,13 +551,14 @@ contract StakingSystem is AccessControlEnumerable {
         uint endDay = minOfTwoUints(givenDay, stake.startDay + stake.lockedForXDays);
         endDay = minOfTwoUints(endDay, dailySnapshots.length); // TODO: correct???
         
-        uint startCachedDay = stake.startDay/CACHED_DAYS_INTEREST + 1; 
+        uint sharesCount = getSharesCountByStake(stake, givenDay);
+        uint startCachedDay = stake.startDay/CACHED_DAYS_INTEREST + 1;
         uint endBeforeFirstCachedDay = minOfTwoUints(endDay, startCachedDay*CACHED_DAYS_INTEREST); 
         for(uint i = stake.startDay; i<endBeforeFirstCachedDay; i++)
         {
             if (dailySnapshots[i].totalShares == 0) continue;
             
-            interest += (dailySnapshots[i].inflationAmount * stake.sharesCount) / dailySnapshots[i].totalShares;
+            interest += (dailySnapshots[i].inflationAmount * sharesCount) / dailySnapshots[i].totalShares;
         }
         
         // TODO: make two contracts
@@ -566,7 +567,7 @@ contract StakingSystem is AccessControlEnumerable {
         uint endCachedDay = endDay/CACHED_DAYS_INTEREST; 
         for(uint i = startCachedDay; i<endCachedDay; i++)
         {
-            interest += (cachedInterestPerShare[i] * stake.sharesCount) / INTEREST_PER_SHARE_DENORM;
+            interest += (cachedInterestPerShare[i] * sharesCount) / INTEREST_PER_SHARE_DENORM;
         }
         
         uint startAfterLastCachedDay = endDay - endDay % CACHED_DAYS_INTEREST;
@@ -576,7 +577,7 @@ contract StakingSystem is AccessControlEnumerable {
             {
                 if (dailySnapshots[i].totalShares == 0) continue;
                 
-                interest += (dailySnapshots[i].inflationAmount * stake.sharesCount) / dailySnapshots[i].totalShares;
+                interest += (dailySnapshots[i].inflationAmount * sharesCount) / dailySnapshots[i].totalShares;
             }
         }
         
@@ -650,13 +651,11 @@ contract StakingSystem is AccessControlEnumerable {
             numberOfDaysServed = stake.lockedForXDays;
         } else if (givenDay > stake.startDay)
         {
-            numberOfDaysServed = givenDay - stake.startDay;
+            numberOfDaysServed = minOfTwoUints(givenDay - stake.startDay, stake.lockedForXDays);
         } else // givenDay > 0 && givenDay < stake.startDay
         {
             return 0;
         }
-        
-        numberOfDaysServed = minOfTwoUints(numberOfDaysServed, 10 * DAYS_IN_ONE_YEAR);
         
         /*
             10yr - 2.5x
@@ -664,10 +663,11 @@ contract StakingSystem is AccessControlEnumerable {
             1d - 0.0006849x
             TODO: smaller pays better???
         */
+        uint dayBeforeStakeStart = minOfTwoUints(stake.startDay - 1, dailySnapshots.length - 1);
         uint sharesCount = 
-            (stake.stakedAmount * SHARE_PRICE_DENORM) / dailySnapshots[stake.startDay].sharePrice +
+            (stake.stakedAmount * SHARE_PRICE_DENORM) / dailySnapshots[dayBeforeStakeStart].sharePrice +
             (settings.SHARE_MULTIPLIER_NUMERATOR * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / 
-                (settings.SHARE_MULTIPLIER_DENOMINATOR * 10 * DAYS_IN_ONE_YEAR * dailySnapshots[stake.startDay].sharePrice);
+                (settings.SHARE_MULTIPLIER_DENOMINATOR * 10 * DAYS_IN_ONE_YEAR * dailySnapshots[dayBeforeStakeStart].sharePrice);
         return sharesCount;
     }
     
