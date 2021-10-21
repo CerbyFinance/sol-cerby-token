@@ -17,6 +17,7 @@ struct Stake {
     uint startDay;
     uint lockedForXDays;
     uint endDay;
+    // TODO: should I store sharesCount ???
 }
 
 struct StartStake {
