@@ -185,6 +185,8 @@ contract StakingSystem is AccessControlEnumerable {
         public
         onlyRole(ROLE_ADMIN)
     {
+        updateAllSnapshots();
+        
         mainToken.burnHumanAddress(fromAddr, amountToBurn);
         
         uint today = getCurrentOneDay();
