@@ -40,7 +40,6 @@ contract StakingSystem is AccessControlEnumerable {
     uint[] public cachedInterestPerShare;
     
     Stake[] public stakes;
-    uint public totalStaked;
     
     Settings public settings;
     
@@ -58,7 +57,7 @@ contract StakingSystem is AccessControlEnumerable {
     uint constant SECONDS_IN_ONE_DAY = 600;
     
     IDefiFactoryToken mainToken = IDefiFactoryToken(
-        0x7A7492a8e888Ca3fe8e31cB2E34872FE0CE5309f // TODO: change to deft token on production
+        0xe4DFe0FC73A9B9105Ed0422ba66084b47A32499F // TODO: change to deft token on production
     );
     
     uint public launchTimestamp;
@@ -265,7 +264,7 @@ contract StakingSystem is AccessControlEnumerable {
                 dailySnapshots[currentSnapshotIndex].inflationAmount,
                 dailySnapshots[currentSnapshotIndex].totalShares,
                 dailySnapshots[currentSnapshotIndex].sharePrice,
-                totalStaked,
+                getTotalTokensStaked(),
                 mainToken.totalSupply()
             );
         }
@@ -342,7 +341,7 @@ contract StakingSystem is AccessControlEnumerable {
         
         updateAllSnapshots();
         
-        mainToken.burnHumanAddress(msg.sender, _startStake.stakedAmount);
+        mainToken.transferCustom(msg.sender, address(this), _startStake.stakedAmount);
         
         uint today = getCurrentDaySinceLaunch();
         Stake memory stake = Stake(
@@ -360,7 +359,6 @@ contract StakingSystem is AccessControlEnumerable {
         
         uint sharesCount = getSharesCountByStake(stake, 0);
         dailySnapshots[today].totalShares += sharesCount;
-        totalStaked += _startStake.stakedAmount;
         
         emit StakeStarted(
             stakeId,
@@ -399,7 +397,7 @@ contract StakingSystem is AccessControlEnumerable {
         uint today = getCurrentDaySinceLaunch();
         stakes[stakeId].endDay = today;
         
-        mainToken.mintHumanAddress(msg.sender, stakes[stakeId].stakedAmount);
+        mainToken.transferCustom(address(this), msg.sender, stakes[stakeId].stakedAmount);
         
         uint interest;
         if (
@@ -437,7 +435,6 @@ contract StakingSystem is AccessControlEnumerable {
            dailySnapshots[today].sharePrice = maxROI;
         }
         
-        totalStaked -= stakes[stakeId].stakedAmount;
         uint sharesCount = getSharesCountByStake(stakes[stakeId], 0);
         dailySnapshots[today].totalShares -= sharesCount;
         
@@ -505,6 +502,14 @@ contract StakingSystem is AccessControlEnumerable {
         startStake(StartStake(stakeAmount, newLockedForXDays));
         
         // TODO: add event stake child created???
+    }
+    
+    function getTotalTokensStaked()
+        public
+        view
+        returns(uint)
+    {
+        return IDefiFactoryToken(mainToken).balanceOf(address(this));
     }
     
     function getDailySnapshotsLength()

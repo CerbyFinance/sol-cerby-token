@@ -52,7 +52,8 @@
 			"balanceOf(address)": "70a08231",
 			"burnHumanAddress(address,uint256)": "18a8ad87",
 			"mintHumanAddress(address,uint256)": "0bb9ff5d",
-			"totalSupply()": "18160ddd"
+			"totalSupply()": "18160ddd",
+			"transferCustom(address,address,uint256)": "9cff2eba"
 		}
 	},
 	"abi": [
@@ -122,6 +123,29 @@
 				}
 			],
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "sender",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "recipient",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "amount",
+					"type": "uint256"
+				}
+			],
+			"name": "transferCustom",
+			"outputs": [],
+			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	]

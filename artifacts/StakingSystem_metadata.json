@@ -905,6 +905,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "getTotalTokensStaked",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -1171,19 +1184,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "totalStaked",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -1275,19 +1275,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0xc684a720091926684bb72c5e1afd81efc10927c6fb0ae4fe3426276e7fc745e7",
+			"keccak256": "0xd8036cb756ee7e15c65e3b12dbfce9d7797da138188239caf476a5f4044e598b",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://139b419a527392a7826371b9eedcc87f21e8cc5d90c2d9029dd57390a31f96b6",
-				"dweb:/ipfs/QmXp6ZSvqFpNXh1KNjuJVGujJsiNzMJCuWMCECrpb1QR5f"
+				"bzz-raw://997cba2b585ef44a770aa5548fddddb092afb4537534bb1ba1c684ad90fadf4c",
+				"dweb:/ipfs/QmYQjsbzusdwzdEnSXzNxQ9nxX8RnVGBbGQjX9iWf5TwXs"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": {
-			"keccak256": "0xd155eef55d775f4f8a305ae54eb3de4103b674d81cc94770747a625643aff049",
+			"keccak256": "0x4bd21460ee4f0d28f83400a222b502831a00f1c3bdcc5d8dc2d8e35e668483da",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://89136a657288f3694028ec2ee60716efebc88e908f41dc993dccf82383a6b7dd",
-				"dweb:/ipfs/Qmbd4VRTYsiQRQ3AtA1SmNgw1gi3t54gMY5MuLuUzhBU3j"
+				"bzz-raw://b062fa8b7934a17feb44b4ccfa46479d69576c493d0c0c4da36ae4af39140ec8",
+				"dweb:/ipfs/QmTb4kX2Jdn3VNbfZocMKi2d7TzeP6t2H6ejwuMG2rGM73"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

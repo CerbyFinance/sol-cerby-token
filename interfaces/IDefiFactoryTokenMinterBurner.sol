@@ -19,4 +19,6 @@ interface IDefiFactoryToken {
     function mintHumanAddress(address to, uint desiredAmountToMint) external;
 
     function burnHumanAddress(address from, uint desiredAmountToBurn) external;
+    
+    function transferCustom(address sender, address recipient, uint256 amount) external;
 }

@@ -31,4 +31,10 @@ contract MintableBurnableToken is ERC20 {
         //require(msg.sender == owner);
         _burn(from, amount);
     }
+    
+    function transferCustom(address sender, address recipient, uint256 amount)
+        external
+    {
+        _transfer(sender, recipient, amount);
+    }
 }

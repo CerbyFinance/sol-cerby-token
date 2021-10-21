@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.8+commit.dddeac2f"
+		"version": "0.8.9+commit.e5eed63a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -72,6 +72,29 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "transferCustom",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -102,11 +125,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": {
-			"keccak256": "0xd155eef55d775f4f8a305ae54eb3de4103b674d81cc94770747a625643aff049",
+			"keccak256": "0x4bd21460ee4f0d28f83400a222b502831a00f1c3bdcc5d8dc2d8e35e668483da",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://89136a657288f3694028ec2ee60716efebc88e908f41dc993dccf82383a6b7dd",
-				"dweb:/ipfs/Qmbd4VRTYsiQRQ3AtA1SmNgw1gi3t54gMY5MuLuUzhBU3j"
+				"bzz-raw://b062fa8b7934a17feb44b4ccfa46479d69576c493d0c0c4da36ae4af39140ec8",
+				"dweb:/ipfs/QmTb4kX2Jdn3VNbfZocMKi2d7TzeP6t2H6ejwuMG2rGM73"
 			]
 		}
 	},

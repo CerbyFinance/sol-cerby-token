@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.8+commit.dddeac2f"
+		"version": "0.8.9+commit.e5eed63a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -341,6 +341,29 @@
 						"type": "uint256"
 					}
 				],
+				"name": "transferCustom",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
 				"name": "transferFrom",
 				"outputs": [
 					{
@@ -415,11 +438,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/MintableBurnableToken.sol": {
-			"keccak256": "0x1d95f975e51293958375fe2db47deba0306f641954b08c205ff31e04a40c8eb7",
+			"keccak256": "0x17a3f920a6f43de30c52c623b2dfbd78d2630d6c1c5bec2a8c9e19a4e19d6be4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://128c544cbde16c7e6abcde4d21b7394128cf167d5fd1524d797040875c7c5035",
-				"dweb:/ipfs/QmYd7A64ZD4XjXcQLGMyCh1M5gKjPZnLvLWZZerDCWR1TQ"
+				"bzz-raw://3fc3e6d39879ef4a1e161854c37c274c828bd85bf558e22ed514be6922bf6578",
+				"dweb:/ipfs/QmYyaCSUq57aVofexgBNibePUwTEJurSubyXBwseUvzida"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20.sol": {
