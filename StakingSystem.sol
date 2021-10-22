@@ -235,7 +235,6 @@ contract StakingSystem is AccessControlEnumerable {
             "SS: Exceeded current day"
         );
         
-        uint stakedAmount = 1e6 * 1e18;
         uint startDay = dailySnapshots.length-1; // last sealed day
         if (startDay == givenDay) return;
         
@@ -243,10 +242,10 @@ contract StakingSystem is AccessControlEnumerable {
         {
             uint currentSnapshotIndex = dailySnapshots.length > i? i: dailySnapshots.length-1;
             uint sharesCount = // TODO: need SMALLER_PAYS_BETTER_BONUS ???
-                ((settings.LONGER_PAYS_BETTER_BONUS + APY_DENORM) * stakedAmount * SHARE_PRICE_DENORM) / 
+                ((settings.LONGER_PAYS_BETTER_BONUS + APY_DENORM) * SHARE_PRICE_DENORM) / 
                     (APY_DENORM * dailySnapshots[currentSnapshotIndex].sharePrice);
             uint inflationAmount = 
-                (stakedAmount * settings.CONTROLLED_APY * (dailySnapshots[currentSnapshotIndex].totalShares + sharesCount)) / 
+                (settings.CONTROLLED_APY * (dailySnapshots[currentSnapshotIndex].totalShares + sharesCount)) / 
                     (sharesCount * DAYS_IN_ONE_YEAR * APY_DENORM);
             
             if (dailySnapshots.length > i)
