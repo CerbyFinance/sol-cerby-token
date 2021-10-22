@@ -244,7 +244,7 @@ contract StakingSystem is AccessControlEnumerable {
             uint currentSnapshotIndex = dailySnapshots.length > i? i: dailySnapshots.length-1;
             uint sharesCount = 
                 ((settings.LONGER_PAYS_BETTER_BONUS + APY_DENORM) * stakedAmount * SHARE_PRICE_DENORM) / 
-                    (settings.LONGER_PAYS_BETTER_BONUS * dailySnapshots[currentSnapshotIndex].sharePrice);
+                    (APY_DENORM * dailySnapshots[currentSnapshotIndex].sharePrice);
             uint inflationAmount = 
                 (stakedAmount * settings.CONTROLLED_APY * (dailySnapshots[currentSnapshotIndex].totalShares + sharesCount)) / 
                     (sharesCount * DAYS_IN_ONE_YEAR * APY_DENORM);
