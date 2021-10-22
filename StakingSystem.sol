@@ -242,7 +242,7 @@ contract StakingSystem is AccessControlEnumerable {
         for (uint i = startDay; i<givenDay; i++)
         {
             uint currentSnapshotIndex = dailySnapshots.length > i? i: dailySnapshots.length-1;
-            uint sharesCount = 
+            uint sharesCount = // TODO: need SMALLER_PAYS_BETTER_BONUS ???
                 ((settings.LONGER_PAYS_BETTER_BONUS + APY_DENORM) * stakedAmount * SHARE_PRICE_DENORM) / 
                     (APY_DENORM * dailySnapshots[currentSnapshotIndex].sharePrice);
             uint inflationAmount = 
