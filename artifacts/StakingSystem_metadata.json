@@ -170,6 +170,16 @@
 							},
 							{
 								"internalType": "uint256",
+								"name": "SMALLER_PAYS_BETTER_BONUS",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "LONGER_PAYS_BETTER_BONUS",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
 								"name": "END_STAKE_FROM",
 								"type": "uint256"
 							},
@@ -186,16 +196,6 @@
 							{
 								"internalType": "uint256",
 								"name": "MAXIMUM_STAKE_DAYS",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "SHARE_MULTIPLIER_NUMERATOR",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "SHARE_MULTIPLIER_DENOMINATOR",
 								"type": "uint256"
 							}
 						],
@@ -373,6 +373,16 @@
 							},
 							{
 								"internalType": "uint256",
+								"name": "SMALLER_PAYS_BETTER_BONUS",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "LONGER_PAYS_BETTER_BONUS",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
 								"name": "END_STAKE_FROM",
 								"type": "uint256"
 							},
@@ -389,16 +399,6 @@
 							{
 								"internalType": "uint256",
 								"name": "MAXIMUM_STAKE_DAYS",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "SHARE_MULTIPLIER_NUMERATOR",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "SHARE_MULTIPLIER_DENOMINATOR",
 								"type": "uint256"
 							}
 						],
@@ -1062,6 +1062,16 @@
 					},
 					{
 						"internalType": "uint256",
+						"name": "SMALLER_PAYS_BETTER_BONUS",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "LONGER_PAYS_BETTER_BONUS",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
 						"name": "END_STAKE_FROM",
 						"type": "uint256"
 					},
@@ -1078,16 +1088,6 @@
 					{
 						"internalType": "uint256",
 						"name": "MAXIMUM_STAKE_DAYS",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "SHARE_MULTIPLIER_NUMERATOR",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "SHARE_MULTIPLIER_DENOMINATOR",
 						"type": "uint256"
 					}
 				],
@@ -1275,11 +1275,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0xb7ee803dd7db2accc72317a014c3cede6624a5711cc85a1b31e1cab0eb142320",
+			"keccak256": "0xe1b6981ff4ea9f188fc30f349eebadfb7e0d64899aa5c6e7d36ece71aa9b6ee9",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://ff4f7e81a8ce2d0034194eadd10a56cc637ae2da485520c1cf8d1cfe5713a0f3",
-				"dweb:/ipfs/QmdmqVDJRSJwMw7n9Dq66Y3Za8R8BjJmMq1haAW4v5kYzV"
+				"bzz-raw://974fe0562d2e03d2a44a601f681cef25e482bffc6960d0b588a15d16129d00bc",
+				"dweb:/ipfs/QmScxaaPrdwxs8YeheYiw3ASUXctpF2ZU3hceMosbY9wK3"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": {

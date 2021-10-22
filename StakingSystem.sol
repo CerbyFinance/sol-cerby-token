@@ -27,12 +27,12 @@ struct StartStake {
 struct Settings {
     uint MINIMUM_DAYS_FOR_HIGH_PENALTY;
     uint CONTROLLED_APY;
+    uint SMALLER_PAYS_BETTER_BONUS;
+    uint LONGER_PAYS_BETTER_BONUS;
     uint END_STAKE_FROM;
     uint END_STAKE_TO;
     uint MINIMUM_STAKE_DAYS;
     uint MAXIMUM_STAKE_DAYS;
-    uint SHARE_MULTIPLIER_NUMERATOR;
-    uint SHARE_MULTIPLIER_DENOMINATOR;
 }
 
 contract StakingSystem is AccessControlEnumerable {
@@ -114,8 +114,8 @@ contract StakingSystem is AccessControlEnumerable {
         settings.END_STAKE_TO = 2*DAYS_IN_ONE_YEAR; // TODO: 5% per month penalty
         settings.MINIMUM_STAKE_DAYS = 1;
         settings.MAXIMUM_STAKE_DAYS = 100*DAYS_IN_ONE_YEAR;
-        settings.SHARE_MULTIPLIER_NUMERATOR = 300; // 300/100 = 300% shares bonus max
-        settings.SHARE_MULTIPLIER_DENOMINATOR = 100;
+        settings.LONGER_PAYS_BETTER_BONUS = 3e6; // 3e6/1e6 = 300% shares bonus max
+        settings.SMALLER_PAYS_BETTER_BONUS = 25e4; // 25e4/1e6 = 25% shares bonus max
         
         launchTimestamp = block.timestamp; // TODO: remove on production
         
@@ -235,7 +235,7 @@ contract StakingSystem is AccessControlEnumerable {
             "SS: Exceeded current day"
         );
         
-        uint stakedAmount = 1e18;
+        uint stakedAmount = 1e6 * 1e18;
         uint startDay = dailySnapshots.length-1; // last sealed day
         if (startDay == givenDay) return;
         
@@ -243,8 +243,8 @@ contract StakingSystem is AccessControlEnumerable {
         {
             uint currentSnapshotIndex = dailySnapshots.length > i? i: dailySnapshots.length-1;
             uint sharesCount = 
-                ((settings.SHARE_MULTIPLIER_NUMERATOR + settings.SHARE_MULTIPLIER_DENOMINATOR) * stakedAmount * SHARE_PRICE_DENORM) / 
-                    (settings.SHARE_MULTIPLIER_DENOMINATOR * dailySnapshots[currentSnapshotIndex].sharePrice);
+                ((settings.LONGER_PAYS_BETTER_BONUS + APY_DENORM) * stakedAmount * SHARE_PRICE_DENORM) / 
+                    (settings.LONGER_PAYS_BETTER_BONUS * dailySnapshots[currentSnapshotIndex].sharePrice);
             uint inflationAmount = 
                 (stakedAmount * settings.CONTROLLED_APY * (dailySnapshots[currentSnapshotIndex].totalShares + sharesCount)) / 
                     (sharesCount * DAYS_IN_ONE_YEAR * APY_DENORM);
@@ -671,30 +671,32 @@ contract StakingSystem is AccessControlEnumerable {
             TODO: smaller pays better???
         */
         uint dayBeforeStakeStart = minOfTwoUints(stake.startDay - 1, dailySnapshots.length - 1);
+        
         uint initialSharesCount = 
             (stake.stakedAmount * SHARE_PRICE_DENORM) / dailySnapshots[dayBeforeStakeStart].sharePrice;
         uint longerPaysBetterSharesCount =
-            (settings.SHARE_MULTIPLIER_NUMERATOR * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / 
-                (settings.SHARE_MULTIPLIER_DENOMINATOR * 10 * DAYS_IN_ONE_YEAR * dailySnapshots[dayBeforeStakeStart].sharePrice);
+            (settings.LONGER_PAYS_BETTER_BONUS * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / 
+                (APY_DENORM * 10 * DAYS_IN_ONE_YEAR * dailySnapshots[dayBeforeStakeStart].sharePrice);
         uint smallerPaysBetterSharesCountMultiplier;
         if (stake.stakedAmount <= MINIMUM_SMALLER_PAYS_BETTER)
         {
-            smallerPaysBetterSharesCountMultiplier = 2*SHARE_PRICE_DENORM;
+            smallerPaysBetterSharesCountMultiplier = settings.SMALLER_PAYS_BETTER_BONUS;
         } else if (
             MINIMUM_SMALLER_PAYS_BETTER < stake.stakedAmount &&
             stake.stakedAmount < MAXIMUM_SMALLER_PAYS_BETTER
         ) {
             smallerPaysBetterSharesCountMultiplier = 
-                SHARE_PRICE_DENORM + 
-                    SHARE_PRICE_DENORM * (MAXIMUM_SMALLER_PAYS_BETTER - stake.stakedAmount) /
+                APY_DENORM + 
+                    (settings.SMALLER_PAYS_BETTER_BONUS * (MAXIMUM_SMALLER_PAYS_BETTER - stake.stakedAmount)) /
                         (MAXIMUM_SMALLER_PAYS_BETTER - MINIMUM_SMALLER_PAYS_BETTER);
         } else // MAXIMUM_SMALLER_PAYS_BETTER >= stake.stakedAmount
         {
-            smallerPaysBetterSharesCountMultiplier = SHARE_PRICE_DENORM;
+            smallerPaysBetterSharesCountMultiplier = APY_DENORM;
         }
         uint sharesCount = 
             ((initialSharesCount + longerPaysBetterSharesCount) * smallerPaysBetterSharesCountMultiplier) / 
-                SHARE_PRICE_DENORM;
+                APY_DENORM;
+                
         return sharesCount;
     }
     
