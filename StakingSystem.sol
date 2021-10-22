@@ -680,7 +680,7 @@ contract StakingSystem is AccessControlEnumerable {
         uint smallerPaysBetterSharesCountMultiplier;
         if (stake.stakedAmount <= MINIMUM_SMALLER_PAYS_BETTER)
         {
-            smallerPaysBetterSharesCountMultiplier = settings.SMALLER_PAYS_BETTER_BONUS;
+            smallerPaysBetterSharesCountMultiplier = APY_DENORM + settings.SMALLER_PAYS_BETTER_BONUS;
         } else if (
             MINIMUM_SMALLER_PAYS_BETTER < stake.stakedAmount &&
             stake.stakedAmount < MAXIMUM_SMALLER_PAYS_BETTER
