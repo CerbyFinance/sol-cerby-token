@@ -48,7 +48,8 @@ contract StakingSystem is AccessControlEnumerable {
     // [["6000000000000000000000",3650]]
     // 0x123492a8E888Ca3fe8E31cb2e34872FE0ce5309F
     
-    
+    uint constant MINIMUM_SMALLER_PAYS_BETTER = 1000 * 1e18; // 1000 deft
+    uint constant MAXIMUM_SMALLER_PAYS_BETTER = 1000000 * 1e18; // 1 million deft
     uint constant CACHED_DAYS_INTEREST = 100;
     uint constant DAYS_IN_ONE_YEAR = 365;
     uint constant SHARE_PRICE_DENORM = 1e18;
@@ -675,7 +676,22 @@ contract StakingSystem is AccessControlEnumerable {
         uint longerPaysBetterSharesCount =
             (settings.SHARE_MULTIPLIER_NUMERATOR * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / 
                 (settings.SHARE_MULTIPLIER_DENOMINATOR * 10 * DAYS_IN_ONE_YEAR * dailySnapshots[dayBeforeStakeStart].sharePrice);
-        uint smallerPaysBetterSharesCountMultiplier = SHARE_PRICE_DENORM;
+        uint smallerPaysBetterSharesCountMultiplier;
+        if (stake.stakedAmount <= MINIMUM_SMALLER_PAYS_BETTER)
+        {
+            smallerPaysBetterSharesCountMultiplier = 2*SHARE_PRICE_DENORM;
+        } else if (
+            MINIMUM_SMALLER_PAYS_BETTER < stake.stakedAmount &&
+            stake.stakedAmount < MAXIMUM_SMALLER_PAYS_BETTER
+        ) {
+            smallerPaysBetterSharesCountMultiplier = 
+                SHARE_PRICE_DENORM + 
+                    SHARE_PRICE_DENORM * (MAXIMUM_SMALLER_PAYS_BETTER - stake.stakedAmount) /
+                        (MAXIMUM_SMALLER_PAYS_BETTER - MINIMUM_SMALLER_PAYS_BETTER);
+        } else // MAXIMUM_SMALLER_PAYS_BETTER >= stake.stakedAmount
+        {
+            smallerPaysBetterSharesCountMultiplier = SHARE_PRICE_DENORM;
+        }
         uint sharesCount = 
             ((initialSharesCount + longerPaysBetterSharesCount) * smallerPaysBetterSharesCountMultiplier) / 
                 SHARE_PRICE_DENORM;
