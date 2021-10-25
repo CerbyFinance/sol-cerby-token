@@ -382,6 +382,9 @@ contract StakingSystem is AccessControlEnumerable {
         }
     }
     
+    // TODO: random stake end
+    // TODO: test 100 year stake end
+    
     function endStake(
         uint stakeId/*,
         uint _bumpDays*/ // TODO: remove on production
@@ -457,15 +460,6 @@ contract StakingSystem is AccessControlEnumerable {
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
-        
-        /*
-        100 days
-        15 days scrapeStake
-        15 days end stake
-        85 days start stake
-        
-        */
-        
         //bumpDays(_bumpDays); // TODO: remove on productio
         updateAllSnapshots();
         
@@ -500,8 +494,6 @@ contract StakingSystem is AccessControlEnumerable {
         
         uint newLockedForXDays = lockedForXDays - stakes[stakeId].lockedForXDays;
         startStake(StartStake(stakeAmount, newLockedForXDays));
-        
-        // TODO: add event stake child created???
     }
     
     function getTotalTokensStaked()
@@ -667,7 +659,6 @@ contract StakingSystem is AccessControlEnumerable {
             10yr - 2.5x
             1yr - 0.25x
             1d - 0.0006849x
-            TODO: smaller pays better???
         */
         uint dayBeforeStakeStart = minOfTwoUints(stake.startDay - 1, dailySnapshots.length - 1);
         
