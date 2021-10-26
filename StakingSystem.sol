@@ -56,7 +56,7 @@ contract StakingSystem is AccessControlEnumerable {
     uint constant SHARE_PRICE_DENORM = 1e18;
     uint constant INTEREST_PER_SHARE_DENORM = 1e18;
     uint constant APY_DENORM = 1e6;
-    uint constant SECONDS_IN_ONE_DAY = 600;
+    uint constant SECONDS_IN_ONE_DAY = 60*3;
     
     IDefiFactoryToken mainToken = IDefiFactoryToken(
         0xe4DFe0FC73A9B9105Ed0422ba66084b47A32499F // TODO: change to deft token on production
@@ -379,21 +379,21 @@ contract StakingSystem is AccessControlEnumerable {
     {
         for(uint i; i<stakeIds.length; i++)
         {
-            endStake(stakeIds[i], 0); // TODO: remove on production
-            //endStake(stakeIds[i]);
+            //endStake(stakeIds[i], 0); // TODO: remove on production
+            endStake(stakeIds[i]);
         }
     }
     
     function endStake(
-        uint stakeId,
-        uint _bumpDays // TODO: remove on production
+        uint stakeId/*,
+        uint _bumpDays*/ // TODO: remove on production
     )
         public
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
-        bumpDays(_bumpDays); // TODO: remove on production
+        //bumpDays(_bumpDays); // TODO: remove on production
         updateAllSnapshots();
         
         uint today = getCurrentDaySinceLaunch();
@@ -444,21 +444,21 @@ contract StakingSystem is AccessControlEnumerable {
     {
         for(uint i; i<stakeIds.length; i++)
         {
-            scrapeStake(stakeIds[i], 0); // TODO: remove on production
-            //scrapeStake(stakeIds[i]);
+            //scrapeStake(stakeIds[i], 0); // TODO: remove on production
+            scrapeStake(stakeIds[i]);
         }
     }
     
     function scrapeStake(
-        uint stakeId, 
-        uint _bumpDays
+        uint stakeId/*, 
+        uint _bumpDays*/  // TODO: remove on production
     )
         public
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
-        bumpDays(_bumpDays); // TODO: remove on productio
+        //bumpDays(_bumpDays); // TODO: remove on production
         updateAllSnapshots();
         
         uint today = getCurrentDaySinceLaunch();
@@ -486,8 +486,8 @@ contract StakingSystem is AccessControlEnumerable {
             newSharesCount
         );
         
-        endStake(stakeId, 0); // TODO: remove on production
-        //endStake(stakeId);
+        //endStake(stakeId, 0); // TODO: remove on production
+        endStake(stakeId);
         
         uint newLockedForXDays = oldLockedForXDays - stakes[stakeId].lockedForXDays;
         startStake(StartStake(stakes[stakeId].stakedAmount, newLockedForXDays));
@@ -685,21 +685,21 @@ contract StakingSystem is AccessControlEnumerable {
         return sharesCount;
     }
     
-    uint currentDay = 1; // TODO: remove on production
+    /*uint currentDay = 1; // TODO: remove on production
     function bumpDays(uint numDays) // TODO: remove on production
         public
     {
         currentDay += numDays;
         updateAllSnapshots();
-    }
+    }*/
     
     function getCurrentDaySinceLaunch()
         public
         view
         returns (uint)
     {
-        //return block.timestamp / SECONDS_IN_ONE_DAY - launchTimestamp / SECONDS_IN_ONE_DAY + 1;
-        return currentDay; // TODO: remove on production
+        return block.timestamp / SECONDS_IN_ONE_DAY - launchTimestamp / SECONDS_IN_ONE_DAY + 1;
+        //return currentDay; // TODO: remove on production
     }
     
     function getCurrentCachedPerShareDay()
