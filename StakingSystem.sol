@@ -17,6 +17,7 @@ struct Stake {
     uint startDay;
     uint lockedForXDays;
     uint endDay;
+    uint maxSharesCountOnStartStake;
 }
 
 struct StartStake {
@@ -349,24 +350,25 @@ contract StakingSystem is AccessControlEnumerable {
             _startStake.stakedAmount,
             today,
             _startStake.lockedForXDays,
+            0,
             0
         );
+        stake.maxSharesCountOnStartStake = getSharesCountByStake(stake, 0);
         
         stakes.push(
             stake
         );
         stakeId = stakes.length - 1;
         
-        uint sharesCount = getSharesCountByStake(stake, 0);
-        dailySnapshots[today].totalShares += sharesCount;
+        dailySnapshots[today].totalShares += stake.maxSharesCountOnStartStake;
         
         emit StakeStarted(
             stakeId,
-            stakes[stakeId].owner,
-            stakes[stakeId].stakedAmount, 
-            stakes[stakeId].startDay,
-            stakes[stakeId].lockedForXDays,
-            sharesCount
+            stake.owner,
+            stake.stakedAmount, 
+            stake.startDay,
+            stake.lockedForXDays,
+            stake.maxSharesCountOnStartStake
         );
         
         return stakeId;
@@ -432,8 +434,7 @@ contract StakingSystem is AccessControlEnumerable {
            dailySnapshots[today].sharePrice = ROI;
         }
         
-        uint sharesCount = getSharesCountByStake(stakes[stakeId], 0);
-        dailySnapshots[today].totalShares -= sharesCount;
+        dailySnapshots[today].totalShares -= stakes[stakeId].maxSharesCountOnStartStake;
         
         emit StakeEnded(stakeId, today, interest, penalty);
     }
@@ -471,12 +472,13 @@ contract StakingSystem is AccessControlEnumerable {
         );
         
         uint oldLockedForXDays = stakes[stakeId].lockedForXDays;
-        uint oldSharesCount = getSharesCountByStake(stakes[stakeId], 0);
+        uint oldSharesCount = stakes[stakeId].maxSharesCountOnStartStake;
         
         stakes[stakeId].lockedForXDays = today - stakes[stakeId].startDay;
         uint newSharesCount = getSharesCountByStake(stakes[stakeId], 0);
         
         dailySnapshots[today].totalShares = dailySnapshots[today].totalShares - oldSharesCount + newSharesCount;
+        stakes[stakeId].maxSharesCountOnStartStake = newSharesCount;
         
         emit StakeUpdated(
             stakeId, 
@@ -655,13 +657,11 @@ contract StakingSystem is AccessControlEnumerable {
             1yr - 0.25x
             1d - 0.0006849x
         */
-        uint dayBeforeStakeStart = minOfTwoUints(stake.startDay - 1, dailySnapshots.length - 1);
-        
         uint initialSharesCount = 
-            (stake.stakedAmount * SHARE_PRICE_DENORM) / dailySnapshots[dayBeforeStakeStart].sharePrice;
+            (stake.stakedAmount * SHARE_PRICE_DENORM) / dailySnapshots[stake.startDay].sharePrice;
         uint longerPaysBetterSharesCount =
             (settings.LONGER_PAYS_BETTER_BONUS * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / 
-                (APY_DENORM * 10 * DAYS_IN_ONE_YEAR * dailySnapshots[dayBeforeStakeStart].sharePrice);
+                (APY_DENORM * 10 * DAYS_IN_ONE_YEAR * dailySnapshots[stake.startDay].sharePrice);
         uint smallerPaysBetterSharesCountMultiplier;
         if (stake.stakedAmount <= MINIMUM_SMALLER_PAYS_BETTER)
         {

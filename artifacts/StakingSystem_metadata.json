@@ -664,6 +664,11 @@
 								"internalType": "uint256",
 								"name": "endDay",
 								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "maxSharesCountOnStartStake",
+								"type": "uint256"
 							}
 						],
 						"internalType": "struct Stake",
@@ -743,6 +748,11 @@
 							{
 								"internalType": "uint256",
 								"name": "endDay",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "maxSharesCountOnStartStake",
 								"type": "uint256"
 							}
 						],
@@ -885,6 +895,11 @@
 							{
 								"internalType": "uint256",
 								"name": "endDay",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "maxSharesCountOnStartStake",
 								"type": "uint256"
 							}
 						],
@@ -1151,6 +1166,11 @@
 						"internalType": "uint256",
 						"name": "endDay",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "maxSharesCountOnStartStake",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -1298,11 +1318,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0x9c2ae8f54a91037ccf518ea9c6ade0d301a8b4d40803e14322852c09c82df4ba",
+			"keccak256": "0x6125ae6e1f7d1059489f4fec8d46247071ae6cc48c58be56ceccf27548b667b5",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://127fe056b1200949f54ab473306f281080f20c53187cff9e0d22d9a68d13c006",
-				"dweb:/ipfs/QmULGR4Mac4NvNpGV531JxSBJpgSgk1dFXf7WoWMQnn8KW"
+				"bzz-raw://f686a55a3f8fc4e4e3b0dcd4295c75f459cefc47c4c6c6ea7f00050c52a4717b",
+				"dweb:/ipfs/QmZLHjgrFeDjGbTpkedrRU1S35CTy4CRbxZwZiytCPcT9B"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": {
