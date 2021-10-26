@@ -50,7 +50,7 @@ contract StakingSystem is AccessControlEnumerable {
     
     uint constant MINIMUM_SMALLER_PAYS_BETTER = 1000 * 1e18; // 1000 deft
     uint constant MAXIMUM_SMALLER_PAYS_BETTER = 1000000 * 1e18; // 1 million deft
-    uint constant CACHED_DAYS_INTEREST = 100;
+    uint constant CACHED_DAYS_INTEREST = 9e9;
     uint constant DAYS_IN_ONE_YEAR = 365;
     uint constant SHARE_PRICE_DENORM = 1e18;
     uint constant INTEREST_PER_SHARE_DENORM = 1e18;
@@ -293,14 +293,14 @@ contract StakingSystem is AccessControlEnumerable {
             
             if (cachedInterestPerShare.length > i)
             {
-                cachedInterestPerShare[cachedInterestPerShare.length - 1] = interestPerShare;
+                cachedInterestPerShare[i] = interestPerShare;
             } else {
-                cachedInterestPerShare.push(0);
+                cachedInterestPerShare.push(interestPerShare);
             }
             emit CachedInterestPerShareSealed(
                 i, // sealedDay
                 cachedInterestPerShare.length - 1, // sealedCachedDay
-                cachedInterestPerShare[i]
+                interestPerShare
             );
         }
         if (cachedInterestPerShare.length == endCachedDay)
@@ -377,8 +377,8 @@ contract StakingSystem is AccessControlEnumerable {
     {
         for(uint i; i<stakeIds.length; i++)
         {
-            //endStake(stakeIds[i], 0); // TODO: remove on production
-            endStake(stakeIds[i]);
+            endStake(stakeIds[i], 0); // TODO: remove on production
+            //endStake(stakeIds[i]);
         }
     }
     
@@ -386,15 +386,15 @@ contract StakingSystem is AccessControlEnumerable {
     // TODO: test 100 year stake end
     
     function endStake(
-        uint stakeId/*,
-        uint _bumpDays*/ // TODO: remove on production
+        uint stakeId,
+        uint _bumpDays // TODO: remove on production
     )
         public
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
-        //bumpDays(_bumpDays); // TODO: remove on production
+        bumpDays(_bumpDays); // TODO: remove on production
         updateAllSnapshots();
         
         uint today = getCurrentDaySinceLaunch();
@@ -449,18 +449,21 @@ contract StakingSystem is AccessControlEnumerable {
     {
         for(uint i; i<stakeIds.length; i++)
         {
-            //scrapeStake(stakeIds[i], 0); // TODO: remove on production
-            scrapeStake(stakeIds[i]);
+            scrapeStake(stakeIds[i], 0); // TODO: remove on production
+            //scrapeStake(stakeIds[i]);
         }
     }
     
-    function scrapeStake(uint stakeId/*, uint _bumpDays*/)
+    function scrapeStake(
+        uint stakeId, 
+        uint _bumpDays
+    )
         public
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
-        //bumpDays(_bumpDays); // TODO: remove on productio
+        bumpDays(_bumpDays); // TODO: remove on productio
         updateAllSnapshots();
         
         uint today = getCurrentDaySinceLaunch();
@@ -489,8 +492,8 @@ contract StakingSystem is AccessControlEnumerable {
             newSharesCount
         );
         
-        //endStake(stakeId, 0); // TODO: remove on production
-        endStake(stakeId);
+        endStake(stakeId, 0); // TODO: remove on production
+        //endStake(stakeId);
         
         uint newLockedForXDays = lockedForXDays - stakes[stakeId].lockedForXDays;
         startStake(StartStake(stakeAmount, newLockedForXDays));
@@ -690,21 +693,21 @@ contract StakingSystem is AccessControlEnumerable {
         return sharesCount;
     }
     
-    /*uint currentDay = 2; // TODO: remove on production
+    uint currentDay = 1; // TODO: remove on production
     function bumpDays(uint numDays) // TODO: remove on production
         public
     {
         currentDay += numDays;
         updateAllSnapshots();
-    }*/
+    }
     
     function getCurrentDaySinceLaunch()
         public
         view
         returns (uint)
     {
-        return block.timestamp / SECONDS_IN_ONE_DAY - launchTimestamp / SECONDS_IN_ONE_DAY + 1;
-        //return currentDay; // TODO: remove on production
+        //return block.timestamp / SECONDS_IN_ONE_DAY - launchTimestamp / SECONDS_IN_ONE_DAY + 1;
+        return currentDay; // TODO: remove on production
     }
     
     function getCurrentCachedPerShareDay()
