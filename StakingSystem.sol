@@ -50,7 +50,7 @@ contract StakingSystem is AccessControlEnumerable {
     
     uint constant MINIMUM_SMALLER_PAYS_BETTER = 1000 * 1e18; // 1000 deft
     uint constant MAXIMUM_SMALLER_PAYS_BETTER = 1000000 * 1e18; // 1 million deft
-    uint constant CACHED_DAYS_INTEREST = 9e9;
+    uint constant CACHED_DAYS_INTEREST = 100;
     uint constant DAYS_IN_ONE_YEAR = 365;
     uint constant SHARE_PRICE_DENORM = 1e18;
     uint constant INTEREST_PER_SHARE_DENORM = 1e18;
@@ -241,7 +241,7 @@ contract StakingSystem is AccessControlEnumerable {
         for (uint i = startDay; i<givenDay; i++)
         {
             uint currentSnapshotIndex = dailySnapshots.length > i? i: dailySnapshots.length-1;
-            uint sharesCount = // TODO: need SMALLER_PAYS_BETTER_BONUS ???
+            uint sharesCount =
                 ((settings.LONGER_PAYS_BETTER_BONUS + APY_DENORM) * SHARE_PRICE_DENORM) / 
                     (APY_DENORM * dailySnapshots[currentSnapshotIndex].sharePrice);
             uint inflationAmount = 
@@ -382,9 +382,6 @@ contract StakingSystem is AccessControlEnumerable {
         }
     }
     
-    // TODO: random stake end
-    // TODO: test 100 year stake end
-    
     function endStake(
         uint stakeId,
         uint _bumpDays // TODO: remove on production
@@ -429,13 +426,10 @@ contract StakingSystem is AccessControlEnumerable {
         
         
         uint payout = stakes[stakeId].stakedAmount + interest - penalty;
-        uint maxROI = maxOfTwoUints(
-                (payout * SHARE_PRICE_DENORM) / stakes[stakeId].stakedAmount,
-                dailySnapshots[today].sharePrice
-            );
-        if (maxROI > dailySnapshots[today].sharePrice) 
+        uint ROI = (payout * SHARE_PRICE_DENORM) / stakes[stakeId].stakedAmount;
+        if (ROI > dailySnapshots[today].sharePrice) 
         {
-           dailySnapshots[today].sharePrice = maxROI;
+           dailySnapshots[today].sharePrice = ROI;
         }
         
         uint sharesCount = getSharesCountByStake(stakes[stakeId], 0);
@@ -468,19 +462,17 @@ contract StakingSystem is AccessControlEnumerable {
         
         uint today = getCurrentDaySinceLaunch();
         require(
-            today > settings.MINIMUM_DAYS_FOR_HIGH_PENALTY + stakes[stakeId].startDay,
-            "SS: Scraping is available once in MINIMUM_DAYS_FOR_HIGH_PENALTY"
+            today > stakes[stakeId].startDay,
+            "SS: Scraping is available once in 1 day"
         );
         require(
             today < stakes[stakeId].startDay + stakes[stakeId].lockedForXDays,
             "SS: Scraping is available once while stake is In Progress status"
         );
         
-        uint stakeAmount = stakes[stakeId].stakedAmount;
-        uint lockedForXDays = stakes[stakeId].lockedForXDays;
-        
-        
+        uint oldLockedForXDays = stakes[stakeId].lockedForXDays;
         uint oldSharesCount = getSharesCountByStake(stakes[stakeId], 0);
+        
         stakes[stakeId].lockedForXDays = today - stakes[stakeId].startDay;
         uint newSharesCount = getSharesCountByStake(stakes[stakeId], 0);
         
@@ -495,8 +487,8 @@ contract StakingSystem is AccessControlEnumerable {
         endStake(stakeId, 0); // TODO: remove on production
         //endStake(stakeId);
         
-        uint newLockedForXDays = lockedForXDays - stakes[stakeId].lockedForXDays;
-        startStake(StartStake(stakeAmount, newLockedForXDays));
+        uint newLockedForXDays = oldLockedForXDays - stakes[stakeId].lockedForXDays;
+        startStake(StartStake(stakes[stakeId].stakedAmount, newLockedForXDays));
     }
     
     function getTotalTokensStaked()
