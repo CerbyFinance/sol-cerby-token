@@ -107,6 +107,10 @@ contract StakingSystem is AccessControlEnumerable {
         Settings Settings
     );
     
+    event NewMaxSharePriceReached(
+        uint newSharePrice
+    );
+    
     constructor() 
     {
         settings.MINIMUM_DAYS_FOR_HIGH_PENALTY = 0;
@@ -139,6 +143,7 @@ contract StakingSystem is AccessControlEnumerable {
             SHARE_PRICE_DENORM
         ));
         cachedInterestPerShare.push(0);
+        emit NewMaxSharePriceReached(SHARE_PRICE_DENORM);
         
         updateAllSnapshots();
         
@@ -432,6 +437,7 @@ contract StakingSystem is AccessControlEnumerable {
         if (ROI > dailySnapshots[today].sharePrice) 
         {
            dailySnapshots[today].sharePrice = ROI;
+           emit NewMaxSharePriceReached(ROI);
         }
         
         dailySnapshots[today].totalShares -= stakes[stakeId].maxSharesCountOnStartStake;
