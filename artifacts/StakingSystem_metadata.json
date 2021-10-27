@@ -1308,19 +1308,27 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0x842f8561cfa7ab98d83cb5233e9a2086b99779aa204e4bab058be1d56adb8b06",
+			"keccak256": "0x022826f8bed96e4ac84b51ed5fb53c4707e6e9c9d3ec5c3665c034710c0a0338",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://a90f99f6f6b5f775274a7311bac44732581a51a785c23b51be52857132daa996",
-				"dweb:/ipfs/QmdAe5DhTxSiNLJuby1VgEsuF5PCn422KFCikd88Cu4NGd"
+				"bzz-raw://8975c53551c0dc3ae35c03c0bedb5093bfe63d81447461faa351a4bf7194bf52",
+				"dweb:/ipfs/QmS5fAvYtePG5MAdNVwe1o9zaGAxaZXmqnRWXNgmLpaqWt"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": {
-			"keccak256": "0x4bd21460ee4f0d28f83400a222b502831a00f1c3bdcc5d8dc2d8e35e668483da",
+			"keccak256": "0x1689ce0eea42c066bd6e0de5ee470dec14162f4a391455b34fc9b540937e9a6f",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://b062fa8b7934a17feb44b4ccfa46479d69576c493d0c0c4da36ae4af39140ec8",
-				"dweb:/ipfs/QmTb4kX2Jdn3VNbfZocMKi2d7TzeP6t2H6ejwuMG2rGM73"
+				"bzz-raw://4427c695def0f3382dfc4009f919c5be6156827151a214abcf785d6fb1d43c59",
+				"dweb:/ipfs/QmUvZ82UXJi1M4THsEHVXiGjiJnMG3wC296ihn3s3cnEcp"
+			]
+		},
+		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
+			"keccak256": "0xcee90fcacc8725ccd5b900437203750e7d5a4a98d81eacb0f3fa69a1be919e7e",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://f2b23e30f5058f4e004b15e868b34df5c2248206adf07bfe2a5037eb283e26a4",
+				"dweb:/ipfs/QmaAChav6978W4YkckxwkEbMguuvE2wdaxXgW5AgyZBEEZ"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

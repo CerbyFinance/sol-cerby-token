@@ -4,6 +4,7 @@ pragma solidity ^0.8.9;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./interfaces/IDefiFactoryTokenMinterBurner.sol";
+import "./interfaces/IDeftStorageContract.sol";
 
 struct DailySnapshot {
     uint inflationAmount;
@@ -45,10 +46,11 @@ contract StakingSystem is AccessControlEnumerable {
     Settings public settings;
     
     
-    // [["1000000000000000000000",1],["2000000000000000000000",2],["3000000000000000000000",3],["10000000000000000000000",365],["10000000000000000000000",730],["10000000000000000000000",1095],["10000000000000000000000",1460],["10000000000000000000000",1825],["10000000000000000000000",2190],["10000000000000000000000",2555],["10000000000000000000000",2920],["10000000000000000000000",3650],["10000000000000000000000",7300]]
+    // [["100000000000000000000000",365],["100000000000000000000000",730],["100000000000000000000000",1500],["100000000000000000000000",3650],["100000000000000000000000",3650]]
     // [["6000000000000000000000",3650]]
     // 0x123492a8E888Ca3fe8E31cb2e34872FE0ce5309F
     
+    uint constant DEFT_STORAGE_CONTRACT_ID = 3;
     uint constant MINIMUM_SMALLER_PAYS_BETTER = 1000 * 1e18; // 1000 deft
     uint constant MAXIMUM_SMALLER_PAYS_BETTER = 1000000 * 1e18; // 1 million deft
     uint constant CACHED_DAYS_INTEREST = 100;
@@ -150,6 +152,22 @@ contract StakingSystem is AccessControlEnumerable {
         _setupRole(ROLE_ADMIN, msg.sender);
     }
     
+    modifier onlyRealUsers()
+    {
+        /*
+        
+        TODO: enable code on production
+        
+        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
+            IDefiFactoryToken(mainToken).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+        );
+        require(
+            !iDeftStorageContract.isBotAddress(msg.sender),
+            "SS: Only real users allowed!"
+        );*/
+        _;
+    }
+    
     modifier onlyStakeOwners(uint stakeId)
     {
         require(
@@ -210,6 +228,7 @@ contract StakingSystem is AccessControlEnumerable {
     // 0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6
     function transferOwnership(uint stakeId, address newOwner)
         public
+        onlyRealUsers()
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
@@ -326,6 +345,7 @@ contract StakingSystem is AccessControlEnumerable {
     
     function startStake(StartStake memory _startStake)
         public
+        onlyRealUsers()
         returns(uint stakeId)
     {
         require(
@@ -394,6 +414,7 @@ contract StakingSystem is AccessControlEnumerable {
         uint _bumpDays*/ // TODO: remove on production
     )
         public
+        onlyRealUsers()
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
@@ -460,6 +481,7 @@ contract StakingSystem is AccessControlEnumerable {
         uint _bumpDays*/  // TODO: remove on production
     )
         public
+        onlyRealUsers()
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)

@@ -21,4 +21,9 @@ interface IDefiFactoryToken {
     function burnHumanAddress(address from, uint desiredAmountToBurn) external;
     
     function transferCustom(address sender, address recipient, uint256 amount) external;
+    
+    function getUtilsContractAtPos(uint pos)
+        external
+        view
+        returns (address);
 }

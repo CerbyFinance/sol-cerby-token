@@ -9,6 +9,30 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "_spender",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "approve",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "success",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
 						"name": "account",
 						"type": "address"
 					}
@@ -33,11 +57,97 @@
 					},
 					{
 						"internalType": "uint256",
+						"name": "realAmountBurn",
+						"type": "uint256"
+					}
+				],
+				"name": "burnByBridge",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
 						"name": "desiredAmountToBurn",
 						"type": "uint256"
 					}
 				],
 				"name": "burnHumanAddress",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "chargeCustomTax",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					}
+				],
+				"name": "correctTransferEvents",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "pos",
+						"type": "uint256"
+					}
+				],
+				"name": "getUtilsContractAtPos",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "realAmountToMint",
+						"type": "uint256"
+					}
+				],
+				"name": "mintByBridge",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -56,6 +166,13 @@
 					}
 				],
 				"name": "mintHumanAddress",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "publicForcedUpdateCacheMultiplier",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -95,6 +212,69 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "transferFromTeamVestingContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bool",
+								"name": "isMinter",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isBurner",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isTransferer",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isModerator",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isTaxer",
+								"type": "bool"
+							},
+							{
+								"internalType": "address",
+								"name": "addr",
+								"type": "address"
+							}
+						],
+						"internalType": "struct AccessSettings[]",
+						"name": "accessSettings",
+						"type": "tuple[]"
+					}
+				],
+				"name": "updateUtilsContracts",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -110,7 +290,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": "IDefiFactoryToken"
+			"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": "IDefiFactoryToken"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -124,12 +304,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": {
-			"keccak256": "0x4bd21460ee4f0d28f83400a222b502831a00f1c3bdcc5d8dc2d8e35e668483da",
-			"license": "BSD-2-Clause",
+		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
+			"keccak256": "0x66d5ab7fd3243597df6ed32828230154327dffcbf9f4dd3a30a998728ad45d76",
+			"license": "MIT",
 			"urls": [
-				"bzz-raw://b062fa8b7934a17feb44b4ccfa46479d69576c493d0c0c4da36ae4af39140ec8",
-				"dweb:/ipfs/QmTb4kX2Jdn3VNbfZocMKi2d7TzeP6t2H6ejwuMG2rGM73"
+				"bzz-raw://25ea6cc145dd2b7c22d8f1496e4e60fb67313f641bff21eb97d8db17062649d1",
+				"dweb:/ipfs/QmUBx9qi5tmFcHe3HpaTSSfW3xxoNy7y751G7NSGqg2SrB"
 			]
 		}
 	},
