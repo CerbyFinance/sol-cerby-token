@@ -1308,11 +1308,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0x9aea66b076607396cc6e68069319d4f2ec19ce0aadeadda04cda981043476a9c",
+			"keccak256": "0x41d1939d2c67fe7455da9132d64a555d66c8b1707095882eab76684f4f18a309",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://eb7f9ea1fa82c9d8574ccb00ba76de3467090e0b3a92477b4c9233d3317a9c97",
-				"dweb:/ipfs/QmbbiH26Hk6iH7J4Tx9VyFpEgP4SsXLgyFcMqGyfQxSSCz"
+				"bzz-raw://10f24c97511a7f3c06663e7fd5251956f4f7ec3f2b0c1d052bc248b992702c77",
+				"dweb:/ipfs/QmZMthbsYiLu1J9KpQcKQEjFa315oyE3Ftrbq5FZCVcuWk"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": {

@@ -37,14 +37,21 @@ struct Settings {
     uint MAXIMUM_STAKE_DAYS;
 }
 
+/*
+    TODO: 
+    - ROLE_TRANSFERRER on DEFT token
+    - ROLE_MINTER on DEFT token
+    - ROLE_BURNER on DEFT token
+    - ROLE_ADMIN on DEFT storage
+*/
+
+
 contract StakingSystem is AccessControlEnumerable {
     DailySnapshot[] public dailySnapshots;
     uint[] public cachedInterestPerShare;
     
     Stake[] public stakes;
     Settings public settings;
-    
-    
     
     uint constant DEFT_STORAGE_CONTRACT_ID = 3;
     uint constant MINIMUM_SMALLER_PAYS_BETTER = 1000 * 1e18; // 1000 deft
@@ -56,12 +63,11 @@ contract StakingSystem is AccessControlEnumerable {
     uint constant APY_DENORM = 1e6;
     uint constant SECONDS_IN_ONE_DAY = 86400;
     
-    IDefiFactoryToken mainToken = IDefiFactoryToken(
-        0xdef1fac7Bf08f173D286BbBDcBeeADe695129840 // TODO: change to deft token on production
+    IDefiFactoryToken deftToken = IDefiFactoryToken(
+        0xdef1fac7Bf08f173D286BbBDcBeeADe695129840
     );
     
     uint public launchTimestamp;
-    
     
     event StakeStarted(
         uint stakeId, 
@@ -133,7 +139,7 @@ contract StakingSystem is AccessControlEnumerable {
             0,
             SHARE_PRICE_DENORM,
             0,
-            mainToken.totalSupply()
+            deftToken.totalSupply()
         );
         dailySnapshots.push(DailySnapshot(
             0,
@@ -151,7 +157,7 @@ contract StakingSystem is AccessControlEnumerable {
     modifier onlyRealUsers()
     {
         IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-            IDefiFactoryToken(mainToken).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+            IDefiFactoryToken(deftToken).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
         );
         require(
             !iDeftStorageContract.isBotAddress(msg.sender),
@@ -202,7 +208,7 @@ contract StakingSystem is AccessControlEnumerable {
     {
         updateAllSnapshots();
         
-        mainToken.burnHumanAddress(fromAddr, amountToBurn);
+        deftToken.burnHumanAddress(fromAddr, amountToBurn);
         
         uint today = getCurrentDaySinceLaunch();
         dailySnapshots[today].inflationAmount += amountToBurn;
@@ -279,7 +285,7 @@ contract StakingSystem is AccessControlEnumerable {
                 dailySnapshots[currentSnapshotIndex].totalShares,
                 dailySnapshots[currentSnapshotIndex].sharePrice,
                 getTotalTokensStaked(),
-                mainToken.totalSupply()
+                deftToken.totalSupply()
             );
         }
         
@@ -342,7 +348,7 @@ contract StakingSystem is AccessControlEnumerable {
             "SS: StakedAmount has to be larger than zero"
         );
         require(
-            _startStake.stakedAmount <= mainToken.balanceOf(msg.sender),
+            _startStake.stakedAmount <= deftToken.balanceOf(msg.sender),
             "SS: StakedAmount exceeds balance"
         );
         require(
@@ -356,7 +362,7 @@ contract StakingSystem is AccessControlEnumerable {
         
         updateAllSnapshots();
         
-        mainToken.transferCustom(msg.sender, address(this), _startStake.stakedAmount);
+        deftToken.transferCustom(msg.sender, address(this), _startStake.stakedAmount);
         
         uint today = getCurrentDaySinceLaunch();
         Stake memory stake = Stake(
@@ -411,7 +417,7 @@ contract StakingSystem is AccessControlEnumerable {
         uint today = getCurrentDaySinceLaunch();
         stakes[stakeId].endDay = today;
         
-        mainToken.transferCustom(address(this), msg.sender, stakes[stakeId].stakedAmount);
+        deftToken.transferCustom(address(this), msg.sender, stakes[stakeId].stakedAmount);
         
         uint interest;
         if (
@@ -427,13 +433,13 @@ contract StakingSystem is AccessControlEnumerable {
         
         if (interest > 0)
         {
-            mainToken.mintHumanAddress(msg.sender, interest);
+            deftToken.mintHumanAddress(msg.sender, interest);
         }
         
         uint penalty = getPenaltyByStake(stakes[stakeId], today, interest);
         if (penalty > 0) 
         {
-            mainToken.burnHumanAddress(msg.sender, penalty);
+            deftToken.burnHumanAddress(msg.sender, penalty);
             dailySnapshots[today].inflationAmount += penalty;
         }
         
@@ -506,7 +512,7 @@ contract StakingSystem is AccessControlEnumerable {
         view
         returns(uint)
     {
-        return IDefiFactoryToken(mainToken).balanceOf(address(this));
+        return IDefiFactoryToken(deftToken).balanceOf(address(this));
     }
     
     function getDailySnapshotsLength()
