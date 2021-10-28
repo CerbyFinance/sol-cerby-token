@@ -42,13 +42,9 @@ contract StakingSystem is AccessControlEnumerable {
     uint[] public cachedInterestPerShare;
     
     Stake[] public stakes;
-    
     Settings public settings;
     
     
-    // [["100000000000000000000000",365],["100000000000000000000000",730],["100000000000000000000000",1500],["100000000000000000000000",3650],["100000000000000000000000",3650]]
-    // [["6000000000000000000000",3650]]
-    // 0x123492a8E888Ca3fe8E31cb2e34872FE0ce5309F
     
     uint constant DEFT_STORAGE_CONTRACT_ID = 3;
     uint constant MINIMUM_SMALLER_PAYS_BETTER = 1000 * 1e18; // 1000 deft
@@ -58,10 +54,10 @@ contract StakingSystem is AccessControlEnumerable {
     uint constant SHARE_PRICE_DENORM = 1e18;
     uint constant INTEREST_PER_SHARE_DENORM = 1e18;
     uint constant APY_DENORM = 1e6;
-    uint constant SECONDS_IN_ONE_DAY = 60*3;
+    uint constant SECONDS_IN_ONE_DAY = 86400;
     
     IDefiFactoryToken mainToken = IDefiFactoryToken(
-        0xe4DFe0FC73A9B9105Ed0422ba66084b47A32499F // TODO: change to deft token on production
+        0xdef1fac7Bf08f173D286BbBDcBeeADe695129840 // TODO: change to deft token on production
     );
     
     uint public launchTimestamp;
@@ -124,7 +120,7 @@ contract StakingSystem is AccessControlEnumerable {
         settings.LONGER_PAYS_BETTER_BONUS = 3e6; // 3e6/1e6 = 300% shares bonus max
         settings.SMALLER_PAYS_BETTER_BONUS = 25e4; // 25e4/1e6 = 25% shares bonus max
         
-        launchTimestamp = block.timestamp; // TODO: remove on production
+        launchTimestamp = block.timestamp;
         
         dailySnapshots.push(DailySnapshot(
             0,
@@ -154,17 +150,13 @@ contract StakingSystem is AccessControlEnumerable {
     
     modifier onlyRealUsers()
     {
-        /*
-        
-        TODO: enable code on production
-        
         IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
             IDefiFactoryToken(mainToken).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
         );
         require(
             !iDeftStorageContract.isBotAddress(msg.sender),
             "SS: Only real users allowed!"
-        );*/
+        );
         _;
     }
     
@@ -225,7 +217,6 @@ contract StakingSystem is AccessControlEnumerable {
         }
     }
     
-    // 0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6
     function transferOwnership(uint stakeId, address newOwner)
         public
         onlyRealUsers()
@@ -233,8 +224,6 @@ contract StakingSystem is AccessControlEnumerable {
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
-        // TODO: check for bots
-        
         require(
             stakes[stakeId].owner != newOwner,
             "SS: New owner must be different from old owner"
@@ -404,14 +393,12 @@ contract StakingSystem is AccessControlEnumerable {
     {
         for(uint i; i<stakeIds.length; i++)
         {
-            //endStake(stakeIds[i], 0); // TODO: remove on production
             endStake(stakeIds[i]);
         }
     }
     
     function endStake(
-        uint stakeId/*,
-        uint _bumpDays*/ // TODO: remove on production
+        uint stakeId
     )
         public
         onlyRealUsers()
@@ -419,7 +406,6 @@ contract StakingSystem is AccessControlEnumerable {
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
-        //bumpDays(_bumpDays); // TODO: remove on production
         updateAllSnapshots();
         
         uint today = getCurrentDaySinceLaunch();
@@ -451,8 +437,6 @@ contract StakingSystem is AccessControlEnumerable {
             dailySnapshots[today].inflationAmount += penalty;
         }
         
-        
-        
         uint payout = stakes[stakeId].stakedAmount + interest - penalty;
         uint ROI = (payout * SHARE_PRICE_DENORM) / stakes[stakeId].stakedAmount;
         if (ROI > dailySnapshots[today].sharePrice) 
@@ -471,14 +455,12 @@ contract StakingSystem is AccessControlEnumerable {
     {
         for(uint i; i<stakeIds.length; i++)
         {
-            //scrapeStake(stakeIds[i], 0); // TODO: remove on production
             scrapeStake(stakeIds[i]);
         }
     }
     
     function scrapeStake(
-        uint stakeId/*, 
-        uint _bumpDays*/  // TODO: remove on production
+        uint stakeId
     )
         public
         onlyRealUsers()
@@ -486,7 +468,6 @@ contract StakingSystem is AccessControlEnumerable {
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
-        //bumpDays(_bumpDays); // TODO: remove on production
         updateAllSnapshots();
         
         uint today = getCurrentDaySinceLaunch();
@@ -514,7 +495,6 @@ contract StakingSystem is AccessControlEnumerable {
             newSharesCount
         );
         
-        //endStake(stakeId, 0); // TODO: remove on production
         endStake(stakeId);
         
         uint newLockedForXDays = oldLockedForXDays - stakes[stakeId].lockedForXDays;
@@ -571,7 +551,7 @@ contract StakingSystem is AccessControlEnumerable {
         uint interest;
         
         uint endDay = minOfTwoUints(givenDay, stake.startDay + stake.lockedForXDays);
-        endDay = minOfTwoUints(endDay, dailySnapshots.length); // TODO: correct???
+        endDay = minOfTwoUints(endDay, dailySnapshots.length);
         
         uint sharesCount = getSharesCountByStake(stake, givenDay);
         uint startCachedDay = stake.startDay/CACHED_DAYS_INTEREST + 1;
@@ -583,9 +563,6 @@ contract StakingSystem is AccessControlEnumerable {
             interest += (dailySnapshots[i].inflationAmount * sharesCount) / dailySnapshots[i].totalShares;
         }
         
-        // TODO: make two contracts
-        // TODO: one with CACHED_DAYS_INTEREST = 10, second with CACHED_DAYS_INTEREST = 1000
-        // TODO: compare interest formula for both
         uint endCachedDay = endDay/CACHED_DAYS_INTEREST; 
         for(uint i = startCachedDay; i<endCachedDay; i++)
         {
@@ -621,9 +598,9 @@ contract StakingSystem is AccessControlEnumerable {
     {
         /*
         0 -- 0 days served => 0% principal back
-        0 days -- 100% served --> 0-100% principal back
-        100% + 30 days --> 100% principal back
-        100% + 30 days -- 100% + 30 days + 30*20 days --> 100-10% (principal+interest) back
+        0 days -- 100% served --> 0-100% (principal+interest) back
+        100% + 30 days --> 100% (principal+interest) back
+        100% + 30 days -- 100% + 30 days + 2*365 days --> 100-10% (principal+interest) back
         > 100% + 30 days + 30*20 days --> 10% (principal+interest) back
         */
         uint penalty;
@@ -680,11 +657,6 @@ contract StakingSystem is AccessControlEnumerable {
         }
         numberOfDaysServed = minOfTwoUints(numberOfDaysServed, 10*DAYS_IN_ONE_YEAR);
         
-        /*
-            10yr - 2.5x
-            1yr - 0.25x
-            1d - 0.0006849x
-        */
         uint initialSharesCount = 
             (stake.stakedAmount * SHARE_PRICE_DENORM) / dailySnapshots[stake.startDay].sharePrice;
         uint longerPaysBetterSharesCount =
@@ -713,21 +685,12 @@ contract StakingSystem is AccessControlEnumerable {
         return sharesCount;
     }
     
-    /*uint currentDay = 1; // TODO: remove on production
-    function bumpDays(uint numDays) // TODO: remove on production
-        public
-    {
-        currentDay += numDays;
-        updateAllSnapshots();
-    }*/
-    
     function getCurrentDaySinceLaunch()
         public
         view
         returns (uint)
     {
         return block.timestamp / SECONDS_IN_ONE_DAY - launchTimestamp / SECONDS_IN_ONE_DAY + 1;
-        //return currentDay; // TODO: remove on production
     }
     
     function getCurrentCachedPerShareDay()
@@ -738,15 +701,6 @@ contract StakingSystem is AccessControlEnumerable {
         return getCurrentDaySinceLaunch() / CACHED_DAYS_INTEREST;
     }
     
-    function maxOfTwoUints(uint uint1, uint uint2)
-        private
-        pure
-        returns(uint)
-    {
-        if (uint1 > uint2) return uint1;
-        return uint2;
-    }
-    
     function minOfTwoUints(uint uint1, uint uint2)
         private
         pure
@@ -755,5 +709,4 @@ contract StakingSystem is AccessControlEnumerable {
         if (uint1 < uint2) return uint1;
         return uint2;
     }
-    
 }
