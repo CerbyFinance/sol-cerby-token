@@ -114,6 +114,12 @@ contract StakingSystem is AccessControlEnumerable {
     event NewMaxSharePriceReached(
         uint newSharePrice
     );
+   
+    event BurnedAndAddedToStakersInflation(
+        address fromAddr, 
+        uint amountToBurn, 
+        uint currentDay
+    );
     
     constructor() 
     {
@@ -126,7 +132,7 @@ contract StakingSystem is AccessControlEnumerable {
         settings.LONGER_PAYS_BETTER_BONUS = 3e6; // 3e6/1e6 = 300% shares bonus max
         settings.SMALLER_PAYS_BETTER_BONUS = 25e4; // 25e4/1e6 = 25% shares bonus max
         
-        launchTimestamp = block.timestamp;
+        launchTimestamp = 1635509544; // 29 October 2021
         
         dailySnapshots.push(DailySnapshot(
             0,
@@ -212,6 +218,8 @@ contract StakingSystem is AccessControlEnumerable {
         
         uint today = getCurrentDaySinceLaunch();
         dailySnapshots[today].inflationAmount += amountToBurn;
+        
+        emit BurnedAndAddedToStakersInflation(fromAddr, amountToBurn, today);
     }
     
     function bulkTransferOwnership(uint[] calldata stakeIds, address newOwner)
@@ -705,6 +713,23 @@ contract StakingSystem is AccessControlEnumerable {
         returns (uint)
     {
         return getCurrentDaySinceLaunch() / CACHED_DAYS_INTEREST;
+    }
+    
+    function listOfStakes(uint page, uint limit)
+        public
+        view
+        returns(Stake[] memory)
+    {
+        Stake[] memory outputStakes = new Stake[](limit);
+        
+        uint startI = (page - 1) * limit;
+        uint endI = page * limit;
+        for (uint i = startI; i<endI; i++)
+        {
+            outputStakes[i - startI] = stakes[i];
+        }
+        
+        return outputStakes;
     }
     
     function minOfTwoUints(uint uint1, uint uint2)

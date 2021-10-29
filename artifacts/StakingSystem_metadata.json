@@ -15,6 +15,31 @@
 				"inputs": [
 					{
 						"indexed": false,
+						"internalType": "address",
+						"name": "fromAddr",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amountToBurn",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "currentDay",
+						"type": "uint256"
+					}
+				],
+				"name": "BurnedAndAddedToStakersInflation",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
 						"internalType": "uint256",
 						"name": "sealedDay",
 						"type": "uint256"
@@ -1028,6 +1053,62 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "page",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "limit",
+						"type": "uint256"
+					}
+				],
+				"name": "listOfStakes",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "owner",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "stakedAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "startDay",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "lockedForXDays",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "endDay",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "maxSharesCountOnStartStake",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct Stake[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -1308,11 +1389,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0x41d1939d2c67fe7455da9132d64a555d66c8b1707095882eab76684f4f18a309",
+			"keccak256": "0x7ecd0e6d48d6980ddc809e138694651fb17b35abffc566c1550d4a8472fffa03",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://10f24c97511a7f3c06663e7fd5251956f4f7ec3f2b0c1d052bc248b992702c77",
-				"dweb:/ipfs/QmZMthbsYiLu1J9KpQcKQEjFa315oyE3Ftrbq5FZCVcuWk"
+				"bzz-raw://17f098ea3678fa2bfcf3893f36f0bbb9bc655f07cdf548a811d2a622824003a6",
+				"dweb:/ipfs/QmQ7LEUkHsxeRsGnQNotb7D2ugvo16sdGfozVy7Raaatkt"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": {
