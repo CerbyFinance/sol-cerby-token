@@ -720,10 +720,10 @@ contract StakingSystem is AccessControlEnumerable {
         view
         returns(Stake[] memory)
     {
-        Stake[] memory outputStakes = new Stake[](limit);
-        
         uint startI = (page - 1) * limit;
-        uint endI = page * limit;
+        uint endI = minOfTwoUints(page * limit, stakes.length);
+        
+        Stake[] memory outputStakes = new Stake[](endI - startI);
         for (uint i = startI; i<endI; i++)
         {
             outputStakes[i - startI] = stakes[i];
