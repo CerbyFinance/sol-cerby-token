@@ -33,3 +33,14 @@ Poly:
     [false, false, false, false, false, "0xF92b726b10956ff95EbABDd6fd92d180d1e920DA"],
     [true, true, false, false, true, "0x1d2900622B5049D9479DC8BE06469A4ede3Fc96e"]
 ]
+
+
+
+
+/*
+    TODO: 
+    - ROLE_TRANSFERRER on DEFT token
+    - ROLE_MINTER on DEFT token
+    - ROLE_BURNER on DEFT token
+    - ROLE_ADMIN on DEFT storage
+*/

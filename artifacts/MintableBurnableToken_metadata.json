@@ -423,7 +423,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/MintableBurnableToken.sol": "MintableBurnableToken"
+			"sol-defifactory-token/Flat_MintableBurnableToken.sol": "MintableBurnableToken"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -437,44 +437,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/MintableBurnableToken.sol": {
-			"keccak256": "0x17a3f920a6f43de30c52c623b2dfbd78d2630d6c1c5bec2a8c9e19a4e19d6be4",
+		"sol-defifactory-token/Flat_MintableBurnableToken.sol": {
+			"keccak256": "0xa8748a4b8d630b38b0bd39a2babb422555cfc6eb120d79de7a0677e05d846bad",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3fc3e6d39879ef4a1e161854c37c274c828bd85bf558e22ed514be6922bf6578",
-				"dweb:/ipfs/QmYyaCSUq57aVofexgBNibePUwTEJurSubyXBwseUvzida"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20.sol": {
-			"keccak256": "0x3d9e92992540941df9da11dbd543412a3ecee78ebe0de3225598b55b881bf08d",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://f1b30f9b8a48d4bc4ff98e609596b4cf91bdf5e35b4164dcc5f578776c5cc2b8",
-				"dweb:/ipfs/QmYBCVgCMo2svUE7pV8ru8wBBPEYBBpDU2T1T3PAFZRtZX"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {
-			"keccak256": "0xf8e8d118a7a8b2e134181f7da655f6266aa3a0f9134b2605747139fcb0c5d835",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://9ec48567e7ad06acb670980d5cdf3fd7f3949bf12894f02d68c3bb43e75aa84f",
-				"dweb:/ipfs/QmaG3R2J9cz92YT77vFjYrjMNU2wHp4ypwYD62HqDUqS5U"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/token/ERC20/extensions/IERC20Metadata.sol": {
-			"keccak256": "0x83fe24f5c04a56091e50f4a345ff504c8bff658a76d4c43b16878c8f940c53b2",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://d4c3df1a7ca104b633a7d81c6c6f5192367d150cd5a32cba81f7f27012729013",
-				"dweb:/ipfs/QmSim72e3ZVsfgZt8UceCvbiSuMRHR6WDsiamqNzZahGSY"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/utils/Context.sol": {
-			"keccak256": "0xf930d2df426bfcfc1f7415be724f04081c96f4fb9ec8d0e3a521c07692dface0",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://fc2bfdea0d2562c76fb3c4cf70a86c6ba25c5a30e8f8515c95aafdf8383f8395",
-				"dweb:/ipfs/QmTbFya18786ckJfLYUoWau9jBTKfmWnWm5XSViWvB7PXN"
+				"bzz-raw://cf852c0bd364844362cd2a65cae985a1b7b0a06735a346f3ca1a01d7f4c5ff95",
+				"dweb:/ipfs/QmYsuCrctL8v3woS5SnbC2XAtEZTbFZSRE91ffDbo8pJA1"
 			]
 		}
 	},

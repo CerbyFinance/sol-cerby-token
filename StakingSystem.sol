@@ -37,15 +37,6 @@ struct Settings {
     uint MAXIMUM_STAKE_DAYS;
 }
 
-/*
-    TODO: 
-    - ROLE_TRANSFERRER on DEFT token
-    - ROLE_MINTER on DEFT token
-    - ROLE_BURNER on DEFT token
-    - ROLE_ADMIN on DEFT storage
-*/
-
-
 contract StakingSystem is AccessControlEnumerable {
     DailySnapshot[] public dailySnapshots;
     uint[] public cachedInterestPerShare;
@@ -54,8 +45,8 @@ contract StakingSystem is AccessControlEnumerable {
     Settings public settings;
     
     uint constant DEFT_STORAGE_CONTRACT_ID = 3;
-    uint constant MINIMUM_SMALLER_PAYS_BETTER = 1000 * 1e18; // 1000 deft
-    uint constant MAXIMUM_SMALLER_PAYS_BETTER = 1000000 * 1e18; // 1 million deft
+    uint constant MINIMUM_SMALLER_PAYS_BETTER = 1000 * 1e18; // 1k DEFT
+    uint constant MAXIMUM_SMALLER_PAYS_BETTER = 1000000 * 1e18; // 1M DEFT
     uint constant CACHED_DAYS_INTEREST = 100;
     uint constant DAYS_IN_ONE_YEAR = 365;
     uint constant SHARE_PRICE_DENORM = 1e18;
@@ -132,7 +123,8 @@ contract StakingSystem is AccessControlEnumerable {
         settings.LONGER_PAYS_BETTER_BONUS = 3e6; // 3e6/1e6 = 300% shares bonus max
         settings.SMALLER_PAYS_BETTER_BONUS = 25e4; // 25e4/1e6 = 25% shares bonus max
         
-        launchTimestamp = 1635509544; // 29 October 2021
+        
+        launchTimestamp = 1635604537; // 30 October 2021
         
         dailySnapshots.push(DailySnapshot(
             0,
@@ -145,7 +137,7 @@ contract StakingSystem is AccessControlEnumerable {
             0,
             SHARE_PRICE_DENORM,
             0,
-            deftToken.totalSupply()
+            0
         );
         dailySnapshots.push(DailySnapshot(
             0,
@@ -704,7 +696,7 @@ contract StakingSystem is AccessControlEnumerable {
         view
         returns (uint)
     {
-        return block.timestamp / SECONDS_IN_ONE_DAY - launchTimestamp / SECONDS_IN_ONE_DAY + 1;
+        return 1 + block.timestamp / SECONDS_IN_ONE_DAY - launchTimestamp / SECONDS_IN_ONE_DAY;
     }
     
     function getCurrentCachedPerShareDay()

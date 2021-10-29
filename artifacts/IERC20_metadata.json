@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.8+commit.dddeac2f"
+		"version": "0.8.9+commit.e5eed63a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -230,7 +230,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/Flat_DefiFactoryToken.sol": "IERC20"
+			"sol-defifactory-token/Flat_MintableBurnableToken.sol": "IERC20"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -244,12 +244,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/Flat_DefiFactoryToken.sol": {
-			"keccak256": "0xed3a266ae4b9ab4317b2d7f173ff072691c26ce69e41e56b6a6aaa30e9c70cd6",
+		"sol-defifactory-token/Flat_MintableBurnableToken.sol": {
+			"keccak256": "0xa8748a4b8d630b38b0bd39a2babb422555cfc6eb120d79de7a0677e05d846bad",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b9d50d6aec7c27399e509506cee5162c70d53ac3cbca6b457ae0ec8be91c6f93",
-				"dweb:/ipfs/QmQZULgzLczxpDXBvyhDabAhCNXogZ9DjAfByEbukg2Thd"
+				"bzz-raw://cf852c0bd364844362cd2a65cae985a1b7b0a06735a346f3ca1a01d7f4c5ff95",
+				"dweb:/ipfs/QmYsuCrctL8v3woS5SnbC2XAtEZTbFZSRE91ffDbo8pJA1"
 			]
 		}
 	},
