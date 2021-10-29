@@ -1053,62 +1053,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "page",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "limit",
-						"type": "uint256"
-					}
-				],
-				"name": "listOfStakes",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "owner",
-								"type": "address"
-							},
-							{
-								"internalType": "uint256",
-								"name": "stakedAmount",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "startDay",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "lockedForXDays",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "endDay",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "maxSharesCountOnStartStake",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct Stake[]",
-						"name": "",
-						"type": "tuple[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -1389,11 +1333,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StakingSystem.sol": {
-			"keccak256": "0xc87dc805734d846b47c1bc4f3d0a63edb94f186ed35c3f49148080a2f47f160e",
+			"keccak256": "0x3e04452bc09cd961b6d8330ebee582d0fa2e1e6438f26549f5653e07a9f97dae",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://30c0e3d0edad7f5be99029184616e704d69c2552f025e6fcb034f15eb96db283",
-				"dweb:/ipfs/QmXt8exf79FXSZCJfczLHfVb2321e13n652gW2N8vCkBLm"
+				"bzz-raw://edc37b27aa75db1b93540a775dc3ef0b6a18044e480743b1915416d4442d4861",
+				"dweb:/ipfs/QmP9ScLeBcmprmdsEBfAidXSGkvLm8dVA8S8DC8eaK13c3"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": {

@@ -707,23 +707,6 @@ contract StakingSystem is AccessControlEnumerable {
         return getCurrentDaySinceLaunch() / CACHED_DAYS_INTEREST;
     }
     
-    function listOfStakes(uint page, uint limit)
-        public
-        view
-        returns(Stake[] memory)
-    {
-        uint startI = (page - 1) * limit;
-        uint endI = minOfTwoUints(page * limit, stakes.length);
-        
-        Stake[] memory outputStakes = new Stake[](endI - startI);
-        for (uint i = startI; i<endI; i++)
-        {
-            outputStakes[i - startI] = stakes[i];
-        }
-        
-        return outputStakes;
-    }
-    
     function minOfTwoUints(uint uint1, uint uint2)
         private
         pure
