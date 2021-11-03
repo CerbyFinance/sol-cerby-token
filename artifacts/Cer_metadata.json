@@ -511,7 +511,7 @@
 								"type": "bytes32"
 							}
 						],
-						"internalType": "struct CrossChainBridge.SourceProofOfBurn",
+						"internalType": "struct Cer.SourceProofOfBurn",
 						"name": "sourceProofOfBurn",
 						"type": "tuple"
 					}
@@ -587,7 +587,7 @@
 				"name": "transactionStorage",
 				"outputs": [
 					{
-						"internalType": "enum CrossChainBridge.States",
+						"internalType": "enum Cer.States",
 						"name": "",
 						"type": "uint8"
 					}
@@ -670,7 +670,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/CrossChainBridge.sol": "CrossChainBridge"
+			"sol-defifactory-token/CerbyWrappingService.sol": "Cer"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -684,20 +684,20 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0xb741678dad251a7d7508cf778d5fb3674c4f44da1a02296cd6a6fd981291803d",
+		"sol-defifactory-token/CerbyWrappingService.sol": {
+			"keccak256": "0xf5344ae41327794c552c6099a704e4e4c40f1b5956ee8627640446c127faff6b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://df7b87bf6a18ffaf9a397f4c1e633bd30441cb10d21c585831a78041cedac057",
-				"dweb:/ipfs/QmeqxHWdk7Es9Fyhci1wXERrEM3bnGYyVgvZaL2GVT9J6T"
+				"bzz-raw://388db0f0f99dbbf87bd4fdf966c3b0af3cee91d91ec512bf8e0590ce87211896",
+				"dweb:/ipfs/QmUEvLeh7WyqZBHzTt5qfQb8vGyReVmvX1UBfPUjyZfvrA"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x55662dadf86392fd06c9bb78fc84c42a31cb3786ac836c0bbae077d7edc94fc7",
+			"keccak256": "0x66d5ab7fd3243597df6ed32828230154327dffcbf9f4dd3a30a998728ad45d76",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7e802caeac0f00050211fd881950e3f767242197387b430f935f139d95024496",
-				"dweb:/ipfs/QmZGfnBk7fQfVipUJyqLpmcnfFbwP1SyrrHmD2tHPhapUN"
+				"bzz-raw://25ea6cc145dd2b7c22d8f1496e4e60fb67313f641bff21eb97d8db17062649d1",
+				"dweb:/ipfs/QmUBx9qi5tmFcHe3HpaTSSfW3xxoNy7y751G7NSGqg2SrB"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {

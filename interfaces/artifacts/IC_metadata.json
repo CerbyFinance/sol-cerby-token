@@ -314,7 +314,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": "IDefiFactoryToken"
+			"sol-defifactory-token/interfaces/ICerby.sol": "IC"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -328,12 +328,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x55662dadf86392fd06c9bb78fc84c42a31cb3786ac836c0bbae077d7edc94fc7",
+		"sol-defifactory-token/interfaces/ICerby.sol": {
+			"keccak256": "0x5214bf4a39ae39849f921de8a5287d18c9edba0d5298128153e00ba7a02bfeca",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7e802caeac0f00050211fd881950e3f767242197387b430f935f139d95024496",
-				"dweb:/ipfs/QmZGfnBk7fQfVipUJyqLpmcnfFbwP1SyrrHmD2tHPhapUN"
+				"bzz-raw://d4548b10c19c26fd800aa1e13c410741dce6a2de05de87e5f92f1f547739026c",
+				"dweb:/ipfs/QmairoNdvaaqJHV8RkcfZg6DPAxNrcbKstEEnfjqRYhBpX"
 			]
 		}
 	},

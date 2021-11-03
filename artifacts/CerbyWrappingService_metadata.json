@@ -15,53 +15,14 @@
 				"inputs": [
 					{
 						"indexed": false,
-						"internalType": "bytes32",
-						"name": "transactionHash",
-						"type": "bytes32"
-					}
-				],
-				"name": "ApprovedTransaction",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "bytes32[]",
-						"name": "transactionHashes",
-						"type": "bytes32[]"
-					}
-				],
-				"name": "BulkApprovedTransactions",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "newFeePercent",
-						"type": "uint256"
-					}
-				],
-				"name": "FeeUpdated",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
 						"internalType": "address",
-						"name": "addr",
+						"name": "fromToken",
 						"type": "address"
 					},
 					{
 						"indexed": false,
 						"internalType": "address",
-						"name": "token",
+						"name": "toToken",
 						"type": "address"
 					},
 					{
@@ -69,39 +30,9 @@
 						"internalType": "uint256",
 						"name": "amount",
 						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "amountAsFee",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "currentNonce",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "sourceChain",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "destinationChain",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "bytes32",
-						"name": "transactionHash",
-						"type": "bytes32"
 					}
 				],
-				"name": "ProofOfBurn",
+				"name": "BurnedCerbyWrappedTokenAndUnlockedToken",
 				"type": "event"
 			},
 			{
@@ -110,35 +41,42 @@
 					{
 						"indexed": false,
 						"internalType": "address",
-						"name": "addr",
+						"name": "fromToken",
 						"type": "address"
 					},
 					{
 						"indexed": false,
 						"internalType": "address",
-						"name": "token",
+						"name": "toToken",
+						"type": "address"
+					}
+				],
+				"name": "DirectionAllowed",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "fromToken",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "toToken",
 						"type": "address"
 					},
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "amountAsFee",
+						"name": "amount",
 						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "finalAmount",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "bytes32",
-						"name": "transactionHash",
-						"type": "bytes32"
 					}
 				],
-				"name": "ProofOfMint",
+				"name": "LockedTokenAndMintedCerbyWrappedToken",
 				"type": "event"
 			},
 			{
@@ -230,108 +168,26 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "ROLE_APPROVER",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "beneficiaryAddress",
-				"outputs": [
+				"inputs": [
 					{
 						"internalType": "address",
-						"name": "",
+						"name": "fromToken",
 						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32[]",
-						"name": "transactionHashes",
-						"type": "bytes32[]"
-					}
-				],
-				"name": "bulkMarkTransactionsAsApproved",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
+					},
 					{
 						"internalType": "address",
-						"name": "token",
+						"name": "toToken",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
 						"name": "amount",
 						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "destinationChainId",
-						"type": "uint256"
 					}
 				],
-				"name": "burnAndCreateProof",
+				"name": "burnCerbyWrappedTokenAndUnlockToken",
 				"outputs": [],
 				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "currentNonce",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenAddr",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "destinationChainId",
-						"type": "uint256"
-					}
-				],
-				"name": "getFeeDependingOnDestinationChainId",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -466,57 +322,46 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "transactionHash",
-						"type": "bytes32"
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
 					}
 				],
-				"name": "markTransactionAsApproved",
-				"outputs": [],
-				"stateMutability": "nonpayable",
+				"name": "isDirectionAllowed",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
 				"inputs": [
 					{
-						"components": [
-							{
-								"internalType": "uint256",
-								"name": "amountToBridge",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "amountAsFee",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "sourceChainId",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "sourceNonce",
-								"type": "uint256"
-							},
-							{
-								"internalType": "address",
-								"name": "sourceTokenAddr",
-								"type": "address"
-							},
-							{
-								"internalType": "bytes32",
-								"name": "transactionHash",
-								"type": "bytes32"
-							}
-						],
-						"internalType": "struct CrossChainBridge.SourceProofOfBurn",
-						"name": "sourceProofOfBurn",
-						"type": "tuple"
+						"internalType": "address",
+						"name": "fromToken",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "toToken",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
 					}
 				],
-				"name": "mintWithBurnProof",
+				"name": "lockTokenAndMintCerbyWrappedToken",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -579,54 +424,17 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"name": "transactionStorage",
-				"outputs": [
-					{
-						"internalType": "enum CrossChainBridge.States",
-						"name": "",
-						"type": "uint8"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "address",
-						"name": "newBeneficiaryAddr",
-						"type": "address"
-					}
-				],
-				"name": "updateBeneficiaryAddress",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
+						"name": "fromToken",
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
-						"name": "chainId",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountAsFee",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "toToken",
+						"type": "address"
 					}
 				],
-				"name": "updateFeeDependingOnDestinationChainId",
+				"name": "updateIsDirectionAllowed",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -670,7 +478,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/CrossChainBridge.sol": "CrossChainBridge"
+			"sol-defifactory-token/CerbyWrappingService.sol": "CerbyWrappingService"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -684,20 +492,20 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0xb741678dad251a7d7508cf778d5fb3674c4f44da1a02296cd6a6fd981291803d",
-			"license": "MIT",
+		"sol-defifactory-token/CerbyWrappingService.sol": {
+			"keccak256": "0x2f2c470664b167599bb7d7ea831c34cd232850c43dd5997993d15ae615b76f58",
+			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://df7b87bf6a18ffaf9a397f4c1e633bd30441cb10d21c585831a78041cedac057",
-				"dweb:/ipfs/QmeqxHWdk7Es9Fyhci1wXERrEM3bnGYyVgvZaL2GVT9J6T"
+				"bzz-raw://6be69d91c64018aa408da7d1ad476599b93f63155ee72f3e4d7a37512475c3ed",
+				"dweb:/ipfs/QmTQhyDtbs5FV2pVgMdXt7R23YFNz1tHDFBdGhC1s91J22"
 			]
 		},
-		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x55662dadf86392fd06c9bb78fc84c42a31cb3786ac836c0bbae077d7edc94fc7",
+		"sol-defifactory-token/interfaces/ICerby.sol": {
+			"keccak256": "0x526be5a9eeee8db6301797b49aaad92ec37adea3e159b81065b3082ee9bc4378",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7e802caeac0f00050211fd881950e3f767242197387b430f935f139d95024496",
-				"dweb:/ipfs/QmZGfnBk7fQfVipUJyqLpmcnfFbwP1SyrrHmD2tHPhapUN"
+				"bzz-raw://e289ef3346e4f3ff62fc659af4e026e6379b9b3080a73de25e1b5dec226b3127",
+				"dweb:/ipfs/QmWY3vKdBDsF6ArR5dyEK58om2JoSrjB7vy332BthWL2BC"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {

@@ -18,7 +18,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/Flat_StakingSystem.sol": "Context"
+			"sol-defifactory-token/Flat_MintableBurnableToken.sol": "Context"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -32,12 +32,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/Flat_StakingSystem.sol": {
-			"keccak256": "0x2fb486dd322e92adbceb98220a1572ed8733916ecdbbe873946555f6dc708ec6",
-			"license": "BSD-2-Clause",
+		"sol-defifactory-token/Flat_MintableBurnableToken.sol": {
+			"keccak256": "0xa8748a4b8d630b38b0bd39a2babb422555cfc6eb120d79de7a0677e05d846bad",
+			"license": "MIT",
 			"urls": [
-				"bzz-raw://0141ae36b97301da8b27baee392e359afd59178d101ada641afe050ad09613eb",
-				"dweb:/ipfs/QmQWNjH9ufcJJjisD9M5cChvUxWQU5Pm5iUf16MWYR9YRB"
+				"bzz-raw://cf852c0bd364844362cd2a65cae985a1b7b0a06735a346f3ca1a01d7f4c5ff95",
+				"dweb:/ipfs/QmYsuCrctL8v3woS5SnbC2XAtEZTbFZSRE91ffDbo8pJA1"
 			]
 		}
 	},

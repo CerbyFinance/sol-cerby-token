@@ -129,19 +129,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address[]",
-						"name": "addrs",
-						"type": "address[]"
-					}
-				],
-				"name": "correctTransferEvents",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "uint256",
 						"name": "pos",
 						"type": "uint256"
@@ -196,13 +183,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "publicForcedUpdateCacheMultiplier",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "totalSupply",
 				"outputs": [
 					{
@@ -212,6 +192,30 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "transfer",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -241,6 +245,11 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
 						"name": "recipient",
 						"type": "address"
 					},
@@ -250,8 +259,14 @@
 						"type": "uint256"
 					}
 				],
-				"name": "transferFromTeamVestingContract",
-				"outputs": [],
+				"name": "transferFrom",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -314,7 +329,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": "IDefiFactoryToken"
+			"sol-defifactory-token/interfaces/ICerby.sol": "ICerby"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -328,12 +343,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x55662dadf86392fd06c9bb78fc84c42a31cb3786ac836c0bbae077d7edc94fc7",
+		"sol-defifactory-token/interfaces/ICerby.sol": {
+			"keccak256": "0x526be5a9eeee8db6301797b49aaad92ec37adea3e159b81065b3082ee9bc4378",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7e802caeac0f00050211fd881950e3f767242197387b430f935f139d95024496",
-				"dweb:/ipfs/QmZGfnBk7fQfVipUJyqLpmcnfFbwP1SyrrHmD2tHPhapUN"
+				"bzz-raw://e289ef3346e4f3ff62fc659af4e026e6379b9b3080a73de25e1b5dec226b3127",
+				"dweb:/ipfs/QmWY3vKdBDsF6ArR5dyEK58om2JoSrjB7vy332BthWL2BC"
 			]
 		}
 	},

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.9;
 
 struct AccessSettings {
         bool isMinter;
@@ -12,12 +12,23 @@ struct AccessSettings {
         address addr;
     }
 
-interface IDefiFactoryToken {
+interface ICerby {
     
     function allowance(
         address owner, 
         address spender
     ) external view returns (uint);
+    
+    function transferFrom(
+        address sender, 
+        address recipient, 
+        uint256 amount
+    ) external returns (bool);
+    
+    function transfer(
+        address recipient, 
+        uint256 amount
+    ) external returns (bool);
     
     function approve(
         address _spender,
@@ -53,14 +64,6 @@ interface IDefiFactoryToken {
         external
         view
         returns (address);
-        
-    function transferFromTeamVestingContract(address recipient, uint256 amount) external;
-    
-    function correctTransferEvents(address[] calldata addrs)
-        external;
-    
-    function publicForcedUpdateCacheMultiplier()
-        external;
     
     function updateUtilsContracts(AccessSettings[] calldata accessSettings)
         external;
