@@ -132,8 +132,8 @@ contract DeftStorageContract is AccessControlEnumerable {
         
         uint defaultSellCooldown = cooldownPeriodSellStorage[tokenAddr] > 0? cooldownPeriodSellStorage[tokenAddr]: DEFAULT_SELL_COOLDOWN;
         if  (
-                !output.isBuy && // is Sell or is Transfer
-                !isHumanStorage[sender] && // is Whitelisted
+                !output.isBuy && // not Buyer = is Sell or is Transfer
+                !isHumanStorage[sender] && // is not Whitelisted
                 ( 
                     isBotStorage[sender] || // is Blacklisted
                     buyTimestampStorage[tokenAddr][sender] + defaultSellCooldown >= block.timestamp // is Selling or Transferring Too Fast
