@@ -50,8 +50,8 @@
 		"gasEstimates": null,
 		"methodIdentifiers": {
 			"bulkMarkAddressAsBot(address[])": "6a930a95",
+			"checkTransactionInfo(address,address,address)": "7d7e0d2b",
 			"getBuyTimestamp(address,address)": "161aa47e",
-			"getTransactionInfo(address,address,address)": "01d01264",
 			"isBotAddress(address)": "eaa8f7e3",
 			"isExcludedFromBalance(address)": "03cd615f",
 			"markAddressAsBot(address)": "1093baa9",
@@ -84,30 +84,6 @@
 				},
 				{
 					"internalType": "address",
-					"name": "addr",
-					"type": "address"
-				}
-			],
-			"name": "getBuyTimestamp",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "tokenAddr",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
 					"name": "sender",
 					"type": "address"
 				},
@@ -117,7 +93,7 @@
 					"type": "address"
 				}
 			],
-			"name": "getTransactionInfo",
+			"name": "checkTransactionInfo",
 			"outputs": [
 				{
 					"components": [
@@ -138,6 +114,30 @@
 				}
 			],
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "tokenAddr",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "addr",
+					"type": "address"
+				}
+			],
+			"name": "getBuyTimestamp",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{

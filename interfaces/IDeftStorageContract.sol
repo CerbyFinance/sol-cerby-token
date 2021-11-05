@@ -17,7 +17,7 @@ interface IDeftStorageContract {
     function updateBuyTimestamp(address tokenAddr, address addr, uint newBuyTimestamp)
         external;
         
-    function getTransactionInfo(address tokenAddr, address sender, address recipient)
+    function checkTransactionInfo(address tokenAddr, address sender, address recipient)
         external
         returns (TransactionInfo memory);
     

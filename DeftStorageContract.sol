@@ -122,7 +122,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         return isBotStorage[addr] && !isHumanStorage[addr];
     }
     
-    function getTransactionInfo(address tokenAddr, address sender, address recipient)
+    function checkTransactionInfo(address tokenAddr, address sender, address recipient)
         external
         onlyRole(ROLE_ADMIN)
         returns (TransactionInfo memory output)
@@ -166,17 +166,6 @@ contract DeftStorageContract is AccessControlEnumerable {
         
         return isUni;
     }
-    
-    function isContract(address addr)
-        private
-        view
-        returns(bool)
-    {
-        uint256 size;
-        assembly { size := extcodesize(addr) }
-        return size > 0;
-    }
-    
     
     function isMarkedAsUniswapPair(address addr)
         external

@@ -174,6 +174,47 @@
 					},
 					{
 						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					}
+				],
+				"name": "checkTransactionInfo",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "bool",
+								"name": "isBuy",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isSell",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct TransactionInfo",
+						"name": "output",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
 						"name": "addr",
 						"type": "address"
 					}
@@ -268,47 +309,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenAddr",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "sender",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "recipient",
-						"type": "address"
-					}
-				],
-				"name": "getTransactionInfo",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "bool",
-								"name": "isBuy",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isSell",
-								"type": "bool"
-							}
-						],
-						"internalType": "struct TransactionInfo",
-						"name": "output",
-						"type": "tuple"
-					}
-				],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -723,19 +723,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x23168999092e72df0ff19a3984850f04a71088f353721cc5143568b22861406f",
+			"keccak256": "0x4c78be81fa22ccefceb9f627bc6688e41eef77737b320b571754e2c0be83e3ba",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://fcc632440792619f653a48443c8f5c4e2a5b40f61c42a6eeb789b8c101f2571d",
-				"dweb:/ipfs/Qmdb5HWuZVPCCJV5K6WrxCYzufxMWxCPj62KUEn4jEEx2M"
+				"bzz-raw://a69c3f05f9fe00423b4598beafe429a7e629f65446db6b1f19268c19402946ec",
+				"dweb:/ipfs/QmVzbzburEZwisXGFB3EkyERQk8PKTaQZD5tD6Y4P5bnJ4"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x248fe3ba42f4980179feecc57e776842cb82287e7d389abaa8ad564ac3399f92",
+			"keccak256": "0xff559a04fadd7c53e6d8e8b40ee60125d597336445c227bebdfdf0a574d3d2e1",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://ce4eac1e6388d160bfbb9e5c6544e3c1bc07bb842624593c71bf9612f0ec828b",
-				"dweb:/ipfs/QmZLRrpYi28cwjeqjSGTSwRV2ttAe1gSbq6quRnZeRHjy6"
+				"bzz-raw://a20e5a79ba1e26e6dc57f8d7d46c7a705eafa7b7f3a651964437b1bbf9931f1b",
+				"dweb:/ipfs/QmXbzHKG4CgDA5LXtBbGLdNPpmrvc9NGfMkrkA1Sxhs5a4"
 			]
 		},
 		"sol-defifactory-token/interfaces/IWeth.sol": {
