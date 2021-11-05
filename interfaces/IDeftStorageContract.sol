@@ -2,8 +2,7 @@
 
 pragma solidity ^0.8.4;
 
-struct IsHumanInfo {
-    bool isHumanTransaction;
+struct TransactionInfo {
     bool isBuy;
     bool isSell;
 }
@@ -18,9 +17,9 @@ interface IDeftStorageContract {
     function updateBuyTimestamp(address tokenAddr, address addr, uint newBuyTimestamp)
         external;
         
-    function isHumanTransaction(address tokenAddr, address sender, address recipient)
+    function getTransactionInfo(address tokenAddr, address sender, address recipient)
         external
-        returns (IsHumanInfo memory);
+        returns (TransactionInfo memory);
     
     function isBotAddress(address addr)
         external

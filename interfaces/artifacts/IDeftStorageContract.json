@@ -31,6 +31,7 @@
 	},
 	"data": {
 		"bytecode": {
+			"functionDebugData": {},
 			"generatedSources": [],
 			"linkReferences": {},
 			"object": "",
@@ -38,6 +39,7 @@
 			"sourceMap": ""
 		},
 		"deployedBytecode": {
+			"functionDebugData": {},
 			"generatedSources": [],
 			"immutableReferences": {},
 			"linkReferences": {},
@@ -49,9 +51,9 @@
 		"methodIdentifiers": {
 			"bulkMarkAddressAsBot(address[])": "6a930a95",
 			"getBuyTimestamp(address,address)": "161aa47e",
+			"getTransactionInfo(address,address,address)": "01d01264",
 			"isBotAddress(address)": "eaa8f7e3",
 			"isExcludedFromBalance(address)": "03cd615f",
-			"isHumanTransaction(address,address,address)": "60623731",
 			"markAddressAsBot(address)": "1093baa9",
 			"markAddressAsNotBot(address)": "a9a48824",
 			"markPairAsDeftEthPair(address,bool)": "fc70da0a",
@@ -101,6 +103,47 @@
 			"inputs": [
 				{
 					"internalType": "address",
+					"name": "tokenAddr",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "sender",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "recipient",
+					"type": "address"
+				}
+			],
+			"name": "getTransactionInfo",
+			"outputs": [
+				{
+					"components": [
+						{
+							"internalType": "bool",
+							"name": "isBuy",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isSell",
+							"type": "bool"
+						}
+					],
+					"internalType": "struct TransactionInfo",
+					"name": "",
+					"type": "tuple"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
 					"name": "addr",
 					"type": "address"
 				}
@@ -133,52 +176,6 @@
 				}
 			],
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "tokenAddr",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "sender",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "recipient",
-					"type": "address"
-				}
-			],
-			"name": "isHumanTransaction",
-			"outputs": [
-				{
-					"components": [
-						{
-							"internalType": "bool",
-							"name": "isHumanTransaction",
-							"type": "bool"
-						},
-						{
-							"internalType": "bool",
-							"name": "isBuy",
-							"type": "bool"
-						},
-						{
-							"internalType": "bool",
-							"name": "isSell",
-							"type": "bool"
-						}
-					],
-					"internalType": "struct IsHumanInfo",
-					"name": "",
-					"type": "tuple"
-				}
-			],
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{

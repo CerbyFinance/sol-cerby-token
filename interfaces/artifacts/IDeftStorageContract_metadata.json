@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.4+commit.c7e474f2"
+		"version": "0.8.9+commit.e5eed63a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -46,6 +46,47 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					}
+				],
+				"name": "getTransactionInfo",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "bool",
+								"name": "isBuy",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isSell",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct TransactionInfo",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
 						"name": "addr",
 						"type": "address"
 					}
@@ -78,52 +119,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenAddr",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "sender",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "recipient",
-						"type": "address"
-					}
-				],
-				"name": "isHumanTransaction",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "bool",
-								"name": "isHumanTransaction",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isBuy",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isSell",
-								"type": "bool"
-							}
-						],
-						"internalType": "struct IsHumanInfo",
-						"name": "",
-						"type": "tuple"
-					}
-				],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -227,24 +222,24 @@
 		"compilationTarget": {
 			"sol-defifactory-token/interfaces/IDeftStorageContract.sol": "IDeftStorageContract"
 		},
-		"evmVersion": "istanbul",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 1000
+			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0xcee90fcacc8725ccd5b900437203750e7d5a4a98d81eacb0f3fa69a1be919e7e",
+			"keccak256": "0x248fe3ba42f4980179feecc57e776842cb82287e7d389abaa8ad564ac3399f92",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://f2b23e30f5058f4e004b15e868b34df5c2248206adf07bfe2a5037eb283e26a4",
-				"dweb:/ipfs/QmaAChav6978W4YkckxwkEbMguuvE2wdaxXgW5AgyZBEEZ"
+				"bzz-raw://ce4eac1e6388d160bfbb9e5c6544e3c1bc07bb842624593c71bf9612f0ec828b",
+				"dweb:/ipfs/QmZLRrpYi28cwjeqjSGTSwRV2ttAe1gSbq6quRnZeRHjy6"
 			]
 		}
 	},

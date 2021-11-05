@@ -122,10 +122,10 @@ contract DeftStorageContract is AccessControlEnumerable {
         return isBotStorage[addr] && !isHumanStorage[addr];
     }
     
-    function isHumanTransaction(address tokenAddr, address sender, address recipient)
+    function getTransactionInfo(address tokenAddr, address sender, address recipient)
         external
         onlyRole(ROLE_ADMIN)
-        returns (IsHumanInfo memory output)
+        returns (TransactionInfo memory output)
     {
         output.isSell = isUniswapPairChecker(recipient);
         output.isBuy = isUniswapPairChecker(sender);
@@ -143,7 +143,6 @@ contract DeftStorageContract is AccessControlEnumerable {
             revert("DS: Transfers are temporary disabled");
         }
         
-        output.isHumanTransaction = true;
         return output;
     }
     
