@@ -160,7 +160,7 @@
 						"type": "bool"
 					}
 				],
-				"name": "bulkMarkPairAsDeftEthPair",
+				"name": "bulkMarkAsUniswapPair",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -448,25 +448,6 @@
 						"type": "address"
 					}
 				],
-				"name": "isMarkedAsDeftEthPair",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
 				"name": "isMarkedAsHumanStorage",
 				"outputs": [
 					{
@@ -495,6 +476,44 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isMarkedAsUniswapPair",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isUniswapPairChecker",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "isUni",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -554,7 +573,7 @@
 						"type": "bool"
 					}
 				],
-				"name": "markPairAsDeftEthPair",
+				"name": "markAsUniswapPair",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -709,11 +728,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x91ebb398a48248cd1f36988437eebb1b3f799e40c8a69976a71b747331b7c1c1",
+			"keccak256": "0xef0d3ec6b90f043fa99439d3ee58e58c0724bd260d04f73c91ace795aea6ee82",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://0c540d2373f17aae579025626e795418fa094c80f218bd5387d29758d8b410fc",
-				"dweb:/ipfs/QmdedSumuV5rWxPR9jSD6moWFRHQ6ejCF6MWo93JchXRuR"
+				"bzz-raw://b1eb081b7088ca058c2e55d9f22cce07af419511cb304435ab870bc8205d9088",
+				"dweb:/ipfs/QmTEfMUbFqtLY8zYRNTAFKy2W4PYcdUGrRikuVGfdJSuiJ"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {

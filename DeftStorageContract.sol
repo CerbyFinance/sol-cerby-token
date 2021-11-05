@@ -15,9 +15,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     
     mapping(address => mapping(address => uint)) private buyTimestampStorage;
     
-    mapping(address => bool) private isDeftEthPair;
-    
-    address constant EIGHT_LEADING_ZEROS_TO_COMPARE = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
+    mapping(address => bool) private isUniswapPair;
     
     address constant BURN_ADDRESS = address(0x0);
     uint constant DEFAULT_SELL_COOLDOWN = 5 minutes; // TODO: change on production!!!
@@ -35,16 +33,16 @@ contract DeftStorageContract is AccessControlEnumerable {
         
         _setupRole(ROLE_ADMIN, _msgSender());
         _setupRole(ROLE_ADMIN, 0x1EE133d3CC3fD5795DD4014579A36A6b7900102e); // NoBotsTechV3 Deft
-        
         markAddressAsHuman(0x1EE133d3CC3fD5795DD4014579A36A6b7900102e, true); // NoBotsTechV3 Deft
         
+        _setupRole(ROLE_ADMIN, 0xDef1Fafc79CD01Cf6797B9d7F51411beF486262a); // Staking Contract
         _setupRole(ROLE_ADMIN, 0x1d2900622B5049D9479DC8BE06469A4ede3Fc96e); // Cross Chain Bridge Contract
         _setupRole(ROLE_ADMIN, 0x9980a0447456b5cdce209D7dC94820FF15600022); // Deft blacklister
         
-        markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28);
+        markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // top1 eth bot
 
         
-        markAddressAsHuman(staking, true); // Cross Chain Bridge Wallet
+        markAddressAsHuman(0xDef1Fafc79CD01Cf6797B9d7F51411beF486262a, true); // Staking contract
         markAddressAsHuman(0xdEF78a28c78A461598d948bc0c689ce88f812AD8, true); // Cross Chain Bridge Wallet
         markAddressAsHuman(0xDef1C0ded9bec7F1a1670819833240f027b25EfF, true); // 0x: Exchange Proxy
         markAddressAsHuman(0x11111112542D85B3EF69AE05771c2dCCff4fAa26, true); // 1inch Router
@@ -59,19 +57,22 @@ contract DeftStorageContract is AccessControlEnumerable {
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
             markAddressAsHuman(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D, true); // uniswap router v2
-            markAddressAsHuman(0xe592427a0aece92de3edee1f18e0157c05861564, true); // uniswap router v2
+            markAddressAsHuman(0xE592427A0AEce92De3Edee1F18E0157C05861564, true); // uniswap router v3
             
-            markPairAsDeftEthPair(0xFa6687922BF40FF51Bcd45F9FD339215a4869D82, true); // [deft, weth] uniswap pair
+            markAsUniswapPair(0xFa6687922BF40FF51Bcd45F9FD339215a4869D82, true); // [deft, weth] uniswap v2 pair
+            markAsUniswapPair(0x81489b0E7c7A515799C89374E23ac9295088551d, true); // [deft, usdc] uniswap v3 pair
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
             markAddressAsHuman(0x10ED43C718714eb63d5aA57B78B54704E256024E, true); // pancake router v2
-            markPairAsDeftEthPair(0x077324B361272dde2D757f8Ec6Eb59daAe794519, true); // [deft, wbnb] pancake pair
-            markPairAsDeftEthPair(0x493E990CcC67F59A3000EfFA9d5b1417D54B6f99, true); // [deft, busd] pancake pair
+            
+            markAsUniswapPair(0x077324B361272dde2D757f8Ec6Eb59daAe794519, true); // [deft, wbnb] pancake pair
+            markAsUniswapPair(0x493E990CcC67F59A3000EfFA9d5b1417D54B6f99, true); // [deft, busd] pancake pair
         } else if (block.chainid == POLYGON_MAINNET_CHAIN_ID)
         {
             markAddressAsHuman(0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff, true); // quick router v2
-            markPairAsDeftEthPair(0x3bcb4ED7132E2f1B7b0fa9966663F24b8210f8b6, true); // [deft, wmatic] quick pair
-            markPairAsDeftEthPair(0xF92b726b10956ff95EbABDd6fd92d180d1e920DA, true); // [deft, usdc] quick pair
+            
+            markAsUniswapPair(0x3bcb4ED7132E2f1B7b0fa9966663F24b8210f8b6, true); // [deft, wmatic] quick pair
+            markAsUniswapPair(0xF92b726b10956ff95EbABDd6fd92d180d1e920DA, true); // [deft, usdc] quick pair
         }
     }
     
@@ -105,7 +106,6 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         if (
-                !isContract(addr) &&
                 !isHumanStorage[addr]
             )
         {
@@ -119,10 +119,7 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
         returns (bool)
     {
-        return 
-            hasLeadingZerosInAddress(addr) ||
-            isBotStorage[addr] ||
-            isContract(addr) && !isDeftEthPair[addr] && !isHumanStorage[addr];
+        return isBotStorage[addr] && !isHumanStorage[addr];
     }
     
     function isHumanTransaction(address tokenAddr, address sender, address recipient)
@@ -130,59 +127,51 @@ contract DeftStorageContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
         returns (IsHumanInfo memory output)
     {
-        output.isSell = isDeftEthPair[recipient];
-        output.isBuy = isDeftEthPair[sender];
+        output.isSell = isUniswapPairChecker(recipient);
+        output.isBuy = isUniswapPairChecker(sender);
         
         uint defaultSellCooldown = cooldownPeriodSellStorage[tokenAddr] > 0? cooldownPeriodSellStorage[tokenAddr]: DEFAULT_SELL_COOLDOWN;
-        bool isBot;
-            
-        if (
-                output.isBuy && 
-                tx.origin != recipient && // isOriginBot
-                !isContract(recipient) && 
-                !isHumanStorage[recipient] &&
-                IWeth(tokenAddr).balanceOf(recipient) <= 1
-            )
-        {
-            isBotStorage[recipient] = true;
-        } else if(
-                !output.isBuy && // isSell or isTransfer
-                (
-                    (
-                        isContract(sender) ||
-                        isBotStorage[sender] || // isBlacklistedSender
-                        hasLeadingZerosInAddress(sender) ||
-                        buyTimestampStorage[tokenAddr][sender] + defaultSellCooldown >= block.timestamp
-                    ) && !isDeftEthPair[sender] && !isHumanStorage[sender]
+        if  (
+                !output.isBuy && // is Sell or is Transfer
+                !isHumanStorage[sender] && // is Whitelisted
+                ( 
+                    isBotStorage[sender] || // is Blacklisted
+                    buyTimestampStorage[tokenAddr][sender] + defaultSellCooldown >= block.timestamp // is Selling or Transferring Too Fast
                 )
             )
         {
-            if (output.isSell) // 99.9% tax only on sells
-            {
-                isBot = true;
-            } else // isTransfer
-            {
-               revert("DS: Transfers are temporary disabled");
-            }
-            isBotStorage[sender] = true;
+            revert("DS: Transfers are temporary disabled");
         }
         
-        output.isHumanTransaction = !isBot;
+        output.isHumanTransaction = true;
         return output;
     }
     
-    function hasLeadingZerosInAddress(address addr)
-        private
-        pure
-        returns (bool)
+    function isUniswapPairChecker(address addr)
+        public
+        onlyRole(ROLE_ADMIN)
+        returns (bool isUni)
     {
-        return addr < EIGHT_LEADING_ZEROS_TO_COMPARE;
+        isUni = isUniswapPair[addr];
+        if (!isUni)
+        {
+            bytes memory data = abi.encodeWithSignature("token1()");
+            (, data) = address(addr).staticcall(data);
+            isUni = data.length > 0;
+        }
+        
+        if (isUni)
+        {
+            isUniswapPair[addr] = true;
+        }
+        
+        return isUni;
     }
     
-    function isContract(address addr) 
+    function isContract(address addr)
         private
         view
-        returns (bool)
+        returns(bool)
     {
         uint256 size;
         assembly { size := extcodesize(addr) }
@@ -190,13 +179,13 @@ contract DeftStorageContract is AccessControlEnumerable {
     }
     
     
-    function isMarkedAsDeftEthPair(address addr)
+    function isMarkedAsUniswapPair(address addr)
         external
         view
         onlyRole(ROLE_ADMIN)
         returns (bool)
     {
-        return isDeftEthPair[addr];
+        return isUniswapPair[addr];
     }
     
     function isMarkedAsHumanStorage(address addr)
@@ -266,20 +255,20 @@ contract DeftStorageContract is AccessControlEnumerable {
         }
     }
     
-    function markPairAsDeftEthPair(address addr, bool value)
+    function markAsUniswapPair(address addr, bool value)
         public
         onlyRole(ROLE_ADMIN)
     {
-        isDeftEthPair[addr] = value;
+        isUniswapPair[addr] = value;
     }
     
-    function bulkMarkPairAsDeftEthPair(address[] calldata addrs, bool value)
+    function bulkMarkAsUniswapPair(address[] calldata addrs, bool value)
         external
         onlyRole(ROLE_ADMIN)
     {
         for(uint i = 0; i<addrs.length; i++)
         {
-            isDeftEthPair[addrs[i]] = value;
+            isUniswapPair[addrs[i]] = value;
         }
     }
     

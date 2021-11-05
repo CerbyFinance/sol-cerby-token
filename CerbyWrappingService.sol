@@ -71,7 +71,6 @@ contract CerbyWrappingService is AccessControlEnumerable {
             "CWS: Direction is not allowed!"
         );
         
-        ICerby iCerbyFrom = ICerby(fromToken);
         if (
                 block.chainid == ETH_MAINNET_CHAIN_ID ||
                 block.chainid == MATIC_MAINNET_CHAIN_ID ||
@@ -79,21 +78,27 @@ contract CerbyWrappingService is AccessControlEnumerable {
             )
         {
             IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-                iCerbyFrom.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+                defiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID) // TODO: use defi factory token
             );
             require(
                 !iDeftStorageContract.isBotAddress(msg.sender),
-                "CCB: Locking is temporary disabled!"
+                "CWS: Burning is temporary disabled!"
             );
         }
         
+        ICerby iCerbyFrom = ICerby(fromToken);
         require(
             iCerbyFrom.allowance(msg.sender, address(this)) >= amount,
             "CWS: Approval is required!"
         );
         
+        require(
+            amount <= iCerbyFrom.balanceOf(msg.sender),
+            "CWS: Amount must not exceed available balance. Try reducing the amount."
+        );
+        
         uint balanceBefore = iCerbyFrom.balanceOf(address(this));
-        iCerbyFrom.transferFrom(msg.sender, address(this), amount);
+        iCerbyFrom.transferFrom(msg.sender, address(this), amount); // TODO: use safeTransferFrom
         uint balanceAfter = iCerbyFrom.balanceOf(address(this));
         require(
             balanceAfter >= balanceBefore + amount,
@@ -122,25 +127,25 @@ contract CerbyWrappingService is AccessControlEnumerable {
             )
         {
             IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-                iCerbyFrom.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+                defiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID) // TODO: use defi factory token
             );
             require(
                 !iDeftStorageContract.isBotAddress(msg.sender),
-                "CCB: Burning is temporary disabled!"
+                "CWS: Burning is temporary disabled!"
             );
         }
         
         require(
             amount <= iCerbyFrom.balanceOf(msg.sender),
-            "CCB: Amount must not exceed available balance. Try reducing the amount."
+            "CWS: Amount must not exceed available balance. Try reducing the amount."
         );
         
         iCerbyFrom.burnHumanAddress(msg.sender, amount);
         
         ICerby iCerbyTo = ICerby(toToken);
-        uint balanceBefore = iCerbyTo.balanceOf(address(this));
-        iCerbyTo.transfer(msg.sender, amount);
-        uint balanceAfter = iCerbyTo.balanceOf(address(this));
+        uint balanceBefore = iCerbyTo.balanceOf(msg.sender);
+        iCerbyTo.transfer(msg.sender, amount); // TODO: safeTransfer
+        uint balanceAfter = iCerbyTo.balanceOf(msg.sender);
         require(
             balanceAfter + amount >= balanceBefore,
             "CWS: Unlock balance mismatch"
