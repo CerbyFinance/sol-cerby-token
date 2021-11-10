@@ -147,8 +147,7 @@ contract DeftStorageContract is AccessControlEnumerable {
     }
     
     function isUniswapPairChecker(address addr)
-        public
-        onlyRole(ROLE_ADMIN)
+        private
         returns (bool isUni)
     {
         isUni = isUniswapPair[addr];

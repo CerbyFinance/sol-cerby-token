@@ -685,11 +685,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0xb741678dad251a7d7508cf778d5fb3674c4f44da1a02296cd6a6fd981291803d",
-			"license": "MIT",
+			"keccak256": "0x37b0631856013b16d414fd9dd594be1d0e1d96cae9d36bd54e4bf813e576ede3",
+			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://df7b87bf6a18ffaf9a397f4c1e633bd30441cb10d21c585831a78041cedac057",
-				"dweb:/ipfs/QmeqxHWdk7Es9Fyhci1wXERrEM3bnGYyVgvZaL2GVT9J6T"
+				"bzz-raw://1796e139a7cf884c462d84408f96df16ed62ba15e93627b6dd8faf39528dcf97",
+				"dweb:/ipfs/QmUzXjLHUJ8c1hXMnSLFQPYg4BRYKJ2R8tHKVJA46zh8Dd"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
@@ -701,11 +701,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0xcee90fcacc8725ccd5b900437203750e7d5a4a98d81eacb0f3fa69a1be919e7e",
+			"keccak256": "0xff559a04fadd7c53e6d8e8b40ee60125d597336445c227bebdfdf0a574d3d2e1",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://f2b23e30f5058f4e004b15e868b34df5c2248206adf07bfe2a5037eb283e26a4",
-				"dweb:/ipfs/QmaAChav6978W4YkckxwkEbMguuvE2wdaxXgW5AgyZBEEZ"
+				"bzz-raw://a20e5a79ba1e26e6dc57f8d7d46c7a705eafa7b7f3a651964437b1bbf9931f1b",
+				"dweb:/ipfs/QmXbzHKG4CgDA5LXtBbGLdNPpmrvc9NGfMkrkA1Sxhs5a4"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

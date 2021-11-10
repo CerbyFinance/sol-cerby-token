@@ -500,25 +500,6 @@
 						"type": "address"
 					}
 				],
-				"name": "isUniswapPairChecker",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "isUni",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
 				"name": "markAddressAsBot",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -723,11 +704,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0x4c78be81fa22ccefceb9f627bc6688e41eef77737b320b571754e2c0be83e3ba",
+			"keccak256": "0x7b24a8ffeaba8c83bc222dc534b9ef5c037c77f7182fa415ed9cc43fcb382d6c",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://a69c3f05f9fe00423b4598beafe429a7e629f65446db6b1f19268c19402946ec",
-				"dweb:/ipfs/QmVzbzburEZwisXGFB3EkyERQk8PKTaQZD5tD6Y4P5bnJ4"
+				"bzz-raw://c08fdcb6c62a47e26920cd4e08dc3057557af30876b2bb782172350231133459",
+				"dweb:/ipfs/QmVrXcyt3tDPwSi3J6NbPS1uxaGXq7vQJoWbwsUT8eXW3d"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
