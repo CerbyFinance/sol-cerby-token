@@ -225,7 +225,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": "IDeftStorageContract"
+			"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": "ICerbyBot"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -240,11 +240,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
-			"keccak256": "0xedd80c4da9aae8bd6ecf6d18e093e7f267a0fa6091980e9ef4db14113c547fc1",
+			"keccak256": "0x0362ce953717eb4a683f00098dcab58b1ec5963d1f3d794f7f9153c3e858ba23",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://731e57f88c18410a6c727932a9188085fe9a086f6ca66757c6b36c40d5f05488",
-				"dweb:/ipfs/QmaNNUfTrTMaS74iam9Vv1yDzkaaAdUesdM55937mFyyJt"
+				"bzz-raw://1d03daa88d272ed8937a0bf0da5ca7c053d8a38c885cf98443eba2b983b59702",
+				"dweb:/ipfs/QmWB5Y7NpsJNFpPs3HF7ZfBBYswMPujTxVASmFYZyzRCcu"
 			]
 		}
 	},

@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.8+commit.dddeac2f"
+		"version": "0.8.9+commit.e5eed63a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -77,11 +77,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x66d5ab7fd3243597df6ed32828230154327dffcbf9f4dd3a30a998728ad45d76",
+			"keccak256": "0x55662dadf86392fd06c9bb78fc84c42a31cb3786ac836c0bbae077d7edc94fc7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://25ea6cc145dd2b7c22d8f1496e4e60fb67313f641bff21eb97d8db17062649d1",
-				"dweb:/ipfs/QmUBx9qi5tmFcHe3HpaTSSfW3xxoNy7y751G7NSGqg2SrB"
+				"bzz-raw://7e802caeac0f00050211fd881950e3f767242197387b430f935f139d95024496",
+				"dweb:/ipfs/QmZGfnBk7fQfVipUJyqLpmcnfFbwP1SyrrHmD2tHPhapUN"
 			]
 		},
 		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {

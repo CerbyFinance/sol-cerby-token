@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.9;
 
 struct TransactionInfo {
     bool isBuy;
@@ -8,7 +8,7 @@ struct TransactionInfo {
     bool isHumanTransaction;
 }
 
-interface IDeftStorageContract {
+interface ICerbyBotDetection {
     
     function getBuyTimestamp(address tokenAddr, address addr)
         external

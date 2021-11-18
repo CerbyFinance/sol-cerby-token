@@ -18,7 +18,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/Flat_MintableBurnableToken.sol": "Context"
+			"sol-defifactory-token/Flat_CrossChainBridge.sol": "Context"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -32,12 +32,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/Flat_MintableBurnableToken.sol": {
-			"keccak256": "0xa8748a4b8d630b38b0bd39a2babb422555cfc6eb120d79de7a0677e05d846bad",
+		"sol-defifactory-token/Flat_CrossChainBridge.sol": {
+			"keccak256": "0x596a14087bce1098ab2246cc4f34e9c82cc4d0727c000de33653000e76f51bdc",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://cf852c0bd364844362cd2a65cae985a1b7b0a06735a346f3ca1a01d7f4c5ff95",
-				"dweb:/ipfs/QmYsuCrctL8v3woS5SnbC2XAtEZTbFZSRE91ffDbo8pJA1"
+				"bzz-raw://c57f906da5713067e477e477ede63a4d52f62a584b44760152585e799e859865",
+				"dweb:/ipfs/QmS3UmZuSN6RvKoL8GoKvpZ3Qg2kL2RLajRFnp5xcDcTmt"
 			]
 		}
 	},

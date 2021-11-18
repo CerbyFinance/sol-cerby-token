@@ -8,133 +8,12 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "spender",
-						"type": "address"
-					}
-				],
-				"name": "allowance",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_spender",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_value",
-						"type": "uint256"
-					}
-				],
-				"name": "approve",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "success",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "account",
-						"type": "address"
-					}
-				],
-				"name": "balanceOf",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "realAmountBurn",
-						"type": "uint256"
-					}
-				],
-				"name": "burnByBridge",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "desiredAmountToBurn",
-						"type": "uint256"
-					}
-				],
-				"name": "burnHumanAddress",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "chargeCustomTax",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "address[]",
 						"name": "addrs",
 						"type": "address[]"
 					}
 				],
-				"name": "correctTransferEvents",
+				"name": "bulkMarkAddressAsBot",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -142,80 +21,10 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "pos",
-						"type": "uint256"
-					}
-				],
-				"name": "getUtilsContractAtPos",
-				"outputs": [
-					{
 						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "to",
+						"name": "tokenAddr",
 						"type": "address"
 					},
-					{
-						"internalType": "uint256",
-						"name": "realAmountToMint",
-						"type": "uint256"
-					}
-				],
-				"name": "mintByBridge",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "to",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "desiredAmountToMint",
-						"type": "uint256"
-					}
-				],
-				"name": "mintHumanAddress",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "publicForcedUpdateCacheMultiplier",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "totalSupply",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
 					{
 						"internalType": "address",
 						"name": "sender",
@@ -225,14 +34,107 @@
 						"internalType": "address",
 						"name": "recipient",
 						"type": "address"
+					}
+				],
+				"name": "checkTransactionInfo",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "bool",
+								"name": "isBuy",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isSell",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isHumanTransaction",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct TransactionInfo",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
 					},
 					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getBuyTimestamp",
+				"outputs": [
+					{
 						"internalType": "uint256",
-						"name": "amount",
+						"name": "",
 						"type": "uint256"
 					}
 				],
-				"name": "transferCustom",
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isBotAddress",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isExcludedFromBalance",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "markAddressAsBot",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -241,16 +143,11 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "recipient",
+						"name": "addr",
 						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
 					}
 				],
-				"name": "transferFromTeamVestingContract",
+				"name": "markAddressAsNotBot",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -258,44 +155,58 @@
 			{
 				"inputs": [
 					{
-						"components": [
-							{
-								"internalType": "bool",
-								"name": "isMinter",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isBurner",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isTransferer",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isModerator",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isTaxer",
-								"type": "bool"
-							},
-							{
-								"internalType": "address",
-								"name": "addr",
-								"type": "address"
-							}
-						],
-						"internalType": "struct AccessSettings[]",
-						"name": "accessSettings",
-						"type": "tuple[]"
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
 					}
 				],
-				"name": "updateUtilsContracts",
+				"name": "markPairAsDeftEthPair",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "markPairAsDeftOtherPair",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "newBuyTimestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "updateBuyTimestamp",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -314,7 +225,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/ICerby.sol": "IC"
+			"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": "IC"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -328,12 +239,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/interfaces/ICerby.sol": {
-			"keccak256": "0x5214bf4a39ae39849f921de8a5287d18c9edba0d5298128153e00ba7a02bfeca",
-			"license": "MIT",
+		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
+			"keccak256": "0xd1ec572eb14e3c5a255676c074e69116ddecc1e8c4f1ebbefacfeb941ef28f05",
+			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://d4548b10c19c26fd800aa1e13c410741dce6a2de05de87e5f92f1f547739026c",
-				"dweb:/ipfs/QmairoNdvaaqJHV8RkcfZg6DPAxNrcbKstEEnfjqRYhBpX"
+				"bzz-raw://c472d015e1a29c280343e741599ac9b2a345734e07ac63242d497deddab4c9d8",
+				"dweb:/ipfs/QmTFHi1VmLtUHHE9kfc8kb3jzkfsMrA1Nso1e3RUwYeDNU"
 			]
 		}
 	},

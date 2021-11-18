@@ -699,7 +699,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/DeftStorageContract.sol": "DeftStorageContract"
+			"sol-defifactory-token/DeftStorageContract.sol": "CerbyBot"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -714,11 +714,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/DeftStorageContract.sol": {
-			"keccak256": "0xe9337a4584c46dd5e6f8bbce2341897b05ebe81543a6208270fb1cb9654b7bd4",
+			"keccak256": "0x0f954526ed5c12732326fef78654819301c37505a44319c7f20033591f441528",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://bc141b5ec1be2dfe64418f7a3eb15997b802bc0c4bafd0680635a7a985abda62",
-				"dweb:/ipfs/QmcPukymcApeKb6aW9gySB7JeVe8Tx3Gqq569jYVJHiDW8"
+				"bzz-raw://6c7442737512d737ac1281b72631f90a1f244b83e9915b58af471b3142e0728d",
+				"dweb:/ipfs/QmY3DbaRc6nhX73PSbAnEAynU33pBQCAoano55pWJK8g2v"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
