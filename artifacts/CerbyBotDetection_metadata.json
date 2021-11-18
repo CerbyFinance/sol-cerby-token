@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.9+commit.e5eed63a"
+		"version": "0.8.10+commit.fc410830"
 	},
 	"language": "Solidity",
 	"output": {
@@ -195,11 +195,6 @@
 							{
 								"internalType": "bool",
 								"name": "isSell",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isHumanTransaction",
 								"type": "bool"
 							}
 						],
@@ -631,34 +626,6 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenAddr",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "sender",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "recipient",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "newReceiveTimestamp",
-						"type": "uint256"
-					}
-				],
-				"name": "updateReceiveTimestamp",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -714,11 +681,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBotDetection.sol": {
-			"keccak256": "0xd5922df18ccb1dadd8b219ea9aef0c1a4e78304001e4e0820c282996ced1b49c",
+			"keccak256": "0x6da4fd30f21aeab83e6f0b21bcefb819ab1124e9a5c6d706ac8d6764fb87538d",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://2f4611b7297baffdd7fdf660e910c60dc2caa924cf704d10247a4e0c8a032101",
-				"dweb:/ipfs/QmPz1wuXsaskGZAen2iZ4ZuD4A8Rgta8JfW3Muu7ArVxnq"
+				"bzz-raw://c12ed31435f78c2d1ad059b3a67235d93f32e8ad031690670d8f575ade584ffc",
+				"dweb:/ipfs/QmcQGJzJqogubExTXqnDPm2C4LcBkdUNsv4cUAEvF3hFif"
 			]
 		},
 		"sol-defifactory-token/interfaces/IWeth.sol": {

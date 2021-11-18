@@ -1,23 +1,10 @@
 {
 	"compiler": {
-		"version": "0.8.9+commit.e5eed63a"
+		"version": "0.8.10+commit.fc410830"
 	},
 	"language": "Solidity",
 	"output": {
 		"abi": [
-			{
-				"inputs": [
-					{
-						"internalType": "address[]",
-						"name": "addrs",
-						"type": "address[]"
-					}
-				],
-				"name": "bulkMarkAddressAsBot",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
 			{
 				"inputs": [
 					{
@@ -49,15 +36,10 @@
 								"internalType": "bool",
 								"name": "isSell",
 								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isHumanTransaction",
-								"type": "bool"
 							}
 						],
 						"internalType": "struct TransactionInfo",
-						"name": "",
+						"name": "output",
 						"type": "tuple"
 					}
 				],
@@ -77,7 +59,7 @@
 						"type": "address"
 					}
 				],
-				"name": "getBuyTimestamp",
+				"name": "getReceiveTimestamp",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -111,102 +93,21 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "isExcludedFromBalance",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "markAddressAsBot",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "markAddressAsNotBot",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"internalType": "bool",
-						"name": "value",
-						"type": "bool"
-					}
-				],
-				"name": "markPairAsDeftEthPair",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"internalType": "bool",
-						"name": "value",
-						"type": "bool"
-					}
-				],
-				"name": "markPairAsDeftOtherPair",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
 						"name": "tokenAddr",
 						"type": "address"
 					},
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "sender",
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
-						"name": "newBuyTimestamp",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
 					}
 				],
-				"name": "updateBuyTimestamp",
+				"name": "updateTransaction",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -240,11 +141,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
-			"keccak256": "0x7f1fdf565fe5122af9407366504d3bb27f6a2bc358ad10c865146e68e056e2cc",
+			"keccak256": "0x9d5945578a7aae170665dbdc81f6198c9d98fdc0082b9ba1c5f0487042cc811d",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://9d5f1fcd71b3707782d6c86d0aba6507fd28ecfdc047d2b0fe42c18de6040d8b",
-				"dweb:/ipfs/QmRWHCQnHRwSHUjiaxy8vK56199gRjEyqHUVHKTnaUM512"
+				"bzz-raw://ba3cfcf6cc8fd5833298ace2a77b8c90152dbb6d4a766d212ccb7f1f9b77695c",
+				"dweb:/ipfs/QmfNHSaXG7rAMRYgDiTD1zg5CF1wNXggF3MbLQ5mVCxqeR"
 			]
 		}
 	},

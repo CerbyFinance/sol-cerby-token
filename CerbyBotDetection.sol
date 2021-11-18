@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.10;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./interfaces/IWeth.sol";
@@ -8,7 +8,6 @@ import "./interfaces/IWeth.sol";
 struct TransactionInfo {
     bool isBuy;
     bool isSell;
-    bool isHumanTransaction;
 }
 
 contract CerbyBotDetection is AccessControlEnumerable {
@@ -101,19 +100,6 @@ contract CerbyBotDetection is AccessControlEnumerable {
         return receiveTimestampStorage[tokenAddr][addr];
     }
     
-    function updateReceiveTimestamp(address tokenAddr, address sender, address recipient, uint newReceiveTimestamp)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        if (
-                !isHumanStorage[recipient] && 
-                sender != STAKING_CONTRACT // hack to fix scraping issue...
-            )
-        {
-            receiveTimestampStorage[tokenAddr][recipient] = newReceiveTimestamp;
-        }
-    }
-    
     function isBotAddress(address addr)
         external
         view
@@ -130,11 +116,11 @@ contract CerbyBotDetection is AccessControlEnumerable {
     {
         output.isSell = isUniswapPairChecker(recipient);
         output.isBuy = isUniswapPairChecker(sender);
-        output.isHumanTransaction = true;
         
         uint defaultSellCooldown = cooldownPeriodSellStorage[tokenAddr] > 0? cooldownPeriodSellStorage[tokenAddr]: DEFAULT_SELL_COOLDOWN;
         if (
-                output.isBuy && 
+                output.isBuy &&
+                !output.isSell &&
                 tx.origin != recipient && // isOriginBot
                 !isContract(recipient) && 
                 !isHumanStorage[recipient] &&
@@ -148,31 +134,17 @@ contract CerbyBotDetection is AccessControlEnumerable {
                 (
                     isContract(sender) || // contracts aren't welcome
                     isBotStorage[sender] || // is Blacklisted Sender
-                    hasLeadingZerosInAddress(sender) || // address starts from 8 zeros
+                    sender < EIGHT_LEADING_ZEROS_TO_COMPARE || // address starts from 8 zeros
                     receiveTimestampStorage[tokenAddr][sender] + defaultSellCooldown >= block.timestamp
                 )
             )
         {
-            if (output.isSell) // 99.9% tax only on sells
-            {
-                output.isHumanTransaction = false;
-            } else // isTransfer
-            {
-               revert("CS: Transfers are temporary disabled");
-            }
-            isBotStorage[sender] = true;
+           revert("CBD: Transfers are temporary disabled");
         }
         
+        receiveTimestampStorage[tokenAddr][recipient] = block.timestamp;
+        
         return output;
-    }
-    
-    
-    function hasLeadingZerosInAddress(address addr)
-        private
-        pure
-        returns (bool)
-    {
-        return addr < EIGHT_LEADING_ZEROS_TO_COMPARE;
     }
     
     function isContract(address addr) 
@@ -305,7 +277,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
     {
         require(
             !isBotStorage[addr],
-            "CS: bot"
+            "CBD: bot"
         );
         
         isBotStorage[addr] = true;
@@ -340,7 +312,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
     {
         require(
             isBotStorage[addr],
-            "CS: !bot"
+            "CBD: !bot"
         );
         
         isBotStorage[addr] = false;

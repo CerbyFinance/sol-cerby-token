@@ -2,36 +2,36 @@
 
 pragma solidity ^0.8.8;
 
-import "./interfaces/IDefiFactoryToken.sol";
-import "./interfaces/INoBotsTech.sol";
+import "./interfaces/ICerbyBotDetection.sol";
 import "./interfaces/IWeth.sol";
-import "./interfaces/IUniswapV2Pair.sol";
-import "./interfaces/IUniswapV2Factory.sol";
-import "./interfaces/IDeftStorageContract.sol";
+import "./interfaces/IDefiFactoryToken.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 
+
+struct TaxAmountsInput {
+    address sender;
+    address recipient;
+    uint transferAmount;
+    uint senderRealBalance;
+    uint recipientRealBalance;
+}
+struct TaxAmountsOutput {
+    uint senderRealBalance;
+    uint recipientRealBalance;
+    uint burnAndRewardAmount;
+    uint recipientGetsAmount;
+}
 
 
 contract NoBotsTechV3 is AccessControlEnumerable {
     
     uint constant DEFT_STORAGE_CONTRACT_ID = 3;
-    //uint constant UNISWAP_V2_PAIR_ADDRESS_ID = 4;
-    
-    
     
     address defiFactoryTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
-    
-    uint botTaxPercent = 999e3; // 99.9%
-    uint constant TAX_PERCENT_DENORM = 1e6;
-    
     
     address constant BURN_ADDRESS = address(0x0);
     
     uint realTotalSupply;
-    
-    
-    
-    event BotTransactionDetected(address from, address to, uint transferAmount, uint taxedAmount);
     
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
@@ -52,12 +52,6 @@ contract NoBotsTechV3 is AccessControlEnumerable {
         defiFactoryTokenAddress = _defiFactoryTokenAddress;
     }
     
-    function updateBotTaxSettings(uint _botTaxPercent)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        botTaxPercent = _botTaxPercent;
-    }
     
     function getTotalSupply()
         external
@@ -86,54 +80,22 @@ contract NoBotsTechV3 is AccessControlEnumerable {
             "NBT: !amount"
         );
         
-        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-                IDefiFactoryToken(defiFactoryTokenAddress).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
-            );
-        IsHumanInfo memory isHumanInfo = iDeftStorageContract.isHumanTransaction(defiFactoryTokenAddress, taxAmountsInput.sender, taxAmountsInput.recipient);
+        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
+            IDefiFactoryToken(defiFactoryTokenAddress).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+        );
+        iCerbyBotDetection.checkTransactionInfo(defiFactoryTokenAddress, taxAmountsInput.sender, taxAmountsInput.recipient);
         
-        
-        uint burnAndRewardRealAmount;
-        if (isHumanInfo.isHumanTransaction)
-        {
-            // human on main pair
-            // buys - 0% tax
-            // sells - cycle tax
-            // transfers - 0% tax
-            
-        } else
-        {
-            burnAndRewardRealAmount = (taxAmountsInput.transferAmount * botTaxPercent) / TAX_PERCENT_DENORM;
-            
-            uint botTaxedAmount = (taxAmountsInput.transferAmount * botTaxPercent) / TAX_PERCENT_DENORM;
-            emit BotTransactionDetected(
-                taxAmountsInput.sender, 
-                taxAmountsInput.recipient, 
-                taxAmountsInput.transferAmount,
-                botTaxedAmount
-            );
-        }
-        
-        if (!isHumanInfo.isSell)
-        { // isBuy or isTransfer
-            uint newBuyTimestamp = block.timestamp;
-            
-            iDeftStorageContract.updateBuyTimestamp(defiFactoryTokenAddress, taxAmountsInput.recipient, newBuyTimestamp);
-        }
-        
-        uint recipientGetsRealAmount = taxAmountsInput.transferAmount - burnAndRewardRealAmount;
         taxAmountsOutput.senderRealBalance = taxAmountsInput.senderRealBalance - taxAmountsInput.transferAmount;
-        taxAmountsOutput.recipientRealBalance = taxAmountsInput.recipientRealBalance + recipientGetsRealAmount;
-        realTotalSupply -= burnAndRewardRealAmount;       
+        taxAmountsOutput.recipientRealBalance = taxAmountsInput.recipientRealBalance + taxAmountsInput.transferAmount;
         
-        taxAmountsOutput.burnAndRewardAmount = burnAndRewardRealAmount; // Actual amount we burned and have to show in event
-        taxAmountsOutput.recipientGetsAmount = 
-            taxAmountsInput.transferAmount - burnAndRewardRealAmount; // Actual amount recipient got and have to show in event
+        //taxAmountsOutput.burnAndRewardAmount = 0; // Actual amount we burned and have to show in event
+        taxAmountsOutput.recipientGetsAmount = taxAmountsInput.transferAmount; // Actual amount recipient got and have to show in event
         
         return taxAmountsOutput;
     }
     
     
-    function prepareHumanAddressMintOrBurnRewardsAmounts(bool isMint, address account, uint desiredAmountToMintOrBurn)
+    function prepareHumanAddressMintOrBurnRewardsAmounts(bool isMint, address, uint desiredAmountToMintOrBurn)
         external
         onlyRole(ROLE_ADMIN)
         returns (uint)
@@ -141,13 +103,6 @@ contract NoBotsTechV3 is AccessControlEnumerable {
         if (isMint) 
         {
             realTotalSupply += desiredAmountToMintOrBurn;
-            
-            uint newBuyTimestampAccount = block.timestamp;
-            
-            IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-                IDefiFactoryToken(defiFactoryTokenAddress).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
-            );
-            iDeftStorageContract.updateBuyTimestamp(defiFactoryTokenAddress, account, newBuyTimestampAccount);
         } else
         {
             realTotalSupply -= desiredAmountToMintOrBurn;

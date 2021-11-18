@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.9+commit.e5eed63a"
+		"version": "0.8.10+commit.fc410830"
 	},
 	"language": "Solidity",
 	"output": {
@@ -225,7 +225,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": "IDeftStorageContract"
+			"sol-defifactory-token/interfaces/IDeftStorageContract.sol": "IDeftStorageContract"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -239,12 +239,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
-			"keccak256": "0xedd80c4da9aae8bd6ecf6d18e093e7f267a0fa6091980e9ef4db14113c547fc1",
+		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
+			"keccak256": "0x31c4471e0df11f688ea99faf7d94b82a2896d15057e838cf55f66b3deef49ae8",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://731e57f88c18410a6c727932a9188085fe9a086f6ca66757c6b36c40d5f05488",
-				"dweb:/ipfs/QmaNNUfTrTMaS74iam9Vv1yDzkaaAdUesdM55937mFyyJt"
+				"bzz-raw://1295f95ac55f3b8a47a29afebb64e095a442f9bac9783bdfd679cb44f1513735",
+				"dweb:/ipfs/QmeFdRCuBNu1uCe9MdHX2eiihWiEKeMZQoHfkP9AWH7Xqk"
 			]
 		}
 	},

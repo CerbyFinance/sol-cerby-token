@@ -1,50 +1,28 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.10;
 
 struct TransactionInfo {
     bool isBuy;
     bool isSell;
-    bool isHumanTransaction;
 }
 
 interface ICerbyBotDetection {
     
-    function getBuyTimestamp(address tokenAddr, address addr)
+    function getReceiveTimestamp(address tokenAddr, address addr)
         external
         view
         returns (uint);
     
-    function updateBuyTimestamp(address tokenAddr, address addr, uint newBuyTimestamp)
+    function updateTransaction(address tokenAddr, address sender, address recipient)
         external;
         
     function checkTransactionInfo(address tokenAddr, address sender, address recipient)
         external
-        returns (TransactionInfo memory);
+        returns (TransactionInfo memory output);
     
     function isBotAddress(address addr)
         external
         view
         returns (bool);
-    
-    function isExcludedFromBalance(address addr)
-        external
-        view
-        returns (bool);
-    
-    function bulkMarkAddressAsBot(address[] calldata addrs)
-        external;
-    
-    function markAddressAsBot(address addr)
-        external;
-    
-    function markAddressAsNotBot(address addr)
-        external;
-        
-        
-    function markPairAsDeftEthPair(address addr, bool value)
-        external;
-    
-    function markPairAsDeftOtherPair(address addr, bool value)
-        external;
 }

@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.8+commit.dddeac2f"
+		"version": "0.8.10+commit.fc410830"
 	},
 	"language": "Solidity",
 	"output": {
@@ -9,37 +9,6 @@
 				"inputs": [],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "to",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "transferAmount",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "taxedAmount",
-						"type": "uint256"
-					}
-				],
-				"name": "BotTransactionDetected",
-				"type": "event"
 			},
 			{
 				"anonymous": false,
@@ -323,7 +292,7 @@
 					},
 					{
 						"internalType": "address",
-						"name": "account",
+						"name": "",
 						"type": "address"
 					},
 					{
@@ -476,19 +445,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "_botTaxPercent",
-						"type": "uint256"
-					}
-				],
-				"name": "updateBotTaxSettings",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "address",
 						"name": "_defiFactoryTokenAddress",
 						"type": "address"
@@ -566,51 +522,27 @@
 	},
 	"sources": {
 		"sol-defifactory-token/NoBotsTechV3.sol": {
-			"keccak256": "0x62fd4175b651ee7b7a8e31d0b9c6de938dadbad5db0e0a449dd019537c4ca885",
+			"keccak256": "0x01bc4db1f3246cb3232146df48d634a1ade61b3164bb5a9a221d77ad5405cf91",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://2682d4c98178f0aa6f1a33630b72885bc64100aeaeb939280aab6e247f9fced0",
-				"dweb:/ipfs/QmPNNzQtU1pK26vcfqZ9HKQRdbVgcPevJAx3nUfBPVvyTA"
+				"bzz-raw://e89e935c792a4d934bbb2268c13306c8d1b05e6bdef48bf3b704dd9b72064009",
+				"dweb:/ipfs/QmXf99Gadi9ZsNbcKW8TSrvdQtr5N6ZktYJT54YNQ8yy1R"
+			]
+		},
+		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
+			"keccak256": "0x9d5945578a7aae170665dbdc81f6198c9d98fdc0082b9ba1c5f0487042cc811d",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://ba3cfcf6cc8fd5833298ace2a77b8c90152dbb6d4a766d212ccb7f1f9b77695c",
+				"dweb:/ipfs/QmfNHSaXG7rAMRYgDiTD1zg5CF1wNXggF3MbLQ5mVCxqeR"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x66d5ab7fd3243597df6ed32828230154327dffcbf9f4dd3a30a998728ad45d76",
+			"keccak256": "0x55662dadf86392fd06c9bb78fc84c42a31cb3786ac836c0bbae077d7edc94fc7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://25ea6cc145dd2b7c22d8f1496e4e60fb67313f641bff21eb97d8db17062649d1",
-				"dweb:/ipfs/QmUBx9qi5tmFcHe3HpaTSSfW3xxoNy7y751G7NSGqg2SrB"
-			]
-		},
-		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0xcee90fcacc8725ccd5b900437203750e7d5a4a98d81eacb0f3fa69a1be919e7e",
-			"license": "BUSL-1.1",
-			"urls": [
-				"bzz-raw://f2b23e30f5058f4e004b15e868b34df5c2248206adf07bfe2a5037eb283e26a4",
-				"dweb:/ipfs/QmaAChav6978W4YkckxwkEbMguuvE2wdaxXgW5AgyZBEEZ"
-			]
-		},
-		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
-			"keccak256": "0xd18065280d57f7a855e3b3cb371afc1b170f4eed6dd0488fdda1f8cbddf561ed",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://d399593010fe566d8620cecbcc2aa42a117f0cb56cdace6324640f7fbf8c970a",
-				"dweb:/ipfs/QmQUZHbVeLiFHpZHgdVTru6MnigNvjgtqizbpaBE98Dp9D"
-			]
-		},
-		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {
-			"keccak256": "0xcedf8f2d94a11375f62ab9e3c0cbca9e584de936dc974d84c0785935c08555fc",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://355af2d26712d9ec44a3fc629162d8c0c3b40126b7916a1fc3f4e39ba42224f6",
-				"dweb:/ipfs/QmTataj3Mb5b6E6n5NU7GLtPC5N8ugJwUKJ5fR8LqT69m1"
-			]
-		},
-		"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
-			"keccak256": "0x8b11d0b070b3ea821880b21c336186d619892cd92cb90f05a9defebef8836624",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://f0598d56bb3b6a0ee15374a10ce2913e854af87f5c6845772ef505a31c0c9fa7",
-				"dweb:/ipfs/QmXH92UmaKz7qks5cXQbDae5gwnDWnAHvwmcS8vvgraA5Y"
+				"bzz-raw://7e802caeac0f00050211fd881950e3f767242197387b430f935f139d95024496",
+				"dweb:/ipfs/QmZGfnBk7fQfVipUJyqLpmcnfFbwP1SyrrHmD2tHPhapUN"
 			]
 		},
 		"sol-defifactory-token/interfaces/IWeth.sol": {
