@@ -51,6 +51,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
         
         markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // Top1 Eth Bot
         
+        markAddressAsHuman(0xE68c1d72340aEeFe5Be76eDa63AE2f4bc7514110, true); // Defi Plaza
         markAddressAsHuman(0xDef1Fafc79CD01Cf6797B9d7F51411beF486262a, true); // Staking contract
         markAddressAsHuman(0xdEF78a28c78A461598d948bc0c689ce88f812AD8, true); // Cross Chain Bridge Wallet
         markAddressAsHuman(0xDef1C0ded9bec7F1a1670819833240f027b25EfF, true); // 0x: Exchange Proxy
@@ -119,23 +120,25 @@ contract CerbyBotDetection is AccessControlEnumerable {
         
         uint defaultSellCooldown = cooldownPeriodSellStorage[tokenAddr] > 0? cooldownPeriodSellStorage[tokenAddr]: DEFAULT_SELL_COOLDOWN;
         if (
-                output.isBuy &&
-                !output.isSell &&
+                output.isBuy && // checking buys
+                !output.isSell && // this means exclude when pair sends tokens to other pair => isSell && isBuy
                 tx.origin != recipient && // isOriginBot
-                !isContract(recipient) && 
-                !isHumanStorage[recipient] &&
-                IWeth(tokenAddr).balanceOf(recipient) <= 1
+                !isContract(recipient) && // contracts aren't welcome
+                !isHumanStorage[recipient] && // skipping whitelisted wallets/contracts
+                IWeth(tokenAddr).balanceOf(recipient) <= 1  // need to make sure balance was zero before the transfer
+                                                            // to avoid blacklisting existing users by malicious actors
             )
         {
             isBotStorage[recipient] = true;
         } else if (
-                !isHumanStorage[sender] &&
+                !isHumanStorage[sender] && // skipping whitelisted
                 !output.isBuy && // isSell or isTransfer
                 (
                     isContract(sender) || // contracts aren't welcome
                     isBotStorage[sender] || // is Blacklisted Sender
                     sender < EIGHT_LEADING_ZEROS_TO_COMPARE || // address starts from 8 zeros
-                    receiveTimestampStorage[tokenAddr][sender] + defaultSellCooldown >= block.timestamp
+                    receiveTimestampStorage[tokenAddr][sender] + defaultSellCooldown >= block.timestamp 
+                            // don't allow instant transfer after receiving
                 )
             )
         {
@@ -145,16 +148,6 @@ contract CerbyBotDetection is AccessControlEnumerable {
         receiveTimestampStorage[tokenAddr][recipient] = block.timestamp;
         
         return output;
-    }
-    
-    function isContract(address addr) 
-        private
-        view
-        returns (bool)
-    {
-        uint256 size;
-        assembly { size := extcodesize(addr) }
-        return size > 0;
     }
     
     function isUniswapPairChecker(address addr)
@@ -176,6 +169,16 @@ contract CerbyBotDetection is AccessControlEnumerable {
         }
         
         return isUniswapPairStorage[addr] == IS_UNISWAP_PAIR;
+    }
+    
+    function isContract(address addr) 
+        private
+        view
+        returns (bool)
+    {
+        uint256 size;
+        assembly { size := extcodesize(addr) }
+        return size > 0;
     }
     
     function isUniswapPair(address addr)
