@@ -206,7 +206,6 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
     function _mintHumanAddress(address to, uint desiredAmountToMint) 
         private
         recipientIsNotBurnAddress(to)
-        checkTransaction(BURN_ADDRESS, to, desiredAmountToMint)
     {
         tokenBalances[to] += desiredAmountToMint;
         totalTokenSupply += desiredAmountToMint;
@@ -234,7 +233,6 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
 
     function _burnHumanAddress(address from, uint desiredAmountToBurn)
         private
-        checkTransaction(from, BURN_ADDRESS, desiredAmountToBurn)
     {
         tokenBalances[from] -= desiredAmountToBurn;
         totalTokenSupply -= desiredAmountToBurn;
