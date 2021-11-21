@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.10;
 
 struct AccessSettings {
         bool isMinter;
@@ -12,7 +12,7 @@ struct AccessSettings {
         address addr;
     }
 
-interface ICerby {
+interface ICerbyToken {
     
     function allowance(
         address owner, 

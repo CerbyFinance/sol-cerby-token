@@ -237,51 +237,6 @@
 				"type": "event"
 			},
 			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"components": [
-							{
-								"internalType": "bool",
-								"name": "isMinter",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isBurner",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isTransferer",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isModerator",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isTaxer",
-								"type": "bool"
-							},
-							{
-								"internalType": "address",
-								"name": "addr",
-								"type": "address"
-							}
-						],
-						"indexed": false,
-						"internalType": "struct CerbyToken.AccessSettings[]",
-						"name": "accessSettings",
-						"type": "tuple[]"
-					}
-				],
-				"name": "UpdatedUtilsContracts",
-				"type": "event"
-			},
-			{
 				"inputs": [],
 				"name": "DOMAIN_SEPARATOR",
 				"outputs": [
@@ -564,38 +519,6 @@
 					}
 				],
 				"name": "getRoleMemberCount",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "pos",
-						"type": "uint256"
-					}
-				],
-				"name": "getUtilsContractAtPos",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getUtilsContractsCount",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -1038,51 +961,6 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"components": [
-							{
-								"internalType": "bool",
-								"name": "isMinter",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isBurner",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isTransferer",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isModerator",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isTaxer",
-								"type": "bool"
-							},
-							{
-								"internalType": "address",
-								"name": "addr",
-								"type": "address"
-							}
-						],
-						"internalType": "struct CerbyToken.AccessSettings[]",
-						"name": "accessSettings",
-						"type": "tuple[]"
-					}
-				],
-				"name": "updateUtilsContracts",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -1165,7 +1043,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/CerbyBasedToken.sol": "CerbyToken"
+			"sol-defifactory-token/CerbyBasedToken.sol": "CerbyBasedToken"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -1180,11 +1058,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBasedToken.sol": {
-			"keccak256": "0xea326f21f089befaefc2438b1537ef06211be3eb2b88baa194e90bf28703837a",
+			"keccak256": "0xb9ee30741f3616e6253208fa5056aa394a7d2c54e061109dac4c3604e3a25073",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://692471f7f640b24ecabc7f7bd5a38237553d8f32c0aa5e9e8783c4411ff78a03",
-				"dweb:/ipfs/QmVXrxjKpJV8MszZFL9STwoZb5BAeKT79eDXhKq1kafLb6"
+				"bzz-raw://8cc41c64f9763022d81f1d77ab3b0cf6379ad1dae724d17271c354b4bba0f1f6",
+				"dweb:/ipfs/QmUSrwdsZThbz75fUupzFNDiBDVtYQP9pH1W684CHnQmDG"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
@@ -1193,6 +1071,14 @@
 			"urls": [
 				"bzz-raw://55872994e8f60f28c7ad6f93b6c60f9f40d9909dd8ef3a26c8e6cfe2adf1fe9a",
 				"dweb:/ipfs/Qmc4hWqrXWSCA91j3vGqM3W5hHcfN1DEHnKRXV8rgtyhi9"
+			]
+		},
+		"sol-defifactory-token/interfaces/ICerbyToken.sol": {
+			"keccak256": "0x2ce3be7489d72ab5520c16466aef4e54b29065806435969a79a8e18b8d056070",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9985cc22123778d064862c4290cf6ba93fb470c324f55932805b689bccbca46c",
+				"dweb:/ipfs/Qma6TgybL1rWwbyjpPXKZT9nPpJKN47MtYfiQYRtdTHFgz"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

@@ -2,11 +2,12 @@
 
 pragma solidity ^0.8.8;
 
+import "./interfaces/ICerbyToken.sol";
 import "./interfaces/ICerbyBotDetection.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol";
 
-contract CerbyToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Permit {
+contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Permit {
     bytes32 public constant ROLE_MINTER = keccak256("ROLE_MINTER");
     bytes32 public constant ROLE_BURNER = keccak256("ROLE_BURNER");
     bytes32 public constant ROLE_TRANSFERER = keccak256("ROLE_TRANSFERER");
@@ -20,19 +21,8 @@ contract CerbyToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Permit {
     
     address[] utilsContracts;
     
-    struct AccessSettings {
-        bool isMinter;
-        bool isBurner;
-        bool isTransferer;
-        bool isModerator;
-        bool isTaxer;
-        
-        address addr;
-    }
-    
     bool public isPaused;
     
-    event UpdatedUtilsContracts(AccessSettings[] accessSettings);
     event TransferCustom(address sender, address recipient, uint amount);
     event MintHumanAddress(address recipient, uint amount);
     event BurnHumanAddress(address sender, uint amount);
@@ -49,17 +39,12 @@ contract CerbyToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Permit {
         _setupRole(ROLE_BURNER, _msgSender());
         _setupRole(ROLE_TRANSFERER, _msgSender());
         _setupRole(ROLE_MODERATOR, _msgSender());
-        
-        AccessSettings[] memory acset = new AccessSettings[](4);
-        acset[3].addr = 0xA49A8291D86d93F35eE7baD4699eE5E349E500D9;
-        
-        updateUtilsContracts(acset);
     }
     
     modifier checkTransaction(address sender, address recipient, uint transferAmount)
     {
         ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
+            ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
         );
         iCerbyBotDetection.checkTransactionInfo(
             CERBY_TOKEN_CONTRACT_ADDRESS, 
@@ -186,48 +171,6 @@ contract CerbyToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Permit {
         tokenBalances[recipient] += transferAmount;
         
         emit Transfer(sender, recipient, transferAmount);
-    }
-    
-    function updateUtilsContracts(AccessSettings[] memory accessSettings)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        for(uint i = 0; i < utilsContracts.length; i++)
-        {
-            revokeRole(ROLE_MINTER, utilsContracts[i]);
-            revokeRole(ROLE_BURNER, utilsContracts[i]);
-            revokeRole(ROLE_TRANSFERER, utilsContracts[i]);
-            revokeRole(ROLE_MODERATOR, utilsContracts[i]);
-        }
-        delete utilsContracts;
-        
-        for(uint i = 0; i < accessSettings.length; i++)
-        {
-            if (accessSettings[i].isMinter) grantRole(ROLE_MINTER, accessSettings[i].addr);
-            if (accessSettings[i].isBurner) grantRole(ROLE_BURNER, accessSettings[i].addr);
-            if (accessSettings[i].isTransferer) grantRole(ROLE_TRANSFERER, accessSettings[i].addr);
-            if (accessSettings[i].isModerator) grantRole(ROLE_MODERATOR, accessSettings[i].addr);
-            
-            utilsContracts.push(accessSettings[i].addr);
-        }
-        
-        emit UpdatedUtilsContracts(accessSettings);
-    }
-    
-    function getUtilsContractAtPos(uint pos)
-        public
-        view
-        returns (address)
-    {
-        return utilsContracts[pos];
-    }
-    
-    function getUtilsContractsCount()
-        external
-        view
-        returns(uint)
-    {
-        return utilsContracts.length;
     }
     
     function mintByBridge(address to, uint desiredAmountToMint) 

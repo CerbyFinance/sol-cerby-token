@@ -329,7 +329,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/ICerbyToken.sol": "ICerby"
+			"sol-defifactory-token/interfaces/ICerbyToken.sol": "ICerbyToken"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -344,11 +344,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/ICerbyToken.sol": {
-			"keccak256": "0x7d3be92b80dd8b24b11e48442fddcde16e9691d347f29a15bdf35cde5e8dd253",
+			"keccak256": "0x2ce3be7489d72ab5520c16466aef4e54b29065806435969a79a8e18b8d056070",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://aae3fb88c478c5793ac2a2712473afcc16150d4a3f9418ba52ae9e91cc37ec2b",
-				"dweb:/ipfs/QmRjnYQDMWbumLuXmDDNHxs8qLSbQbgdMy8pzdJYKjtfW3"
+				"bzz-raw://9985cc22123778d064862c4290cf6ba93fb470c324f55932805b689bccbca46c",
+				"dweb:/ipfs/Qma6TgybL1rWwbyjpPXKZT9nPpJKN47MtYfiQYRtdTHFgz"
 			]
 		}
 	},
