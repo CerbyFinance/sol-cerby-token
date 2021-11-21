@@ -25,6 +25,8 @@ contract CerbyBotDetection is AccessControlEnumerable {
     uint constant IS_NORMAL_WALLET = 2;
     uint constant IS_UNSET_VALUE = 0;
     
+    bytes constant TOKEN1_SIGNATURE = abi.encodeWithSignature("token1()");
+    
     address constant EIGHT_LEADING_ZEROS_TO_COMPARE = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
     address STAKING_CONTRACT = address(0xDef1Fafc79CD01Cf6797B9d7F51411beF486262a);
     address constant BURN_ADDRESS = address(0x0);
@@ -165,8 +167,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
     {
         if (isUniswapPairStorage[addr] == IS_UNSET_VALUE)
         {
-            bytes memory data = abi.encodeWithSignature("token1()");
-            (, data) = address(addr).staticcall(data);
+            (, bytes memory data) = address(addr).staticcall(TOKEN1_SIGNATURE);
         
             if (data.length > 0)
             {
