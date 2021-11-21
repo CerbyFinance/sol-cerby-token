@@ -125,19 +125,21 @@ contract CerbyBotDetection is AccessControlEnumerable {
                 output.isBuy && // checking buys
                 !output.isSell && // this means exclude when pair sends tokens to other pair => isSell && isBuy
                 tx.origin != recipient && // isOriginBot
-                !isContract(recipient) && // contracts aren't welcome
+                !isContract(recipient) && // only checking user wallets
                 !isHumanStorage[recipient] && // skipping whitelisted wallets/contracts
                 IWeth(tokenAddr).balanceOf(recipient) <= 1  // need to make sure balance was zero before the transfer
                                                             // to avoid blacklisting existing users by malicious actors
             )
         {
-            isBotStorage[recipient] = true;
+            isBotStorage[recipient] = true; // allow user to buy but mark as bot
         } else if (
-                !isHumanStorage[sender] && // skipping whitelisted
+                !isHumanStorage[sender] && // skipping whitelisted wallets/contracts
                 !output.isBuy && // isSell or isTransfer
                 (
                     isContract(sender) || // contracts aren't welcome
                     isBotStorage[sender] || // is Blacklisted Sender
+                    
+                    // TODO: check if its restricting less than 8 leading zeros???
                     BURN_ADDRESS < sender && sender < EIGHT_LEADING_ZEROS_TO_COMPARE || // address starts from 8 zeros
                     receiveTimestampStorage[tokenAddr][sender] + defaultSellCooldown >= block.timestamp 
                             // don't allow instant transfer after receiving

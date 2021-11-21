@@ -24,6 +24,9 @@ contract CerbyToken is CerbyBasedToken {
     }
     
     
+    
+    // ----------------------
+    
     function updateUtilsContracts(AccessSettings[] memory accessSettings)
         public
         onlyRole(ROLE_ADMIN)
