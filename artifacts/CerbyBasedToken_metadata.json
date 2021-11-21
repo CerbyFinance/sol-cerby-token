@@ -1058,11 +1058,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBasedToken.sol": {
-			"keccak256": "0xb9ee30741f3616e6253208fa5056aa394a7d2c54e061109dac4c3604e3a25073",
+			"keccak256": "0x0bdce561a6df54a36690465a55c1e13f2bc607876b96a4405c9578c1dcfdd633",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8cc41c64f9763022d81f1d77ab3b0cf6379ad1dae724d17271c354b4bba0f1f6",
-				"dweb:/ipfs/QmUSrwdsZThbz75fUupzFNDiBDVtYQP9pH1W684CHnQmDG"
+				"bzz-raw://a396d6ba69fc22077c6d3257e7cc825bc425cba8d897957576e734c7c7fd69cb",
+				"dweb:/ipfs/QmP5G7sgCeTBHv69dq32dJMFX5bQpPoXgq6nzWQnuqMHgZ"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

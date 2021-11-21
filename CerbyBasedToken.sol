@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.10;
 
 import "./interfaces/ICerbyToken.sol";
 import "./interfaces/ICerbyBotDetection.sol";
@@ -72,6 +72,14 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
         _;
     }
     
+    modifier recipientIsNotBurnAddress(address recipient) {
+        require(
+            recipient != BURN_ADDRESS,
+            "T: !burn"
+        );
+        _;
+    }
+    
     function updateNameAndSymbol(string calldata __name, string calldata __symbol)
         external
         onlyRole(ROLE_ADMIN)
@@ -110,14 +118,11 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
     function transferFrom(address sender, address recipient, uint256 amount) 
         public 
         notPausedContract
+        recipientIsNotBurnAddress(recipient)
         virtual 
         override 
         returns (bool) 
     {
-        require(
-            sender != BURN_ADDRESS,
-            "T: !burn"
-        );
         _transfer(sender, recipient, amount);
 
         uint256 currentAllowance = _allowances[sender][_msgSender()];
@@ -131,12 +136,9 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
         external 
         pausedContract
         onlyRole(ROLE_MODERATOR)
+        recipientIsNotBurnAddress(recipient)
         returns (bool) 
     {
-        require(
-            sender != BURN_ADDRESS,
-            "T: !burn"
-        );
         _transfer(sender, recipient, amount);
 
         return true;
@@ -146,11 +148,8 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
         external
         notPausedContract
         onlyRole(ROLE_TRANSFERER)
+        recipientIsNotBurnAddress(recipient)
     {
-        require(
-            sender != BURN_ADDRESS,
-            "T: !burn"
-        );
         _transfer(sender, recipient, amount);
         
         emit TransferCustom(sender, recipient, amount);
@@ -159,13 +158,10 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
     function _transfer(address sender, address recipient, uint transferAmount) 
         internal
         virtual 
+        recipientIsNotBurnAddress(recipient)
         checkTransaction(sender, recipient, transferAmount)
         override 
     {
-        require(
-            recipient != BURN_ADDRESS,
-            "T: !burn"
-        );
         
         tokenBalances[sender] -= transferAmount;
         tokenBalances[recipient] += transferAmount;
@@ -193,6 +189,7 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
     
     function _mintHumanAddress(address to, uint desiredAmountToMint) 
         private
+        recipientIsNotBurnAddress(to)
         checkTransaction(BURN_ADDRESS, to, desiredAmountToMint)
     {
         tokenBalances[to] += desiredAmountToMint;
