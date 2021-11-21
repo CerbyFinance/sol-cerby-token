@@ -162,7 +162,6 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
         checkTransaction(sender, recipient, transferAmount)
         override 
     {
-        
         tokenBalances[sender] -= transferAmount;
         tokenBalances[recipient] += transferAmount;
         
