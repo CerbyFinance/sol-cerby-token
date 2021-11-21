@@ -1101,11 +1101,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBasedToken.sol": {
-			"keccak256": "0x5a916afd62d4c7f0bd324008b2b5d6adc660e2d5491c9fd4d89243414992eab7",
+			"keccak256": "0xae61b8545eabbbc09e3f22fbdd634bee7f31a514fd11ec37482c514da8dd30e8",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://e192077176a9f75b020d635e89502ea934c9c32343ec7524c4a24e6e5b98e412",
-				"dweb:/ipfs/QmfMBG3hLPSKZsDEwYiDbH8zUbDh32nYJGidBcfLdGJgYf"
+				"bzz-raw://0db65e1f0374f2d46a59a6116e322e67453796a4d4ab15714f7cd293eb71b345",
+				"dweb:/ipfs/QmXfFKVX9YV2uR12WmmvveE7qZbNzC4EufM3jNRvsUCcGt"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

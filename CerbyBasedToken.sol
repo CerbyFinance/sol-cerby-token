@@ -13,7 +13,7 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
     bytes32 public constant ROLE_TRANSFERER = keccak256("ROLE_TRANSFERER");
     bytes32 public constant ROLE_MODERATOR = keccak256("ROLE_MODERATOR");
     
-    uint constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
+    uint internal constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
     address constant CERBY_TOKEN_CONTRACT_ADDRESS = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
     address constant BURN_ADDRESS = address(0x0);
     
