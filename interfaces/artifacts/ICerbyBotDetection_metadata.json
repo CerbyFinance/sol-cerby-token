@@ -21,6 +21,16 @@
 						"internalType": "address",
 						"name": "recipient",
 						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "recipientBalance",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "transferAmount",
+						"type": "uint256"
 					}
 				],
 				"name": "checkTransactionInfo",
@@ -50,30 +60,6 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenAddr",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "getReceiveTimestamp",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
 						"name": "addr",
 						"type": "address"
 					}
@@ -87,29 +73,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenAddr",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "sender",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "recipient",
-						"type": "address"
-					}
-				],
-				"name": "updateTransaction",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			}
 		],
@@ -141,11 +104,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
-			"keccak256": "0x9d5945578a7aae170665dbdc81f6198c9d98fdc0082b9ba1c5f0487042cc811d",
+			"keccak256": "0xb4556da8fee7d344377617543774f607a9f6b3f2be5005cdc9a6b6b037d5855b",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://ba3cfcf6cc8fd5833298ace2a77b8c90152dbb6d4a766d212ccb7f1f9b77695c",
-				"dweb:/ipfs/QmfNHSaXG7rAMRYgDiTD1zg5CF1wNXggF3MbLQ5mVCxqeR"
+				"bzz-raw://55872994e8f60f28c7ad6f93b6c60f9f40d9909dd8ef3a26c8e6cfe2adf1fe9a",
+				"dweb:/ipfs/Qmc4hWqrXWSCA91j3vGqM3W5hHcfN1DEHnKRXV8rgtyhi9"
 			]
 		}
 	},

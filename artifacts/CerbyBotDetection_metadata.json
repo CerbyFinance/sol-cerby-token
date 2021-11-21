@@ -181,6 +181,16 @@
 						"internalType": "address",
 						"name": "recipient",
 						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "recipientBalance",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "transferAmount",
+						"type": "uint256"
 					}
 				],
 				"name": "checkTransactionInfo",
@@ -681,11 +691,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBotDetection.sol": {
-			"keccak256": "0x4618b30e9a47e08056faf000f2b3c72d9ac15efa159a4ac698a0f730f51f0d13",
+			"keccak256": "0x8eb02677043c644146a7c5a2274dc0614dcf78d724d6b9df291d4209961e8640",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://079a9e2d2dc454ff2c7b8470c1a60fb18a66367c5d1b9d99cc06a1faf1bf25d0",
-				"dweb:/ipfs/QmY98RcYtC7tQt1Nad5isrRCDhwN5WaAbKm3FdCA7wo8md"
+				"bzz-raw://61a70a0813c7b6b16ecf043b602030053223dd24d1f688fbeeee20fff65effb4",
+				"dweb:/ipfs/QmSoacUJo2Pepk2YpUNxouG5K3SSJMEWPcH4qLoCCdrp6m"
 			]
 		},
 		"sol-defifactory-token/interfaces/IWeth.sol": {

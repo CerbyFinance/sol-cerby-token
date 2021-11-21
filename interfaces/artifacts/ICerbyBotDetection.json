@@ -49,10 +49,8 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"checkTransactionInfo(address,address,address)": "7d7e0d2b",
-			"getReceiveTimestamp(address,address)": "391bc2e5",
-			"isBotAddress(address)": "eaa8f7e3",
-			"updateTransaction(address,address,address)": "1d35bf95"
+			"checkTransactionInfo(address,address,address,uint256,uint256)": "b34ff36e",
+			"isBotAddress(address)": "eaa8f7e3"
 		}
 	},
 	"abi": [
@@ -72,6 +70,16 @@
 					"internalType": "address",
 					"name": "recipient",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "recipientBalance",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "transferAmount",
+					"type": "uint256"
 				}
 			],
 			"name": "checkTransactionInfo",
@@ -101,30 +109,6 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "tokenAddr",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "addr",
-					"type": "address"
-				}
-			],
-			"name": "getReceiveTimestamp",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
 					"name": "addr",
 					"type": "address"
 				}
@@ -138,29 +122,6 @@
 				}
 			],
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "tokenAddr",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "sender",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "recipient",
-					"type": "address"
-				}
-			],
-			"name": "updateTransaction",
-			"outputs": [],
-			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	]

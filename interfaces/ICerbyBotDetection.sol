@@ -8,16 +8,8 @@ struct TransactionInfo {
 }
 
 interface ICerbyBotDetection {
-    
-    function getReceiveTimestamp(address tokenAddr, address addr)
-        external
-        view
-        returns (uint);
-    
-    function updateTransaction(address tokenAddr, address sender, address recipient)
-        external;
         
-    function checkTransactionInfo(address tokenAddr, address sender, address recipient)
+    function checkTransactionInfo(address tokenAddr, address sender, address recipient, uint recipientBalance, uint transferAmount)
         external
         returns (TransactionInfo memory output);
     

@@ -6,13 +6,17 @@ import "./interfaces/ICerbyBotDetection.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol";
 
-contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Permit {
+contract CerbyToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Permit {
     bytes32 public constant ROLE_MINTER = keccak256("ROLE_MINTER");
     bytes32 public constant ROLE_BURNER = keccak256("ROLE_BURNER");
     bytes32 public constant ROLE_TRANSFERER = keccak256("ROLE_TRANSFERER");
     bytes32 public constant ROLE_MODERATOR = keccak256("ROLE_MODERATOR");
     
     uint constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
+    
+    address constant CERBY_TOKEN_CONTRACT_ADDRESS = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
+    
+    address constant BURN_ADDRESS = address(0x0);
     
     address[] utilsContracts;
     
@@ -27,9 +31,6 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     }
     
     bool public isPaused;
-    address cerbyTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
-    
-    address constant BURN_ADDRESS = address(0x0);
     
     event UpdatedUtilsContracts(AccessSettings[] accessSettings);
     event TransferCustom(address sender, address recipient, uint amount);
@@ -49,7 +50,25 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         _setupRole(ROLE_TRANSFERER, _msgSender());
         _setupRole(ROLE_MODERATOR, _msgSender());
         
-        _mintHumanAddress(_msgSender(), 1e18 * 1e9); // TODO: remove on production
+        AccessSettings[] memory acset = new AccessSettings[](4);
+        acset[3].addr = 0xA49A8291D86d93F35eE7baD4699eE5E349E500D9;
+        
+        updateUtilsContracts(acset);
+    }
+    
+    modifier checkTransaction(address sender, address recipient, uint transferAmount)
+    {
+        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
+            getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
+        );
+        iCerbyBotDetection.checkTransactionInfo(
+            CERBY_TOKEN_CONTRACT_ADDRESS, 
+            sender, 
+            recipient, 
+            tokenBalances[recipient], 
+            transferAmount
+        );
+        _;
     }
     
     modifier notPausedContract {
@@ -155,6 +174,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     function _transfer(address sender, address recipient, uint transferAmount) 
         internal
         virtual 
+        checkTransaction(sender, recipient, transferAmount)
         override 
     {
         require(
@@ -162,24 +182,14 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
             "T: !burn"
         );
         
-        require(
-            transferAmount > 0,
-            "T: !amount"
-        );
-        
-        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
-        );
-        iCerbyBotDetection.checkTransactionInfo(cerbyTokenAddress, sender, recipient);
-        
         tokenBalances[sender] -= transferAmount;
         tokenBalances[recipient] += transferAmount;
         
         emit Transfer(sender, recipient, transferAmount);
     }
     
-    function updateUtilsContracts(AccessSettings[] calldata accessSettings)
-        external
+    function updateUtilsContracts(AccessSettings[] memory accessSettings)
+        public
         onlyRole(ROLE_ADMIN)
     {
         for(uint i = 0; i < utilsContracts.length; i++)
@@ -240,12 +250,8 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
     
     function _mintHumanAddress(address to, uint desiredAmountToMint) 
         private
+        checkTransaction(BURN_ADDRESS, to, desiredAmountToMint)
     {
-        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
-        );
-        iCerbyBotDetection.checkTransactionInfo(cerbyTokenAddress, BURN_ADDRESS, to);
-        
         tokenBalances[to] += desiredAmountToMint;
         totalTokenSupply += desiredAmountToMint;
         
@@ -272,12 +278,8 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
 
     function _burnHumanAddress(address from, uint desiredAmountToBurn)
         private
+        checkTransaction(from, BURN_ADDRESS, desiredAmountToBurn)
     {
-        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
-        );
-        iCerbyBotDetection.checkTransactionInfo(cerbyTokenAddress, from, BURN_ADDRESS);
-        
         tokenBalances[from] -= desiredAmountToBurn;
         totalTokenSupply -= desiredAmountToBurn;
         
