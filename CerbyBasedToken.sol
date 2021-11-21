@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: BUSL-1.1
 
 pragma solidity ^0.8.10;
 
@@ -14,14 +14,11 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
     bytes32 public constant ROLE_MODERATOR = keccak256("ROLE_MODERATOR");
     
     uint constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
-    
     address constant CERBY_TOKEN_CONTRACT_ADDRESS = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
-    
     address constant BURN_ADDRESS = address(0x0);
     
-    address[] utilsContracts;
-    
     bool public isPaused;
+    bool isInitialized;
     
     event TransferCustom(address sender, address recipient, uint amount);
     event MintHumanAddress(address recipient, uint amount);
@@ -30,21 +27,32 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
     event MintedByBridge(address recipient, uint amount);
     event BurnedByBridge(address sender, uint amount);
 
-    constructor() 
-        ERC20Mod("Cerby Token", "CERBY") 
-        ERC20Permit("Cerby Token")
+    constructor(string memory name, string memory symbol) 
+        ERC20Mod(name, symbol) 
+        ERC20Permit(name)
     {
-        _setupRole(ROLE_ADMIN, _msgSender());
-        _setupRole(ROLE_MINTER, _msgSender());
-        _setupRole(ROLE_BURNER, _msgSender());
-        _setupRole(ROLE_TRANSFERER, _msgSender());
-        _setupRole(ROLE_MODERATOR, _msgSender());
+    }
+    
+    function initializeOwner(address owner)
+        public
+    {
+        require(
+            !isInitialized,
+            "T: Already initialized"
+        );
+        
+        isInitialized = true;
+        _setupRole(ROLE_ADMIN, owner);
+        _setupRole(ROLE_MINTER, owner);
+        _setupRole(ROLE_BURNER, owner);
+        _setupRole(ROLE_TRANSFERER, owner);
+        _setupRole(ROLE_MODERATOR, owner);
     }
     
     modifier checkTransaction(address sender, address recipient, uint transferAmount)
     {
         ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
+            getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
         );
         iCerbyBotDetection.checkTransactionInfo(
             CERBY_TOKEN_CONTRACT_ADDRESS, 
@@ -78,6 +86,15 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
             "T: !burn"
         );
         _;
+    }
+    
+    function getUtilsContractAtPos(uint pos)
+        public
+        view
+        virtual
+        returns (address)
+    {
+        return ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(pos);
     }
     
     function updateNameAndSymbol(string calldata __name, string calldata __symbol)

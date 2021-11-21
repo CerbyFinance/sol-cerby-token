@@ -273,7 +273,7 @@
 							}
 						],
 						"indexed": false,
-						"internalType": "struct CerbyToken.AccessSettings[]",
+						"internalType": "struct AccessSettings[]",
 						"name": "accessSettings",
 						"type": "tuple[]"
 					}
@@ -698,6 +698,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					}
+				],
+				"name": "initializeOwner",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "isPaused",
 				"outputs": [
@@ -1074,7 +1087,7 @@
 								"type": "address"
 							}
 						],
-						"internalType": "struct CerbyToken.AccessSettings[]",
+						"internalType": "struct AccessSettings[]",
 						"name": "accessSettings",
 						"type": "tuple[]"
 					}
@@ -1165,7 +1178,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/CerbyBasedToken.sol": "CerbyToken"
+			"sol-defifactory-token/CerbyToken.sol": "CerbyToken"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -1180,11 +1193,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBasedToken.sol": {
-			"keccak256": "0xea326f21f089befaefc2438b1537ef06211be3eb2b88baa194e90bf28703837a",
-			"license": "MIT",
+			"keccak256": "0x5a916afd62d4c7f0bd324008b2b5d6adc660e2d5491c9fd4d89243414992eab7",
+			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://692471f7f640b24ecabc7f7bd5a38237553d8f32c0aa5e9e8783c4411ff78a03",
-				"dweb:/ipfs/QmVXrxjKpJV8MszZFL9STwoZb5BAeKT79eDXhKq1kafLb6"
+				"bzz-raw://e192077176a9f75b020d635e89502ea934c9c32343ec7524c4a24e6e5b98e412",
+				"dweb:/ipfs/QmfMBG3hLPSKZsDEwYiDbH8zUbDh32nYJGidBcfLdGJgYf"
+			]
+		},
+		"sol-defifactory-token/CerbyToken.sol": {
+			"keccak256": "0x240af33521bcdc3db2c955eff68c86438b46bb5e17d9d54126f635b8ca22f4b3",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://35d0447d58ffa7d89c02d0fcf42bc98c7448d77cc831da8d96f07539f4535182",
+				"dweb:/ipfs/QmW7bH6Cn5FcN3yRVYUXfSNMtSZSkoBEARsEXmjTfz6KDH"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
@@ -1193,6 +1214,14 @@
 			"urls": [
 				"bzz-raw://55872994e8f60f28c7ad6f93b6c60f9f40d9909dd8ef3a26c8e6cfe2adf1fe9a",
 				"dweb:/ipfs/Qmc4hWqrXWSCA91j3vGqM3W5hHcfN1DEHnKRXV8rgtyhi9"
+			]
+		},
+		"sol-defifactory-token/interfaces/ICerbyToken.sol": {
+			"keccak256": "0x2ce3be7489d72ab5520c16466aef4e54b29065806435969a79a8e18b8d056070",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9985cc22123778d064862c4290cf6ba93fb470c324f55932805b689bccbca46c",
+				"dweb:/ipfs/Qma6TgybL1rWwbyjpPXKZT9nPpJKN47MtYfiQYRtdTHFgz"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

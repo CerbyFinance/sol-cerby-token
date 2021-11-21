@@ -146,7 +146,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
         }
         
         if (
-            sender != STAKING_CONTRACT &&
+            sender != STAKING_CONTRACT && // hack to allow scraping stakes
             recipient != BURN_ADDRESS
         ) {
             // geometric mean between old and new receive timestamp

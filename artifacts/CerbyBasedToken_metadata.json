@@ -6,7 +6,18 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "symbol",
+						"type": "string"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
 			},
@@ -532,6 +543,25 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "pos",
+						"type": "uint256"
+					}
+				],
+				"name": "getUtilsContractAtPos",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -617,6 +647,19 @@
 						"type": "bool"
 					}
 				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					}
+				],
+				"name": "initializeOwner",
+				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -1058,11 +1101,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBasedToken.sol": {
-			"keccak256": "0x18acbb948c245a27dcf5d727144b7543156872c15278b470e66d78ab166d48e7",
-			"license": "MIT",
+			"keccak256": "0x5a916afd62d4c7f0bd324008b2b5d6adc660e2d5491c9fd4d89243414992eab7",
+			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://2432093004699e8337e534f82d22960dc34ec949c515745ce74986f7f3ab42e0",
-				"dweb:/ipfs/QmPpBYUkejVbRE2uHN9NtaQ4Apy3BbzreUhbjt4CieTibD"
+				"bzz-raw://e192077176a9f75b020d635e89502ea934c9c32343ec7524c4a24e6e5b98e412",
+				"dweb:/ipfs/QmfMBG3hLPSKZsDEwYiDbH8zUbDh32nYJGidBcfLdGJgYf"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
