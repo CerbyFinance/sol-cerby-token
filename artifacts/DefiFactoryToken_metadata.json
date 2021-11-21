@@ -282,25 +282,6 @@
 				"type": "event"
 			},
 			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "recipient",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "VestedAmountClaimed",
-				"type": "event"
-			},
-			{
 				"inputs": [],
 				"name": "DOMAIN_SEPARATOR",
 				"outputs": [
@@ -355,19 +336,6 @@
 			{
 				"inputs": [],
 				"name": "ROLE_MODERATOR",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "ROLE_TAXER",
 				"outputs": [
 					{
 						"internalType": "bytes32",
@@ -490,24 +458,6 @@
 					}
 				],
 				"name": "burnHumanAddress",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "chargeCustomTax",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -695,19 +645,6 @@
 					}
 				],
 				"name": "grantRolesBulk",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "grantSuperAdmin",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -966,19 +903,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "revokeSuperAdmin",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "bytes4",
 						"name": "interfaceId",
 						"type": "bytes4"
@@ -1094,24 +1018,6 @@
 						"type": "bool"
 					}
 				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "recipient",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "transferFromTeamVestingContract",
-				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -1259,7 +1165,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/DefiFactoryToken.sol": "DefiFactoryToken"
+			"sol-defifactory-token/CerbyToken.sol": "DefiFactoryToken"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -1273,20 +1179,20 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/DefiFactoryToken.sol": {
-			"keccak256": "0x23dceb5aae9b22bacf751829bf8307a8a48181df1b519de7bcac3c95113ea626",
+		"sol-defifactory-token/CerbyToken.sol": {
+			"keccak256": "0x5f3d61840e80c75da519281050b588591b281780234dc951b0844e12d037edbf",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://46b5bd5ab92db183c3ae8387b77bf5b9cdc8e9e711db6124c15c7ea328147fac",
-				"dweb:/ipfs/QmR8kkS5PJEHxdq3un542Su24ZhKPqPnQFNYNvqeNWPBEU"
+				"bzz-raw://a81a3a7e7ef76fdff97aa5a39698b988e2692d3b7f996e346c42a8ce2e040591",
+				"dweb:/ipfs/QmbrxkWh5o1ekbGepQSxDwUSkbGWFLHcVzM5TMKisojYCU"
 			]
 		},
-		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
-			"keccak256": "0xd18065280d57f7a855e3b3cb371afc1b170f4eed6dd0488fdda1f8cbddf561ed",
-			"license": "MIT",
+		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
+			"keccak256": "0x9d5945578a7aae170665dbdc81f6198c9d98fdc0082b9ba1c5f0487042cc811d",
+			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://d399593010fe566d8620cecbcc2aa42a117f0cb56cdace6324640f7fbf8c970a",
-				"dweb:/ipfs/QmQUZHbVeLiFHpZHgdVTru6MnigNvjgtqizbpaBE98Dp9D"
+				"bzz-raw://ba3cfcf6cc8fd5833298ace2a77b8c90152dbb6d4a766d212ccb7f1f9b77695c",
+				"dweb:/ipfs/QmfNHSaXG7rAMRYgDiTD1zg5CF1wNXggF3MbLQ5mVCxqeR"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
@@ -1306,11 +1212,11 @@
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20Mod.sol": {
-			"keccak256": "0xa7eefbd52aa43b11b460ac8f3621899d65991e215f8d0958e2bd52c09eaf8270",
+			"keccak256": "0x7bde585b00492c06d0bb6a17bf02308b3f849109efbc94457e7c07d349df153e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d9e0a00d02eab012db7a17bb33919318431a3a2f5efc86e9579b49fc06b281d1",
-				"dweb:/ipfs/QmaAsEGiupJV4nbtEqLvZGUUVtJYfPzcSbsHA9kp6Apz4e"
+				"bzz-raw://7af5e78c3fa9e3b5682400d79f3ae3352cf3fb4a7e804b42f1f910fbc42761c7",
+				"dweb:/ipfs/QmdHcv8f9qEWcVQFNUN8fC6Z4Rv3ZmKzHuDYyuv6FAB7n9"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {

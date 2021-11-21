@@ -25,7 +25,7 @@ struct TaxAmountsOutput {
 
 contract NoBotsTechV3 is AccessControlEnumerable {
     
-    uint constant DEFT_STORAGE_CONTRACT_ID = 3;
+    uint constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
     
     address defiFactoryTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
     
@@ -81,7 +81,7 @@ contract NoBotsTechV3 is AccessControlEnumerable {
         );
         
         ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            IDefiFactoryToken(defiFactoryTokenAddress).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+            ICerbyToken(defiFactoryTokenAddress).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
         );
         iCerbyBotDetection.checkTransactionInfo(defiFactoryTokenAddress, taxAmountsInput.sender, taxAmountsInput.recipient);
         

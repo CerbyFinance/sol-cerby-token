@@ -31,7 +31,8 @@ import "../../utils/Context.sol";
  * allowances. See {IERC20-approve}.
  */
 contract ERC20Mod is Context, IERC20, IERC20Metadata {
-    mapping (address => uint256) internal _RealBalances;
+    mapping (address => uint256) internal tokenBalances;
+    uint internal totalTokenSupply;
 
     mapping (address => mapping (address => uint256)) internal _allowances;
 
@@ -90,13 +91,14 @@ contract ERC20Mod is Context, IERC20, IERC20Metadata {
      */
     function totalSupply() public view virtual override returns (uint256) {
         // overriden in parent contract
+        return totalTokenSupply;
     }
 
     /**
      * @dev See {IERC20-balanceOf}.
      */
     function balanceOf(address account) public view virtual override returns (uint256) {
-        return _RealBalances[account];
+        return tokenBalances[account];
     }
 
     /**

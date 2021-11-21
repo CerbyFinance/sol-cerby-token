@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.9+commit.e5eed63a"
+		"version": "0.8.10+commit.fc410830"
 	},
 	"language": "Solidity",
 	"output": {
@@ -358,11 +358,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20Mod.sol": {
-			"keccak256": "0xa7eefbd52aa43b11b460ac8f3621899d65991e215f8d0958e2bd52c09eaf8270",
+			"keccak256": "0x7bde585b00492c06d0bb6a17bf02308b3f849109efbc94457e7c07d349df153e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d9e0a00d02eab012db7a17bb33919318431a3a2f5efc86e9579b49fc06b281d1",
-				"dweb:/ipfs/QmaAsEGiupJV4nbtEqLvZGUUVtJYfPzcSbsHA9kp6Apz4e"
+				"bzz-raw://7af5e78c3fa9e3b5682400d79f3ae3352cf3fb4a7e804b42f1f910fbc42761c7",
+				"dweb:/ipfs/QmdHcv8f9qEWcVQFNUN8fC6Z4Rv3ZmKzHuDYyuv6FAB7n9"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {
