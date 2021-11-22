@@ -34,7 +34,7 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
     }
     
     function initializeOwner(address owner)
-        public
+        internal
     {
         require(
             !isInitialized,

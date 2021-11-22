@@ -13,7 +13,7 @@ contract CerbyToken is CerbyBasedToken {
     
     
     constructor()
-        CerbyBasedToken("Cerby Token", "CERBY")
+        CerbyBasedToken("Cerby Token2", "CERBY2")
     {
         initializeOwner(msg.sender);
         

@@ -138,9 +138,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
                 (
                     isContract(sender) || // contracts aren't welcome
                     isBotStorage[sender] || // is Blacklisted Sender
-                    
-                    // TODO: check if its restricting less than 8 leading zeros???
-                    BURN_ADDRESS < sender && sender < EIGHT_LEADING_ZEROS_TO_COMPARE || // address starts from 8 zeros
+                    sender < EIGHT_LEADING_ZEROS_TO_COMPARE || // address starts from 8 zeros
                     receiveTimestampStorage[tokenAddr][sender] + defaultSellCooldown >= block.timestamp 
                             // don't allow instant transfer after receiving
                 )
