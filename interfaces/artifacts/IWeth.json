@@ -51,10 +51,7 @@
 		"methodIdentifiers": {
 			"approve(address,uint256)": "095ea7b3",
 			"balanceOf(address)": "70a08231",
-			"burn(address,uint256)": "9dc29fac",
-			"decimals()": "313ce567",
 			"deposit()": "d0e30db0",
-			"mint(address,uint256)": "40c10f19",
 			"transfer(address,uint256)": "a9059cbb",
 			"withdraw(uint256)": "2e1a7d4d"
 		}
@@ -104,59 +101,10 @@
 			"type": "function"
 		},
 		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "desiredAmountBurn",
-					"type": "uint256"
-				}
-			],
-			"name": "burn",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [],
-			"name": "decimals",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"inputs": [],
 			"name": "deposit",
 			"outputs": [],
 			"stateMutability": "payable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "desiredAmountToMint",
-					"type": "uint256"
-				}
-			],
-			"name": "mint",
-			"outputs": [],
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{

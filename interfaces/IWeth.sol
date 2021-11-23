@@ -1,18 +1,12 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.4;
-
+pragma solidity ^0.8.10;
 
 interface IWeth {
 
     function balanceOf(
         address account
     )
-        external
-        view
-        returns (uint);
-        
-    function decimals()
         external
         view
         returns (uint);
@@ -23,12 +17,6 @@ interface IWeth {
     )  external returns (
         bool success
     );
-    
-    function mint(address to, uint desiredAmountToMint) 
-        external;
-    
-    function burn(address from, uint desiredAmountBurn) 
-        external;
         
     function deposit()
         external

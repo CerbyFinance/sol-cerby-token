@@ -59,7 +59,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
         markAddressAsHuman(0x11111112542D85B3EF69AE05771c2dCCff4fAa26, true); // 1inch Router
         markAddressAsHuman(0x27239549DD40E1D60F5B80B0C4196923745B1FD2, true); // 1inch Helper
         markAddressAsHuman(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // TeamVestingContract
-        markAddressAsHuman(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, true); // DefiFactoryContract
+        markAddressAsHuman(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, true); // CerbyTokenContract
         markAddressAsHuman(0x881D40237659C251811CEC9c364ef91dC08D300C, true); // Metamask Swap Router
         markAddressAsHuman(0x74de5d4FCbf63E00296fd95d33236B9794016631, true); // Metamask Router Wallet
         markAddressAsHuman(0xe122d2E14d35d794C977b4d6924232CAe7c8DbB5, true); // Metamask Fees Wallet

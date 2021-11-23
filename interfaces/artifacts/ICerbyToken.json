@@ -54,7 +54,6 @@
 			"balanceOf(address)": "70a08231",
 			"burnByBridge(address,uint256)": "66830b21",
 			"burnHumanAddress(address,uint256)": "18a8ad87",
-			"chargeCustomTax(address,uint256)": "b492da91",
 			"getUtilsContractAtPos(uint256)": "06fb1a07",
 			"mintByBridge(address,uint256)": "1f2eba24",
 			"mintHumanAddress(address,uint256)": "0bb9ff5d",
@@ -165,24 +164,6 @@
 				}
 			],
 			"name": "burnHumanAddress",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "amount",
-					"type": "uint256"
-				}
-			],
-			"name": "chargeCustomTax",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"
