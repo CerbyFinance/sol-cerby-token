@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.10;
 
 import "./interfaces/ICerbyBotDetection.sol";
-import "./interfaces/IWeth.sol";
-import "./interfaces/IDefiFactoryToken.sol";
+import "./interfaces/ICerbyToken.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 
@@ -22,12 +21,20 @@ struct TaxAmountsOutput {
     uint recipientGetsAmount;
 }
 
+/* deploy:
+1. updateCerbyTokenAddress
+2. updateTotalSupply
+3. give admin to CerbyBotDetection
+4. updateUtilsContracts
+
+*/
+
 
 contract NoBotsTechV3 is AccessControlEnumerable {
     
     uint constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
     
-    address defiFactoryTokenAddress = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
+    address cerbyTokenAddress;
     
     address constant BURN_ADDRESS = address(0x0);
     
@@ -35,7 +42,8 @@ contract NoBotsTechV3 is AccessControlEnumerable {
     
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
-        _setupRole(ROLE_ADMIN, defiFactoryTokenAddress);
+        
+        updateCerbyTokenAddress(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840);
     }
     
     function updateTotalSupply(uint _realTotalSupply)
@@ -45,11 +53,12 @@ contract NoBotsTechV3 is AccessControlEnumerable {
         realTotalSupply = _realTotalSupply;
     }
     
-    function updateDefiFactoryTokenAddress(address _defiFactoryTokenAddress)
-        external
+    function updateCerbyTokenAddress(address _cerbyTokenAddress)
+        public
         onlyRole(ROLE_ADMIN)
     {
-        defiFactoryTokenAddress = _defiFactoryTokenAddress;
+        cerbyTokenAddress = _cerbyTokenAddress;
+        _setupRole(ROLE_ADMIN, _cerbyTokenAddress);
     }
     
     
@@ -81,9 +90,15 @@ contract NoBotsTechV3 is AccessControlEnumerable {
         );
         
         ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            ICerbyToken(defiFactoryTokenAddress).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
+            ICerbyToken(cerbyTokenAddress).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
         );
-        iCerbyBotDetection.checkTransactionInfo(defiFactoryTokenAddress, taxAmountsInput.sender, taxAmountsInput.recipient);
+        iCerbyBotDetection.checkTransactionInfo(
+            cerbyTokenAddress, 
+            taxAmountsInput.sender, 
+            taxAmountsInput.recipient,
+            taxAmountsOutput.recipientRealBalance,
+            taxAmountsInput.transferAmount
+        );
         
         taxAmountsOutput.senderRealBalance = taxAmountsInput.senderRealBalance - taxAmountsInput.transferAmount;
         taxAmountsOutput.recipientRealBalance = taxAmountsInput.recipientRealBalance + taxAmountsInput.transferAmount;

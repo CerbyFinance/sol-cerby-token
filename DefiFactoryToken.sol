@@ -51,6 +51,13 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         _setupRole(ROLE_TRANSFERER, _msgSender());
         _setupRole(ROLE_MODERATOR, _msgSender());
         _setupRole(ROLE_TAXER, _msgSender());
+        
+        
+        AccessSettings[] memory accessSettings = new AccessSettings[](4);
+        
+        accessSettings[NOBOTS_TECH_CONTRACT_ID].addr = 0xeDE4c829171d91032b79181682077CcF7cB3df9A;
+        accessSettings[3].addr = 0x38BDBF0Fa0D7Ed0E3B74Ed99fB88dc9341af0d1f;
+        updateUtilsContracts(accessSettings);
     }
     
     modifier notPausedContract {
@@ -84,7 +91,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         returns(uint) 
     {
         return INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]).
-            getBalance(account, _RealBalances[account]);
+            getBalance(account, tokenBalances[account]);
     }
     
     function totalSupply() 
@@ -217,13 +224,13 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
                 sender,
                 recipient,
                 amount,
-                _RealBalances[sender],
-                _RealBalances[recipient]
+                tokenBalances[sender],
+                tokenBalances[recipient]
             )
         );
         
-        _RealBalances[sender] = taxAmountsOutput.senderRealBalance;
-        _RealBalances[recipient] = taxAmountsOutput.recipientRealBalance;
+        tokenBalances[sender] = taxAmountsOutput.senderRealBalance;
+        tokenBalances[recipient] = taxAmountsOutput.recipientRealBalance;
         
         emit Transfer(sender, recipient, taxAmountsOutput.recipientGetsAmount);
         if (taxAmountsOutput.burnAndRewardAmount > 0)
@@ -240,8 +247,8 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         require(vestingContract == _msgSender(), "T: !VESTING_CONTRACT");
         
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        _RealBalances[vestingContract] -= amount;
-        _RealBalances[recipient] += 
+        tokenBalances[vestingContract] -= amount;
+        tokenBalances[recipient] += 
             iNoBotsTech.getRealBalanceTeamVestingContract(amount);
         
         iNoBotsTech.publicForcedUpdateCacheMultiplier();
@@ -255,17 +262,17 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
         notPausedContract
         onlyRole(ROLE_TAXER)
     {
-        uint balanceBefore = _RealBalances[from];
+        uint balanceBefore = tokenBalances[from];
         
         INoBotsTech iNoBotsTech = INoBotsTech(utilsContracts[NOBOTS_TECH_CONTRACT_ID]);
-        _RealBalances[from] = iNoBotsTech.chargeCustomTax(amount, balanceBefore);
+        tokenBalances[from] = iNoBotsTech.chargeCustomTax(amount, balanceBefore);
         
-        uint taxAmount = iNoBotsTech.getBalance(from, balanceBefore - _RealBalances[from]);
+        uint taxAmount = iNoBotsTech.getBalance(from, balanceBefore - tokenBalances[from]);
         emit Transfer(from, address(0), taxAmount);
     }
     
-    function updateUtilsContracts(AccessSettings[] calldata accessSettings)
-        external
+    function updateUtilsContracts(AccessSettings[] memory accessSettings)
+        public
         onlyRole(ROLE_ADMIN)
     {
         for(uint i = 0; i < utilsContracts.length; i++)
@@ -338,7 +345,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
                     desiredAmountToMint
                 );
         
-        _RealBalances[to] += realAmountToMint;
+        tokenBalances[to] += realAmountToMint;
         iNoBotsTech.publicForcedUpdateCacheMultiplier();
         
         emit Transfer(address(0), to, desiredAmountToMint);
@@ -374,7 +381,7 @@ contract DefiFactoryToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Pe
                     desiredAmountToBurn
                 );
         
-        _RealBalances[from] -= realAmountToBurn;
+        tokenBalances[from] -= realAmountToBurn;
         iNoBotsTech.publicForcedUpdateCacheMultiplier();
         
         emit Transfer(from, address(0), desiredAmountToBurn);

@@ -698,19 +698,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
-					}
-				],
-				"name": "initializeOwner",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "isPaused",
 				"outputs": [
@@ -1193,11 +1180,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBasedToken.sol": {
-			"keccak256": "0x2554a7d10c02975d95604b35d68cd0d5536713f1e43e818df1c93913d7eaa9a9",
+			"keccak256": "0xdd51d06efeb2c9e0b73330ceb35566edfc0fc0be6d5c86103bf0a196f93e91b6",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://7a82f0d207ea88b63084e94399ca3299691de8695ff655809c84b4b46d2e48af",
-				"dweb:/ipfs/QmdejDDVvQNSorWDRRJ26MZ4bJJtvm2hFkbaN8xCwoEcBf"
+				"bzz-raw://8f60f18cca91bda7043841e1a504b5caf72413ffb0402a484c46e5eb0d9d15ad",
+				"dweb:/ipfs/Qmey4KmKM4k1VWH1RaxGwWiDFpKrUw13RVe54V9SbASgxU"
 			]
 		},
 		"sol-defifactory-token/CerbyToken.sol": {

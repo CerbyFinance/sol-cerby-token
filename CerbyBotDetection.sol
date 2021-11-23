@@ -30,7 +30,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
     address constant EIGHT_LEADING_ZEROS_TO_COMPARE = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
     address STAKING_CONTRACT = address(0xDef1Fafc79CD01Cf6797B9d7F51411beF486262a);
     address constant BURN_ADDRESS = address(0x0);
-    uint constant DEFAULT_SELL_COOLDOWN = 1 minutes; // TODO: change on production!!!
+    uint constant DEFAULT_SELL_COOLDOWN = 5 minutes; // TODO: change on production!!!
     
     uint constant ETH_MAINNET_CHAIN_ID = 1;
     uint constant BSC_MAINNET_CHAIN_ID = 56;
@@ -112,7 +112,13 @@ contract CerbyBotDetection is AccessControlEnumerable {
         return isBotStorage[addr] && !isHumanStorage[addr];
     }
     
-    function checkTransactionInfo(address tokenAddr, address sender, address recipient, uint recipientBalance, uint transferAmount)
+    function checkTransactionInfo(
+        address tokenAddr, 
+        address sender, 
+        address recipient, 
+        uint recipientBalance, 
+        uint transferAmount
+    )
         external
         onlyRole(ROLE_ADMIN)
         returns (TransactionInfo memory output)
