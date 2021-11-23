@@ -28,9 +28,9 @@ contract CerbyBotDetection is AccessControlEnumerable {
     bytes constant TOKEN1_SIGNATURE = abi.encodeWithSignature("token1()");
     
     address constant EIGHT_LEADING_ZEROS_TO_COMPARE = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
-    address STAKING_CONTRACT = address(0xDef1Fafc79CD01Cf6797B9d7F51411beF486262a);
+    address constant STAKING_CONTRACT = address(0xDef1Fafc79CD01Cf6797B9d7F51411beF486262a);
     address constant BURN_ADDRESS = address(0x0);
-    uint constant DEFAULT_SELL_COOLDOWN = 5 minutes; // TODO: change on production!!!
+    uint constant DEFAULT_SELL_COOLDOWN = 5 minutes;
     
     uint constant ETH_MAINNET_CHAIN_ID = 1;
     uint constant BSC_MAINNET_CHAIN_ID = 56;
@@ -43,8 +43,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
     constructor() {
         
         _setupRole(ROLE_ADMIN, _msgSender());
-        _setupRole(ROLE_ADMIN, 0x1EE133d3CC3fD5795DD4014579A36A6b7900102e); // NoBotsTechV3 Deft
-        markAddressAsHuman(0x1EE133d3CC3fD5795DD4014579A36A6b7900102e, true); // NoBotsTechV3 Deft
+        //_setupRole(ROLE_ADMIN, 0x1EE133d3CC3fD5795DD4014579A36A6b7900102e); // NoBotsTechV3 Deft
         
         _setupRole(ROLE_ADMIN, STAKING_CONTRACT); // Staking Contract
         _setupRole(ROLE_ADMIN, 0x1d2900622B5049D9479DC8BE06469A4ede3Fc96e); // Cross Chain Bridge Contract
