@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.9+commit.e5eed63a"
+		"version": "0.8.10+commit.fc410830"
 	},
 	"language": "Solidity",
 	"output": {
@@ -279,7 +279,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/Flat_CrossChainBridge.sol": "AccessControl"
+			"sol-defifactory-token/Flat_CerbyToken.sol": "AccessControl"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -293,12 +293,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/Flat_CrossChainBridge.sol": {
-			"keccak256": "0x596a14087bce1098ab2246cc4f34e9c82cc4d0727c000de33653000e76f51bdc",
-			"license": "MIT",
+		"sol-defifactory-token/Flat_CerbyToken.sol": {
+			"keccak256": "0xe5583ad12a0804473dfe8782cca61decb1df98fae0203bb4333f7e04c8512c23",
+			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://c57f906da5713067e477e477ede63a4d52f62a584b44760152585e799e859865",
-				"dweb:/ipfs/QmS3UmZuSN6RvKoL8GoKvpZ3Qg2kL2RLajRFnp5xcDcTmt"
+				"bzz-raw://e3727839ac87648f1a4df92a228a6f38ec059f0785e3178781574dc84aae2719",
+				"dweb:/ipfs/QmTXh3K2ykWd5nv61VeWGLFByrXk6WT1MBG5bNorj2TduR"
 			]
 		}
 	},

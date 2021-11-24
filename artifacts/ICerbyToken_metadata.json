@@ -9,6 +9,30 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "spender",
+						"type": "address"
+					}
+				],
+				"name": "allowance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
 						"name": "_spender",
 						"type": "address"
 					},
@@ -87,37 +111,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "chargeCustomTax",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address[]",
-						"name": "addrs",
-						"type": "address[]"
-					}
-				],
-				"name": "correctTransferEvents",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "uint256",
 						"name": "pos",
 						"type": "uint256"
@@ -172,8 +165,38 @@
 			},
 			{
 				"inputs": [],
-				"name": "publicForcedUpdateCacheMultiplier",
-				"outputs": [],
+				"name": "totalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "transfer",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -204,6 +227,11 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
 						"name": "recipient",
 						"type": "address"
 					},
@@ -213,8 +241,14 @@
 						"type": "uint256"
 					}
 				],
-				"name": "transferFromTeamVestingContract",
-				"outputs": [],
+				"name": "transferFrom",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -277,7 +311,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/Flat_PresaleContract.sol": "IDefiFactoryToken"
+			"sol-defifactory-token/Flat_CerbyToken.sol": "ICerbyToken"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -291,12 +325,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/Flat_PresaleContract.sol": {
-			"keccak256": "0xf5dc1b984b88f396f5c687a21370f6840ed701555efcc8cd9d4cb260434dfccc",
+		"sol-defifactory-token/Flat_CerbyToken.sol": {
+			"keccak256": "0xe5583ad12a0804473dfe8782cca61decb1df98fae0203bb4333f7e04c8512c23",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://03ff0df1428192c215baeac8fa1a12162052d1f9e14b9b4759876743dd6ff077",
-				"dweb:/ipfs/QmWGCCLd5HjZbNS111YCW3F1WJ8gVGj4aP6CyHknXjXMpv"
+				"bzz-raw://e3727839ac87648f1a4df92a228a6f38ec059f0785e3178781574dc84aae2719",
+				"dweb:/ipfs/QmTXh3K2ykWd5nv61VeWGLFByrXk6WT1MBG5bNorj2TduR"
 			]
 		}
 	},

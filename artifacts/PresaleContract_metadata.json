@@ -1,122 +1,12 @@
 {
 	"compiler": {
-		"version": "0.8.9+commit.e5eed63a"
+		"version": "0.8.10+commit.fc410830"
 	},
 	"language": "Solidity",
 	"output": {
 		"abi": [
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
-					},
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "tokenomicsAddr",
-								"type": "address"
-							},
-							{
-								"internalType": "string",
-								"name": "tokenomicsName",
-								"type": "string"
-							},
-							{
-								"internalType": "uint256",
-								"name": "tokenomicsPercentage",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "tokenomicsLockedForXSeconds",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "tokenomicsVestedForXSeconds",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct Tokenomics[]",
-						"name": "_tokenomics",
-						"type": "tuple[]"
-					},
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "tokenAddress",
-								"type": "address"
-							},
-							{
-								"internalType": "string",
-								"name": "presaleName",
-								"type": "string"
-							},
-							{
-								"internalType": "string",
-								"name": "website",
-								"type": "string"
-							},
-							{
-								"internalType": "string",
-								"name": "telegram",
-								"type": "string"
-							},
-							{
-								"internalType": "uint256",
-								"name": "uniswapLiquidityLockedFor",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "presaleLockedFor",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "presaleVestedFor",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "referralsLockedFor",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "referralsVestedFor",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "maxWethCap",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "perWalletMinWeth",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "perWalletMaxWeth",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "fixedPriceInDeft",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct Settings",
-						"name": "_settings",
-						"type": "tuple"
-					}
-				],
+				"inputs": [],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
 			},
@@ -125,18 +15,74 @@
 				"inputs": [
 					{
 						"indexed": true,
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "previousAdminRole",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "newAdminRole",
+						"type": "bytes32"
+					}
+				],
+				"name": "RoleAdminChanged",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
 						"internalType": "address",
-						"name": "previousOwner",
+						"name": "account",
 						"type": "address"
 					},
 					{
 						"indexed": true,
 						"internalType": "address",
-						"name": "newOwner",
+						"name": "sender",
 						"type": "address"
 					}
 				],
-				"name": "OwnershipTransferred",
+				"name": "RoleGranted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					}
+				],
+				"name": "RoleRevoked",
 				"type": "event"
 			},
 			{
@@ -151,6 +97,97 @@
 				],
 				"name": "StateChanged",
 				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "BURN_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "ROLE_ADMIN",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "TEAM_FINANCE_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "UNISWAP_V2_FACTORY_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "UNISWAP_V2_ROUTER_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "USDT_TOKEN_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "WETH_TOKEN_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			},
 			{
 				"inputs": [],
@@ -173,6 +210,89 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "cachedIndexInvestors",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "cachedIndexReferrals",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "cachedIndexTokenomics",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "cachedIndexVesting",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "changeStateIfAllVestingWasSet",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "checkIfAllVestingWasSet",
 				"outputs": [
@@ -190,19 +310,6 @@
 				"name": "checkIfPairIsCreated",
 				"outputs": [],
 				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "checkIfTokenomicsIsValid",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -231,6 +338,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "fixedPriceInUsd",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -253,171 +373,219 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "wallet",
+						"name": "addr",
 						"type": "address"
 					}
 				],
-				"name": "getInformation",
+				"name": "getInvestorByAddr",
 				"outputs": [
 					{
 						"components": [
 							{
-								"components": [
-									{
-										"internalType": "address",
-										"name": "presaleContractAddress",
-										"type": "address"
-									},
-									{
-										"internalType": "string",
-										"name": "presaleName",
-										"type": "string"
-									},
-									{
-										"internalType": "uint256",
-										"name": "totalInvestedWeth",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint256",
-										"name": "maxWethCap",
-										"type": "uint256"
-									},
-									{
-										"internalType": "bool",
-										"name": "isActive",
-										"type": "bool"
-									},
-									{
-										"internalType": "bool",
-										"name": "isEnabled",
-										"type": "bool"
-									},
-									{
-										"internalType": "string",
-										"name": "website",
-										"type": "string"
-									},
-									{
-										"internalType": "string",
-										"name": "telegram",
-										"type": "string"
-									}
-								],
-								"internalType": "struct PresaleItem",
-								"name": "presaleItem",
-								"type": "tuple"
+								"internalType": "address",
+								"name": "investorAddr",
+								"type": "address"
 							},
 							{
-								"components": [
-									{
-										"internalType": "address",
-										"name": "walletAddress",
-										"type": "address"
-									},
-									{
-										"internalType": "uint256",
-										"name": "walletInvestedWeth",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint256",
-										"name": "walletReferralEarnings",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint256",
-										"name": "minimumWethPerWallet",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint256",
-										"name": "maximumWethPerWallet",
-										"type": "uint256"
-									}
-								],
-								"internalType": "struct WalletInfo",
-								"name": "walletInfo",
-								"type": "tuple"
-							},
-							{
-								"components": [
-									{
-										"internalType": "address",
-										"name": "vestingAddr",
-										"type": "address"
-									},
-									{
-										"internalType": "uint256",
-										"name": "tokensReserved",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint256",
-										"name": "tokensClaimed",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint256",
-										"name": "lockedUntilTimestamp",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint256",
-										"name": "vestedUntilTimestamp",
-										"type": "uint256"
-									}
-								],
-								"internalType": "struct Vesting",
-								"name": "vestingInfo",
-								"type": "tuple"
-							},
-							{
-								"components": [
-									{
-										"internalType": "address",
-										"name": "tokenomicsAddr",
-										"type": "address"
-									},
-									{
-										"internalType": "string",
-										"name": "tokenomicsName",
-										"type": "string"
-									},
-									{
-										"internalType": "uint256",
-										"name": "tokenomicsPercentage",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint256",
-										"name": "tokenomicsLockedForXSeconds",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint256",
-										"name": "tokenomicsVestedForXSeconds",
-										"type": "uint256"
-									}
-								],
-								"internalType": "struct Tokenomics[]",
-								"name": "tokenomics",
-								"type": "tuple[]"
+								"internalType": "address",
+								"name": "referralAddr",
+								"type": "address"
 							},
 							{
 								"internalType": "uint256",
-								"name": "listingPrice",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "createdAt",
+								"name": "wethValue",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct OutputItem",
-						"name": "output",
+						"internalType": "struct PresaleContract.Investor",
+						"name": "",
 						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "pos",
+						"type": "uint256"
+					}
+				],
+				"name": "getInvestorByPos",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "investorAddr",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "referralAddr",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "wethValue",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct PresaleContract.Investor",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getInvestorsCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getReferralByAddr",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "referralAddr",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "earnings",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct PresaleContract.Referral",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "pos",
+						"type": "uint256"
+					}
+				],
+				"name": "getReferralByPos",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "referralAddr",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "earnings",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct PresaleContract.Referral",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getReferralsCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					}
+				],
+				"name": "getRoleAdmin",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					}
+				],
+				"name": "getRoleMember",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					}
+				],
+				"name": "getRoleMemberCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -455,9 +623,141 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct Tokenomics[]",
+						"internalType": "struct PresaleContract.Tokenomics[]",
 						"name": "",
 						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getTotalInvestmentsStatistics",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getUniswapSupplyPercent",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getWalletStatistics",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "grantRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "role",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "address",
+								"name": "addr",
+								"type": "address"
+							}
+						],
+						"internalType": "struct RoleAccess[]",
+						"name": "roles",
+						"type": "tuple[]"
+					}
+				],
+				"name": "grantRolesBulk",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "hasRole",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -474,6 +774,35 @@
 				"name": "invest",
 				"outputs": [],
 				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "investors",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "investorAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "referralAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "wethValue",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -562,19 +891,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "owner",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "prepareAddLiqudity",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -582,7 +898,138 @@
 			},
 			{
 				"inputs": [],
-				"name": "renounceOwnership",
+				"name": "presaleLockedFor",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "presaleName",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "presaleVestedFor",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "refPercent",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "referrals",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "referralAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "earnings",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "referralsLockedFor",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "referralsVestedFor",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "renounceRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "revokeRole",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -632,79 +1079,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "settings",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "tokenAddress",
-						"type": "address"
-					},
-					{
-						"internalType": "string",
-						"name": "presaleName",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "website",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "telegram",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "uniswapLiquidityLockedFor",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "presaleLockedFor",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "presaleVestedFor",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "referralsLockedFor",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "referralsVestedFor",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "maxWethCap",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "perWalletMinWeth",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "perWalletMaxWeth",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "fixedPriceInDeft",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "skipSteps1",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -737,6 +1111,90 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "bytes4",
+						"name": "interfaceId",
+						"type": "bytes4"
+					}
+				],
+				"name": "supportsInterface",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "telegram",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "tokenAddress",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "tokenomics",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "tokenomicsAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "tokenomicsName",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenomicsPercentage",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenomicsLockedForXSeconds",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenomicsVestedForXSeconds",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "totalTokenSupply",
 				"outputs": [
@@ -750,14 +1208,76 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "uniswapLiquidityLockedFor",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_maxWethCap",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_perWalletMinWeth",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_perWalletMaxWeth",
+						"type": "uint256"
+					}
+				],
+				"name": "updateCaps",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "updateFixedPriceInUsd",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "updateRefPercent",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "newOwner",
+						"name": "_value",
 						"type": "address"
 					}
 				],
-				"name": "transferOwnership",
+				"name": "updateTokenContract",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -768,76 +1288,36 @@
 						"components": [
 							{
 								"internalType": "address",
-								"name": "tokenAddress",
+								"name": "tokenomicsAddr",
 								"type": "address"
 							},
 							{
 								"internalType": "string",
-								"name": "presaleName",
-								"type": "string"
-							},
-							{
-								"internalType": "string",
-								"name": "website",
-								"type": "string"
-							},
-							{
-								"internalType": "string",
-								"name": "telegram",
+								"name": "tokenomicsName",
 								"type": "string"
 							},
 							{
 								"internalType": "uint256",
-								"name": "uniswapLiquidityLockedFor",
+								"name": "tokenomicsPercentage",
 								"type": "uint256"
 							},
 							{
 								"internalType": "uint256",
-								"name": "presaleLockedFor",
+								"name": "tokenomicsLockedForXSeconds",
 								"type": "uint256"
 							},
 							{
 								"internalType": "uint256",
-								"name": "presaleVestedFor",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "referralsLockedFor",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "referralsVestedFor",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "maxWethCap",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "perWalletMinWeth",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "perWalletMaxWeth",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "fixedPriceInDeft",
+								"name": "tokenomicsVestedForXSeconds",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct Settings",
-						"name": "_settings",
-						"type": "tuple"
+						"internalType": "struct PresaleContract.Tokenomics[]",
+						"name": "_tokenomics",
+						"type": "tuple[]"
 					}
 				],
-				"name": "updateSettings",
+				"name": "updateTokenomics",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -882,6 +1362,32 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "website",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "wethAndTokenPairContract",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"stateMutability": "payable",
 				"type": "receive"
 			}
@@ -889,14 +1395,29 @@
 		"devdoc": {
 			"kind": "dev",
 			"methods": {
-				"owner()": {
-					"details": "Returns the address of the current owner."
+				"getRoleAdmin(bytes32)": {
+					"details": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}."
 				},
-				"renounceOwnership()": {
-					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner."
+				"getRoleMember(bytes32,uint256)": {
+					"details": "Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information."
 				},
-				"transferOwnership(address)": {
-					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+				"getRoleMemberCount(bytes32)": {
+					"details": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role."
+				},
+				"grantRole(bytes32,address)": {
+					"details": "Overload {grantRole} to track enumerable memberships"
+				},
+				"hasRole(bytes32,address)": {
+					"details": "Returns `true` if `account` has been granted `role`."
+				},
+				"renounceRole(bytes32,address)": {
+					"details": "Overload {renounceRole} to track enumerable memberships"
+				},
+				"revokeRole(bytes32,address)": {
+					"details": "Overload {revokeRole} to track enumerable memberships"
+				},
+				"supportsInterface(bytes4)": {
+					"details": "See {IERC165-supportsInterface}."
 				}
 			},
 			"version": 1
@@ -909,7 +1430,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/PresaleContract.sol": "PresaleContract"
+			"sol-defifactory-token/Flat_PresaleContract.sol": "PresaleContract"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -923,68 +1444,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/PresaleContract.sol": {
-			"keccak256": "0x54eb722e2a1beb786ad00e76872f9a686902f063aa2e814ad9ebe1aac841a0a3",
+		"sol-defifactory-token/Flat_PresaleContract.sol": {
+			"keccak256": "0xf5dc1b984b88f396f5c687a21370f6840ed701555efcc8cd9d4cb260434dfccc",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://8bbc010be224616dd0826fe575d8cb8212c960fcf76091d332bc095fb8cebd51",
-				"dweb:/ipfs/QmPcukdU8GNKwiv3SJFGXPvb7NHpXgVSmUtjumPNA15pDe"
-			]
-		},
-		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x55662dadf86392fd06c9bb78fc84c42a31cb3786ac836c0bbae077d7edc94fc7",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://7e802caeac0f00050211fd881950e3f767242197387b430f935f139d95024496",
-				"dweb:/ipfs/QmZGfnBk7fQfVipUJyqLpmcnfFbwP1SyrrHmD2tHPhapUN"
-			]
-		},
-		"sol-defifactory-token/interfaces/ITeamFinance.sol": {
-			"keccak256": "0x6a63b8ce921e4a3ece16c6c8dd3bcd17536e4079d02b0f68891810f035bf9a24",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://0213eb180a0c35b27ece742707f49edfa9376fa1dab3b38d256473e495e891da",
-				"dweb:/ipfs/QmVzw8vwaBTbzRA5mvYEPL58uijq13CbfgnDTY6eWqhcUj"
-			]
-		},
-		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {
-			"keccak256": "0xcedf8f2d94a11375f62ab9e3c0cbca9e584de936dc974d84c0785935c08555fc",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://355af2d26712d9ec44a3fc629162d8c0c3b40126b7916a1fc3f4e39ba42224f6",
-				"dweb:/ipfs/QmTataj3Mb5b6E6n5NU7GLtPC5N8ugJwUKJ5fR8LqT69m1"
-			]
-		},
-		"sol-defifactory-token/interfaces/IUniswapV2Router.sol": {
-			"keccak256": "0x590b9262136f0a0af7a7ba0c2f823624e8b5a70461b91822c404ce9fb0ab69dd",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://27cdcc84b36b3ded02e4db7bd50c4e3ca417c57b0937b6a01a730aa405e4ed72",
-				"dweb:/ipfs/QmQSu4eRtu1YKaS5bVRNizUZn2RHnhqBqXbjM4pgoauN7U"
-			]
-		},
-		"sol-defifactory-token/interfaces/IWeth.sol": {
-			"keccak256": "0xf30f17c3689153f7d2c741581083ca990c735b3cd447552365ecae9a30c8784c",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://afcb5877551cbb613c10b7e13a67997bddc532e33119c9809e13aa06bed65ad1",
-				"dweb:/ipfs/Qmciw1wkEtLM5eod62NY8mbCitPYyQ9ySYeh6c87Rsk5qz"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/access/Ownable.sol": {
-			"keccak256": "0x7ddc617166e84747271d1de4240204563d09e5976baeb51c95cc4ea17c927c3f",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://690b70b10ad38fd0d7368551f39c283dae73cf0f2b1ea70c0bf4ba88905ee364",
-				"dweb:/ipfs/QmW3LYvfDEWQmBggysr24iafoCRVgqwGkN21oVkLsLYX6M"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/utils/Context.sol": {
-			"keccak256": "0xf930d2df426bfcfc1f7415be724f04081c96f4fb9ec8d0e3a521c07692dface0",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://fc2bfdea0d2562c76fb3c4cf70a86c6ba25c5a30e8f8515c95aafdf8383f8395",
-				"dweb:/ipfs/QmTbFya18786ckJfLYUoWau9jBTKfmWnWm5XSViWvB7PXN"
+				"bzz-raw://03ff0df1428192c215baeac8fa1a12162052d1f9e14b9b4759876743dd6ff077",
+				"dweb:/ipfs/QmWGCCLd5HjZbNS111YCW3F1WJ8gVGj4aP6CyHknXjXMpv"
 			]
 		}
 	},

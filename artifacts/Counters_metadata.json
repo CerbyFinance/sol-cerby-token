@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.8+commit.dddeac2f"
+		"version": "0.8.10+commit.fc410830"
 	},
 	"language": "Solidity",
 	"output": {
@@ -21,7 +21,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/Flat_DefiFactoryToken.sol": "Counters"
+			"sol-defifactory-token/Flat_CerbyToken.sol": "Counters"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -35,12 +35,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/Flat_DefiFactoryToken.sol": {
-			"keccak256": "0xed3a266ae4b9ab4317b2d7f173ff072691c26ce69e41e56b6a6aaa30e9c70cd6",
-			"license": "MIT",
+		"sol-defifactory-token/Flat_CerbyToken.sol": {
+			"keccak256": "0xe5583ad12a0804473dfe8782cca61decb1df98fae0203bb4333f7e04c8512c23",
+			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://b9d50d6aec7c27399e509506cee5162c70d53ac3cbca6b457ae0ec8be91c6f93",
-				"dweb:/ipfs/QmQZULgzLczxpDXBvyhDabAhCNXogZ9DjAfByEbukg2Thd"
+				"bzz-raw://e3727839ac87648f1a4df92a228a6f38ec059f0785e3178781574dc84aae2719",
+				"dweb:/ipfs/QmTXh3K2ykWd5nv61VeWGLFByrXk6WT1MBG5bNorj2TduR"
 			]
 		}
 	},

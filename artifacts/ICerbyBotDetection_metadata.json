@@ -8,41 +8,68 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "role",
-						"type": "bytes32"
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "index",
+						"name": "recipientBalance",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "transferAmount",
 						"type": "uint256"
 					}
 				],
-				"name": "getRoleMember",
+				"name": "checkTransactionInfo",
 				"outputs": [
 					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
+						"components": [
+							{
+								"internalType": "bool",
+								"name": "isBuy",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isSell",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct TransactionInfo",
+						"name": "output",
+						"type": "tuple"
 					}
 				],
-				"stateMutability": "view",
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "role",
-						"type": "bytes32"
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
 					}
 				],
-				"name": "getRoleMemberCount",
+				"name": "isBotAddress",
 				"outputs": [
 					{
-						"internalType": "uint256",
+						"internalType": "bool",
 						"name": "",
-						"type": "uint256"
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -50,7 +77,6 @@
 			}
 		],
 		"devdoc": {
-			"details": "External interface of AccessControlEnumerable declared to support ERC165 detection.",
 			"kind": "dev",
 			"methods": {},
 			"version": 1
@@ -63,7 +89,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/Flat_CerbyToken.sol": "IAccessControlEnumerable"
+			"sol-defifactory-token/Flat_CerbyToken.sol": "ICerbyBotDetection"
 		},
 		"evmVersion": "london",
 		"libraries": {},
