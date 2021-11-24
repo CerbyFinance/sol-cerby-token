@@ -13,14 +13,9 @@ contract CerbyToken is CerbyBasedToken {
     
     
     constructor()
-        CerbyBasedToken("Cerby Token2", "CERBY2")
+        CerbyBasedToken("Cerby Token", "CERBY")
     {
         initializeOwner(msg.sender);
-        
-        AccessSettings[] memory accessSettings = new AccessSettings[](4);
-        accessSettings[CERBY_BOT_DETECTION_CONTRACT_ID].addr = 0x38BDBF0Fa0D7Ed0E3B74Ed99fB88dc9341af0d1f;
-        
-        updateUtilsContracts(accessSettings);
     }
     
     

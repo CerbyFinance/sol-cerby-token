@@ -46,7 +46,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
         //_setupRole(ROLE_ADMIN, 0x1EE133d3CC3fD5795DD4014579A36A6b7900102e); // NoBotsTechV3 Deft
         
         _setupRole(ROLE_ADMIN, STAKING_CONTRACT); // Staking Contract
-        _setupRole(ROLE_ADMIN, 0x1d2900622B5049D9479DC8BE06469A4ede3Fc96e); // Cross Chain Bridge Contract
+        _setupRole(ROLE_ADMIN, 0xA5df69790ba509c511E2A0A31cEEFfecC4d156C7); // Cross Chain Bridge Contract
         _setupRole(ROLE_ADMIN, 0x9980a0447456b5cdce209D7dC94820FF15600022); // Deft blacklister
         
         markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // Top1 Eth Bot
