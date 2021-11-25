@@ -1165,7 +1165,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/Flat_CerbyToken.sol": "CerbyToken"
+			"sol-defifactory-token/Flat_CerbyToken_Optimism.sol": "CerbyToken"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -1179,12 +1179,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/Flat_CerbyToken.sol": {
-			"keccak256": "0xe5583ad12a0804473dfe8782cca61decb1df98fae0203bb4333f7e04c8512c23",
+		"sol-defifactory-token/Flat_CerbyToken_Optimism.sol": {
+			"keccak256": "0x5faa5970a4911920de81a6531077ee20709fdb308c6c113c324804d524cd5ab0",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://e3727839ac87648f1a4df92a228a6f38ec059f0785e3178781574dc84aae2719",
-				"dweb:/ipfs/QmTXh3K2ykWd5nv61VeWGLFByrXk6WT1MBG5bNorj2TduR"
+				"bzz-raw://52acda06b5240b6e841c87233edd42a5d67b78c0c82128ba4dbfc1c4d22a74fe",
+				"dweb:/ipfs/QmYAC9FgLGQJoqCGF4e9FsexXLPcLQEUwhpPqrK8jddCdA"
 			]
 		}
 	},
