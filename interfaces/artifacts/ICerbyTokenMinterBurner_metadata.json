@@ -129,7 +129,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": "ICerbyToken"
+			"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": "ICerbyTokenMinterBurner"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -144,11 +144,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {
-			"keccak256": "0x7d319a7d413133a9c921788ac11a188aaaf03d82aa652d0c89818e45f6619564",
+			"keccak256": "0xe9662b09cb4a69c4bcd634ae71ca5e60f630b89e2ef8f818ccf12ceb47707013",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://bdf4d2f480db3c0e119cac82fced9e304d476170d98b7d9d728c55ddd8783655",
-				"dweb:/ipfs/QmVXA4FwLgad9Fmg1yPyjQKQwPAswS43XAyyAFAubaEVTY"
+				"bzz-raw://38d67dec9f8deaeb4adc5e58d8f483beef22cab8dbc191bc3247e3fc48e434eb",
+				"dweb:/ipfs/QmR1f6cNhWzmDt5qJ9gjuFJL21FwmnNnBhH3beJ2JbPqnz"
 			]
 		}
 	},

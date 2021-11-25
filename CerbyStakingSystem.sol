@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.10;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
-import "./interfaces/IDefiFactoryTokenMinterBurner.sol";
-import "./interfaces/IDeftStorageContract.sol";
+import "./interfaces/ICerbyTokenMinterBurner.sol";
+import "./interfaces/ICerbyBotDetection.sol";
 
 struct DailySnapshot {
     uint inflationAmount;
@@ -37,16 +37,16 @@ struct Settings {
     uint MAXIMUM_STAKE_DAYS;
 }
 
-contract StakingSystem is AccessControlEnumerable {
+contract CerbyStakingSystem is AccessControlEnumerable {
     DailySnapshot[] public dailySnapshots;
     uint[] public cachedInterestPerShare;
     
     Stake[] public stakes;
     Settings public settings;
     
-    uint constant DEFT_STORAGE_CONTRACT_ID = 3;
-    uint constant MINIMUM_SMALLER_PAYS_BETTER = 1000 * 1e18; // 1k DEFT
-    uint constant MAXIMUM_SMALLER_PAYS_BETTER = 1000000 * 1e18; // 1M DEFT
+    uint constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
+    uint constant MINIMUM_SMALLER_PAYS_BETTER = 1000 * 1e18; // 1k CERBY
+    uint constant MAXIMUM_SMALLER_PAYS_BETTER = 1000000 * 1e18; // 1M CERBY
     uint constant CACHED_DAYS_INTEREST = 100;
     uint constant DAYS_IN_ONE_YEAR = 365;
     uint constant SHARE_PRICE_DENORM = 1e18;
@@ -54,7 +54,7 @@ contract StakingSystem is AccessControlEnumerable {
     uint constant APY_DENORM = 1e6;
     uint constant SECONDS_IN_ONE_DAY = 86400;
     
-    IDefiFactoryToken deftToken = IDefiFactoryToken(
+    ICerbyTokenMinterBurner cerbyToken = ICerbyTokenMinterBurner(
         0xdef1fac7Bf08f173D286BbBDcBeeADe695129840
     );
     
@@ -117,7 +117,7 @@ contract StakingSystem is AccessControlEnumerable {
         settings.MINIMUM_DAYS_FOR_HIGH_PENALTY = 0;
         settings.CONTROLLED_APY = 4e5; // 40%
         settings.END_STAKE_FROM = 30;
-        settings.END_STAKE_TO = 2*DAYS_IN_ONE_YEAR; // TODO: 5% per month penalty
+        settings.END_STAKE_TO = 2*DAYS_IN_ONE_YEAR; // 5% per month penalty
         settings.MINIMUM_STAKE_DAYS = 1;
         settings.MAXIMUM_STAKE_DAYS = 100*DAYS_IN_ONE_YEAR;
         settings.LONGER_PAYS_BETTER_BONUS = 3e6; // 3e6/1e6 = 300% shares bonus max
@@ -154,11 +154,11 @@ contract StakingSystem is AccessControlEnumerable {
     
     modifier onlyRealUsers()
     {
-        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-            IDefiFactoryToken(deftToken).getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
+            ICerbyTokenMinterBurner(cerbyToken).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
         );
         require(
-            !iDeftStorageContract.isBotAddress(msg.sender),
+            !iCerbyBotDetection.isBotAddress(msg.sender),
             "SS: Only real users allowed!"
         );
         _;
@@ -206,7 +206,7 @@ contract StakingSystem is AccessControlEnumerable {
     {
         updateAllSnapshots();
         
-        deftToken.burnHumanAddress(fromAddr, amountToBurn);
+        cerbyToken.burnHumanAddress(fromAddr, amountToBurn);
         
         uint today = getCurrentDaySinceLaunch();
         dailySnapshots[today].inflationAmount += amountToBurn;
@@ -285,7 +285,7 @@ contract StakingSystem is AccessControlEnumerable {
                 dailySnapshots[currentSnapshotIndex].totalShares,
                 dailySnapshots[currentSnapshotIndex].sharePrice,
                 getTotalTokensStaked(),
-                deftToken.totalSupply()
+                cerbyToken.totalSupply()
             );
         }
         
@@ -348,7 +348,7 @@ contract StakingSystem is AccessControlEnumerable {
             "SS: StakedAmount has to be larger than zero"
         );
         require(
-            _startStake.stakedAmount <= deftToken.balanceOf(msg.sender),
+            _startStake.stakedAmount <= cerbyToken.balanceOf(msg.sender),
             "SS: StakedAmount exceeds balance"
         );
         require(
@@ -362,7 +362,7 @@ contract StakingSystem is AccessControlEnumerable {
         
         updateAllSnapshots();
         
-        deftToken.transferCustom(msg.sender, address(this), _startStake.stakedAmount);
+        cerbyToken.transferCustom(msg.sender, address(this), _startStake.stakedAmount);
         
         uint today = getCurrentDaySinceLaunch();
         Stake memory stake = Stake(
@@ -417,7 +417,7 @@ contract StakingSystem is AccessControlEnumerable {
         uint today = getCurrentDaySinceLaunch();
         stakes[stakeId].endDay = today;
         
-        deftToken.transferCustom(address(this), msg.sender, stakes[stakeId].stakedAmount);
+        cerbyToken.transferCustom(address(this), msg.sender, stakes[stakeId].stakedAmount);
         
         uint interest;
         if (
@@ -433,13 +433,13 @@ contract StakingSystem is AccessControlEnumerable {
         
         if (interest > 0)
         {
-            deftToken.mintHumanAddress(msg.sender, interest);
+            cerbyToken.mintHumanAddress(msg.sender, interest);
         }
         
         uint penalty = getPenaltyByStake(stakes[stakeId], today, interest);
         if (penalty > 0) 
         {
-            deftToken.burnHumanAddress(msg.sender, penalty);
+            cerbyToken.burnHumanAddress(msg.sender, penalty);
             dailySnapshots[today].inflationAmount += penalty;
         }
         
@@ -512,7 +512,7 @@ contract StakingSystem is AccessControlEnumerable {
         view
         returns(uint)
     {
-        return IDefiFactoryToken(deftToken).balanceOf(address(this));
+        return ICerbyTokenMinterBurner(cerbyToken).balanceOf(address(this));
     }
     
     function getDailySnapshotsLength()

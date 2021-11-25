@@ -691,11 +691,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBotDetection.sol": {
-			"keccak256": "0xd0272e05060a7d270249edd6ebd4858d2d7a93973d7c7de1aeccc9fdffe0d7ee",
+			"keccak256": "0xd1b9cf4ca1bc075943dfc4ceef2ff5b54909550c55f5826af3fc17b2d8423037",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://583c86dcb18c4b7a9faf37adcb89563ea8ff01e515ef5e0a3cbda80806c3adda",
-				"dweb:/ipfs/QmfJ8xkgmMSQwMpRLXAPiUquExBwfhc2Pr2xP8spWQnaPn"
+				"bzz-raw://2ebd067e3fc49b88e19369487bed18e2a848520f8c6497a70be9fdd22f44c2f7",
+				"dweb:/ipfs/QmVZBaDvKa2gG9eHPU2VvQ3dsuA5H8Huq9RxDFhNE72tB2"
 			]
 		},
 		"sol-defifactory-token/interfaces/IWeth.sol": {

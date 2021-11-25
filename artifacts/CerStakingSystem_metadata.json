@@ -1318,7 +1318,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"localhost/sol-defifactory-token/CerbyStakingSystem.sol": "StakingSystem"
+			"localhost/sol-defifactory-token/CerbyStakingSystem.sol": "CerStakingSystem"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -1333,11 +1333,11 @@
 	},
 	"sources": {
 		"localhost/sol-defifactory-token/CerbyStakingSystem.sol": {
-			"keccak256": "0xbf3af7b4267059900d1223235e078a5ab2d8b1456ef82dae1ed980d7d3501571",
+			"keccak256": "0xa969ccbee095750426225ceb75d1932b7d51c91e322b94a80fd6b64f53d72ee5",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://07ad41e9155a75a96ed6e383f4077a1f86817f912a6d85be2d000e4747bf11fe",
-				"dweb:/ipfs/Qmf55h9q8n8u4yyKY3Lo12oQ878hsjzxnCXHDmkzvPr6Z6"
+				"bzz-raw://8056c21f5a371866d92222da873ec85df4d71ac58c61a0be100e32f0bb124782",
+				"dweb:/ipfs/Qmd2w5zi71UxTodo7nyfrgVZn8GjWqnrntKRHt5pAnkn2u"
 			]
 		},
 		"localhost/sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": {
