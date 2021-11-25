@@ -8,17 +8,17 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "role",
-						"type": "bytes32"
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
 					}
 				],
-				"name": "getRoleAdmin",
+				"name": "balanceOf",
 				"outputs": [
 					{
-						"internalType": "bytes32",
+						"internalType": "uint256",
 						"name": "",
-						"type": "bytes32"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -27,17 +27,17 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "role",
-						"type": "bytes32"
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
 					},
 					{
-						"internalType": "address",
-						"name": "account",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "desiredAmountToBurn",
+						"type": "uint256"
 					}
 				],
-				"name": "grantRole",
+				"name": "burnHumanAddress",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -45,22 +45,17 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "role",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "address",
-						"name": "account",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "pos",
+						"type": "uint256"
 					}
 				],
-				"name": "hasRole",
+				"name": "getUtilsContractAtPos",
 				"outputs": [
 					{
-						"internalType": "bool",
+						"internalType": "address",
 						"name": "",
-						"type": "bool"
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -69,42 +64,59 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "role",
-						"type": "bytes32"
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
 					},
 					{
-						"internalType": "address",
-						"name": "account",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "desiredAmountToMint",
+						"type": "uint256"
 					}
 				],
-				"name": "renounceRole",
+				"name": "mintHumanAddress",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "totalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "role",
-						"type": "bytes32"
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
 					},
 					{
 						"internalType": "address",
-						"name": "account",
+						"name": "recipient",
 						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
 					}
 				],
-				"name": "revokeRole",
+				"name": "transferCustom",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			}
 		],
 		"devdoc": {
-			"details": "External interface of AccessControl declared to support ERC165 detection.",
 			"kind": "dev",
 			"methods": {},
 			"version": 1
@@ -117,7 +129,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"localhost/sol-defifactory-token/Flat_CerbyStakingSystem.sol": "IAccessControl"
+			"localhost/sol-defifactory-token/Flat_CerbyStakingSystem.sol": "ICerbyTokenMinterBurner"
 		},
 		"evmVersion": "london",
 		"libraries": {},

@@ -1318,7 +1318,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"localhost/sol-defifactory-token/CerbyStakingSystem.sol": "StakingSystem"
+			"sol-defifactory-token/Flat_StakingSystem.sol": "StakingSystem"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -1332,84 +1332,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"localhost/sol-defifactory-token/CerbyStakingSystem.sol": {
-			"keccak256": "0xbf3af7b4267059900d1223235e078a5ab2d8b1456ef82dae1ed980d7d3501571",
+		"sol-defifactory-token/Flat_StakingSystem.sol": {
+			"keccak256": "0x2fb486dd322e92adbceb98220a1572ed8733916ecdbbe873946555f6dc708ec6",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://07ad41e9155a75a96ed6e383f4077a1f86817f912a6d85be2d000e4747bf11fe",
-				"dweb:/ipfs/Qmf55h9q8n8u4yyKY3Lo12oQ878hsjzxnCXHDmkzvPr6Z6"
-			]
-		},
-		"localhost/sol-defifactory-token/interfaces/IDefiFactoryTokenMinterBurner.sol": {
-			"keccak256": "0x1689ce0eea42c066bd6e0de5ee470dec14162f4a391455b34fc9b540937e9a6f",
-			"license": "BSD-2-Clause",
-			"urls": [
-				"bzz-raw://4427c695def0f3382dfc4009f919c5be6156827151a214abcf785d6fb1d43c59",
-				"dweb:/ipfs/QmUvZ82UXJi1M4THsEHVXiGjiJnMG3wC296ihn3s3cnEcp"
-			]
-		},
-		"localhost/sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x31c4471e0df11f688ea99faf7d94b82a2896d15057e838cf55f66b3deef49ae8",
-			"license": "BUSL-1.1",
-			"urls": [
-				"bzz-raw://1295f95ac55f3b8a47a29afebb64e095a442f9bac9783bdfd679cb44f1513735",
-				"dweb:/ipfs/QmeFdRCuBNu1uCe9MdHX2eiihWiEKeMZQoHfkP9AWH7Xqk"
-			]
-		},
-		"localhost/sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
-			"keccak256": "0x216169e68f87c4f54a41e18c8b62d4d41a438db352bb5103e07ece489d3409e1",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://0a31be9f4c3c67f99b833f476c76a2b9d58efc75d24f5a150fc9e43d82e241d0",
-				"dweb:/ipfs/QmXCT1p75AnsZ5LexnBZFNbkBeisG2KjAoh8TMSSQdNeqz"
-			]
-		},
-		"localhost/sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {
-			"keccak256": "0x0d616363c1a1e6f9f489303f94df0cbe606826ab4944d315c3801a07f9b8d4ee",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://976cf80d02556929369fc98196c4082f204e44e682e20d3f65cc61b31e29bf76",
-				"dweb:/ipfs/Qmeo1vvf7L3PLLDPNSVuVyirLB3FrCYKMFw3JZ7EXgC5YU"
-			]
-		},
-		"localhost/sol-defifactory-token/openzeppelin/utils/Context.sol": {
-			"keccak256": "0xf930d2df426bfcfc1f7415be724f04081c96f4fb9ec8d0e3a521c07692dface0",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://fc2bfdea0d2562c76fb3c4cf70a86c6ba25c5a30e8f8515c95aafdf8383f8395",
-				"dweb:/ipfs/QmTbFya18786ckJfLYUoWau9jBTKfmWnWm5XSViWvB7PXN"
-			]
-		},
-		"localhost/sol-defifactory-token/openzeppelin/utils/Strings.sol": {
-			"keccak256": "0x456e9b3a2bfe189b5249857f624f4139e59331db518483b456c4e587a20552e0",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://1123c9545decc48a011370ebab4bf53dda98524fa21f9498e68851ba8f0ffc0f",
-				"dweb:/ipfs/QmUpgMg8EFDnv87ePKUjXxXpJT3qwHRj9VDNSnRxu7T9sy"
-			]
-		},
-		"localhost/sol-defifactory-token/openzeppelin/utils/introspection/ERC165.sol": {
-			"keccak256": "0x5718c5df9bd67ac68a796961df938821bb5dc0cd4c6118d77e9145afb187409b",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://d10e1d9b26042424789246603906ad06143bf9a928f4e99de8b5e3bdc662f549",
-				"dweb:/ipfs/Qmejonoaj5MLekPus229rJQHcC6E9dz2xorjHJR84fMfmn"
-			]
-		},
-		"localhost/sol-defifactory-token/openzeppelin/utils/introspection/IERC165.sol": {
-			"keccak256": "0xa28007762d9da9db878dd421960c8cb9a10471f47ab5c1b3309bfe48e9e79ff4",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://796ab6e88af7bf0e78def0f059310c903af6a312b565344e0ff524a0f26e81c6",
-				"dweb:/ipfs/QmcsVgLgzWdor3UnAztUkXKNGcysm1MPneWksF72AvnwBx"
-			]
-		},
-		"localhost/sol-defifactory-token/openzeppelin/utils/structs/EnumerableSet.sol": {
-			"keccak256": "0x641d1c42bddc802820044fc0297346d82411f1c86647c2994a5897199c7049c5",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://a1a73b4d9b6065412e18d9e21e3ba6387d5dc6b69161d8527101c0041b62f762",
-				"dweb:/ipfs/QmQ51saPEQxKqbkLxfvpXz4x7uDzC49gyH4kVXK8exoAU2"
+				"bzz-raw://0141ae36b97301da8b27baee392e359afd59178d101ada641afe050ad09613eb",
+				"dweb:/ipfs/QmQWNjH9ufcJJjisD9M5cChvUxWQU5Pm5iUf16MWYR9YRB"
 			]
 		}
 	},

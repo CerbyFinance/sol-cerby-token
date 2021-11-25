@@ -99,7 +99,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/Flat_PresaleContract.sol": "IUniswapV2Factory"
+			"sol-defifactory-token/Flat_PresaleFactory.sol": "IUniswapV2Factory"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -113,12 +113,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/Flat_PresaleContract.sol": {
-			"keccak256": "0xf5dc1b984b88f396f5c687a21370f6840ed701555efcc8cd9d4cb260434dfccc",
+		"sol-defifactory-token/Flat_PresaleFactory.sol": {
+			"keccak256": "0xa0358c8f2cc915895383b42f04f92c1594f27c85628aa1be34379c3b065c70b6",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://03ff0df1428192c215baeac8fa1a12162052d1f9e14b9b4759876743dd6ff077",
-				"dweb:/ipfs/QmWGCCLd5HjZbNS111YCW3F1WJ8gVGj4aP6CyHknXjXMpv"
+				"bzz-raw://f19948a0925c8b2f245776a9bf37980ff7c021069776f36aa82449d1c3892e6e",
+				"dweb:/ipfs/QmPSKiST8wkTKiLgi2LHCXcEWDLU4t35C61TuF9gqrJX1q"
 			]
 		}
 	},
