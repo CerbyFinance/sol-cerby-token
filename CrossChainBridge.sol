@@ -70,40 +70,40 @@ contract CrossChainBridge is AccessControlEnumerable {
             _setupRole(ROLE_ADMIN, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
             _setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
             
-            feeDependingOnDestinationChainId[0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248][ETH_KOVAN_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
+            feeDependingOnDestinationChainId[0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248][ETH_KOVAN_CHAIN_ID] = 1000000 * 1e18; // allow to bridge to eth
         }
         
         /* MAINNET */
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to bsc
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to polygon
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][FANTOM_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to fantom
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][AVALANCHE_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to avalanche
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to bsc
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to polygon
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][FANTOM_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to fantom
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][AVALANCHE_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to avalanche
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to polygon
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][FANTOM_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to fantom
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][AVALANCHE_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to avalanche
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 1000000 * 1e18; // allow to bridge to eth
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to polygon
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][FANTOM_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to fantom
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][AVALANCHE_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to avalanche
         } else if (block.chainid == MATIC_MAINNET_CHAIN_ID)
         {
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to bsc
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][FANTOM_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to fantom
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][AVALANCHE_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to avalanche
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 1000000 * 1e18; // allow to bridge to eth
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to bsc
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][FANTOM_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to fantom
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][AVALANCHE_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to avalanche
         } else if (block.chainid == FANTOM_MAINNET_CHAIN_ID)
         {
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to bsc
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to polygon
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][AVALANCHE_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to avalanche
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 1000000 * 1e18; // allow to bridge to eth
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to bsc
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to polygon
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][AVALANCHE_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to avalanche
         } else if (block.chainid == AVALANCHE_MAINNET_CHAIN_ID)
         {
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to bsc
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][FANTOM_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to fantom
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to polygon
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 1000000 * 1e18; // allow to bridge to eth
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to bsc
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][FANTOM_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to fantom
+            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to polygon
         }
     }
     
