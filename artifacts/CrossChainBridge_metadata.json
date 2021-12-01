@@ -271,6 +271,36 @@
 			{
 				"inputs": [
 					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "token",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "chainId",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "amountAsFee",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct BulkFeeDependingOnDestinationChainId[]",
+						"name": "bulkFees",
+						"type": "tuple[]"
+					}
+				],
+				"name": "bulkUpdateFeeDependingOnDestinationChainId",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "token",
 						"type": "address"
@@ -607,29 +637,6 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "chainId",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountAsFee",
-						"type": "uint256"
-					}
-				],
-				"name": "updateFeeDependingOnDestinationChainId",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -685,11 +692,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0x872d4933c6ff95e9b87364fd02526665668c3b480d3de27a40ca29af5697a9ee",
+			"keccak256": "0x8946b02f199da62b930251217cf9c82dcc9a4f42a0d7c889887b1af3c100424f",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://a6f328efe59a793ff82ca9fe69401af68878ae53f169455e92f56072a3eb946f",
-				"dweb:/ipfs/QmPKCCLCiUjgXRot8rkgiCT1iDTc3ACN4oLSjN6LCK5KvJ"
+				"bzz-raw://7e7e9389ba4a1471d236cc0cf45125dfdf355dafbb062e5c2da67a7315f8a9ac",
+				"dweb:/ipfs/QmNdsYnM1q8VTSbMMx3Xooi63PGEXAyPnwx55zZm61cUUF"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

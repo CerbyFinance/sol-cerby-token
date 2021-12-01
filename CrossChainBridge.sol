@@ -5,6 +5,11 @@ import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/IDeftStorageContract.sol";
 
+struct BulkFeeDependingOnDestinationChainId {
+    address token;
+    uint chainId;
+    uint amountAsFee;
+}
 
 contract CrossChainBridge is AccessControlEnumerable {
     event ProofOfBurn(address addr, address token, uint amount, uint amountAsFee, uint currentNonce, uint sourceChain, uint destinationChain, bytes32 transactionHash);
@@ -57,6 +62,7 @@ contract CrossChainBridge is AccessControlEnumerable {
         
         beneficiaryAddress = APPROVER_WALLET;
         
+        BulkFeeDependingOnDestinationChainId[] memory bulkFees;
         
         /* Testnet */
         if (block.chainid == ETH_KOVAN_CHAIN_ID)
@@ -64,47 +70,56 @@ contract CrossChainBridge is AccessControlEnumerable {
             _setupRole(ROLE_ADMIN, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
             _setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
             
-            feeDependingOnDestinationChainId[0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248][BSC_TESTNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to bsc
+            bulkFees = new BulkFeeDependingOnDestinationChainId[](1);
+            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248, BSC_TESTNET_CHAIN_ID, 1e5 * 1e18); // allow to bridge to bsc
         } else if (block.chainid == BSC_TESTNET_CHAIN_ID)
         {
             _setupRole(ROLE_ADMIN, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
             _setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
             
-            feeDependingOnDestinationChainId[0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248][ETH_KOVAN_CHAIN_ID] = 1000000 * 1e18; // allow to bridge to eth
+            bulkFees = new BulkFeeDependingOnDestinationChainId[](1);
+            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248, ETH_KOVAN_CHAIN_ID, 1000000 * 1e18); // allow to bridge to eth
         }
         
         /* MAINNET */
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to bsc
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to polygon
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][FANTOM_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to fantom
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][AVALANCHE_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to avalanche
+            bulkFees = new BulkFeeDependingOnDestinationChainId[](4);
+            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, BSC_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to bsc
+            bulkFees[1] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, MATIC_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to polygon
+            bulkFees[2] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, FANTOM_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to fantom
+            bulkFees[3] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, AVALANCHE_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to avalanche
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 1000000 * 1e18; // allow to bridge to eth
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to polygon
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][FANTOM_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to fantom
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][AVALANCHE_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to avalanche
+            bulkFees = new BulkFeeDependingOnDestinationChainId[](4);
+            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, ETH_MAINNET_CHAIN_ID, 1000000 * 1e18); // allow to bridge to eth
+            bulkFees[1] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, MATIC_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to polygon
+            bulkFees[2] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, FANTOM_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to fantom
+            bulkFees[3] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, AVALANCHE_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to avalanche
         } else if (block.chainid == MATIC_MAINNET_CHAIN_ID)
         {
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 1000000 * 1e18; // allow to bridge to eth
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to bsc
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][FANTOM_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to fantom
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][AVALANCHE_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to avalanche
+            bulkFees = new BulkFeeDependingOnDestinationChainId[](4);
+            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, ETH_MAINNET_CHAIN_ID, 1000000 * 1e18); // allow to bridge to eth
+            bulkFees[1] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, BSC_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to bsc
+            bulkFees[2] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, FANTOM_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to fantom
+            bulkFees[3] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, AVALANCHE_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to avalanche
         } else if (block.chainid == FANTOM_MAINNET_CHAIN_ID)
         {
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 1000000 * 1e18; // allow to bridge to eth
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to bsc
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to polygon
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][AVALANCHE_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to avalanche
+            bulkFees = new BulkFeeDependingOnDestinationChainId[](4);
+            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, ETH_MAINNET_CHAIN_ID, 1000000 * 1e18); // allow to bridge to eth
+            bulkFees[1] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, BSC_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to bsc
+            bulkFees[2] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, MATIC_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to polygon
+            bulkFees[3] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, AVALANCHE_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to avalanche
         } else if (block.chainid == AVALANCHE_MAINNET_CHAIN_ID)
         {
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 1000000 * 1e18; // allow to bridge to eth
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to bsc
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][FANTOM_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to fantom
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 50000 * 1e18; // allow to bridge to polygon
+            bulkFees = new BulkFeeDependingOnDestinationChainId[](4);
+            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, ETH_MAINNET_CHAIN_ID, 1000000 * 1e18); // allow to bridge to eth
+            bulkFees[1] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, BSC_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to bsc
+            bulkFees[2] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, FANTOM_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to fantom
+            bulkFees[3] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, MATIC_MAINNET_CHAIN_ID, 50000 * 1e18); // allow to bridge to polygon
         }
+
+        bulkUpdateFeeDependingOnDestinationChainId(bulkFees);
     }
     
     function getFeeDependingOnDestinationChainId(address tokenAddr, uint destinationChainId)
@@ -115,11 +130,14 @@ contract CrossChainBridge is AccessControlEnumerable {
         return feeDependingOnDestinationChainId[tokenAddr][destinationChainId];
     }
     
-    function updateFeeDependingOnDestinationChainId(address token, uint chainId, uint amountAsFee)
-        external
+    function bulkUpdateFeeDependingOnDestinationChainId(BulkFeeDependingOnDestinationChainId[] memory bulkFees)
+        public
         onlyRole(ROLE_ADMIN)
     {
-        feeDependingOnDestinationChainId[token][chainId] = amountAsFee;
+        for (uint i; i < bulkFees.length; i++)
+        {
+            feeDependingOnDestinationChainId[bulkFees[i].token][bulkFees[i].chainId] = bulkFees[i].amountAsFee;
+        }
     }
     
     function updateBeneficiaryAddress(address newBeneficiaryAddr)
