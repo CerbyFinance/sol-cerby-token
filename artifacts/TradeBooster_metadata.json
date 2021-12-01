@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.8+commit.dddeac2f"
+		"version": "0.8.10+commit.fc410830"
 	},
 	"language": "Solidity",
 	"output": {
@@ -500,7 +500,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
@@ -515,11 +515,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x66d5ab7fd3243597df6ed32828230154327dffcbf9f4dd3a30a998728ad45d76",
+			"keccak256": "0x55662dadf86392fd06c9bb78fc84c42a31cb3786ac836c0bbae077d7edc94fc7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://25ea6cc145dd2b7c22d8f1496e4e60fb67313f641bff21eb97d8db17062649d1",
-				"dweb:/ipfs/QmUBx9qi5tmFcHe3HpaTSSfW3xxoNy7y751G7NSGqg2SrB"
+				"bzz-raw://7e802caeac0f00050211fd881950e3f767242197387b430f935f139d95024496",
+				"dweb:/ipfs/QmZGfnBk7fQfVipUJyqLpmcnfFbwP1SyrrHmD2tHPhapUN"
 			]
 		},
 		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
@@ -571,11 +571,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/IWeth.sol": {
-			"keccak256": "0xf30f17c3689153f7d2c741581083ca990c735b3cd447552365ecae9a30c8784c",
+			"keccak256": "0xaebf064916d07f10ca2ca496bff1160dc28ad0a0ae92bbb52fd0f21ff964d9e8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://afcb5877551cbb613c10b7e13a67997bddc532e33119c9809e13aa06bed65ad1",
-				"dweb:/ipfs/Qmciw1wkEtLM5eod62NY8mbCitPYyQ9ySYeh6c87Rsk5qz"
+				"bzz-raw://6e85dbc5e9dd412cc18ca50e53160765f510e2e6b5c5be6de3a25f3dc8eb39b1",
+				"dweb:/ipfs/QmYmKKacDwTZz4vUQud2us8qXP7GqUzEGS3b9AAriKjYMr"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

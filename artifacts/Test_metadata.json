@@ -8,22 +8,30 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "role",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "uint256",
-						"name": "index",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "a",
+						"type": "address"
 					}
 				],
-				"name": "getRoleMember",
+				"name": "toBytesPacked",
 				"outputs": [
 					{
-						"internalType": "address",
+						"internalType": "bytes32",
 						"name": "",
-						"type": "address"
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "toBytesPackedSender",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
 					}
 				],
 				"stateMutability": "view",
@@ -32,17 +40,30 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "a",
+						"type": "address"
+					}
+				],
+				"name": "toBytesUint",
+				"outputs": [
+					{
 						"internalType": "bytes32",
-						"name": "role",
+						"name": "",
 						"type": "bytes32"
 					}
 				],
-				"name": "getRoleMemberCount",
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "toBytesUintSender",
 				"outputs": [
 					{
-						"internalType": "uint256",
+						"internalType": "bytes32",
 						"name": "",
-						"type": "uint256"
+						"type": "bytes32"
 					}
 				],
 				"stateMutability": "view",
@@ -50,7 +71,6 @@
 			}
 		],
 		"devdoc": {
-			"details": "External interface of AccessControlEnumerable declared to support ERC165 detection.",
 			"kind": "dev",
 			"methods": {},
 			"version": 1
@@ -63,7 +83,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/Flat_CerbyToken.sol": "IAccessControlEnumerable"
+			"sol-defifactory-token/Test.sol": "Test"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -77,12 +97,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/Flat_CerbyToken.sol": {
-			"keccak256": "0xe446a0f34046719a055918cdd592b0c078dd8faa80849214572f98ae46c75a8b",
+		"sol-defifactory-token/Test.sol": {
+			"keccak256": "0xffe1f437257366ed3c54cbd09de2644be0064ecd5522b93b5d601c91c5847540",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://a694292eab89aa18543b49a39aea9985e493423167c73758cd116793cb10d67c",
-				"dweb:/ipfs/QmQnFmR8xMpQosChtCmV9LGbWiESQtKgVZEDrbzgZ34QW1"
+				"bzz-raw://421fe484e9383f62fb10a30f0d18bd9a1a5ed2d3b670102b73bfd11c68c0b933",
+				"dweb:/ipfs/QmWpFDQtbCSsz35PcmjnN4QJkny1PfBBjnVEc3PaAiMeJh"
 			]
 		}
 	},

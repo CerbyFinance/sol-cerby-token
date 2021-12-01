@@ -2,13 +2,19 @@
 pragma solidity ^0.8.9;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
-import "./interfaces/ICerby.sol";
-import "./interfaces/IDeftStorageContract.sol";
+import "./openzeppelin/token/ERC20/utils/SafeERC20.sol";
+import "./interfaces/ICerbyToken.sol";
+import "./interfaces/ICerbyBotDetection.sol";
 
+
+struct DirectionAllowedObject {
+    address fromToken;
+    address toToken;
+}
 
 contract CerbyWrappingService is AccessControlEnumerable {
     
-    uint constant DEFT_STORAGE_CONTRACT_ID = 3;
+    uint internal constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
     
     
     mapping(address => mapping (address => bool)) public isDirectionAllowed;
@@ -53,40 +59,73 @@ contract CerbyWrappingService is AccessControlEnumerable {
         }
     }
     
-    function updateIsDirectionAllowed(address fromToken, address toToken)
+    function bulkUpdateIsDirectionAllowed(DirectionAllowedObject[] calldata directionAllowed)
         public
         onlyRole(ROLE_ADMIN)
     {
+        for (uint i=0; i < directionAllowed.length; i++)
+        {
+            updateIsDirectionAllowed(
+                directionAllowed[i].fromToken,
+                directionAllowed[i].toToken
+            );
+        }        
+    }
+    
+    function updateIsDirectionAllowed(address fromToken, address toToken)
+        private
+    {
+        (fromToken, toToken) = sortAddresses(fromToken, toToken);
         isDirectionAllowed[fromToken][toToken] = true;
-        isDirectionAllowed[toToken][fromToken] = true;
         
         emit DirectionAllowed(fromToken, toToken);
+    }
+
+    function isDirectionAllowedSorted(address fromToken, address toToken)
+        private
+        view
+        returns (bool)
+    {
+        (fromToken, toToken) = sortAddresses(fromToken, toToken);
+        return isDirectionAllowed[fromToken][toToken];
+    }
+
+    function sortAddresses(address fromToken, address toToken)
+        private
+        pure
+        returns(address, address)
+    {
+        if (fromToken < toToken)
+        {
+            return (fromToken, toToken);
+        } else
+        {
+            return (toToken, fromToken);
+        }
     }
     
     function lockTokenAndMintCerbyWrappedToken(address fromToken, address toToken, uint amount)
         public
     {
         require(
-            isDirectionAllowed[fromToken][toToken],
+            isDirectionAllowedSorted(fromToken, toToken),
             "CWS: Direction is not allowed!"
         );
         
-        if (
-                block.chainid == ETH_MAINNET_CHAIN_ID ||
-                block.chainid == MATIC_MAINNET_CHAIN_ID ||
-                block.chainid == BSC_MAINNET_CHAIN_ID
+        if  (
+                block.chainid != ETH_KOVAN_CHAIN_ID
             )
         {
-            IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-                defiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID) // TODO: use defi factory token
+            ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
+                ICerbyToken(toToken).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
             );
             require(
-                !iDeftStorageContract.isBotAddress(msg.sender),
+                !iCerbyBotDetection.isBotAddress(msg.sender),
                 "CWS: Burning is temporary disabled!"
             );
         }
         
-        ICerby iCerbyFrom = ICerby(fromToken);
+        ICerbyToken iCerbyFrom = ICerbyToken(fromToken);
         require(
             iCerbyFrom.allowance(msg.sender, address(this)) >= amount,
             "CWS: Approval is required!"
@@ -105,7 +144,7 @@ contract CerbyWrappingService is AccessControlEnumerable {
             "CWS: Lock balance mismatch"
         );
         
-        ICerby iCerbyTo = ICerby(toToken);
+        ICerbyToken iCerbyTo = ICerbyToken(toToken);
         iCerbyTo.mintHumanAddress(msg.sender, amount);
         
         emit LockedTokenAndMintedCerbyWrappedToken(fromToken, toToken, amount);
@@ -115,22 +154,20 @@ contract CerbyWrappingService is AccessControlEnumerable {
         public
     {
         require(
-            isDirectionAllowed[fromToken][toToken],
+            isDirectionAllowedSorted(fromToken, toToken),
             "CWS: Direction is not allowed!"
         );
         
-        ICerby iCerbyFrom = ICerby(fromToken);
-        if (
-                block.chainid == ETH_MAINNET_CHAIN_ID ||
-                block.chainid == MATIC_MAINNET_CHAIN_ID ||
-                block.chainid == BSC_MAINNET_CHAIN_ID
+        ICerbyToken iCerbyFrom = ICerbyToken(fromToken);
+        if  (
+                block.chainid != ETH_KOVAN_CHAIN_ID
             )
         {
-            IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-                defiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID) // TODO: use defi factory token
+            ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
+                ICerbyToken(toToken).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
             );
             require(
-                !iDeftStorageContract.isBotAddress(msg.sender),
+                !iCerbyBotDetection.isBotAddress(msg.sender),
                 "CWS: Burning is temporary disabled!"
             );
         }
@@ -142,7 +179,7 @@ contract CerbyWrappingService is AccessControlEnumerable {
         
         iCerbyFrom.burnHumanAddress(msg.sender, amount);
         
-        ICerby iCerbyTo = ICerby(toToken);
+        ICerbyToken iCerbyTo = ICerbyToken(toToken);
         uint balanceBefore = iCerbyTo.balanceOf(msg.sender);
         iCerbyTo.transfer(msg.sender, amount); // TODO: safeTransfer
         uint balanceAfter = iCerbyTo.balanceOf(msg.sender);
