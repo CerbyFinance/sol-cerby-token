@@ -14,6 +14,7 @@ struct DirectionAllowedObject {
 
 contract CerbyWrappingService is AccessControlEnumerable {
     
+    using SafeERC20 for IERC20;
     uint internal constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
     
     
@@ -125,7 +126,7 @@ contract CerbyWrappingService is AccessControlEnumerable {
             );
         }
         
-        ICerbyToken iCerbyFrom = ICerbyToken(fromToken);
+        IERC20 iCerbyFrom = IERC20(fromToken);
         require(
             iCerbyFrom.allowance(msg.sender, address(this)) >= amount,
             "CWS: Approval is required!"
@@ -137,7 +138,7 @@ contract CerbyWrappingService is AccessControlEnumerable {
         );
         
         uint balanceBefore = iCerbyFrom.balanceOf(address(this));
-        iCerbyFrom.transferFrom(msg.sender, address(this), amount); // TODO: use safeTransferFrom
+        iCerbyFrom.transferFrom(msg.sender, address(this), amount);
         uint balanceAfter = iCerbyFrom.balanceOf(address(this));
         require(
             balanceAfter >= balanceBefore + amount,
@@ -179,9 +180,9 @@ contract CerbyWrappingService is AccessControlEnumerable {
         
         iCerbyFrom.burnHumanAddress(msg.sender, amount);
         
-        ICerbyToken iCerbyTo = ICerbyToken(toToken);
+        IERC20 iCerbyTo = IERC20(toToken);
         uint balanceBefore = iCerbyTo.balanceOf(msg.sender);
-        iCerbyTo.transfer(msg.sender, amount); // TODO: safeTransfer
+        iCerbyTo.transfer(msg.sender, amount);
         uint balanceAfter = iCerbyTo.balanceOf(msg.sender);
         require(
             balanceAfter + amount >= balanceBefore,
