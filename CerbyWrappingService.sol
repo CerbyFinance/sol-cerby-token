@@ -138,7 +138,7 @@ contract CerbyWrappingService is AccessControlEnumerable {
         );
         
         uint balanceBefore = iCerbyFrom.balanceOf(address(this));
-        iCerbyFrom.transferFrom(msg.sender, address(this), amount);
+        iCerbyFrom.safeTransferFrom(msg.sender, address(this), amount);
         uint balanceAfter = iCerbyFrom.balanceOf(address(this));
         require(
             balanceAfter >= balanceBefore + amount,
@@ -182,7 +182,7 @@ contract CerbyWrappingService is AccessControlEnumerable {
         
         IERC20 iCerbyTo = IERC20(toToken);
         uint balanceBefore = iCerbyTo.balanceOf(msg.sender);
-        iCerbyTo.transfer(msg.sender, amount);
+        iCerbyTo.safeTransfer(msg.sender, amount);
         uint balanceAfter = iCerbyTo.balanceOf(msg.sender);
         require(
             balanceAfter + amount >= balanceBefore,

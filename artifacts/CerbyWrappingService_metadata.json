@@ -500,11 +500,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyWrappingService.sol": {
-			"keccak256": "0x6fedaf15b388f4ea2a11baedd7642c03338ff94348b3eafb2d008880b7289a83",
+			"keccak256": "0x0f5cf2958089b0c7462d031eac2f525068fb036d69dbfae9dfde784ce5a9065d",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://b38d32e69feffae9297396e72bb7c6d508267758e0e36b4483c1c6a31441c8a9",
-				"dweb:/ipfs/QmVVWFB58wEH9815HyyBLknTf9frTmbBewjWsQVTPaSLGa"
+				"bzz-raw://d91524e3f50223b33673242f9236fc767fb8d8addbaa5867fc692d9e83a1ff1b",
+				"dweb:/ipfs/Qmbc1kQAqNe6SUNd8qL1JyQSjNWETYuqvmkcteUaE8K9SL"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
