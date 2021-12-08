@@ -129,7 +129,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"localhost/sol-defifactory-token/Flat_CerbyStakingSystem.sol": "ICerbyTokenMinterBurner"
+			"sol-defifactory-token/Flat_CerbyStakingSystem.sol": "ICerbyTokenMinterBurner"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -143,7 +143,7 @@
 		"remappings": []
 	},
 	"sources": {
-		"localhost/sol-defifactory-token/Flat_CerbyStakingSystem.sol": {
+		"sol-defifactory-token/Flat_CerbyStakingSystem.sol": {
 			"keccak256": "0xd94c15e45e8db57e64fc0f938b48a1c989cd088bc8b219371a365820fefae5e0",
 			"license": "BSD-2-Clause",
 			"urls": [

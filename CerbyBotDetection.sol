@@ -51,14 +51,17 @@ contract CerbyBotDetection is AccessControlEnumerable {
         _setupRole(ROLE_ADMIN, 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840); // Cerby Token Contract
         
         markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // Top1 Eth Bot
+        markAddressAsBot(0xcefFe5ba89F63E7d4606208093b71Dc5B8468404); // Marketing Wallet
+        
         
         markAsUniswapPair(0xE68c1d72340aEeFe5Be76eDa63AE2f4bc7514110, IS_UNISWAP_PAIR); // Defi Plaza
         markAddressAsHuman(0xE68c1d72340aEeFe5Be76eDa63AE2f4bc7514110, true); // Defi Plaza
         markAddressAsHuman(0xDef1Fafc79CD01Cf6797B9d7F51411beF486262a, true); // Staking contract
         markAddressAsHuman(0xdEF78a28c78A461598d948bc0c689ce88f812AD8, true); // Cross Chain Bridge Wallet
         markAddressAsHuman(0xDef1C0ded9bec7F1a1670819833240f027b25EfF, true); // 0x: Exchange Proxy
-        markAddressAsHuman(0x11111112542D85B3EF69AE05771c2dCCff4fAa26, true); // 1inch Router
-        markAddressAsHuman(0x27239549DD40E1D60F5B80B0C4196923745B1FD2, true); // 1inch Helper
+        markAddressAsHuman(0x1111111254fb6c44bAC0beD2854e76F90643097d, true); // 1inch Router
+        markAddressAsHuman(0xc590175E458b83680867AFD273527Ff58f74c02b, true); // 1inch Helper1
+        markAddressAsHuman(0x3790C9B5A9B9D9AA1c69140a5f01A57c9B868E1e, true); // 1inch Helper2        
         markAddressAsHuman(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // TeamVestingContract
         markAddressAsHuman(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, true); // CerbyTokenContract
         markAddressAsHuman(0x881D40237659C251811CEC9c364ef91dC08D300C, true); // Metamask Swap Router
