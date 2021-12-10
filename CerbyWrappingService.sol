@@ -20,12 +20,12 @@ contract CerbyWrappingService is AccessControlEnumerable {
     
     mapping(address => mapping (address => bool)) public isDirectionAllowed;
     
-    uint constant ETH_MAINNET_CHAIN_ID = 1;
+    /*uint constant ETH_MAINNET_CHAIN_ID = 1;
     uint constant ETH_ROPSTEN_CHAIN_ID = 3;
     uint constant ETH_KOVAN_CHAIN_ID = 42;
     uint constant BSC_MAINNET_CHAIN_ID = 56;
     uint constant BSC_TESTNET_CHAIN_ID = 97;
-    uint constant MATIC_MAINNET_CHAIN_ID = 137;
+    uint constant MATIC_MAINNET_CHAIN_ID = 137;*/
     
     event DirectionAllowed(address fromToken, address toToken);
     event LockedTokenAndMintedCerbyWrappedToken(address fromToken, address toToken, uint amount);
@@ -40,7 +40,7 @@ contract CerbyWrappingService is AccessControlEnumerable {
         
         
         /* Testnet */
-        if (block.chainid == ETH_KOVAN_CHAIN_ID)
+        /*if (block.chainid == ETH_KOVAN_CHAIN_ID)
         {
             updateIsDirectionAllowed(
                 0xF89217f234434105b7f7a8912750D7CC612D7F9e,
@@ -48,16 +48,16 @@ contract CerbyWrappingService is AccessControlEnumerable {
             );
         } else if (block.chainid == BSC_TESTNET_CHAIN_ID)
         {
-        }
+        }*/
         
         /* MAINNET */
-        if (block.chainid == ETH_MAINNET_CHAIN_ID)
+        /*if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
         } else if (block.chainid == MATIC_MAINNET_CHAIN_ID)
         {
-        }
+        }*/
     }
     
     function bulkUpdateIsDirectionAllowed(DirectionAllowedObject[] calldata directionAllowed)
@@ -113,7 +113,7 @@ contract CerbyWrappingService is AccessControlEnumerable {
             "CWS: Direction is not allowed!"
         );
         
-        if  (
+        /*if  (
                 block.chainid != ETH_KOVAN_CHAIN_ID
             )
         {
@@ -124,7 +124,14 @@ contract CerbyWrappingService is AccessControlEnumerable {
                 !iCerbyBotDetection.isBotAddress(msg.sender),
                 "CWS: Burning is temporary disabled!"
             );
-        }
+        }*/
+        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
+            ICerbyToken(toToken).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
+        );
+        require(
+            !iCerbyBotDetection.isBotAddress(msg.sender),
+            "CWS: Burning is temporary disabled!"
+        );
         
         IERC20 iCerbyFrom = IERC20(fromToken);
         require(
@@ -134,7 +141,7 @@ contract CerbyWrappingService is AccessControlEnumerable {
         
         require(
             amount <= iCerbyFrom.balanceOf(msg.sender),
-            "CWS: Amount must not exceed available balance. Try reducing the amount."
+            "CWS: Amount must not exceed available balance."
         );
         
         uint balanceBefore = iCerbyFrom.balanceOf(address(this));
@@ -160,7 +167,7 @@ contract CerbyWrappingService is AccessControlEnumerable {
         );
         
         ICerbyToken iCerbyFrom = ICerbyToken(fromToken);
-        if  (
+        /*if  (
                 block.chainid != ETH_KOVAN_CHAIN_ID
             )
         {
@@ -171,11 +178,18 @@ contract CerbyWrappingService is AccessControlEnumerable {
                 !iCerbyBotDetection.isBotAddress(msg.sender),
                 "CWS: Burning is temporary disabled!"
             );
-        }
+        }*/
+        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
+            ICerbyToken(toToken).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
+        );
+        require(
+            !iCerbyBotDetection.isBotAddress(msg.sender),
+            "CWS: Burning is temporary disabled!"
+        );
         
         require(
             amount <= iCerbyFrom.balanceOf(msg.sender),
-            "CWS: Amount must not exceed available balance. Try reducing the amount."
+            "CWS: Amount must not exceed available balance."
         );
         
         iCerbyFrom.burnHumanAddress(msg.sender, amount);

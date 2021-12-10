@@ -61,7 +61,9 @@ contract CerbyBotDetection is AccessControlEnumerable {
         markAddressAsHuman(0xDef1C0ded9bec7F1a1670819833240f027b25EfF, true); // 0x: Exchange Proxy
         markAddressAsHuman(0x1111111254fb6c44bAC0beD2854e76F90643097d, true); // 1inch Router
         markAddressAsHuman(0xc590175E458b83680867AFD273527Ff58f74c02b, true); // 1inch Helper1
-        markAddressAsHuman(0x3790C9B5A9B9D9AA1c69140a5f01A57c9B868E1e, true); // 1inch Helper2        
+        markAddressAsHuman(0x3790C9B5A9B9D9AA1c69140a5f01A57c9B868E1e, true); // 1inch Helper2
+        markAddressAsHuman(0x2EC255797FEF7669fA243509b7a599121148FFba, true); // 1inch Helper3
+        markAddressAsHuman(0x220bdA5c8994804Ac96ebe4DF184d25e5c2196D4, true); // 1inch Helper4
         markAddressAsHuman(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // TeamVestingContract
         markAddressAsHuman(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, true); // CerbyTokenContract
         markAddressAsHuman(0x881D40237659C251811CEC9c364ef91dC08D300C, true); // Metamask Swap Router
