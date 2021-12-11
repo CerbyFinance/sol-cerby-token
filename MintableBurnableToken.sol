@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.10;
 
 import "./openzeppelin/token/ERC20/ERC20.sol";
 
@@ -7,7 +7,7 @@ contract MintableBurnableToken is ERC20 {
     
     address owner;
     constructor()
-        ERC20("someToken2", "someToken2", 18) 
+        ERC20("CERBY", "CERBY", 18) 
     {
         owner = msg.sender;
         _mint(0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6, 1e18*1e9);

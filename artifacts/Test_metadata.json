@@ -4,72 +4,7 @@
 	},
 	"language": "Solidity",
 	"output": {
-		"abi": [
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "a",
-						"type": "address"
-					}
-				],
-				"name": "toBytesPacked",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "pure",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "toBytesPackedSender",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "a",
-						"type": "address"
-					}
-				],
-				"name": "toBytesUint",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "pure",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "toBytesUintSender",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			}
-		],
+		"abi": [],
 		"devdoc": {
 			"kind": "dev",
 			"methods": {},
@@ -98,11 +33,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/Test.sol": {
-			"keccak256": "0xffe1f437257366ed3c54cbd09de2644be0064ecd5522b93b5d601c91c5847540",
-			"license": "BSD-2-Clause",
+			"keccak256": "0xc382bdc3d91a335382f305847c529f4fbb42ec2ce0be840fcbfa6aeb7c2f37de",
+			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://421fe484e9383f62fb10a30f0d18bd9a1a5ed2d3b670102b73bfd11c68c0b933",
-				"dweb:/ipfs/QmWpFDQtbCSsz35PcmjnN4QJkny1PfBBjnVEc3PaAiMeJh"
+				"bzz-raw://7e9657d83a2adfccbc8b10ef643b33dd26046cf1e73139c1e84fd2e9b9d4e25c",
+				"dweb:/ipfs/QmXMPWayiztJUKWUL4ZVp3x3KyRVQfeuKqUMhQTcG75vxM"
 			]
 		}
 	},

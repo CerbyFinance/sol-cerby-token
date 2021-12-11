@@ -1,0 +1,77 @@
+{
+	"compiler": {
+		"version": "0.8.10+commit.fc410830"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "isTest1",
+						"type": "bool"
+					}
+				],
+				"name": "check1",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "isTest1",
+						"type": "bool"
+					}
+				],
+				"name": "check2",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"sol-defifactory-token/Test.sol": "Main"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"sol-defifactory-token/Test.sol": {
+			"keccak256": "0x035030ce00e35385dd96e17c6f4cf265c9b7eff294cbbc97ec6e97d8a9a10efb",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://f434bc5472f9b1bf0668a382a5e495441436723e7404c3aefa82b6b8448d3ca9",
+				"dweb:/ipfs/QmSmBogD2DAjb3737jKGVyNLR8u5WYxBpCgYH8biAQ8Huu"
+			]
+		}
+	},
+	"version": 1
+}

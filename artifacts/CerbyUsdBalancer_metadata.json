@@ -1,0 +1,72 @@
+{
+	"compiler": {
+		"version": "0.8.10+commit.fc410830"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"name": "balance",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"sol-defifactory-token/Test.sol": "CerbyUsdBalancer"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"sol-defifactory-token/Test.sol": {
+			"keccak256": "0x0a8e54778e1acd99b2934dcce8c85302483f90449cc7f62673ecf2f80a663f1c",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://e32aa232c200c3f6ee82ed0deff4800ccaf67da2a4e9fccc1bedbb807ab8d87d",
+				"dweb:/ipfs/QmfBJhwUEWcBPfeVQhSr3cvU7WET52j67GPWC1A4kZEp3f"
+			]
+		},
+		"sol-defifactory-token/interfaces/ICerbyToken.sol": {
+			"keccak256": "0x1cf233391c970f48f8e1a2db9a3e81c4ebb8c2ff423c6d1c553df632f04abf2d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://845a3faee636b03fa2b2e09a4d43df33ce2f1ac5f031c9f4d9f7a5f2a1d5ee7e",
+				"dweb:/ipfs/QmV6PFf9HzucpBj4y6zvW7BbuMRGhQAEa7MRWKCCREgB7V"
+			]
+		}
+	},
+	"version": 1
+}
