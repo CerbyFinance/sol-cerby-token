@@ -40,18 +40,41 @@ contract CerbyUsdBalancer {
         IWeth(uniswapPair).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
     }
 
+    function viewDebug(uint targetPrice)
+        public
+        view
+        returns(uint, uint, uint, uint)
+    {
+        (uint balanceCerUSD, uint balanceCerby, uint initialPrice) = getPrice1();
+        if (targetPrice > initialPrice)
+        {
+            uint B = 
+                balanceCerUSD / 2 + (balanceCerUSD * FEE_DENORM) / (2 * getFee());
+            uint C1 = 
+                (balanceCerby * balanceCerUSD * targetPrice * FEE_DENORM) / (PRICE_DENORM * getFee());
+            uint C2 = 
+                    (balanceCerUSD * balanceCerUSD * FEE_DENORM) / getFee();
+            uint sqrtD = sqrt(B * B + C1 - C2);
+
+            //uint sellCerUSD = sqrtD - B;
+
+            return (B, C1, C2, sqrtD);
+        }
+        return (0,0,0,0);
+    }
+
     function balance(uint targetPrice)
         public
     {
         //addInitialLiquidity();
 
-        (uint balanceCerby, uint balanceCerUSD, uint initialPrice) = getPrice1();
+        (uint balanceCerUSD, uint balanceCerby, uint initialPrice) = getPrice1();
         if (targetPrice > initialPrice)
         {
             uint B = 
                 balanceCerUSD / 2 + (balanceCerUSD * FEE_DENORM) / (2 * getFee());
             uint C = 
-                (balanceCerby * balanceCerUSD * targetPrice * FEE_DENORM) / (PRICE_DENORM * getFee()) - 
+                (balanceCerby * balanceCerUSD * targetPrice * FEE_DENORM) / (PRICE_DENORM * getFee()) -
                     (balanceCerUSD * balanceCerUSD * FEE_DENORM) / getFee();
             uint sqrtD = sqrt(B * B + C);
 
@@ -60,7 +83,7 @@ contract CerbyUsdBalancer {
 
             doSwap(true, sellCerUSD);
 
-            /*uint cerbyContractBalance = IWeth(cerbyToken).balanceOf(address(this));
+            uint cerbyContractBalance = IWeth(cerbyToken).balanceOf(address(this));
             (,,uint currentPrice) = getPrice1();
 
             uint addLiquidityCerUSD = (cerbyContractBalance * currentPrice) / (PRICE_DENORM);
@@ -79,7 +102,7 @@ contract CerbyUsdBalancer {
             );
 
             uint cerUsdDust = ICerbyToken(cerUSDToken).balanceOf(address(this));
-            ICerbyToken(cerUSDToken).burnHumanAddress(address(this), cerUsdDust);*/
+            ICerbyToken(cerUSDToken).burnHumanAddress(address(this), cerUsdDust);
         } else if (targetPrice < initialPrice)
         {
             //uint buyCerUSD = sqrtMagic + balanceCerUSD;

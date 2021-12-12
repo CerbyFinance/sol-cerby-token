@@ -106,6 +106,40 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "targetPrice",
+						"type": "uint256"
+					}
+				],
+				"name": "viewDebug",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -136,11 +170,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerUsdBalancer.sol": {
-			"keccak256": "0x33c1fb02e1cf977033bb871e0672fd187b8032a81f23cf5d9d99be4bf28222a2",
+			"keccak256": "0x376b6edcb35b878b3f64ee9ded81f6dd41030c298a00c7a2753ba8b41df7ddfd",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://02c31679533e056efdeb321914b8c5c7c2692298996427a9b20339be1857d163",
-				"dweb:/ipfs/QmZ8JKLzkW7jRLXzAQ7EAvhSvFFiqTB8VCS4wRvdi3nz1X"
+				"bzz-raw://5b68a9aabecdd6ef118ec663d07273cbd6eaeef2c9eb7f5b8d4a99900f319758",
+				"dweb:/ipfs/QmcSBRjaLkBUmenrB6j2V7LQp51hUmEsxiCwv6vvmFFuw8"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyToken.sol": {
