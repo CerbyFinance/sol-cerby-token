@@ -56,7 +56,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "getPrice1",
+				"name": "getPrice",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -75,70 +75,19 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getPrice2",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "removeAllLiquidity",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "targetPrice",
+						"name": "percent",
 						"type": "uint256"
 					}
 				],
-				"name": "viewDebug",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
+				"name": "removeLiquidity",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			}
 		],
@@ -170,11 +119,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerUsdBalancer.sol": {
-			"keccak256": "0x376b6edcb35b878b3f64ee9ded81f6dd41030c298a00c7a2753ba8b41df7ddfd",
+			"keccak256": "0xf8f40d5030721cf29ddaea6777614525fc6faaed56f733e9bf83628ca24c5039",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://5b68a9aabecdd6ef118ec663d07273cbd6eaeef2c9eb7f5b8d4a99900f319758",
-				"dweb:/ipfs/QmcSBRjaLkBUmenrB6j2V7LQp51hUmEsxiCwv6vvmFFuw8"
+				"bzz-raw://9273bcedf5bfedebfd3e2f80740da742d47cb5b474731778422f7b5b5713edac",
+				"dweb:/ipfs/QmbWTJCmPtTuL13CaFsZaiLk3jK7GmMbruZtSy1wPUzm9k"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyToken.sol": {
