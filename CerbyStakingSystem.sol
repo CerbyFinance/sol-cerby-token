@@ -121,8 +121,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         settings.MINIMUM_STAKE_DAYS = 1;
         settings.MAXIMUM_STAKE_DAYS = 100*DAYS_IN_ONE_YEAR;
         settings.LONGER_PAYS_BETTER_BONUS = 3e6; // 3e6/1e6 = 300% shares bonus max
-        settings.SMALLER_PAYS_BETTER_BONUS = 25e4; // 25e4/1e6 = 25% shares bonus max
-        
+        settings.SMALLER_PAYS_BETTER_BONUS = 25e4; // 25e4/1e6 = 25% shares bonus max        
         
         launchTimestamp = 1635604537; // 30 October 2021
         
