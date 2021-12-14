@@ -111,10 +111,10 @@ contract CerbyBotDetection is AccessControlEnumerable {
     
     function isBotAddress(address addr)
         external
+        view
         onlyRole(ROLE_ADMIN)
         returns (bool)
     {
-        executeCronJobs();
         return isBotStorage[addr] && !isHumanStorage[addr];
     }
     

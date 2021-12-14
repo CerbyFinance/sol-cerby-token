@@ -404,7 +404,7 @@
 						"type": "bool"
 					}
 				],
-				"stateMutability": "nonpayable",
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -691,11 +691,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBotDetection.sol": {
-			"keccak256": "0x74f72d6c5e0724fb6dcfc16575201379c82c87c069fa50dac425405d108b2c01",
+			"keccak256": "0x687d322f962c150f09028d92e6df664c70db2f17dd4a7a1a0d4a15197573d88c",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://8152f7298f456666b818c6677d4825a6b9a6ba6e02cf11b9a77b019137daf689",
-				"dweb:/ipfs/QmTrtdrbUuTdks1x7WDqA7W89B9cKnEvqTHjcwkqLiMkh5"
+				"bzz-raw://d4fce1f1f73a347d5161fa92b4637c47e17a7d4d17a5d1faf6386b17a32734f8",
+				"dweb:/ipfs/QmRNFAiY8BcEhxevzWUb9iMBmpHtH4USqDpFgLCgjPLPN7"
 			]
 		},
 		"sol-defifactory-token/interfaces/IWeth.sol": {
