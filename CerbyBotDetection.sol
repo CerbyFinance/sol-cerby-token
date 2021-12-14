@@ -52,6 +52,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
         
         markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // Top1 Eth Bot
         markAddressAsBot(0xcefFe5ba89F63E7d4606208093b71Dc5B8468404); // Marketing Wallet
+        markAddressAsBot(0x102ad2CF269404dDfDc4adB1Ff26B4767Fb07358); // Scam: https://polygonscan.com/token/0xdef1fac7bf08f173d286bbbdcbeeade695129840?a=0x102ad2cf269404ddfdc4adb1ff26b4767fb07358
         
         
         markAsUniswapPair(0xE68c1d72340aEeFe5Be76eDa63AE2f4bc7514110, IS_UNISWAP_PAIR); // Defi Plaza
@@ -110,10 +111,10 @@ contract CerbyBotDetection is AccessControlEnumerable {
     
     function isBotAddress(address addr)
         external
-        view
         onlyRole(ROLE_ADMIN)
         returns (bool)
     {
+        executeCronJobs();
         return isBotStorage[addr] && !isHumanStorage[addr];
     }
     
@@ -168,8 +169,19 @@ contract CerbyBotDetection is AccessControlEnumerable {
                 (block.timestamp * transferAmount + receiveTimestampStorage[tokenAddr][recipient] * recipientBalance) / 
                     (transferAmount + recipientBalance);
         }
+
+        if (!output.isBuy && !output.isSell)
+        {
+            executeCronJobs();
+        }
         
         return output;
+    }
+
+    function executeCronJobs()
+        private
+    {
+        // TODO: add here
     }
     
     function isUniswapPairChecker(address addr)
