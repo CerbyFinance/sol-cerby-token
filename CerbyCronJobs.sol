@@ -20,9 +20,35 @@ contract CerbyCronJobs {
         cronJob.targetContract = targetContract;
         cronJob.signature = bytes4(abi.encodeWithSignature(abiCall));
 
-        cronJobs.push(
-            cronJob
-        );
+        bool foundGap;
+        for(uint i; i<cronJobs.length; i++)
+        {
+            if (cronJobs[i].targetContract == address(0x0))
+            {
+                foundGap = true;
+                cronJobs[i] = cronJob;
+                break;
+            }
+        }
+
+        if (!foundGap)
+        {
+            cronJobs.push(
+                cronJob
+            );
+        }
+    }
+
+    function removeJobs(address targetContract)
+        public
+    {
+        for(uint i; i<cronJobs.length; i++)
+        {
+            if (cronJobs[i].targetContract == targetContract)
+            {
+                delete cronJobs[i];
+            }
+        }
     }
 
     function getCronJobsLength()
@@ -42,5 +68,4 @@ contract CerbyCronJobs {
                 call(abi.encodePacked(cronJobs[i].signature));
         }
     }
-
 }

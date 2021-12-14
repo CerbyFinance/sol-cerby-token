@@ -1,0 +1,72 @@
+{
+	"compiler": {
+		"version": "0.8.10+commit.fc410830"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "stateChange",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "stateChange2",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"sol-defifactory-token/CerbyCronJobs.sol": "IChangeState"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"sol-defifactory-token/CerbyCronJobs.sol": {
+			"keccak256": "0x9b0adf6fa97803bc783306a278a3934bb0757f80b216fa31c8cc2795972da867",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://d6de1861f19ac30812d2b8861d8bb10f1143796f75d697f560c1c9cd035f1b9a",
+				"dweb:/ipfs/Qma7c9daKqRLW71AKWfUiHqV53xwr5n86St6iNgMhoQjfE"
+			]
+		}
+	},
+	"version": 1
+}

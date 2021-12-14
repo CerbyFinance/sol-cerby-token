@@ -71,6 +71,19 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "targetContract",
+						"type": "address"
+					}
+				],
+				"name": "removeJobs",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -101,11 +114,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyCronJobs.sol": {
-			"keccak256": "0x26023e584d7b6e7ec2c859eb31efcd293a610bffe8303752c45c31b5200c4567",
+			"keccak256": "0x0468a6c6ee18186ea8522c02819c6688b4a17cf6c0fc44e80a9cc9be1600afe7",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://36176a297468a945595bcdd5542ba36c57f1f067828fc31f4c5bdc35ae291b9b",
-				"dweb:/ipfs/Qmf45bqZFFKZEgsSSo9FWwZtv3Jq3m39unh7WnVk73ChZq"
+				"bzz-raw://fe90b516ef87acb672a46cb36f003666712b1afcea8c8177a4bed5b21024de62",
+				"dweb:/ipfs/QmNj3AswUaSoQm9Rbqv961eR7HNaXQTdh2oAmYZfZ6bGZJ"
 			]
 		}
 	},
