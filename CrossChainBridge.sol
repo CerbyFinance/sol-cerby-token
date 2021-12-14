@@ -11,6 +11,33 @@ struct BulkFeeDependingOnDestinationChainId {
     uint amountAsFee;
 }
 
+/*
+
+[
+    [
+        "0xdef1fac7Bf08f173D286BbBDcBeeADe695129840",
+        1,
+        "100000000000000000000000"
+    ],
+    [
+        "0xdef1fac7Bf08f173D286BbBDcBeeADe695129840",
+        56,
+        "10000000000000000000000"
+    ],
+    [
+        "0xdef1fac7Bf08f173D286BbBDcBeeADe695129840",
+        43114,
+        "10000000000000000000000"
+    ],
+    [
+        "0xdef1fac7Bf08f173D286BbBDcBeeADe695129840",
+        250,
+        "10000000000000000000000"
+    ]
+]
+
+*/
+
 contract CrossChainBridge is AccessControlEnumerable {
     event ProofOfBurn(address addr, address token, uint amount, uint amountAsFee, uint currentNonce, uint sourceChain, uint destinationChain, bytes32 transactionHash);
     event ProofOfMint(address addr, address token, uint amountAsFee, uint finalAmount, bytes32 transactionHash);

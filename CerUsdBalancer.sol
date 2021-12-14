@@ -122,6 +122,13 @@ contract CerbyUsdBalancer {
         }
     }
 
+    function test123()
+        public
+        returns(uint)
+    {
+        return 123;
+    }
+
     function getPrice()
         public
         view

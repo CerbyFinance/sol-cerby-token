@@ -12,80 +12,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "addInitialLiquidity",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "targetPrice",
-						"type": "uint256"
-					}
-				],
-				"name": "balance",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bool",
-						"name": "isBuy",
-						"type": "bool"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountIn",
-						"type": "uint256"
-					}
-				],
-				"name": "doSwap",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getPrice",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "percent",
-						"type": "uint256"
-					}
-				],
-				"name": "removeLiquidity",
+				"name": "registerTask",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -104,7 +31,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/CerUsdBalancer.sol": "CerbyUsdBalancer"
+			"sol-defifactory-token/CerbyCronSystem.sol": "CerbyUsdBalancer"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -118,52 +45,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/CerUsdBalancer.sol": {
-			"keccak256": "0xf8f40d5030721cf29ddaea6777614525fc6faaed56f733e9bf83628ca24c5039",
+		"sol-defifactory-token/CerbyCronSystem.sol": {
+			"keccak256": "0x5ec02f5bb68dc81b20b91eaa4af49ba1c7ac85ead41e6ac93acfed9e641b8751",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://9273bcedf5bfedebfd3e2f80740da742d47cb5b474731778422f7b5b5713edac",
-				"dweb:/ipfs/QmbWTJCmPtTuL13CaFsZaiLk3jK7GmMbruZtSy1wPUzm9k"
-			]
-		},
-		"sol-defifactory-token/interfaces/ICerbyToken.sol": {
-			"keccak256": "0x1cf233391c970f48f8e1a2db9a3e81c4ebb8c2ff423c6d1c553df632f04abf2d",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://845a3faee636b03fa2b2e09a4d43df33ce2f1ac5f031c9f4d9f7a5f2a1d5ee7e",
-				"dweb:/ipfs/QmV6PFf9HzucpBj4y6zvW7BbuMRGhQAEa7MRWKCCREgB7V"
-			]
-		},
-		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {
-			"keccak256": "0xcedf8f2d94a11375f62ab9e3c0cbca9e584de936dc974d84c0785935c08555fc",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://355af2d26712d9ec44a3fc629162d8c0c3b40126b7916a1fc3f4e39ba42224f6",
-				"dweb:/ipfs/QmTataj3Mb5b6E6n5NU7GLtPC5N8ugJwUKJ5fR8LqT69m1"
-			]
-		},
-		"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
-			"keccak256": "0x8b11d0b070b3ea821880b21c336186d619892cd92cb90f05a9defebef8836624",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://f0598d56bb3b6a0ee15374a10ce2913e854af87f5c6845772ef505a31c0c9fa7",
-				"dweb:/ipfs/QmXH92UmaKz7qks5cXQbDae5gwnDWnAHvwmcS8vvgraA5Y"
-			]
-		},
-		"sol-defifactory-token/interfaces/IUniswapV2Router.sol": {
-			"keccak256": "0x590b9262136f0a0af7a7ba0c2f823624e8b5a70461b91822c404ce9fb0ab69dd",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://27cdcc84b36b3ded02e4db7bd50c4e3ca417c57b0937b6a01a730aa405e4ed72",
-				"dweb:/ipfs/QmQSu4eRtu1YKaS5bVRNizUZn2RHnhqBqXbjM4pgoauN7U"
-			]
-		},
-		"sol-defifactory-token/interfaces/IWeth.sol": {
-			"keccak256": "0xaebf064916d07f10ca2ca496bff1160dc28ad0a0ae92bbb52fd0f21ff964d9e8",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://6e85dbc5e9dd412cc18ca50e53160765f510e2e6b5c5be6de3a25f3dc8eb39b1",
-				"dweb:/ipfs/QmYmKKacDwTZz4vUQud2us8qXP7GqUzEGS3b9AAriKjYMr"
+				"bzz-raw://a2044bc954d7fd03d4a1a1ea9f795409e9df1f2cbf98b491a936eb54a5b373dc",
+				"dweb:/ipfs/QmVSVYFpYvanUrADKUK3wwCZ6cXniSRPjE8XEBAr6mwVD8"
 			]
 		}
 	},
