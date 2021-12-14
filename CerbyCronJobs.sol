@@ -11,10 +11,12 @@ contract CerbyCronJobs {
     CronJob[] public cronJobs;
 
     constructor() {
+        // TODO: add balancer cerUSD
+        // TODO: add staking snapshoting
     }
 
     function registerJob(address targetContract, string calldata abiCall)
-        public
+        external
     {
         CronJob memory cronJob;
         cronJob.targetContract = targetContract;
@@ -40,7 +42,7 @@ contract CerbyCronJobs {
     }
 
     function removeJobs(address targetContract)
-        public
+        external
     {
         for(uint i; i<cronJobs.length; i++)
         {
@@ -52,15 +54,15 @@ contract CerbyCronJobs {
     }
 
     function getCronJobsLength()
-        public
+        external
         view
         returns (uint)
     {
         return cronJobs.length;
     }
     
-    function executeJobs()
-        public
+    function executeCronJobs()
+        external
     {
         for(uint i; i<cronJobs.length; i++)
         {            

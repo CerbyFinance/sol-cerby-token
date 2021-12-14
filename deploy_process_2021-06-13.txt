@@ -4,6 +4,13 @@
 4. NoBotsTechV2 set totalSupply + rewardsBalance
 5. DeftStorageContract give admin rights to CrossChainBridge contract 
 7. defiFactoryTokenContract.methods.updateUtilsContracts
+
+
+NoBotsTechV3
+CerbyCronJobs
+-
+CerbyBotDetection
+
 Eth:
 [
     [false, false, false, false, true, "0x543a000a9FBE139ff783b2F8EbdF8869452Dc21D"],

@@ -4,6 +4,7 @@ pragma solidity ^0.8.10;
 
 import "./interfaces/ICerbyToken.sol";
 import "./interfaces/ICerbyBotDetection.sol";
+import "./interfaces/ICerbyCronJobs.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol";
 
@@ -13,6 +14,7 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
     bytes32 public constant ROLE_TRANSFERER = keccak256("ROLE_TRANSFERER");
     bytes32 public constant ROLE_MODERATOR = keccak256("ROLE_MODERATOR");
     
+    uint internal constant CERBY_CRON_JOBS_CONTRACT_ID = 2;
     uint internal constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
     address constant CERBY_TOKEN_CONTRACT_ADDRESS = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
     address constant BURN_ADDRESS = address(0x0);
@@ -64,6 +66,15 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
         _;
     }
     
+    modifier executeCronJobs()
+    {
+        ICerbyCronJobs iCerbyCronJobs = ICerbyCronJobs(
+            getUtilsContractAtPos(CERBY_CRON_JOBS_CONTRACT_ID)
+        );
+        iCerbyCronJobs.executeCronJobs();
+        _;
+    }
+    
     modifier notPausedContract {
         require(
             !isPaused,
@@ -86,6 +97,19 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
             "T: !burn"
         );
         _;
+    }
+
+    function _approve(address owner, address spender, uint256 amount) 
+        internal
+        executeCronJobs
+        virtual
+        override
+    {
+        require(owner != address(0), "ERC20: approve from the zero address");
+        require(spender != address(0), "ERC20: approve to the zero address");
+
+        _allowances[owner][spender] = amount;
+        emit Approval(owner, spender, amount);
     }
     
     function getUtilsContractAtPos(uint pos)
@@ -205,6 +229,7 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
     
     function _mintHumanAddress(address to, uint desiredAmountToMint) 
         private
+        executeCronJobs
         recipientIsNotBurnAddress(to)
     {
         tokenBalances[to] += desiredAmountToMint;
@@ -233,6 +258,7 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
 
     function _burnHumanAddress(address from, uint desiredAmountToBurn)
         private
+        executeCronJobs
     {
         tokenBalances[from] -= desiredAmountToBurn;
         totalTokenSupply -= desiredAmountToBurn;

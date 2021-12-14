@@ -36,7 +36,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "executeJobs",
+				"name": "executeCronJobs",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -114,11 +114,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyCronJobs.sol": {
-			"keccak256": "0x0468a6c6ee18186ea8522c02819c6688b4a17cf6c0fc44e80a9cc9be1600afe7",
+			"keccak256": "0x065e14e71fd9fa14714e625f963755db734aeec0ccdf49e8823c05f17b324803",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://fe90b516ef87acb672a46cb36f003666712b1afcea8c8177a4bed5b21024de62",
-				"dweb:/ipfs/QmNj3AswUaSoQm9Rbqv961eR7HNaXQTdh2oAmYZfZ6bGZJ"
+				"bzz-raw://fa48739aba337eb32814a03cce9aa672772a3203e228d186fdea16d8d7ead6e0",
+				"dweb:/ipfs/QmTCR327SoS1DVT9TWiBrNMWqdd7DhyscHjPbgcroSD8gP"
 			]
 		}
 	},
