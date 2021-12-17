@@ -6,6 +6,7 @@ import "./interfaces/ICerbyToken.sol";
 import "./interfaces/IUniswapV2Pair.sol";
 import "./interfaces/IUniswapV2Router.sol";
 import "./interfaces/IUniswapV2Factory.sol";
+import "./interfaces/IUniswapV3Pool.sol";
 
 contract CerbyUsdBalancer {
 
@@ -18,6 +19,7 @@ contract CerbyUsdBalancer {
 
     uint constant PRICE_DENORM = 1e18;
     uint constant FEE_DENORM = 10000;
+    uint constant UNISWAP_V3_FEE = 3000;
 
     uint constant PERCENTAGE_INCREASE = 1005;
     uint constant PERCENTAGE_DECREASE = 995;
@@ -42,6 +44,7 @@ contract CerbyUsdBalancer {
         IWeth(cerbyToken).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
         IWeth(cerUSDToken).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
         IWeth(uniswapPair).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
+        
     }
 
     function balance(uint targetPrice)
@@ -122,13 +125,6 @@ contract CerbyUsdBalancer {
         }
     }
 
-    function test123()
-        public
-        returns(uint)
-    {
-        return 123;
-    }
-
     function getPrice()
         public
         view
@@ -142,6 +138,16 @@ contract CerbyUsdBalancer {
         }
         uint initialPrice = (balanceCerUSD * PRICE_DENORM) / balanceCerby;
         return (balanceCerUSD, balanceCerby, initialPrice);
+    }
+
+    function getPriceV3(address UNISWAP_V3_PAIR)
+        external
+        view
+        returns (uint256 price)
+    {
+        IUniswapV3Pool pool = IUniswapV3Pool(UNISWAP_V3_PAIR);
+        (uint160 sqrtPriceX96,,,,,,) =  pool.slot0();
+        return uint(sqrtPriceX96) * uint(sqrtPriceX96) * 1e18 >> (96 * 2);
     }
 
     function removeLiquidity(uint percent)
