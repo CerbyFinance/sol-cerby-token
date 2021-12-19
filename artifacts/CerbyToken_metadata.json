@@ -1173,18 +1173,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBasedToken.sol": {
-			"keccak256": "0xdd51d06efeb2c9e0b73330ceb35566edfc0fc0be6d5c86103bf0a196f93e91b6",
+			"keccak256": "0x74ecc687d996eaef27edc36caeb266aeff80c9ccf1c529b493d8e929c98c9166",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://8f60f18cca91bda7043841e1a504b5caf72413ffb0402a484c46e5eb0d9d15ad",
-				"dweb:/ipfs/Qmey4KmKM4k1VWH1RaxGwWiDFpKrUw13RVe54V9SbASgxU"
+				"bzz-raw://d3add13b6ff208724d640b190b4ab5923f716c5155664815344270eeac73b042",
+				"dweb:/ipfs/QmXu6TrMUrJR2AZZraWbxrfBCivwxNeN3BYcFWkMLZ6kBT"
 			]
 		},
 		"sol-defifactory-token/CerbyToken.sol": {
@@ -1201,6 +1201,14 @@
 			"urls": [
 				"bzz-raw://55872994e8f60f28c7ad6f93b6c60f9f40d9909dd8ef3a26c8e6cfe2adf1fe9a",
 				"dweb:/ipfs/Qmc4hWqrXWSCA91j3vGqM3W5hHcfN1DEHnKRXV8rgtyhi9"
+			]
+		},
+		"sol-defifactory-token/interfaces/ICerbyCronJobs.sol": {
+			"keccak256": "0x9548d0f358b80d5721839abb25aa5e42bdd6b7c436bf222dedddb66223305d88",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://7b58f862c79af6250975b7c558cec4e930e9a0a807cfc5ecc256ee566fa7defb",
+				"dweb:/ipfs/QmVW391ejnmEQVeUCpcAnkp9VpzjJhiqqkvyuSh3sEyaNQ"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyToken.sol": {

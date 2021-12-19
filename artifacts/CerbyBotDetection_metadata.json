@@ -684,18 +684,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBotDetection.sol": {
-			"keccak256": "0x687d322f962c150f09028d92e6df664c70db2f17dd4a7a1a0d4a15197573d88c",
+			"keccak256": "0xefc7dcd8e00b73daa697d58c56a0a1b123131173ce10b96f030f4ebfc6854738",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://d4fce1f1f73a347d5161fa92b4637c47e17a7d4d17a5d1faf6386b17a32734f8",
-				"dweb:/ipfs/QmRNFAiY8BcEhxevzWUb9iMBmpHtH4USqDpFgLCgjPLPN7"
+				"bzz-raw://0fc51f09fec223fa75e9cf2081b250e2babb4fd4941b637bb8e5465a3ff3a4e2",
+				"dweb:/ipfs/QmSCbJUQ4d2SGvHKr9N9HJC7b2NiTY6BgwnkvoPQ4zkkhQ"
 			]
 		},
 		"sol-defifactory-token/interfaces/IWeth.sol": {

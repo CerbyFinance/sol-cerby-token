@@ -50,7 +50,6 @@ contract CerbyBotDetection is AccessControlEnumerable {
         _setupRole(ROLE_ADMIN, 0x9980a0447456b5cdce209D7dC94820FF15600022); // Deft blacklister
         _setupRole(ROLE_ADMIN, 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840); // Cerby Token Contract
         
-        markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28); // Top1 Eth Bot
         markAddressAsBot(0xcefFe5ba89F63E7d4606208093b71Dc5B8468404); // Marketing Wallet
         markAddressAsBot(0x102ad2CF269404dDfDc4adB1Ff26B4767Fb07358); // Scam: https://polygonscan.com/token/0xdef1fac7bf08f173d286bbbdcbeeade695129840?a=0x102ad2cf269404ddfdc4adb1ff26b4767fb07358
         
