@@ -190,7 +190,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         _;
     }
 
-    modifier executeCron()
+    modifier executeCronJobs()
     {
         _;
     }
