@@ -380,6 +380,29 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256[]",
+						"name": "stakeIds",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "address",
+						"name": "oldOwner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "adminBulkTransferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "fromAddr",
 						"type": "address"
@@ -1326,18 +1349,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyStakingSystem.sol": {
-			"keccak256": "0x8ced4a48d2a7381edf8823826a177450aff0b76bdfde69e73b826adc93a697a4",
+			"keccak256": "0x0e121e8a2cdc6ea8040681ac16d7be78936a3893ee75847c4f0317e4a3de9c0c",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://5a5aeb56f1c3e151dfca2a70fe6536c63c7d6ab173ec3b5ef585485c85114ff3",
-				"dweb:/ipfs/QmeGsQnw7kioenUnXkDcFZsD7LHZrDABp3t2dappS3BNn8"
+				"bzz-raw://7d5332e102c4bf56acbc26ec4986a092351171eada5a49db20f165eb67323451",
+				"dweb:/ipfs/QmWSmWLTkDdqi97pQXWY9wx46NDZGRTJ7MsLXQSa1aoZwN"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

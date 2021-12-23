@@ -189,6 +189,11 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         );
         _;
     }
+
+    modifier executeCron()
+    {
+        _;
+    }
     
     function adminUpdateSettings(Settings calldata _settings)
         public
@@ -197,6 +202,27 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         settings = _settings;
         
         emit SettingsUpdated(_settings);
+    }
+
+    function adminBulkTransferOwnership(uint[] calldata stakeIds, address oldOwner, address newOwner)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        updateAllSnapshots();
+
+        for(uint i = 0; i<stakeIds.length; i++)
+        {
+            require(
+                stakes[stakeIds[i]].owner != newOwner,
+                "SS: New owner must be different from old owner"
+            );
+            require(
+                stakes[stakeIds[i]].owner == oldOwner,
+                "SS: Stake owner does not match"
+            );            
+
+            _transferOwnership(stakeIds[i], newOwner);
+        }          
     }
     
     function adminBurnAndAddToStakersInflation(address fromAddr, uint amountToBurn)
@@ -235,7 +261,13 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         );
         
         updateAllSnapshots();
-        
+
+        _transferOwnership(stakeId, newOwner);        
+    }
+
+    function _transferOwnership(uint stakeId, address newOwner)
+        private
+    {
         stakes[stakeId].owner = newOwner;
         emit StakeOwnerChanged(stakeId, newOwner);
     }
