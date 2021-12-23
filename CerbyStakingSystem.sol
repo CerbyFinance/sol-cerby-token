@@ -151,7 +151,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         _setupRole(ROLE_ADMIN, msg.sender);
     }
     
-    modifier onlyRealUsers()
+    modifier onlyRealUsers
     {
         ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
             ICerbyTokenMinterBurner(cerbyToken).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
@@ -192,6 +192,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
 
     modifier executeCronJobs()
     {
+        // TODO: add code
         _;
     }
     
@@ -206,6 +207,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
 
     function adminBulkTransferOwnership(uint[] calldata stakeIds, address oldOwner, address newOwner)
         public
+        executeCronJobs
         onlyRole(ROLE_ADMIN)
     {
         updateAllSnapshots();
@@ -227,6 +229,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function adminBurnAndAddToStakersInflation(address fromAddr, uint amountToBurn)
         public
+        executeCronJobs
         onlyRole(ROLE_ADMIN)
     {
         updateAllSnapshots();
@@ -250,7 +253,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function transferOwnership(uint stakeId, address newOwner)
         public
-        onlyRealUsers()
+        onlyRealUsers
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
@@ -266,6 +269,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     }
 
     function _transferOwnership(uint stakeId, address newOwner)
+        executeCronJobs
         private
     {
         stakes[stakeId].owner = newOwner;
@@ -371,7 +375,8 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function startStake(StartStake memory _startStake)
         public
-        onlyRealUsers()
+        executeCronJobs
+        onlyRealUsers
         returns(uint stakeId)
     {
         require(
@@ -438,7 +443,8 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         uint stakeId
     )
         public
-        onlyRealUsers()
+        executeCronJobs
+        onlyRealUsers
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
@@ -500,7 +506,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         uint stakeId
     )
         public
-        onlyRealUsers()
+        onlyRealUsers
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)

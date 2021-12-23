@@ -1349,18 +1349,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyStakingSystem.sol": {
-			"keccak256": "0x9994e35d27d55bf2669b952f2c5b5707114d181b5a8c2de2e04150854a6d9651",
+			"keccak256": "0x7ea4b52a923e561d7435086462f92d4cf2fd7e2bfdb4e644d3e396078945019f",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://74148829dc105d15eee3fcdb4d86a988b0ac9494f742631be568d1a468a70ebd",
-				"dweb:/ipfs/QmcbdhBQQywSx226dQUkpUdVAkEsrXTxwYFCgQcwSPbcBT"
+				"bzz-raw://922c2157a5bea12ca0e366cc782ca36e38737bf52af5b9adadf9d947e508022d",
+				"dweb:/ipfs/QmW9fnuLzGsw2joNEsT16KkgC5sUrrgvGML7dzt8x73Yzv"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
