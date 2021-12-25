@@ -49,17 +49,14 @@ contract CerbyBotDetection is AccessControlEnumerable {
     constructor() {
         
         _setupRole(ROLE_ADMIN, _msgSender());
-        _setupRole(ROLE_ADMIN, 0x1EE133d3CC3fD5795DD4014579A36A6b7900102e); // NoBotsTechV3 Deft
+        _setupRole(ROLE_ADMIN, 0x543a000a9FBE139ff783b2F8EbdF8869452Dc21D); // NoBotsTechV3 Deft
         
         _setupRole(ROLE_ADMIN, STAKING_CONTRACT); // Staking Contract
-        _setupRole(ROLE_ADMIN, 0xA5df69790ba509c511E2A0A31cEEFfecC4d156C7); // Cross Chain Bridge Contract
-        _setupRole(ROLE_ADMIN, 0x9980a0447456b5cdce209D7dC94820FF15600022); // Deft blacklister
+        _setupRole(ROLE_ADMIN, 0xEf038429e3BAaF784e1DE93075070df2A43D4278); // Cross Chain Bridge Contract
+        _setupRole(ROLE_ADMIN, 0x9980a0447456b5cdce209D7dC94820FF15600022); // Cerby blacklister
         _setupRole(ROLE_ADMIN, 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840); // Cerby Token Contract
         
-        
-        markAsUniswapPair(0xE68c1d72340aEeFe5Be76eDa63AE2f4bc7514110, IS_UNISWAP_PAIR); // Defi Plaza
-        markAddressAsHuman(0xE68c1d72340aEeFe5Be76eDa63AE2f4bc7514110, true); // Defi Plaza
-        markAddressAsHuman(0xDef1Fafc79CD01Cf6797B9d7F51411beF486262a, true); // Staking contract
+        markAddressAsHuman(STAKING_CONTRACT, true); // Staking contract
         markAddressAsHuman(0xdEF78a28c78A461598d948bc0c689ce88f812AD8, true); // Cross Chain Bridge Wallet
         markAddressAsHuman(0xDef1C0ded9bec7F1a1670819833240f027b25EfF, true); // 0x: Exchange Proxy
         markAddressAsHuman(0x1111111254fb6c44bAC0beD2854e76F90643097d, true); // 1inch Router
@@ -67,7 +64,6 @@ contract CerbyBotDetection is AccessControlEnumerable {
         markAddressAsHuman(0x3790C9B5A9B9D9AA1c69140a5f01A57c9B868E1e, true); // 1inch Helper2
         markAddressAsHuman(0x2EC255797FEF7669fA243509b7a599121148FFba, true); // 1inch Helper3
         markAddressAsHuman(0x220bdA5c8994804Ac96ebe4DF184d25e5c2196D4, true); // 1inch Helper4
-        markAddressAsHuman(0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9, true); // TeamVestingContract
         markAddressAsHuman(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, true); // CerbyTokenContract
         markAddressAsHuman(0x881D40237659C251811CEC9c364ef91dC08D300C, true); // Metamask Swap Router
         markAddressAsHuman(0x74de5d4FCbf63E00296fd95d33236B9794016631, true); // Metamask Router Wallet

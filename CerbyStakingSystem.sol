@@ -9,8 +9,6 @@ import "./interfaces/ICerbyCronJobs.sol";
 import "./interfaces/ICerbyStakingSystem.sol";
 
 
-// 0x7f949a4966bb6041ddce53b584F18E9649382ffa
-// "0xDef1Fafc79CD01Cf6797B9d7F51411beF486262a","100","500"
 
 struct StartStake {
     uint stakedAmount;

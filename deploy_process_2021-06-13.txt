@@ -7,7 +7,7 @@
 
 
 NoBotsTechV3
-CerbyCronJobs
+CerbyStaking
 -
 CerbyBotDetection
 
