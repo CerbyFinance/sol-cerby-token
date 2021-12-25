@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity ^0.8.8;
+pragma solidity ^0.8.10;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
-import "./interfaces/IDefiFactoryToken.sol";
-import "./interfaces/IDeftStorageContract.sol"; // TODO: change to cerby bot protection
+import "./interfaces/ICerbyTokenMinterBurner.sol";
+import "./interfaces/ICerbyBotDetection.sol";
 
 struct BulkFeeDependingOnDestinationChainId {
     address token;
@@ -48,8 +48,7 @@ contract CrossChainBridge is AccessControlEnumerable {
     enum States{ DefaultValue, Burned, Approved, Executed }
     mapping(bytes32 => States) public transactionStorage;
     
-    uint constant NO_BOTS_TECH_CONTRACT_ID = 0;
-    uint constant DEFT_STORAGE_CONTRACT_ID = 3;
+    uint constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
     bytes32 public constant ROLE_APPROVER = keccak256("ROLE_APPROVER");
     
     
@@ -105,52 +104,50 @@ contract CrossChainBridge is AccessControlEnumerable {
             _setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
             
             bulkFees = new BulkFeeDependingOnDestinationChainId[](1);
-            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248, ETH_KOVAN_CHAIN_ID, 500000 * 1e18); // allow to bridge to eth
+            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248, ETH_KOVAN_CHAIN_ID, 100000 * 1e18); // allow to bridge to eth
         }*/
         
         /* MAINNET */
         if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
             bulkFees = new BulkFeeDependingOnDestinationChainId[](4);
-            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, BSC_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to bsc
-            bulkFees[1] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, MATIC_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to polygon
-            bulkFees[2] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, FANTOM_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to fantom
-            bulkFees[3] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, AVALANCHE_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to avalanche
+            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, BSC_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to bsc
+            bulkFees[1] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, MATIC_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to polygon
+            bulkFees[2] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, FANTOM_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to fantom
+            bulkFees[3] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, AVALANCHE_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to avalanche
         } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
         {
             bulkFees = new BulkFeeDependingOnDestinationChainId[](4);
-            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, ETH_MAINNET_CHAIN_ID, 500000 * 1e18); // allow to bridge to eth
-            bulkFees[1] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, MATIC_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to polygon
-            bulkFees[2] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, FANTOM_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to fantom
-            bulkFees[3] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, AVALANCHE_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to avalanche
+            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, ETH_MAINNET_CHAIN_ID, 100000 * 1e18); // allow to bridge to eth
+            bulkFees[1] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, MATIC_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to polygon
+            bulkFees[2] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, FANTOM_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to fantom
+            bulkFees[3] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, AVALANCHE_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to avalanche
         } else if (block.chainid == MATIC_MAINNET_CHAIN_ID)
         {
             bulkFees = new BulkFeeDependingOnDestinationChainId[](4);
-            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, ETH_MAINNET_CHAIN_ID, 500000 * 1e18); // allow to bridge to eth
-            bulkFees[1] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, BSC_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to bsc
-            bulkFees[2] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, FANTOM_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to fantom
-            bulkFees[3] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, AVALANCHE_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to avalanche
+            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, ETH_MAINNET_CHAIN_ID, 100000 * 1e18); // allow to bridge to eth
+            bulkFees[1] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, BSC_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to bsc
+            bulkFees[2] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, FANTOM_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to fantom
+            bulkFees[3] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, AVALANCHE_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to avalanche
         } else if (block.chainid == FANTOM_MAINNET_CHAIN_ID)
         {
             bulkFees = new BulkFeeDependingOnDestinationChainId[](4);
-            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, ETH_MAINNET_CHAIN_ID, 500000 * 1e18); // allow to bridge to eth
-            bulkFees[1] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, BSC_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to bsc
-            bulkFees[2] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, MATIC_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to polygon
-            bulkFees[3] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, AVALANCHE_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to avalanche
+            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, ETH_MAINNET_CHAIN_ID, 100000 * 1e18); // allow to bridge to eth
+            bulkFees[1] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, BSC_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to bsc
+            bulkFees[2] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, MATIC_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to polygon
+            bulkFees[3] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, AVALANCHE_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to avalanche
         } else if (block.chainid == AVALANCHE_MAINNET_CHAIN_ID)
         {
             bulkFees = new BulkFeeDependingOnDestinationChainId[](4);
-            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, ETH_MAINNET_CHAIN_ID, 500000 * 1e18); // allow to bridge to eth
-            bulkFees[1] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, BSC_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to bsc
-            bulkFees[2] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, FANTOM_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to fantom
-            bulkFees[3] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, MATIC_MAINNET_CHAIN_ID, 25000 * 1e18); // allow to bridge to polygon
+            bulkFees[0] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, ETH_MAINNET_CHAIN_ID, 100000 * 1e18); // allow to bridge to eth
+            bulkFees[1] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, BSC_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to bsc
+            bulkFees[2] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, FANTOM_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to fantom
+            bulkFees[3] = BulkFeeDependingOnDestinationChainId(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840, MATIC_MAINNET_CHAIN_ID, 10000 * 1e18); // allow to bridge to polygon
         }
 
         bulkUpdateFeeDependingOnDestinationChainId(bulkFees);
     }
-
-    // TODO: add cron jobs
-    
+        
     function getFeeDependingOnDestinationChainId(address tokenAddr, uint destinationChainId)
         public
         view
@@ -227,33 +224,22 @@ contract CrossChainBridge is AccessControlEnumerable {
             "CCB: Destination is forbidden (mint)"
         );
         
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(sourceProofOfBurn.sourceTokenAddr);
-        /*if (
-                block.chainid != ETH_KOVAN_CHAIN_ID
-            )
-        {
-            IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-                iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
-            );
-            require(
-                !iDeftStorageContract.isBotAddress(msg.sender),
-                "CCB: Minting is temporary disabled!"
-            );
-        }*/
-        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-            iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+        ICerbyTokenMinterBurner iCerbyToken = ICerbyTokenMinterBurner(sourceProofOfBurn.sourceTokenAddr);
+        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
+            iCerbyToken.getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
         );
         require(
-            !iDeftStorageContract.isBotAddress(msg.sender),
+            !iCerbyBotDetection.isBotAddress(msg.sender),
             "CCB: Minting is temporary disabled!"
         );
+        iCerbyBotDetection.executeCronJobs();
         
         transactionStorage[sourceProofOfBurn.transactionHash] = States.Executed;
         
         uint amountAsFee = sourceProofOfBurn.amountAsFee;
         uint finalAmount = sourceProofOfBurn.amountToBridge - amountAsFee; 
         
-        iDefiFactoryToken.mintByBridge(msg.sender, finalAmount);
+        iCerbyToken.mintHumanAddress(msg.sender, finalAmount);
         
         emit ProofOfMint(msg.sender, sourceProofOfBurn.sourceTokenAddr, amountAsFee, finalAmount, transactionHash);
     }
@@ -261,9 +247,9 @@ contract CrossChainBridge is AccessControlEnumerable {
     function burnAndCreateProof(address token, uint amount, uint destinationChainId) 
         external
     {
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(token);
+        ICerbyTokenMinterBurner iCerbyToken = ICerbyTokenMinterBurner(token);
         require(
-            amount <= iDefiFactoryToken.balanceOf(msg.sender),
+            amount <= iCerbyToken.balanceOf(msg.sender),
             "CCB: Amount must not exceed available balance. Try reducing the amount."
         );
         require(
@@ -281,25 +267,14 @@ contract CrossChainBridge is AccessControlEnumerable {
             "CCB: Amount is lower than the minimum permitted amount"
         );
         
-        /*if (
-                block.chainid != ETH_KOVAN_CHAIN_ID
-            )
-        {
-            IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-                iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
-            );
-            require(
-                !iDeftStorageContract.isBotAddress(msg.sender),
-                "CCB: Burning is temporary disabled!"
-            );
-        }*/
-        IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-            iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
+            iCerbyToken.getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
         );
         require(
-            !iDeftStorageContract.isBotAddress(msg.sender),
+            !iCerbyBotDetection.isBotAddress(msg.sender),
             "CCB: Burning is temporary disabled!"
         );
+        iCerbyBotDetection.executeCronJobs();
         
         bytes32 transactionHash = keccak256(abi.encodePacked(
                 msg.sender, token, amount, amountAsFee, block.chainid, destinationChainId, currentNonce[token]
@@ -307,8 +282,8 @@ contract CrossChainBridge is AccessControlEnumerable {
             
         transactionStorage[transactionHash] = States.Burned;
         
-        iDefiFactoryToken.burnByBridge(msg.sender, amount);
-        iDefiFactoryToken.mintHumanAddress(beneficiaryAddress, amountAsFee);
+        iCerbyToken.burnHumanAddress(msg.sender, amount);
+        iCerbyToken.mintHumanAddress(beneficiaryAddress, amountAsFee);
         
         emit ProofOfBurn(msg.sender, token, amount, amountAsFee, currentNonce[token], block.chainid, destinationChainId, transactionHash);
         currentNonce[token]++;

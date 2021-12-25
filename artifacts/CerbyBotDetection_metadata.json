@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.10+commit.fc410830"
+		"version": "0.8.11+commit.d7f03943"
 	},
 	"language": "Solidity",
 	"output": {
@@ -219,12 +219,56 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "cronJobs",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "targetContract",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes4",
+						"name": "signature",
+						"type": "bytes4"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "executeCronJobs",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "tokenAddr",
 						"type": "address"
 					}
 				],
 				"name": "getCooldownPeriodSell",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getCronJobsLength",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -567,6 +611,37 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "targetContract",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "abiCall",
+						"type": "string"
+					}
+				],
+				"name": "registerJob",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "targetContract",
+						"type": "address"
+					}
+				],
+				"name": "removeJobs",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -684,18 +759,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBotDetection.sol": {
-			"keccak256": "0xefc7dcd8e00b73daa697d58c56a0a1b123131173ce10b96f030f4ebfc6854738",
+			"keccak256": "0xf2483dc12599d6d0633187ebcb058e351144b9eccfbf9f073be56b26bb6160ef",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://0fc51f09fec223fa75e9cf2081b250e2babb4fd4941b637bb8e5465a3ff3a4e2",
-				"dweb:/ipfs/QmSCbJUQ4d2SGvHKr9N9HJC7b2NiTY6BgwnkvoPQ4zkkhQ"
+				"bzz-raw://2928a2cd16004e859dc2a02e4ad21c2252e285bffaa3bc9dccb8a369379ede9e",
+				"dweb:/ipfs/QmNqGU2S5JbFoYEtkB9LUUCBWn1qJtgH98hyb6q7o6xdL4"
 			]
 		},
 		"sol-defifactory-token/interfaces/IWeth.sol": {

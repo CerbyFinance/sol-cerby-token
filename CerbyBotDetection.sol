@@ -5,6 +5,11 @@ pragma solidity ^0.8.10;
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./interfaces/IWeth.sol";
 
+struct CronJob {
+    address targetContract;
+    bytes4 signature;
+}
+
 struct TransactionInfo {
     bool isBuy;
     bool isSell;
@@ -12,6 +17,7 @@ struct TransactionInfo {
 
 contract CerbyBotDetection is AccessControlEnumerable {
     
+    CronJob[] public cronJobs;
     mapping(address => bool) private isBotStorage;
     mapping(address => bool) private isHumanStorage;
     
@@ -28,7 +34,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
     bytes constant TOKEN1_SIGNATURE = abi.encodeWithSignature("token1()");
     
     address constant EIGHT_LEADING_ZEROS_TO_COMPARE = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
-    address constant STAKING_CONTRACT = address(0xDef1Fafc79CD01Cf6797B9d7F51411beF486262a);
+    address constant STAKING_CONTRACT = address(0x8888888AC6aa2482265e5346832CDd963c70A0D1);
     address constant BURN_ADDRESS = address(0x0);
     uint constant DEFAULT_SELL_COOLDOWN = 5 minutes;
     
@@ -43,15 +49,12 @@ contract CerbyBotDetection is AccessControlEnumerable {
     constructor() {
         
         _setupRole(ROLE_ADMIN, _msgSender());
-        //_setupRole(ROLE_ADMIN, 0x1EE133d3CC3fD5795DD4014579A36A6b7900102e); // NoBotsTechV3 Deft
+        _setupRole(ROLE_ADMIN, 0x1EE133d3CC3fD5795DD4014579A36A6b7900102e); // NoBotsTechV3 Deft
         
         _setupRole(ROLE_ADMIN, STAKING_CONTRACT); // Staking Contract
         _setupRole(ROLE_ADMIN, 0xA5df69790ba509c511E2A0A31cEEFfecC4d156C7); // Cross Chain Bridge Contract
         _setupRole(ROLE_ADMIN, 0x9980a0447456b5cdce209D7dC94820FF15600022); // Deft blacklister
         _setupRole(ROLE_ADMIN, 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840); // Cerby Token Contract
-        
-        markAddressAsBot(0xcefFe5ba89F63E7d4606208093b71Dc5B8468404); // Marketing Wallet
-        markAddressAsBot(0x102ad2CF269404dDfDc4adB1Ff26B4767Fb07358); // Scam: https://polygonscan.com/token/0xdef1fac7bf08f173d286bbbdcbeeade695129840?a=0x102ad2cf269404ddfdc4adb1ff26b4767fb07358
         
         
         markAsUniswapPair(0xE68c1d72340aEeFe5Be76eDa63AE2f4bc7514110, IS_UNISWAP_PAIR); // Defi Plaza
@@ -80,6 +83,66 @@ contract CerbyBotDetection is AccessControlEnumerable {
         } else if (block.chainid == POLYGON_MAINNET_CHAIN_ID)
         {
             markAddressAsHuman(0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff, true); // quick router v2
+        }
+    }
+
+
+    function registerJob(address targetContract, string calldata abiCall)
+        external
+    {
+        CronJob memory cronJob;
+        cronJob.targetContract = targetContract;
+        cronJob.signature = bytes4(abi.encodeWithSignature(abiCall));
+
+        bool foundGap;
+        for(uint i; i<cronJobs.length; i++)
+        {
+            if (cronJobs[i].targetContract == address(0x0))
+            {
+                foundGap = true;
+                cronJobs[i] = cronJob;
+                return;
+            }
+        }
+
+        if (!foundGap)
+        {
+            cronJobs.push(
+                cronJob
+            );
+        }
+    }
+
+    function removeJobs(address targetContract)
+        external
+    {
+        for(uint i; i<cronJobs.length; i++)
+        {
+            if (cronJobs[i].targetContract == targetContract)
+            {
+                delete cronJobs[i];
+            }
+        }
+    }
+
+    function getCronJobsLength()
+        external
+        view
+        returns (uint)
+    {
+        return cronJobs.length;
+    }
+    
+    function executeCronJobs()
+        public
+    {
+        for(uint i; i<cronJobs.length; i++)
+        {     
+            if (cronJobs[i].targetContract != BURN_ADDRESS)  
+            {     
+                address(cronJobs[i].targetContract).
+                    call(abi.encodePacked(cronJobs[i].signature));
+            }
         }
     }
     
@@ -175,12 +238,6 @@ contract CerbyBotDetection is AccessControlEnumerable {
         }
         
         return output;
-    }
-
-    function executeCronJobs()
-        private
-    {
-        // TODO: add here
     }
     
     function isUniswapPairChecker(address addr)

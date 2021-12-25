@@ -50,6 +50,7 @@
 		"gasEstimates": null,
 		"methodIdentifiers": {
 			"checkTransactionInfo(address,address,address,uint256,uint256)": "b34ff36e",
+			"executeCronJobs()": "eef84ba1",
 			"isBotAddress(address)": "eaa8f7e3"
 		}
 	},
@@ -102,6 +103,13 @@
 					"type": "tuple"
 				}
 			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "executeCronJobs",
+			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"
 		},

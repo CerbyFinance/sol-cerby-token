@@ -431,18 +431,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/MintableBurnableToken.sol": {
-			"keccak256": "0x901de1a6f409ac416aab42b5874e0614096cc31f6bc2895fc21cbece53b81006",
+			"keccak256": "0x1874f8d1a736122795be01ddbdbd8e5a5239bd54a76e8a785d67a079581ae5bf",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://854f7ed668bafcc0995ff41903a0cc14feb65b02f4b966dbe4d766e9726312cb",
-				"dweb:/ipfs/QmbrH6sfVZhmwmADX7yZjH2ohfjP3UGrqGzrdZeMT9Rgi5"
+				"bzz-raw://4b58a1c66a1ea6992ced873b68e10c02b137c8b3ad81aec478ddb0d076d2a1fd",
+				"dweb:/ipfs/QmfCLXpuB56iBeaqkDtc9ZuTs7HQYhmU36Q6T7217cdj7p"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20.sol": {

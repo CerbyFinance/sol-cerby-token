@@ -17,4 +17,7 @@ interface ICerbyBotDetection {
         external
         view
         returns (bool);
+
+    function executeCronJobs()
+        external;
 }

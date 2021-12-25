@@ -685,34 +685,34 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0xca219bc009f5a4a077f2a529842e897f897b64ee285829b1275dfde2e2aae067",
+			"keccak256": "0xa6e7bcb6e3f2e9895c6904b96fd75e5d492884442ff14c0ab780e38be004285b",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://5484b0df1ef37c88ef8e2970e9f038fe12a398990d75c254212a0b6e0bbffa44",
-				"dweb:/ipfs/QmSsbyh5LgmagrkqsqtgJKEWha1GXiXdBXvPqxSiwhC6LR"
+				"bzz-raw://bc6d39736888d96e133285aff8c94a0c8ba6010a1f587ff093d9945edd56d477",
+				"dweb:/ipfs/QmUpY8KuyjX3dLP6dXBAV4BkCYdr16ym4vRTr5KNaACyzA"
 			]
 		},
-		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x55662dadf86392fd06c9bb78fc84c42a31cb3786ac836c0bbae077d7edc94fc7",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://7e802caeac0f00050211fd881950e3f767242197387b430f935f139d95024496",
-				"dweb:/ipfs/QmZGfnBk7fQfVipUJyqLpmcnfFbwP1SyrrHmD2tHPhapUN"
-			]
-		},
-		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x31c4471e0df11f688ea99faf7d94b82a2896d15057e838cf55f66b3deef49ae8",
+		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
+			"keccak256": "0x9b905563f93d66ea6f18aaea9c07d545092817e11bae89ae0c8cd59f4f50e505",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://1295f95ac55f3b8a47a29afebb64e095a442f9bac9783bdfd679cb44f1513735",
-				"dweb:/ipfs/QmeFdRCuBNu1uCe9MdHX2eiihWiEKeMZQoHfkP9AWH7Xqk"
+				"bzz-raw://51de5e7294d47d594ed80f368b8cffa09d67af65d9f3f3699f3e5b7bb96f33ce",
+				"dweb:/ipfs/QmRKwyPpezfDG6s4Y1BimYvvjzZ3amPxhEMACjMv2U3fFw"
+			]
+		},
+		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {
+			"keccak256": "0xe9662b09cb4a69c4bcd634ae71ca5e60f630b89e2ef8f818ccf12ceb47707013",
+			"license": "BSD-2-Clause",
+			"urls": [
+				"bzz-raw://38d67dec9f8deaeb4adc5e58d8f483beef22cab8dbc191bc3247e3fc48e434eb",
+				"dweb:/ipfs/QmR1f6cNhWzmDt5qJ9gjuFJL21FwmnNnBhH3beJ2JbPqnz"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

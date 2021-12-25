@@ -35,7 +35,6 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     Stake[] public stakes;
     Settings public settings;
     
-    uint constant CERBY_CRON_JOBS_CONTRACT_ID = 1;
     uint constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
     uint constant MINIMUM_SMALLER_PAYS_BETTER = 1000 * 1e18; // 1k CERBY
     uint constant MAXIMUM_SMALLER_PAYS_BETTER = 1000000 * 1e18; // 1M CERBY
@@ -142,13 +141,13 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         
         _setupRole(ROLE_ADMIN, msg.sender);
     }
-    
+
     modifier executeCronJobs()
     {
-        ICerbyCronJobs iCerbyCronJobs = ICerbyCronJobs(
-            ICerbyTokenMinterBurner(cerbyToken).getUtilsContractAtPos(CERBY_CRON_JOBS_CONTRACT_ID)
+        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
+            ICerbyTokenMinterBurner(cerbyToken).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
         );
-        iCerbyCronJobs.executeCronJobs();
+        iCerbyBotDetection.executeCronJobs();
         _;
     }
     
@@ -218,12 +217,6 @@ contract CerbyStakingSystem is AccessControlEnumerable {
 
             _transferOwnership(stakeIds[i], newOwner);
         } 
-    }
-
-    function adminAutoEndStake()
-        public
-    {
-        // TODO: add feature
     }
 
     function adminBulkDestroyStakes(uint[] calldata stakeIds, address stakeOwner)

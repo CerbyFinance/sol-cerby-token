@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.10+commit.fc410830"
+		"version": "0.8.11+commit.d7f03943"
 	},
 	"language": "Solidity",
 	"output": {
@@ -114,11 +114,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyCronJobs.sol": {
-			"keccak256": "0x065e14e71fd9fa14714e625f963755db734aeec0ccdf49e8823c05f17b324803",
+			"keccak256": "0x639ced1add1bad47f5a06248d6c73b87fcf1f93633fb9eef05812773be7f6365",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://fa48739aba337eb32814a03cce9aa672772a3203e228d186fdea16d8d7ead6e0",
-				"dweb:/ipfs/QmTCR327SoS1DVT9TWiBrNMWqdd7DhyscHjPbgcroSD8gP"
+				"bzz-raw://60aa05831eeb8f8237e1a3226e84156be181b02ba28faa71cfb2d65d7b14f100",
+				"dweb:/ipfs/Qmeqr1yCPdbVEhe2swD5Mwkrazci4h382XbU2XGJwe4Xmt"
 			]
 		}
 	},

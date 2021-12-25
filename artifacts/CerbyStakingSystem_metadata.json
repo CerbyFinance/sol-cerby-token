@@ -378,13 +378,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "adminAutoEndStake",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "uint256[]",
@@ -1375,19 +1368,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyStakingSystem.sol": {
-			"keccak256": "0xdbd1ca349521ce27f717802fa517609ea60b8c1768ee3e2fb0e98f9d614c328a",
+			"keccak256": "0x8857cd19a60f09004692ab673acf8c205c7762b0f54fdfdbb30dc114901100a2",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://6f79d98ecfd357a77a066ad6cead42a061e3a2092f9a877a69834268005ef535",
-				"dweb:/ipfs/QmY7m5oJ9YSzfD2p57o1hWim2o3LjbNpF4URG8VgTiUj6C"
+				"bzz-raw://45d0f25ea16276879f3fbea017ad56b37abc1a4ab2bd019ee240cce89e9f2c69",
+				"dweb:/ipfs/QmXndkMDXETdjxDjxBckV47WhvM72HH26KYxvBwkfKygyq"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
-			"keccak256": "0xb4556da8fee7d344377617543774f607a9f6b3f2be5005cdc9a6b6b037d5855b",
+			"keccak256": "0x9b905563f93d66ea6f18aaea9c07d545092817e11bae89ae0c8cd59f4f50e505",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://55872994e8f60f28c7ad6f93b6c60f9f40d9909dd8ef3a26c8e6cfe2adf1fe9a",
-				"dweb:/ipfs/Qmc4hWqrXWSCA91j3vGqM3W5hHcfN1DEHnKRXV8rgtyhi9"
+				"bzz-raw://51de5e7294d47d594ed80f368b8cffa09d67af65d9f3f3699f3e5b7bb96f33ce",
+				"dweb:/ipfs/QmRKwyPpezfDG6s4Y1BimYvvjzZ3amPxhEMACjMv2U3fFw"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyCronJobs.sol": {
