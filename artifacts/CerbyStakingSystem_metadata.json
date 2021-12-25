@@ -678,19 +678,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "stakeId",
-						"type": "uint256"
-					}
-				],
-				"name": "endStake",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "getCachedInterestPerShareLength",
 				"outputs": [
@@ -1197,19 +1184,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "stakeId",
-						"type": "uint256"
-					}
-				],
-				"name": "scrapeStake",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "settings",
 				"outputs": [
@@ -1304,37 +1278,6 @@
 			{
 				"inputs": [
 					{
-						"components": [
-							{
-								"internalType": "uint256",
-								"name": "stakedAmount",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "lockedForXDays",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct StartStake",
-						"name": "_startStake",
-						"type": "tuple"
-					}
-				],
-				"name": "startStake",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "stakeId",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "bytes4",
 						"name": "interfaceId",
 						"type": "bytes4"
@@ -1349,24 +1292,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "stakeId",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "newOwner",
-						"type": "address"
-					}
-				],
-				"name": "transferOwnership",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -1443,11 +1368,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyStakingSystem.sol": {
-			"keccak256": "0x5c6b3bb605019ff57e484737cb0cebe92f57f87ea9d7c148f97fa7f82aa41e29",
+			"keccak256": "0x1c8caafd88e71d365a3f366b5f69f702e853b8bd9dcfcd1ad8a9f42374a6af05",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://d4f64bef9535b62e7a1a037bdb7ef0b41f0237357e0a01b4ebce4ea0dbd2160c",
-				"dweb:/ipfs/QmbjTCw5vZ9gyCjk7Mqn81j2Td3NhcLxycKENuH5xMWa2g"
+				"bzz-raw://0af33f2492f0d156df121a28eab8a057bcddf308b9d35bc8b95293773647b7f3",
+				"dweb:/ipfs/QmWM7cQ2F22pEtCABtKBsvALvXb2yocUPSzVqEgZsyRq3K"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

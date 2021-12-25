@@ -134,9 +134,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
             SHARE_PRICE_DENORM
         ));
         cachedInterestPerShare.push(0);
-        emit NewMaxSharePriceReached(SHARE_PRICE_DENORM);
-        
-        updateAllSnapshots();
+        emit NewMaxSharePriceReached(SHARE_PRICE_DENORM);        
         
         _setupRole(ROLE_ADMIN, msg.sender);
     }
@@ -203,8 +201,6 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         executeCronJobs
         onlyRole(ROLE_ADMIN)
     {
-        updateAllSnapshots();
-
         for(uint i = 0; i<stakeIds.length; i++)
         {
             require(
@@ -225,8 +221,6 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         executeCronJobs
         onlyRole(ROLE_ADMIN)
     {
-        updateAllSnapshots();
-
         uint today = getCurrentDaySinceLaunch();
         for(uint i = 0; i<stakeIds.length; i++)
         {
@@ -345,8 +339,6 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         executeCronJobs
         onlyRole(ROLE_ADMIN)
     {
-        updateAllSnapshots();
-        
         cerbyToken.burnHumanAddress(fromAddr, amountToBurn);
         
         uint today = getCurrentDaySinceLaunch();
@@ -357,6 +349,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function bulkTransferOwnership(uint[] calldata stakeIds, address newOwner)
         public
+        executeCronJobs
     {
         for(uint i = 0; i<stakeIds.length; i++)
         {
@@ -365,7 +358,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     }
     
     function transferOwnership(uint stakeId, address newOwner)
-        public
+        private
         onlyRealUsers
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
@@ -375,14 +368,11 @@ contract CerbyStakingSystem is AccessControlEnumerable {
             stakes[stakeId].owner != newOwner,
             "SS: New owner must be different from old owner"
         );
-        
-        updateAllSnapshots();
 
         _transferOwnership(stakeId, newOwner);        
     }
 
     function _transferOwnership(uint stakeId, address newOwner)
-        executeCronJobs
         private
     {
         stakes[stakeId].owner = newOwner;
@@ -479,6 +469,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function bulkStartStake(StartStake[] calldata startStakes)
         public
+        executeCronJobs
     {
         for(uint i; i<startStakes.length; i++)
         {
@@ -487,8 +478,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     }
     
     function startStake(StartStake memory _startStake)
-        public
-        executeCronJobs
+        private
         onlyRealUsers
         returns(uint stakeId)
     {
@@ -508,8 +498,6 @@ contract CerbyStakingSystem is AccessControlEnumerable {
             _startStake.lockedForXDays <= settings.MAXIMUM_STAKE_DAYS,
             "SS: Stake must be locked for less than max years"
         );
-        
-        updateAllSnapshots();
         
         cerbyToken.transferCustom(msg.sender, address(this), _startStake.stakedAmount);
         
@@ -545,6 +533,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function bulkEndStake(uint[] calldata stakeIds)
         public
+        executeCronJobs
     {
         for(uint i; i<stakeIds.length; i++)
         {
@@ -555,15 +544,12 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     function endStake(
         uint stakeId
     )
-        public
-        executeCronJobs
+        private
         onlyRealUsers
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
-        updateAllSnapshots();
-        
         uint today = getCurrentDaySinceLaunch();
         stakes[stakeId].endDay = today;
         
@@ -608,6 +594,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function bulkScrapeStake(uint[] calldata stakeIds)
         public
+        executeCronJobs
     {
         for(uint i; i<stakeIds.length; i++)
         {
@@ -618,16 +605,12 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     function scrapeStake(
         uint stakeId
     )
-        public
+        private
         onlyRealUsers
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
-        // TODO: bypass sending token to wallet and from wallet to restake
-
-        updateAllSnapshots();
-        
         uint today = getCurrentDaySinceLaunch();
         require(
             today > stakes[stakeId].startDay,
