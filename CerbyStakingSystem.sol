@@ -8,6 +8,10 @@ import "./interfaces/ICerbyBotDetection.sol";
 import "./interfaces/ICerbyCronJobs.sol";
 import "./interfaces/ICerbyStakingSystem.sol";
 
+
+// 0x7f949a4966bb6041ddce53b584F18E9649382ffa
+// "0xDef1Fafc79CD01Cf6797B9d7F51411beF486262a","100","500"
+
 struct StartStake {
     uint stakedAmount;
     uint lockedForXDays;
@@ -216,6 +220,12 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         } 
     }
 
+    function adminAutoEndStake()
+        public
+    {
+        // TODO: add feature
+    }
+
     function adminBulkDestroyStakes(uint[] calldata stakeIds, address stakeOwner)
         public
         executeCronJobs
@@ -349,6 +359,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function bulkTransferOwnership(uint[] calldata stakeIds, address newOwner)
         public
+        onlyRealUsers
         executeCronJobs
     {
         for(uint i = 0; i<stakeIds.length; i++)
@@ -359,7 +370,6 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function transferOwnership(uint stakeId, address newOwner)
         private
-        onlyRealUsers
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
@@ -469,6 +479,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function bulkStartStake(StartStake[] calldata startStakes)
         public
+        onlyRealUsers
         executeCronJobs
     {
         for(uint i; i<startStakes.length; i++)
@@ -479,7 +490,6 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function startStake(StartStake memory _startStake)
         private
-        onlyRealUsers
         returns(uint stakeId)
     {
         require(
@@ -533,6 +543,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function bulkEndStake(uint[] calldata stakeIds)
         public
+        onlyRealUsers
         executeCronJobs
     {
         for(uint i; i<stakeIds.length; i++)
@@ -545,7 +556,6 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         uint stakeId
     )
         private
-        onlyRealUsers
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
@@ -594,6 +604,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function bulkScrapeStake(uint[] calldata stakeIds)
         public
+        onlyRealUsers
         executeCronJobs
     {
         for(uint i; i<stakeIds.length; i++)
@@ -606,7 +617,6 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         uint stakeId
     )
         private
-        onlyRealUsers
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)

@@ -378,6 +378,13 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "adminAutoEndStake",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256[]",
@@ -1368,11 +1375,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyStakingSystem.sol": {
-			"keccak256": "0x1c8caafd88e71d365a3f366b5f69f702e853b8bd9dcfcd1ad8a9f42374a6af05",
+			"keccak256": "0xdbd1ca349521ce27f717802fa517609ea60b8c1768ee3e2fb0e98f9d614c328a",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://0af33f2492f0d156df121a28eab8a057bcddf308b9d35bc8b95293773647b7f3",
-				"dweb:/ipfs/QmWM7cQ2F22pEtCABtKBsvALvXb2yocUPSzVqEgZsyRq3K"
+				"bzz-raw://6f79d98ecfd357a77a066ad6cead42a061e3a2092f9a877a69834268005ef535",
+				"dweb:/ipfs/QmY7m5oJ9YSzfD2p57o1hWim2o3LjbNpF4URG8VgTiUj6C"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
