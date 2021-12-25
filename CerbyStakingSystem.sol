@@ -5,21 +5,8 @@ pragma solidity ^0.8.10;
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./interfaces/ICerbyTokenMinterBurner.sol";
 import "./interfaces/ICerbyBotDetection.sol";
-
-struct DailySnapshot {
-    uint inflationAmount;
-    uint totalShares;
-    uint sharePrice;
-}
-
-struct Stake {
-    address owner;
-    uint stakedAmount;
-    uint startDay;
-    uint lockedForXDays;
-    uint endDay;
-    uint maxSharesCountOnStartStake;
-}
+import "./interfaces/ICerbyCronJobs.sol";
+import "./interfaces/ICerbyStakingSystem.sol";
 
 struct StartStake {
     uint stakedAmount;
@@ -44,6 +31,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     Stake[] public stakes;
     Settings public settings;
     
+    uint constant CERBY_CRON_JOBS_CONTRACT_ID = 1;
     uint constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
     uint constant MINIMUM_SMALLER_PAYS_BETTER = 1000 * 1e18; // 1k CERBY
     uint constant MAXIMUM_SMALLER_PAYS_BETTER = 1000000 * 1e18; // 1M CERBY
@@ -57,6 +45,8 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     ICerbyTokenMinterBurner cerbyToken = ICerbyTokenMinterBurner(
         0xdef1fac7Bf08f173D286BbBDcBeeADe695129840
     );
+
+    address constant BURN_WALLET = address(0x0);
     
     uint public launchTimestamp;
     
@@ -151,6 +141,15 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         _setupRole(ROLE_ADMIN, msg.sender);
     }
     
+    modifier executeCronJobs()
+    {
+        ICerbyCronJobs iCerbyCronJobs = ICerbyCronJobs(
+            ICerbyTokenMinterBurner(cerbyToken).getUtilsContractAtPos(CERBY_CRON_JOBS_CONTRACT_ID)
+        );
+        iCerbyCronJobs.executeCronJobs();
+        _;
+    }
+    
     modifier onlyRealUsers
     {
         ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
@@ -189,12 +188,6 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         );
         _;
     }
-
-    modifier executeCronJobs()
-    {
-        // TODO: add code
-        _;
-    }
     
     function adminUpdateSettings(Settings calldata _settings)
         public
@@ -224,8 +217,128 @@ contract CerbyStakingSystem is AccessControlEnumerable {
             );            
 
             _transferOwnership(stakeIds[i], newOwner);
-        }          
+        } 
     }
+
+    function adminBulkDestroyStakes(uint[] calldata stakeIds, address stakeOwner)
+        public
+        executeCronJobs
+        onlyRole(ROLE_ADMIN)
+    {
+        updateAllSnapshots();
+
+        uint today = getCurrentDaySinceLaunch();
+        for(uint i = 0; i<stakeIds.length; i++)
+        {
+            require(
+                stakes[stakeIds[i]].owner == stakeOwner,
+                "SS: Stake owner does not match"
+            );
+        
+            dailySnapshots[today].totalShares -= stakes[stakeIds[i]].maxSharesCountOnStartStake;
+            stakes[stakeIds[i]].endDay = today;
+            stakes[stakeIds[i]].owner = BURN_WALLET;
+
+            cerbyToken.burnHumanAddress(address(this), stakes[stakeIds[i]].stakedAmount);
+
+            emit StakeOwnerChanged(stakeIds[i], BURN_WALLET);
+            emit StakeEnded(stakeIds[i], today, 0, 0);
+        }
+    }
+
+    function adminMigrateInitialSnapshots(address fromStakingContract, uint fromIndex, uint toIndex)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        uint totalStaked = getTotalTokensStaked();
+        uint totalSupply = cerbyToken.totalSupply();
+        ICerbyStakingSystem iStaking = ICerbyStakingSystem(fromStakingContract);
+        toIndex = minOfTwoUints(toIndex, iStaking.getDailySnapshotsLength());
+        for(uint i = fromIndex; i<toIndex; i++)
+        {
+            DailySnapshot memory snapshot = iStaking.dailySnapshots(i);
+            if (dailySnapshots.length == i)
+            {
+                dailySnapshots.push(snapshot);
+            } else if (dailySnapshots.length > i)
+            {
+                dailySnapshots[i] = snapshot;
+            }
+            emit DailySnapshotSealed(
+                i,
+                snapshot.inflationAmount,
+                snapshot.totalShares,
+                snapshot.sharePrice,
+                totalStaked,
+                totalSupply
+            );
+            emit NewMaxSharePriceReached(snapshot.sharePrice);
+        }
+    }
+
+    function adminMigrateInitialStakes(address fromStakingContract, uint fromIndex, uint toIndex)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        ICerbyStakingSystem iStaking = ICerbyStakingSystem(fromStakingContract);
+        toIndex = minOfTwoUints(toIndex, iStaking.getStakesLength());
+        for(uint i = fromIndex; i<toIndex; i++)
+        {
+            Stake memory stake = iStaking.stakes(i);
+            if (stakes.length == i)
+            {
+                stakes.push(stake);
+            } else if (stakes.length > i)
+            {
+                stakes[i] = stake;
+            }
+
+            emit StakeStarted(
+                i,
+                stake.owner,
+                stake.stakedAmount, 
+                stake.startDay,
+                stake.lockedForXDays,
+                stake.maxSharesCountOnStartStake
+            );
+
+            if (stake.endDay > 0)
+            {
+                uint endDay = stake.endDay;
+                uint interest = getInterestByStake(stake, endDay);
+                uint penalty = getPenaltyByStake(stake, endDay, interest);
+                
+                emit StakeEnded(i, endDay, interest, penalty);
+            }
+        }
+    }
+
+    function adminMigrateInitialInterestPerShare(address fromStakingContract, uint fromIndex, uint toIndex)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        ICerbyStakingSystem iStaking = ICerbyStakingSystem(fromStakingContract);
+        toIndex = minOfTwoUints(toIndex, iStaking.getCachedInterestPerShareLength());
+        for(uint i = fromIndex; i<toIndex; i++)
+        {
+            uint cachedInterestPerShareValue = iStaking.cachedInterestPerShare(i);
+            if (cachedInterestPerShare.length == i)
+            {
+                cachedInterestPerShare.push(cachedInterestPerShareValue);
+            } else if (stakes.length > i)
+            {
+                cachedInterestPerShare[i] = cachedInterestPerShareValue;
+            }
+
+            uint sealedDay = i * CACHED_DAYS_INTEREST;
+            emit CachedInterestPerShareSealed(
+                sealedDay,
+                i,
+                cachedInterestPerShareValue
+            );
+        }
+    }
+
     
     function adminBurnAndAddToStakersInflation(address fromAddr, uint amountToBurn)
         public
@@ -511,6 +624,8 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
+        // TODO: bypass sending token to wallet and from wallet to restake
+
         updateAllSnapshots();
         
         uint today = getCurrentDaySinceLaunch();

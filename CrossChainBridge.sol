@@ -3,7 +3,7 @@ pragma solidity ^0.8.8;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./interfaces/IDefiFactoryToken.sol";
-import "./interfaces/IDeftStorageContract.sol";
+import "./interfaces/IDeftStorageContract.sol"; // TODO: change to cerby bot protection
 
 struct BulkFeeDependingOnDestinationChainId {
     address token;
@@ -148,6 +148,8 @@ contract CrossChainBridge is AccessControlEnumerable {
 
         bulkUpdateFeeDependingOnDestinationChainId(bulkFees);
     }
+
+    // TODO: add cron jobs
     
     function getFeeDependingOnDestinationChainId(address tokenAddr, uint destinationChainId)
         public

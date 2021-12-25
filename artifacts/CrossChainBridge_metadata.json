@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.10+commit.fc410830"
+		"version": "0.8.11+commit.d7f03943"
 	},
 	"language": "Solidity",
 	"output": {
@@ -685,18 +685,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0x415af6b22019d2dfda8d3e5cbeb3ece54173773499f1ce799875daf9e10ef37c",
+			"keccak256": "0xca219bc009f5a4a077f2a529842e897f897b64ee285829b1275dfde2e2aae067",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://0cd35e1066b538721b4b42f6f6807ac62e6c81f96bce39201f18efea491b3b1a",
-				"dweb:/ipfs/QmX1mG64iXm6ZAbQAT3AXTXZorZ7CZytb7qxangCY445vK"
+				"bzz-raw://5484b0df1ef37c88ef8e2970e9f038fe12a398990d75c254212a0b6e0bbffa44",
+				"dweb:/ipfs/QmSsbyh5LgmagrkqsqtgJKEWha1GXiXdBXvPqxSiwhC6LR"
 			]
 		},
 		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {

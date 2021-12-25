@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.10+commit.fc410830"
+		"version": "0.8.11+commit.d7f03943"
 	},
 	"language": "Solidity",
 	"output": {
@@ -386,6 +386,24 @@
 					},
 					{
 						"internalType": "address",
+						"name": "stakeOwner",
+						"type": "address"
+					}
+				],
+				"name": "adminBulkDestroyStakes",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "stakeIds",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "address",
 						"name": "oldOwner",
 						"type": "address"
 					},
@@ -414,6 +432,75 @@
 					}
 				],
 				"name": "adminBurnAndAddToStakersInflation",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "fromStakingContract",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "fromIndex",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "toIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "adminMigrateInitialInterestPerShare",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "fromStakingContract",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "fromIndex",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "toIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "adminMigrateInitialSnapshots",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "fromStakingContract",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "fromIndex",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "toIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "adminMigrateInitialStakes",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1356,11 +1443,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyStakingSystem.sol": {
-			"keccak256": "0x7ea4b52a923e561d7435086462f92d4cf2fd7e2bfdb4e644d3e396078945019f",
+			"keccak256": "0x5c6b3bb605019ff57e484737cb0cebe92f57f87ea9d7c148f97fa7f82aa41e29",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://922c2157a5bea12ca0e366cc782ca36e38737bf52af5b9adadf9d947e508022d",
-				"dweb:/ipfs/QmW9fnuLzGsw2joNEsT16KkgC5sUrrgvGML7dzt8x73Yzv"
+				"bzz-raw://d4f64bef9535b62e7a1a037bdb7ef0b41f0237357e0a01b4ebce4ea0dbd2160c",
+				"dweb:/ipfs/QmbjTCw5vZ9gyCjk7Mqn81j2Td3NhcLxycKENuH5xMWa2g"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
@@ -1369,6 +1456,22 @@
 			"urls": [
 				"bzz-raw://55872994e8f60f28c7ad6f93b6c60f9f40d9909dd8ef3a26c8e6cfe2adf1fe9a",
 				"dweb:/ipfs/Qmc4hWqrXWSCA91j3vGqM3W5hHcfN1DEHnKRXV8rgtyhi9"
+			]
+		},
+		"sol-defifactory-token/interfaces/ICerbyCronJobs.sol": {
+			"keccak256": "0x9548d0f358b80d5721839abb25aa5e42bdd6b7c436bf222dedddb66223305d88",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://7b58f862c79af6250975b7c558cec4e930e9a0a807cfc5ecc256ee566fa7defb",
+				"dweb:/ipfs/QmVW391ejnmEQVeUCpcAnkp9VpzjJhiqqkvyuSh3sEyaNQ"
+			]
+		},
+		"sol-defifactory-token/interfaces/ICerbyStakingSystem.sol": {
+			"keccak256": "0xc5c6044cdf597c1e7aa9f14e0404854eed60082165cdbc2656881c209cfedccf",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://5ffa56ca7418b6c6228aa3eecfa40229507618c8752272c81fd56c7fb819fd29",
+				"dweb:/ipfs/QmZE3kg1gpbyKgUcnUwKX5xXToraJmCuqjkPdPhk9wLGhv"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {
