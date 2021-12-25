@@ -6,59 +6,49 @@
 7. defiFactoryTokenContract.methods.updateUtilsContracts
 
 
-NoBotsTechV3
-CerbyStaking
--
-CerbyBotDetection
+0: NoBotsTechV3
+1: CerbyStaking
+2: CrossChainBridge
+3: CerbyBotDetection
 
 Eth:
 [
     [false, false, false, false, true, "0x543a000a9FBE139ff783b2F8EbdF8869452Dc21D"],
-    [true, true, false, false, false, "0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9"],
-    [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"],
-    [false, false, false, false, false, "0x04C4a2190032E1bcf47b9ea01e1aCB4C12e29858"],
-    [false, false, false, false, false, "0xfa6687922bf40ff51bcd45f9fd339215a4869d82"],
-    [true, true, false, false, true, "0xA5df69790ba509c511E2A0A31cEEFfecC4d156C7"]
+    [true, true, true, false, false, "0x8888888AC6aa2482265e5346832CDd963c70A0D1"],
+    [true, true, false, false, false, "0xEf038429e3BAaF784e1DE93075070df2A43D4278"],
+    [false, false, false, false, false, "0xEf038429e3BAaF784e1DE93075070df2A43D4278"]
 ]
 
 Bsc:
 [
     [false, false, false, false, true, "0x543a000a9FBE139ff783b2F8EbdF8869452Dc21D"],
-    [true, true, false, false, false, "0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9"],
-    [false, false, false, false, false, "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73"],
-    [false, false, false, false, false, "0x04C4a2190032E1bcf47b9ea01e1aCB4C12e29858"],
-    [false, false, false, false, false, "0x077324B361272dde2D757f8Ec6Eb59daAe794519"],
-    [true, true, false, false, true, "0xA5df69790ba509c511E2A0A31cEEFfecC4d156C7"]
+    [true, true, true, false, false, "0x8888888AC6aa2482265e5346832CDd963c70A0D1"],
+    [true, true, false, false, false, "0xEf038429e3BAaF784e1DE93075070df2A43D4278"],
+    [false, false, false, false, false, "0xEf038429e3BAaF784e1DE93075070df2A43D4278"]
 ]
 
 Poly:
 [
     [false, false, false, false, true, "0x543a000a9FBE139ff783b2F8EbdF8869452Dc21D"],
-    [true, true, false, false, false, "0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9"],
-    [false, false, false, false, false, "0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32"],
-    [false, false, false, false, false, "0x04C4a2190032E1bcf47b9ea01e1aCB4C12e29858"],
-    [false, false, false, false, false, "0xF92b726b10956ff95EbABDd6fd92d180d1e920DA"],
-    [true, true, false, false, true, "0xA5df69790ba509c511E2A0A31cEEFfecC4d156C7"]
+    [true, true, true, false, false, "0x8888888AC6aa2482265e5346832CDd963c70A0D1"],
+    [true, true, false, false, false, "0xEf038429e3BAaF784e1DE93075070df2A43D4278"],
+    [false, false, false, false, false, "0xEf038429e3BAaF784e1DE93075070df2A43D4278"]
 ]
 
 Avalanche:
 [
     [false, false, false, false, true, "0x543a000a9FBE139ff783b2F8EbdF8869452Dc21D"],
-    [true, true, false, false, false, "0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9"],
-    [false, false, false, false, false, "0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10"],
-    [false, false, false, false, false, "0x04C4a2190032E1bcf47b9ea01e1aCB4C12e29858"],
-    [false, false, false, false, false, "0xF92b726b10956ff95EbABDd6fd92d180d1e920DA"],
-    [true, true, false, false, true, "0xA5df69790ba509c511E2A0A31cEEFfecC4d156C7"]
+    [true, true, true, false, false, "0x8888888AC6aa2482265e5346832CDd963c70A0D1"],
+    [true, true, false, false, false, "0xEf038429e3BAaF784e1DE93075070df2A43D4278"],
+    [false, false, false, false, false, "0xEf038429e3BAaF784e1DE93075070df2A43D4278"]
 ]
 
 Fantom:
 [
     [false, false, false, false, true, "0x543a000a9FBE139ff783b2F8EbdF8869452Dc21D"],
-    [true, true, false, false, false, "0xDEF1fAE3A7713173C168945b8704D4600B6Fc7B9"],
-    [false, false, false, false, false, "0x152eE697f2E276fA89E96742e9bB9aB1F2E61bE3"],
-    [false, false, false, false, false, "0x04C4a2190032E1bcf47b9ea01e1aCB4C12e29858"],
-    [false, false, false, false, false, "0xF92b726b10956ff95EbABDd6fd92d180d1e920DA"],
-    [true, true, false, false, true, "0xA5df69790ba509c511E2A0A31cEEFfecC4d156C7"]
+    [true, true, true, false, false, "0x8888888AC6aa2482265e5346832CDd963c70A0D1"],
+    [true, true, false, false, false, "0xEf038429e3BAaF784e1DE93075070df2A43D4278"],
+    [false, false, false, false, false, "0xEf038429e3BAaF784e1DE93075070df2A43D4278"]
 ]
 
 
