@@ -8,7 +8,11 @@ import "./interfaces/ICerbyBotDetection.sol";
 import "./interfaces/ICerbyCronJobs.sol";
 import "./interfaces/ICerbyStakingSystem.sol";
 
-
+// Staking 0x8888888AC6aa2482265e5346832CDd963c70A0D1
+// Bridge 0xEf038429e3BAaF784e1DE93075070df2A43D4278
+// BotDetection 0x3C758A487A9c536882aEeAc341c62cb0F665ecf5
+// Token 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840
+// OldStaking 0xDef1Fafc79CD01Cf6797B9d7F51411beF486262a
 
 struct StartStake {
     uint stakedAmount;
