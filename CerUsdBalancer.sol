@@ -10,9 +10,11 @@ import "./interfaces/IUniswapV3Pool.sol";
 
 contract CerbyUsdBalancer {
 
-    address constant cerbyToken = 0x0d0B2fE71077696Dc60b884e6A4A1a0Ec8e81387;
-    address constant cerUSDToken = 0x84e6A4d6F51EAb4Ebddaa791a25578E2103Bb52f;
-    address uniswapPair;
+    address constant cerbyToken = 0xC1d02bc2535BCB52BDAA02623BE2a829bd60b099;
+    address constant cerUSDToken = 0x18De814Cd95ECc725E3b04911265A790483aC126;
+    address constant USDCToken = 0x44a354d3e9C5916aB47143E2739BB6448821D447;
+    address uniswapPairCerbyCerUSD;
+    address uniswapPairCerbyUSDC;
     address constant UNISWAP_V2_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
     address constant UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
     
@@ -25,40 +27,58 @@ contract CerbyUsdBalancer {
     uint constant PERCENTAGE_DECREASE = 995;
     uint constant PERCENTAGE_DENORM = 1000;
 
-    address[] pathBuy = new address[](2);
-    address[] pathSell = new address[](2);
+    address[] pathBuyCerbyCerUSD = new address[](2);
+    address[] pathSellCerbyCerUSD = new address[](2);
+    address[] pathBuyCerbyUSDC = new address[](2);
+    address[] pathSellCerbyUSDC = new address[](2);
 
     // 1000000000000000000
     constructor() {
-        pathSell[0] = cerbyToken;
-        pathSell[1] = cerUSDToken;
-        pathBuy[0] = cerUSDToken;
-        pathBuy[1] = cerbyToken;
+        pathSellCerbyCerUSD[0] = cerbyToken;
+        pathSellCerbyCerUSD[1] = cerUSDToken;
+        pathBuyCerbyCerUSD[0] = cerUSDToken;
+        pathBuyCerbyCerUSD[1] = cerbyToken;
 
-        uniswapPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(cerUSDToken, cerbyToken);
-        if (address(0x0) == uniswapPair)
-        {
-            uniswapPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).createPair(cerUSDToken, cerbyToken);
-        }
+        pathSellCerbyUSDC[0] = cerbyToken;
+        pathSellCerbyUSDC[1] = USDCToken;
+        pathBuyCerbyUSDC[0] = USDCToken;
+        pathBuyCerbyUSDC[1] = cerbyToken;
 
         IWeth(cerbyToken).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
         IWeth(cerUSDToken).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
-        IWeth(uniswapPair).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
-        
+        IWeth(USDCToken).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max); 
+
+        uniswapPairCerbyCerUSD = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(cerUSDToken, cerbyToken);
+        if (address(0x0) == uniswapPairCerbyCerUSD)
+        {
+            uniswapPairCerbyCerUSD = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).createPair(cerUSDToken, cerbyToken);            
+        }
+
+        uniswapPairCerbyUSDC = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(USDCToken, cerbyToken);
+        if (address(0x0) == uniswapPairCerbyUSDC)
+        {
+            uniswapPairCerbyUSDC = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).createPair(USDCToken, cerbyToken);            
+        }  
+        IWeth(uniswapPairCerbyCerUSD).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
+        IWeth(uniswapPairCerbyUSDC).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);     
     }
 
-    function balance(uint targetPrice)
+    function balance()
         public
     {
         uint B;
         uint C;
         uint balanceCerby;
         uint balanceCerUSD;
+        uint balanceCerbyTarget;
+        uint balanceUSDC;
         uint initialPrice;
-        IUniswapV2Router iRouter = IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS);
+        uint targetPrice;
 
-        (balanceCerUSD, balanceCerby, initialPrice) = getPrice();
-        if ((targetPrice * PERCENTAGE_INCREASE) / PERCENTAGE_DENORM > initialPrice)
+        (balanceUSDC, balanceCerbyTarget, targetPrice) = getPriceCerbyUSDC();
+        (balanceCerUSD, balanceCerby, initialPrice) = getPriceCerbyCerUSD();
+
+        if (targetPrice * PERCENTAGE_DECREASE  > initialPrice * PERCENTAGE_DENORM)
         {
             B = balanceCerUSD / 2 + (balanceCerUSD * FEE_DENORM) / (2 * getFee());
             C = (balanceCerby * balanceCerUSD * targetPrice * FEE_DENORM) / (PRICE_DENORM * getFee()) -
@@ -67,14 +87,14 @@ contract CerbyUsdBalancer {
             uint sellCerUSD = sqrt(B * B + C) - B;
             ICerbyToken(cerUSDToken).mintHumanAddress(address(this), sellCerUSD);
 
-            doSwap(true, sellCerUSD);
+            doSwapCerbyCerUSD(true, sellCerUSD, false);
 
             uint cerbyContractBalance = IWeth(cerbyToken).balanceOf(address(this));
 
             uint addLiquidityCerUSD = (cerbyContractBalance * targetPrice) / (PRICE_DENORM);
             ICerbyToken(cerUSDToken).mintHumanAddress(address(this), addLiquidityCerUSD);
 
-            iRouter.addLiquidity(
+            IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).addLiquidity(
                 cerUSDToken,
                 cerbyToken,
                 addLiquidityCerUSD,
@@ -90,23 +110,60 @@ contract CerbyUsdBalancer {
             {
                 ICerbyToken(cerUSDToken).burnHumanAddress(address(this), cerUsdDust);
             }
-        } else if ((targetPrice * PERCENTAGE_DECREASE) / PERCENTAGE_DENORM < initialPrice)
+
+            (balanceUSDC, balanceCerbyTarget,) = getPriceCerbyUSDC();
+            (balanceCerUSD, balanceCerby,) = getPriceCerbyCerUSD();
+            if (balanceCerby > balanceCerbyTarget)
+            {
+                uint difference = balanceCerby - balanceCerbyTarget;
+                uint lpSupply = ICerbyToken(uniswapPairCerbyCerUSD).totalSupply();
+
+                uint lpToRemove = (difference * lpSupply) / balanceCerby;
+                IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).removeLiquidity(
+                    cerUSDToken,
+                    cerbyToken,
+                    lpToRemove,
+                    0,
+                    0,
+                    address(this),
+                    block.timestamp + 86400
+                );
+            } else if (balanceCerby < balanceCerbyTarget)
+            {
+                uint difference = balanceCerbyTarget - balanceCerby;
+                ICerbyToken(cerbyToken).mintHumanAddress(address(this), difference);
+
+                uint cerUsdToMint = (difference * balanceCerUSD) / balanceCerby;
+                ICerbyToken(cerUSDToken).mintHumanAddress(address(this), cerUsdToMint);
+
+                IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).addLiquidity(
+                    cerUSDToken,
+                    cerbyToken,
+                    cerUsdToMint,
+                    difference,
+                    0,
+                    0,
+                    address(this),
+                    block.timestamp + 86400
+                );
+            }
+        } else if (targetPrice * PERCENTAGE_INCREASE < initialPrice * PERCENTAGE_DENORM)
         {
             removeLiquidity((PERCENTAGE_DENORM * 999) / 1000);
             
-            (balanceCerUSD, balanceCerby,) = getPrice();
+            (balanceCerUSD, balanceCerby,) = getPriceCerbyCerUSD();
             B = balanceCerby / 2 + (balanceCerby * FEE_DENORM) / (2 * getFee());
             C = (balanceCerby * balanceCerUSD * PRICE_DENORM * FEE_DENORM) / (targetPrice * getFee()) -
                     (balanceCerby * balanceCerby * FEE_DENORM) / getFee();
 
             uint sellCerby = sqrt(B * B + C) - B;
             
-            doSwap(false, sellCerby);
+            doSwapCerbyCerUSD(false, sellCerby, false);
 
             uint cerbyContractBalance = IWeth(cerbyToken).balanceOf(address(this));
 
             uint addLiquidityCerUSD = (cerbyContractBalance * targetPrice) / (PRICE_DENORM);
-            iRouter.addLiquidity(
+            IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).addLiquidity(
                 cerUSDToken,
                 cerbyToken,
                 addLiquidityCerUSD,
@@ -122,15 +179,52 @@ contract CerbyUsdBalancer {
             {
                 ICerbyToken(cerUSDToken).burnHumanAddress(address(this), cerUsdDust);
             }
+
+            (balanceUSDC, balanceCerbyTarget,) = getPriceCerbyUSDC();
+            (balanceCerUSD, balanceCerby,) = getPriceCerbyCerUSD();
+            if (balanceCerby > balanceCerbyTarget)
+            {
+                uint difference = balanceCerby - balanceCerbyTarget;
+                uint lpSupply = ICerbyToken(uniswapPairCerbyCerUSD).totalSupply();
+
+                uint lpToRemove = (difference * lpSupply) / balanceCerby;
+                IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).removeLiquidity(
+                    cerUSDToken,
+                    cerbyToken,
+                    lpToRemove,
+                    0,
+                    0,
+                    address(this),
+                    block.timestamp + 86400
+                );
+            } else if (balanceCerby < balanceCerbyTarget)
+            {
+                uint difference = balanceCerbyTarget - balanceCerby;
+                ICerbyToken(cerbyToken).mintHumanAddress(address(this), difference);
+
+                uint cerUsdToMint = (difference * balanceCerUSD) / balanceCerby;
+                ICerbyToken(cerUSDToken).mintHumanAddress(address(this), cerUsdToMint);
+
+                IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).addLiquidity(
+                    cerUSDToken,
+                    cerbyToken,
+                    cerUsdToMint,
+                    difference,
+                    0,
+                    0,
+                    address(this),
+                    block.timestamp + 86400
+                );
+            }
         }
     }
 
-    function getPrice()
+    function getPriceCerbyCerUSD()
         public
         view
         returns (uint, uint, uint)
     {
-        IUniswapV2Pair iPair = IUniswapV2Pair(uniswapPair);
+        IUniswapV2Pair iPair = IUniswapV2Pair(uniswapPairCerbyCerUSD);
         (uint balanceCerby, uint balanceCerUSD,) = iPair.getReserves();
         if (cerbyToken > cerUSDToken)
         {
@@ -140,25 +234,29 @@ contract CerbyUsdBalancer {
         return (balanceCerUSD, balanceCerby, initialPrice);
     }
 
-    function getPriceV3(address UNISWAP_V3_PAIR)
-        external
+    function getPriceCerbyUSDC()
+        public
         view
-        returns (uint256 price)
+        returns (uint, uint, uint)
     {
-        IUniswapV3Pool pool = IUniswapV3Pool(UNISWAP_V3_PAIR);
-        (uint160 sqrtPriceX96,,,,,,) =  pool.slot0();
-        return uint(sqrtPriceX96) * uint(sqrtPriceX96) * 1e18 >> (96 * 2);
+        IUniswapV2Pair iPair = IUniswapV2Pair(uniswapPairCerbyUSDC);
+        (uint balanceCerby, uint balanceUSDC,) = iPair.getReserves();
+        if (cerbyToken > USDCToken)
+        {
+            (balanceCerby, balanceUSDC) = (balanceUSDC, balanceCerby);
+        }
+        uint initialPrice = (balanceUSDC * PRICE_DENORM) / balanceCerby;
+        return (balanceUSDC, balanceCerby, initialPrice);
     }
 
     function removeLiquidity(uint percent)
         public
     {
         uint lpTokensBalance = 
-            (IWeth(uniswapPair).balanceOf(address(this)) * percent) / PERCENTAGE_DENORM;
-        IUniswapV2Router iRouter = IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS);
+            (IWeth(uniswapPairCerbyCerUSD).balanceOf(address(this)) * percent) / PERCENTAGE_DENORM;
         if (lpTokensBalance > 0)
         {
-            iRouter.removeLiquidity(
+            IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).removeLiquidity(
                 cerUSDToken,
                 cerbyToken,
                 lpTokensBalance,
@@ -173,17 +271,25 @@ contract CerbyUsdBalancer {
     function addInitialLiquidity()
         public
     {
-        removeLiquidity(PERCENTAGE_DENORM);
-
         uint addLiquidityCerUSD = 1e18 * 300000000;
         ICerbyToken(cerUSDToken).mintHumanAddress(address(this), addLiquidityCerUSD);
+        ICerbyToken(USDCToken).mintHumanAddress(address(this), addLiquidityCerUSD);
 
         uint addLiquidityCerby = 1e18 * 1000000000;
-        ICerbyToken(cerbyToken).mintHumanAddress(address(this), addLiquidityCerby);
+        ICerbyToken(cerbyToken).mintHumanAddress(address(this), 2 * addLiquidityCerby);
 
-        IUniswapV2Router iRouter = IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS);
-        iRouter.addLiquidity(
+        IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).addLiquidity(
             cerUSDToken,
+            cerbyToken,
+            addLiquidityCerUSD,
+            addLiquidityCerby,
+            0,
+            0,
+            address(this),
+            block.timestamp + 86400
+        );
+        IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).addLiquidity(
+            USDCToken,
             cerbyToken,
             addLiquidityCerUSD,
             addLiquidityCerby,
@@ -194,15 +300,38 @@ contract CerbyUsdBalancer {
         );
     }
 
-    function doSwap(bool isBuy, uint amountIn)
+    function doSwapCerbyCerUSD(bool isBuy, uint amountIn, bool isMint)
         public
         returns(uint)
     {
-        address[] memory path = isBuy? pathBuy: pathSell;
+        address[] memory path = isBuy? pathBuyCerbyCerUSD: pathSellCerbyCerUSD;
         
-        IUniswapV2Router iRouter = IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS);
+        if (isMint)
+        {
+            ICerbyToken(path[0]).mintHumanAddress(address(this), amountIn);
+        }
+        uint[] memory amounts = IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).swapExactTokensForTokens(
+            amountIn,
+            0,
+            path,
+            address(this),
+            block.timestamp + 86400
+        );        
         
-        uint[] memory amounts = iRouter.swapExactTokensForTokens(
+        return amounts[amounts.length-1];
+    }
+
+    function doSwapCerbyUSDC(bool isBuy, uint amountIn, bool isMint)
+        public
+        returns(uint)
+    {
+        address[] memory path = isBuy? pathBuyCerbyUSDC: pathSellCerbyUSDC;
+        
+        if (isMint)
+        {
+            ICerbyToken(path[0]).mintHumanAddress(address(this), amountIn);
+        }
+        uint[] memory amounts = IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).swapExactTokensForTokens(
             amountIn,
             0,
             path,

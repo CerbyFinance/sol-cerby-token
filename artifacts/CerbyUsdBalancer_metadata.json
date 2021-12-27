@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.10+commit.fc410830"
+		"version": "0.8.11+commit.d7f03943"
 	},
 	"language": "Solidity",
 	"output": {
@@ -18,13 +18,7 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "targetPrice",
-						"type": "uint256"
-					}
-				],
+				"inputs": [],
 				"name": "balance",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -41,9 +35,43 @@
 						"internalType": "uint256",
 						"name": "amountIn",
 						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isMint",
+						"type": "bool"
 					}
 				],
-				"name": "doSwap",
+				"name": "doSwapCerbyCerUSD",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "isBuy",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountIn",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isMint",
+						"type": "bool"
+					}
+				],
+				"name": "doSwapCerbyUSDC",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -56,7 +84,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "getPrice",
+				"name": "getPriceCerbyCerUSD",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -78,18 +106,22 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "UNISWAP_V3_PAIR",
-						"type": "address"
-					}
-				],
-				"name": "getPriceV3",
+				"inputs": [],
+				"name": "getPriceCerbyUSDC",
 				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "price",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
 						"type": "uint256"
 					}
 				],
@@ -131,18 +163,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/CerUsdBalancer.sol": {
-			"keccak256": "0x7557980a9f2bf221b0c54b36f04090397eaae77992bff073b92bcea8f732c185",
+			"keccak256": "0x0de36804ba74918fc9311e08f556e8c2756453b0d4f5572315955c803527a059",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://67aad87850667c2c656f9cee712deea63e178b7bae350c341bebb28080fa2773",
-				"dweb:/ipfs/QmQ9iaXzDTVnRcMvSxKegYL6Gat2Py8RHrAfizmKjhtdQJ"
+				"bzz-raw://9deb537b30a758d55d3f6d595445758ff2686b2dfc98cb4f2d3f926486adcd5a",
+				"dweb:/ipfs/QmPmwpSX7av4dBoSUg7kokRZnzcE8MFT1Myr9YjLPRAM8W"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyToken.sol": {
