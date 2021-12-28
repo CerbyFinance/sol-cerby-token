@@ -252,8 +252,8 @@ contract CerbyBotDetection is AccessControlEnumerable {
             (, bytes memory token0Bytes) = address(addr).staticcall(TOKEN0_SIGNATURE);
             (, bytes memory token1Bytes) = address(addr).staticcall(TOKEN1_SIGNATURE);
 
-            address token0 = abi.decode(token0Bytes, (address));
-            address token1 = abi.decode(token1Bytes, (address));
+            address token0 = token0Bytes.length >= 20? abi.decode(token0Bytes, (address)): BURN_ADDRESS;
+            address token1 = token1Bytes.length >= 20? abi.decode(token1Bytes, (address)): BURN_ADDRESS;
             if (
                     token0 == tokenAddr && token1 != BURN_ADDRESS ||
                     token0 != BURN_ADDRESS && token1 == tokenAddr
