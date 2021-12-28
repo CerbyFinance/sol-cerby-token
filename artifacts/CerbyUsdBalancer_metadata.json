@@ -129,6 +129,20 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "makeCerbyTokensInBothPoolsEqual",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "removeCerUsdDust",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -170,11 +184,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerUsdBalancer.sol": {
-			"keccak256": "0x0de36804ba74918fc9311e08f556e8c2756453b0d4f5572315955c803527a059",
+			"keccak256": "0x0bc419644268956ca769a6003175401b00b88c11f7be4d326cacacef87aa6d6c",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://9deb537b30a758d55d3f6d595445758ff2686b2dfc98cb4f2d3f926486adcd5a",
-				"dweb:/ipfs/QmPmwpSX7av4dBoSUg7kokRZnzcE8MFT1Myr9YjLPRAM8W"
+				"bzz-raw://c6fd6fbddaae97984bb5adabc6222df50a6846075be6412522ba554522ef201c",
+				"dweb:/ipfs/QmZAQV5ku4EzbKSvNQvmRizD8DPbbJntMFPBSVp5Nh2ouM"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyToken.sol": {

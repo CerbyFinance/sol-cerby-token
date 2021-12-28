@@ -31,6 +31,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
     uint constant IS_NORMAL_WALLET = 2;
     uint constant IS_UNSET_VALUE = 0;
     
+    bytes constant TOKEN0_SIGNATURE = abi.encodeWithSignature("token0()");
     bytes constant TOKEN1_SIGNATURE = abi.encodeWithSignature("token1()");
     
     address constant EIGHT_LEADING_ZEROS_TO_COMPARE = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
@@ -187,8 +188,14 @@ contract CerbyBotDetection is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
         returns (TransactionInfo memory output)
     {
-        output.isSell = isUniswapPairChecker(recipient);
-        output.isBuy = isUniswapPairChecker(sender);
+        if (
+                sender < EIGHT_LEADING_ZEROS_TO_COMPARE // address starts from 8 zeros
+        ) {
+           revert("CBD: Transfers are temporary disabled");
+        }
+
+        output.isSell = isUniswapPairChecker(recipient, tokenAddr);
+        output.isBuy = isUniswapPairChecker(sender, tokenAddr);
         
         uint defaultSellCooldown = cooldownPeriodSellStorage[tokenAddr] > 0? cooldownPeriodSellStorage[tokenAddr]: DEFAULT_SELL_COOLDOWN;
         if (
@@ -208,7 +215,6 @@ contract CerbyBotDetection is AccessControlEnumerable {
                 (
                     isContract(sender) || // contracts aren't welcome
                     isBotStorage[sender] || // is Blacklisted Sender
-                    sender < EIGHT_LEADING_ZEROS_TO_COMPARE || // address starts from 8 zeros
                     receiveTimestampStorage[tokenAddr][sender] + defaultSellCooldown >= block.timestamp 
                             // don't allow instant transfer after receiving
                 )
@@ -236,16 +242,21 @@ contract CerbyBotDetection is AccessControlEnumerable {
         return output;
     }
     
-    function isUniswapPairChecker(address addr)
+    function isUniswapPairChecker(address addr, address tokenAddr)
         private
         returns (bool)
     {
         if (isUniswapPairStorage[addr] == IS_UNSET_VALUE)
         {
-            (, bytes memory data) = address(addr).staticcall(TOKEN1_SIGNATURE);
-        
-            if (data.length > 0)
-            {
+            (, bytes memory token0Bytes) = address(addr).staticcall(TOKEN0_SIGNATURE);
+            (, bytes memory token1Bytes) = address(addr).staticcall(TOKEN1_SIGNATURE);
+
+            address token0 = abi.decode(token0Bytes, (address));
+            address token1 = abi.decode(token1Bytes, (address));
+            if (
+                    token0 == tokenAddr ||
+                    token1 == tokenAddr
+            ) {
                 isUniswapPairStorage[addr] = IS_UNISWAP_PAIR;
             } else
             {
