@@ -47,8 +47,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
     uint constant ETH_ROPSTEN_CHAIN_ID = 3;
     uint constant ETH_KOVAN_CHAIN_ID = 42;
     
-    constructor() {
-        
+    constructor() {        
         _setupRole(ROLE_ADMIN, _msgSender());
         _setupRole(ROLE_ADMIN, 0x543a000a9FBE139ff783b2F8EbdF8869452Dc21D); // NoBotsTechV3 Deft
         
@@ -81,11 +80,13 @@ contract CerbyBotDetection is AccessControlEnumerable {
         {
             markAddressAsHuman(0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff, true); // quick router v2
         }
+
+        registerJob(STAKING_CONTRACT, "updateAllSnapshots()");
     }
 
 
-    function registerJob(address targetContract, string calldata abiCall)
-        external
+    function registerJob(address targetContract, string memory abiCall)
+        public
     {
         CronJob memory cronJob;
         cronJob.targetContract = targetContract;
@@ -94,7 +95,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
         bool foundGap;
         for(uint i; i<cronJobs.length; i++)
         {
-            if (cronJobs[i].targetContract == address(0x0))
+            if (cronJobs[i].targetContract == BURN_ADDRESS)
             {
                 foundGap = true;
                 cronJobs[i] = cronJob;
@@ -254,8 +255,8 @@ contract CerbyBotDetection is AccessControlEnumerable {
             address token0 = abi.decode(token0Bytes, (address));
             address token1 = abi.decode(token1Bytes, (address));
             if (
-                    token0 == tokenAddr ||
-                    token1 == tokenAddr
+                    token0 == tokenAddr && token1 != BURN_ADDRESS ||
+                    token0 != BURN_ADDRESS && token1 == tokenAddr
             ) {
                 isUniswapPairStorage[addr] = IS_UNISWAP_PAIR;
             } else
@@ -268,7 +269,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
     }
     
     function isContract(address addr) 
-        private
+        public
         view
         returns (bool)
     {

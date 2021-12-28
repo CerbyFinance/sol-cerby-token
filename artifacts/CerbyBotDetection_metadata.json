@@ -459,6 +459,25 @@
 						"type": "address"
 					}
 				],
+				"name": "isContract",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
 				"name": "isMarkedAsBotStorage",
 				"outputs": [
 					{
@@ -766,11 +785,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBotDetection.sol": {
-			"keccak256": "0x8974b2c8b0bed03bb129e2a31b6833daac086da9d7b1ef273424cdebd630a12a",
+			"keccak256": "0x421e8a7e6ef55c99de4a699a68b2b0a8b13aeb30917cabf7996fe323c17f87a8",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://c7bcaf0d98acb9db0eaf51469e6fb5a2c3bc1ee146babb3631d8c3d2e59b1262",
-				"dweb:/ipfs/QmU9W7o6VDGAn1ZuxDkLrC99CCGVMxCX5PAnheSPJpakFu"
+				"bzz-raw://9f76b6e6d462dc78b6eeb0621526e3b0f8c4be953499cda1bb0bc52e3d5bf36f",
+				"dweb:/ipfs/QmVazDi4x7YfrkYyj3gYTYSyJGc96wRjC1rqD6Mhpyz6Ri"
 			]
 		},
 		"sol-defifactory-token/interfaces/IWeth.sol": {
