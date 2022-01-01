@@ -23,9 +23,6 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
     event TransferCustom(address sender, address recipient, uint amount);
     event MintHumanAddress(address recipient, uint amount);
     event BurnHumanAddress(address sender, uint amount);
-    
-    event MintedByBridge(address recipient, uint amount);
-    event BurnedByBridge(address sender, uint amount);
 
     constructor(string memory name, string memory symbol) 
         ERC20Mod(name, symbol) 
@@ -207,15 +204,6 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
         emit Transfer(sender, recipient, transferAmount);
     }
     
-    function mintByBridge(address to, uint desiredAmountToMint) 
-        external
-        notPausedContract
-        onlyRole(ROLE_MINTER)
-    {
-        _mintHumanAddress(to, desiredAmountToMint);
-        emit MintedByBridge(to, desiredAmountToMint);
-    }
-    
     function mintHumanAddress(address to, uint desiredAmountToMint) 
         external
         notPausedContract
@@ -234,15 +222,6 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
         totalTokenSupply += desiredAmountToMint;
         
         emit Transfer(BURN_ADDRESS, to, desiredAmountToMint);
-    }
-
-    function burnByBridge(address from, uint desiredAmountToBurn)
-        external
-        notPausedContract
-        onlyRole(ROLE_BURNER)
-    {
-        _burnHumanAddress(from, desiredAmountToBurn);
-        emit BurnedByBridge(from, desiredAmountToBurn);
     }
 
     function burnHumanAddress(address from, uint desiredAmountToBurn)
