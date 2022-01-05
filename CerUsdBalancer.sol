@@ -106,7 +106,7 @@ contract CerbyUsdBalancer is AccessControlEnumerable {
             uint sellCerUSD = sqrt(B * B + C) - B;
             ICerbyToken(cerUSDToken).mintHumanAddress(address(this), sellCerUSD);
 
-            doSwapCerbyCerUSD(true, sellCerUSD);
+            swapCerbyCerUSD(true, sellCerUSD);
 
             makeCerbyTokensInBothPoolsEqual();
             removeCerUsdDust();
@@ -134,29 +134,10 @@ contract CerbyUsdBalancer is AccessControlEnumerable {
 
             uint sellCerby = sqrt(B * B + C) - B;
             
-            doSwapCerbyCerUSD(false, sellCerby);
+            swapCerbyCerUSD(false, sellCerby);
 
             makeCerbyTokensInBothPoolsEqual();
             removeCerUsdDust();
-        }
-    }
-
-    function removeLiquidity(uint percent)
-        public
-    {
-        uint lpTokensBalance = 
-            (IWeth(uniswapPairCerbyCerUSD).balanceOf(address(this)) * percent) / PERCENTAGE_DENORM;
-        if (lpTokensBalance > 0)
-        {
-            IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).removeLiquidity(
-                cerUSDToken,
-                cerbyToken,
-                lpTokensBalance,
-                0,
-                0,
-                address(this),
-                block.timestamp + 86400
-            );
         }
     }
 
@@ -246,7 +227,7 @@ contract CerbyUsdBalancer is AccessControlEnumerable {
     }
 
 
-    function doSwapCerbyCerUSD(bool isBuy, uint amountIn)
+    function swapCerbyCerUSD(bool isBuy, uint amountIn)
         public
         returns(uint)
     {
