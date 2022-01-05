@@ -73,7 +73,7 @@ contract CerbyUsdBalancer is AccessControlEnumerable {
         IWeth(uniswapPairCerbyCerUSD).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
     }
 
-    function balance()
+    function balancePrice()
         public
     {
         if (
@@ -140,7 +140,6 @@ contract CerbyUsdBalancer is AccessControlEnumerable {
             removeCerUsdDust();
         }
     }
-
 
     function removeLiquidity(uint percent)
         public
@@ -261,26 +260,32 @@ contract CerbyUsdBalancer is AccessControlEnumerable {
             path[1] = cerUSDToken;
         }
         
-        uint[] memory amounts = IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).swapExactTokensForTokens(
-            amountIn,
-            0,
-            path,
-            address(this),
-            block.timestamp + 86400
-        );        
+        uint[] memory amounts = IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).
+            swapExactTokensForTokens(
+                amountIn,
+                0,
+                path,
+                address(this),
+                block.timestamp + 86400
+            );        
         
         return amounts[amounts.length-1];
     }
 
-    function withdrawToken(address token)
+    function withdrawTokens(address[] calldata tokens)
         onlyRole(ROLE_ADMIN)
         public
     {
-        uint tokenBalance = IWeth(token).balanceOf(token);
-        if (tokenBalance > 0)
+        uint tokenBalance;
+        
+        for (uint i; i<tokens.length; i++)
         {
-            IWeth(token).transfer(msg.sender, tokenBalance);
-        }
+            tokenBalance = IWeth(tokens[i]).balanceOf(address(this));
+            if (tokenBalance > 0)
+            {
+                IWeth(tokens[i]).transfer(msg.sender, tokenBalance);
+            }
+        }        
     }
 
     function sqrt(uint x)

@@ -100,7 +100,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "balance",
+				"name": "balancePrice",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -389,12 +389,12 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
+						"internalType": "address[]",
+						"name": "tokens",
+						"type": "address[]"
 					}
 				],
-				"name": "withdrawToken",
+				"name": "withdrawTokens",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -453,11 +453,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerUsdBalancer.sol": {
-			"keccak256": "0xc8c218461a5506ba6f409b2960b8060cf9e836e6ade91913417c7a7d0277e9b3",
+			"keccak256": "0xb0d2604e4c7fb766ce570a923b9a4e8b7b0efc2778cbaf86d948a0eb59abd7a8",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://1a5b2065f06a54cd0db230c9399579f4a4d2d19c7b040113f4cb72c1bbf46deb",
-				"dweb:/ipfs/QmdhvTj1WnMiQtHcHtUJ75MXKeryF6H2kqd9dv8cmouJaj"
+				"bzz-raw://7e42e5b4ed7d79e6ff3e2aa649e122b8b22935583edfed6c1404f9afc4df9458",
+				"dweb:/ipfs/QmPX69WeTyQTv3wLPabokQbBvzH1M7PMeTxEwR4rjFSSge"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyToken.sol": {
