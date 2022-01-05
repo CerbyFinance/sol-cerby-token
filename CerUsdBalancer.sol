@@ -219,29 +219,30 @@ contract CerbyUsdBalancer is AccessControlEnumerable {
         view
         returns (uint, uint, uint)
     {
-        IUniswapV2Pair iPair = IUniswapV2Pair(uniswapPairCerbyCerUSD);
-        (uint balanceCerby, uint balanceCerUSD,) = iPair.getReserves();
-        if (cerbyToken > cerUSDToken)
-        {
-            (balanceCerby, balanceCerUSD) = (balanceCerUSD, balanceCerby);
-        }
-        uint initialPrice = (balanceCerUSD * PRICE_DENORM) / balanceCerby;
-        return (balanceCerUSD, balanceCerby, initialPrice);
-    }
+        return getPrice(uniswapPairCerbyCerUSD, cerbyToken, cerUSDToken);
+    }    
 
     function getPriceCerbyUSDC()
         public
         view
         returns (uint, uint, uint)
     {
-        IUniswapV2Pair iPair = IUniswapV2Pair(uniswapPairCerbyUSDC);
-        (uint balanceCerby, uint balanceUSDC,) = iPair.getReserves();
-        if (cerbyToken > USDCToken)
+        return getPrice(uniswapPairCerbyUSDC, cerbyToken, USDCToken);
+    }
+
+    function getPrice(address pair, address tokenA, address tokenB)
+        private
+        view
+        returns (uint, uint, uint)
+    {
+        IUniswapV2Pair iPair = IUniswapV2Pair(pair);
+        (uint balanceA, uint balanceB,) = iPair.getReserves();
+        if (tokenA > tokenB)
         {
-            (balanceCerby, balanceUSDC) = (balanceUSDC, balanceCerby);
+            (balanceA, balanceB) = (balanceB, balanceA);
         }
-        uint initialPrice = (balanceUSDC * PRICE_DENORM) / balanceCerby;
-        return (balanceUSDC, balanceCerby, initialPrice);
+        uint initialPrice = (balanceB * PRICE_DENORM) / balanceA;
+        return (balanceB, balanceA, initialPrice);
     }
 
 

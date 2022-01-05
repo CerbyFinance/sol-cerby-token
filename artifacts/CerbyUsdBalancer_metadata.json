@@ -453,11 +453,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerUsdBalancer.sol": {
-			"keccak256": "0xb0d2604e4c7fb766ce570a923b9a4e8b7b0efc2778cbaf86d948a0eb59abd7a8",
+			"keccak256": "0x4cd07a5363edf85651c582a3463ca21c4c17fc2c48feb92e570d882ee0524f37",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://7e42e5b4ed7d79e6ff3e2aa649e122b8b22935583edfed6c1404f9afc4df9458",
-				"dweb:/ipfs/QmPX69WeTyQTv3wLPabokQbBvzH1M7PMeTxEwR4rjFSSge"
+				"bzz-raw://cf6ce317e9760b1853f8962a211e14b729d257e2bcc88ee4174d0c336d93141c",
+				"dweb:/ipfs/QmQbCiJ2ZdDSTxjhcQFXxwgv9a13SYLAavYJTrxes4G1Sb"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyToken.sol": {
