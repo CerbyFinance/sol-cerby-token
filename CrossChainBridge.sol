@@ -178,7 +178,7 @@ contract CrossChainBridge is AccessControlEnumerable {
         onlyRole(ROLE_APPROVER)
     {
         require(
-            transactionStorage[transactionHash] < States.Approved,
+            transactionStorage[transactionHash] == States.DefaultValue,
             "CCB: Already approved"
         );
         transactionStorage[transactionHash] = States.Approved;

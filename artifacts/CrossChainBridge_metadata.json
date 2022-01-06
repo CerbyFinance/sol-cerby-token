@@ -692,11 +692,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CrossChainBridge.sol": {
-			"keccak256": "0xfddf80deaee4157a7eb11e578b8eaa54a1b7e757d054bf0f7de77daea2a4ba91",
+			"keccak256": "0x1c25ac3cb192d418de0817d7051858f8182fe5c1a721faf2227c805ad9f31bd0",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://d6daf1dfca9f1fbf0e4eb23cd5a658814facc5c77d1d7b41750347be5121000d",
-				"dweb:/ipfs/QmbvzfvRKZ6BizQ5LuhFDnkeUcRvKJik8HZyM2UBFsoK2H"
+				"bzz-raw://902804375a283601719b2a5030a4c0dbe4e31a770f6744c102378b5079a84e9e",
+				"dweb:/ipfs/QmTNvhKtWevj6SC8cpEjYZCh1BEAMdc77x219UobkqsK2T"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
