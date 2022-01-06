@@ -209,6 +209,10 @@ contract CrossChainBridge is AccessControlEnumerable {
             transactionStorage[sourceProofOfBurn.transactionHash] == States.Approved,
             "CCB: Transaction is not approved or already executed"
         );
+        require(
+            sourceProofOfBurn.sourceChainId != block.chainid,
+            "CCB: Can't bridge to the same chain"
+        );
         
         bytes32 transactionHash = keccak256(abi.encodePacked(
                 msg.sender, sourceProofOfBurn.sourceTokenAddr, sourceProofOfBurn.amountToBridge, sourceProofOfBurn.amountAsFee, sourceProofOfBurn.sourceChainId, block.chainid, sourceProofOfBurn.sourceNonce
