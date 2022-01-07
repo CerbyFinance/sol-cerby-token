@@ -69,20 +69,22 @@ contract CerbySwapV1 is AccessControlEnumerable {
         _;
     }
 
-    function adminCreatePool(address token, uint addTokenAmount, uint mintCerUsdAmount, uint fee)
+    function createPool(address token, uint addTokenAmount, uint mintCerUsdAmount, uint fee)
         public
-        onlyRole(ROLE_ADMIN)
         tokenDoesNotExistInPool(token)
         safeTransferTokenNeeded(token, addTokenAmount)
     {
         ICerbyTokenMinterBurner(cerUsdContract).mintHumanAddress(address(this), mintCerUsdAmount);
 
+        // Admins can create official pools with no limit on selling
+        // Users can create regular pools where they can't sell more than bought
+        uint newCerUsdDebit = hasRole(ROLE_ADMIN, msg.sender)? mintCerUsdAmount: 0;
         pools.push(
             Pool(
                 token,
                 addTokenAmount,
                 mintCerUsdAmount,
-                0,
+                newCerUsdDebit,
                 0,
                 fee
             )
@@ -91,6 +93,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
 
         // TODO: mint LP tokens
     }
+
 
     function addTokenLiquidity(address token, uint addTokenAmount)
         public
@@ -115,6 +118,11 @@ contract CerbySwapV1 is AccessControlEnumerable {
         // TODO: if debit > credit return cerUSD additionally
         // TODO: if debit < credit return reduced tokenAmount
     }
+
+    // TODO: add swapTokenToExactCerUSD XXX --> cerUSD
+    // TODO: add swapCerUsdToExactToken cerUSD --> YYY
+    // TODO: add swapExactTokenToToken XXX --> cerUSD --> YYY
+    // TODO: add swapTokenToExactToken XXX --> cerUSD --> YYY
     
     function swapExactTokenToCerUsd(
         address tokenIn,
@@ -138,10 +146,10 @@ contract CerbySwapV1 is AccessControlEnumerable {
         );
 
         require(
-            // TODO: allow official pools???
-            // Means you have to buy more than you can possible sell
+            // For user-created pools you can't sell more than bought
+            // For official pools - no limits
             pools[poolPos].creditCerUsd + outputCerUsd <= pools[poolPos].debitCerUsd,
-            "CS1: Unable to credit more than debitted"
+            "CS1: Can't sell more than bought"
         );
 
         pools[poolPos].creditCerUsd += outputCerUsd;
