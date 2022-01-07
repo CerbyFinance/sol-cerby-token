@@ -28,7 +28,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         _setupRole(ROLE_ADMIN, msg.sender);
 
         address cerbyToken = 0xE7126C0Fb4B1f5F79E5Bbec3948139dCF348B49C;
-        adminCreatePool(
+        createPool(
             cerbyToken,
             1e18 * 1e6,
             1e18 * 3e5,
@@ -63,7 +63,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         _;
     }
 
-    modifier safeTransferTokenNeeded(address token, uint amount)
+    modifier safeTransferTokensNeeded(address token, uint amount)
     {
         IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
         _;
@@ -72,7 +72,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
     function createPool(address token, uint addTokenAmount, uint mintCerUsdAmount, uint fee)
         public
         tokenDoesNotExistInPool(token)
-        safeTransferTokenNeeded(token, addTokenAmount)
+        safeTransferTokensNeeded(token, addTokenAmount)
     {
         ICerbyTokenMinterBurner(cerUsdContract).mintHumanAddress(address(this), mintCerUsdAmount);
 
@@ -98,7 +98,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
     function addTokenLiquidity(address token, uint addTokenAmount)
         public
         tokenMustExistInPool(token)
-        safeTransferTokenNeeded(token, addTokenAmount)
+        safeTransferTokensNeeded(token, addTokenAmount)
     {
         uint poolPos = getPoolPositionByToken(token);
         uint mintCerUsdAmount = 
@@ -133,7 +133,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         public
         tokenMustExistInPool(tokenIn)
         transactionIsNotExpired(expireTimestamp)
-        safeTransferTokenNeeded(tokenIn, amountTokenIn)
+        safeTransferTokensNeeded(tokenIn, amountTokenIn)
     {
         uint poolPos = getPoolPositionByToken(tokenIn);
         uint increaseTokenBalance = 
@@ -167,7 +167,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         public
         tokenMustExistInPool(tokenOut)
         transactionIsNotExpired(expireTimestamp)
-        safeTransferTokenNeeded(cerUsdContract, amountCerUsdIn)
+        safeTransferTokensNeeded(cerUsdContract, amountCerUsdIn)
     {
         uint poolPos = getPoolPositionByToken(tokenOut);
         uint increaseCerUsdBalance = 
