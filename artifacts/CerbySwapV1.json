@@ -1,0 +1,73 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"görli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"functionDebugData": {
+				"@_25": {
+					"entryPoint": null,
+					"id": 25,
+					"parameterSlots": 0,
+					"returnSlots": 0
+				}
+			},
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "6080604052348015600f57600080fd5b506000805460010181558052603f8060286000396000f3fe6080604052600080fdfea26469706673582212200c6cd5303faeb92f63e4f96137e67753e84312731a1e9e25e359b8ae31bca35164736f6c634300080b0033",
+			"opcodes": "PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH1 0xF JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x0 DUP1 SLOAD PUSH1 0x1 ADD DUP2 SSTORE DUP1 MSTORE PUSH1 0x3F DUP1 PUSH1 0x28 PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN INVALID PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xC PUSH13 0xD5303FAEB92F63E4F96137E677 MSTORE8 0xE8 NUMBER SLT PUSH20 0x1A1E9E25E359B8AE31BCA35164736F6C63430008 SIGNEXTEND STOP CALLER ",
+			"sourceMap": "193:105:0:-:0;;;239:57;;;;;;;;;-1:-1:-1;263:5:0;:26;;;;;;;;193:105;;;;;;"
+		},
+		"deployedBytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "6080604052600080fdfea26469706673582212200c6cd5303faeb92f63e4f96137e67753e84312731a1e9e25e359b8ae31bca35164736f6c634300080b0033",
+			"opcodes": "PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xC PUSH13 0xD5303FAEB92F63E4F96137E677 MSTORE8 0xE8 NUMBER SLT PUSH20 0x1A1E9E25E359B8AE31BCA35164736F6C63430008 SIGNEXTEND STOP CALLER ",
+			"sourceMap": "193:105:0:-:0;;;;;"
+		},
+		"gasEstimates": {
+			"creation": {
+				"codeDepositCost": "12600",
+				"executionCost": "24287",
+				"totalCost": "36887"
+			}
+		},
+		"methodIdentifiers": {}
+	},
+	"abi": [
+		{
+			"inputs": [],
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		}
+	]
+}

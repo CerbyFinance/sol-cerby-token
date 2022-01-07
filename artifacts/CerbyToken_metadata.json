@@ -60,25 +60,6 @@
 					{
 						"indexed": false,
 						"internalType": "address",
-						"name": "sender",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "BurnedByBridge",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
 						"name": "recipient",
 						"type": "address"
 					},
@@ -90,25 +71,6 @@
 					}
 				],
 				"name": "MintHumanAddress",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "recipient",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "MintedByBridge",
 				"type": "event"
 			},
 			{
@@ -439,24 +401,6 @@
 						"type": "uint256"
 					}
 				],
-				"name": "burnByBridge",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "desiredAmountToBurn",
-						"type": "uint256"
-					}
-				],
 				"name": "burnHumanAddress",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -708,24 +652,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "to",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "desiredAmountToMint",
-						"type": "uint256"
-					}
-				],
-				"name": "mintByBridge",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -1180,11 +1106,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBasedToken.sol": {
-			"keccak256": "0xd83249a986eca4ef771c0427ed393b87ced49e632a52e812e76f1d785345a9cd",
+			"keccak256": "0x9ce79d03e8ab2b0b4af662a8dab579412a7ac89e75a5e830ee87163d1ec29791",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://1e4758023af69f0850ad32f84a5ff76c4a0c866438c0ff29eef92067aeeb5ab4",
-				"dweb:/ipfs/QmWsWfWetPdLD9A8g4DeCwn2wBJgNR8m4VDX6MPEAo8Wm3"
+				"bzz-raw://4993f37ec5edba7c26162642daa7247b426171b6e94b8ee35932347fb55c2ff0",
+				"dweb:/ipfs/QmbSi32vLTmnMvscyUKFXx7KDeFFvapnKok2uAkSWjgfmF"
 			]
 		},
 		"sol-defifactory-token/CerbyToken.sol": {

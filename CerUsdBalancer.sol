@@ -30,7 +30,7 @@ contract CerbyUsdBalancer is AccessControlEnumerable {
     uint secondsBetweenBalancing = 0;
 
     constructor() {
-        if (block.chainid == 1)
+        if (block.chainid == 1 || block.chainid == 31777)
         {
             UNISWAP_V2_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
             USDCToken = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
@@ -67,10 +67,10 @@ contract CerbyUsdBalancer is AccessControlEnumerable {
             fee = 9980;
         }
 
-        IWeth(cerbyToken).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
-        IWeth(cerUSDToken).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
+        //IWeth(cerbyToken).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
+        //IWeth(cerUSDToken).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
 
-        IWeth(uniswapPairCerbyCerUSD).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
+        //IWeth(uniswapPairCerbyCerUSD).approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
     }
 
     function balancePrice()
@@ -141,16 +141,6 @@ contract CerbyUsdBalancer is AccessControlEnumerable {
         }
     }
 
-    function removeCerUsdDust()
-        public
-    {
-        uint cerUsdDust = ICerbyToken(cerUSDToken).balanceOf(address(this));
-        if (cerUsdDust > 1e16)
-        {
-            ICerbyToken(cerUSDToken).burnHumanAddress(address(this), cerUsdDust);
-        }
-    }
-
     function makeCerbyTokensInBothPoolsEqual()
         public
     {
@@ -194,6 +184,17 @@ contract CerbyUsdBalancer is AccessControlEnumerable {
             );
         }
     }
+
+    function removeCerUsdDust()
+        public
+    {
+        uint cerUsdDust = ICerbyToken(cerUSDToken).balanceOf(address(this));
+        if (cerUsdDust > 1e16)
+        {
+            ICerbyToken(cerUSDToken).burnHumanAddress(address(this), cerUsdDust);
+        }
+    }
+
 
     function getPriceCerbyCerUSD()
         public

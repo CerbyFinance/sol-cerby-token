@@ -1,0 +1,51 @@
+{
+	"compiler": {
+		"version": "0.8.11+commit.d7f03943"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"sol-defifactory-token/CerbySwapV1.sol": "CerbySwapV1"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"sol-defifactory-token/CerbySwapV1.sol": {
+			"keccak256": "0x926a5781d7f34593c02b83880487fe7966594941ca586b228fa15e39e2268476",
+			"license": "BSD-2-Clause",
+			"urls": [
+				"bzz-raw://53b1018943d295f6f3a8c0bc6c2c8eb06d23652256c326cef872223801898210",
+				"dweb:/ipfs/QmQfMyTARjzr4Y5SGFc4EQCYyWfa2WG8KREGFLE4rwe3iF"
+			]
+		}
+	},
+	"version": 1
+}
