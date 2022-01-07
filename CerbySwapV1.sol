@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.11;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./openzeppelin/token/ERC20/utils/SafeERC20.sol";
@@ -148,7 +148,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         updateTokenBalanceAndCheckKValue(poolPos, token);
     }
 
-    function removeTokenLiquidity(address token, uint addTokenAmount)
+    function removeTokenLiquidity(address token, uint removeTokenAmount)
         public
         tokenMustExistInPool(token)
     {
@@ -156,6 +156,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         // TODO: if debit > credit return cerUSD additionally
         // TODO: if debit < credit return reduced tokenAmount
 
+        removeTokenAmount;
         updateTokenBalanceAndCheckKValue(tokenToPoolPosition[token], token);
     }
 
@@ -205,8 +206,8 @@ contract CerbySwapV1 is AccessControlEnumerable {
         public
         tokenMustExistInPool(token)
     {
-        uint newBalanceToken = IERC20(token).balanceOf(address(this));
         uint oldKValue = pools[poolPos].balanceToken * pools[poolPos].balanceCerUsd;
+        uint newBalanceToken = IERC20(token).balanceOf(address(this));
         uint newKValue = newBalanceToken * pools[poolPos].balanceCerUsd;
         require(
             newKValue >= oldKValue,

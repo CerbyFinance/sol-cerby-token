@@ -392,7 +392,7 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "addTokenAmount",
+						"name": "removeTokenAmount",
 						"type": "uint256"
 					}
 				],
@@ -596,18 +596,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xff07d49169b3e3c89aa105bf23b3fb78e6bdfcf62a818c00bf9c8265e23c33e3",
+			"keccak256": "0xe6aa473ab47392e5649ff46db7c953984a7165004218798c2a298a871367f860",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://d09af73cc52644e41fb353edf9880b9ab625f9a3a3df03f1b1255f9f1e3f82d4",
-				"dweb:/ipfs/Qmeo3DBpSyWfgTEC8oFM81SSTdrTwNZtUxo2fBGdB83vUe"
+				"bzz-raw://29ac223a724052cfffbd0996362416b5e111cd468f6bac65d5b0ccc579d69502",
+				"dweb:/ipfs/QmTzDDimkfs6cuCxAhBMujUczi7dRoRw6v9vXwxqLVYhst"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {
