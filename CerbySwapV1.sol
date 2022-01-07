@@ -16,10 +16,10 @@ struct Pool {
 }
 
 contract CerbySwapV1 is AccessControlEnumerable {
-    Pool[] pools;
     using SafeERC20 for IERC20;
-
-    mapping(address => uint) tokenToPoolPosition;
+    
+    Pool[] public pools;
+    mapping(address => uint) public tokenToPoolPosition;
 
     address constant cerUsdContract = 0x3B69b8C5c6a4c8c2a90dc93F3B0238BF70cC9640;
     uint constant FEE_DENORM = 10000;

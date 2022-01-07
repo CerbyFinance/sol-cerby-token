@@ -343,6 +343,50 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "pools",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "balanceToken",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "balanceCerUsd",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "debitCerUsd",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "creditCerUsd",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "fee",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "token",
 						"type": "address"
@@ -472,6 +516,25 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "tokenToPoolPosition",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "poolPos",
 						"type": "uint256"
@@ -541,11 +604,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xa909cb9d0eb8ebe52c23680fbdfa1749c231a42b821009f91f68d523dfd53353",
+			"keccak256": "0x567c9f898136aab6bd8df54a7833f884458e0fa3f0941841405f1dc15f0d7832",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://3b0b364fb8ef1a4e9c29efa7d2ac625ba32d0882d53b28ef38d3cd02f7003719",
-				"dweb:/ipfs/QmdCJ5Y4pLbJjcGvEMrMScNTGmeYw5rhAjaYTS75jLwVqR"
+				"bzz-raw://cc7f392a0893c472f634a69da13ffb0562e52d406a4e4d2e0730f2510f55a30e",
+				"dweb:/ipfs/QmTodGE3WXogkLMKh6Y7r96hLJU4MV8rXSDN4tVxs3Cx9h"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {
