@@ -3,6 +3,7 @@
 pragma solidity ^0.8.11;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
+import "./openzeppelin/security/ReentrancyGuard.sol";
 import "./openzeppelin/token/ERC20/utils/SafeERC20.sol";
 import "./interfaces/ICerbyTokenMinterBurner.sol";
 
@@ -15,7 +16,7 @@ struct Pool {
     uint fee;
 }
 
-contract CerbySwapV1 is AccessControlEnumerable {
+contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     Pool[] public pools;
@@ -23,6 +24,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
 
     address constant cerUsdContract = 0x3B69b8C5c6a4c8c2a90dc93F3B0238BF70cC9640;
     uint constant FEE_DENORM = 10000;
+    uint constant DEFAULT_FEE = 9985; // 0.15% per transaction XXX <--> cerUSD
 
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
@@ -40,7 +42,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
             cerbyToken,
             1e18 * 1e6,
             1e18 * 3e5,
-            9970
+            DEFAULT_FEE
         );
     }
 
@@ -97,13 +99,16 @@ contract CerbySwapV1 is AccessControlEnumerable {
         pools[poolPos].fee = newFee;
     }
 
+    // TODO: add remove pool or disable pool to allow remove liquidity only
+
     function createPool(address token, uint addTokenAmount, uint mintCerUsdAmount, uint fee)
         public
+        nonReentrant()
         tokenDoesNotExistInPool(token)
         safeTransferTokensNeeded(token, addTokenAmount)
     {
         require(
-            fee == 9970, // TODO: add other values
+            fee == DEFAULT_FEE, // TODO: add other values
             "CS1: Incorrect fee provided"
         );
 
@@ -133,6 +138,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
 
     function addTokenLiquidity(address token, uint addTokenAmount)
         public
+        nonReentrant()
         tokenMustExistInPool(token)
         safeTransferTokensNeeded(token, addTokenAmount)
     {
@@ -150,6 +156,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
 
     function removeTokenLiquidity(address token, uint removeTokenAmount)
         public
+        nonReentrant()
         tokenMustExistInPool(token)
     {
         // TODO: burn LP tokens
@@ -172,6 +179,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         uint expireTimestamp
     )
         public
+        nonReentrant()
         tokenMustExistInPool(tokenIn)
         transactionIsNotExpired(expireTimestamp)
         safeTransferTokensNeeded(tokenIn, amountTokenIn)
@@ -202,26 +210,6 @@ contract CerbySwapV1 is AccessControlEnumerable {
         updateTokenBalanceAndCheckKValue(poolPos, tokenIn);
     }
 
-    function updateTokenBalanceAndCheckKValue(uint poolPos, address token)
-        public
-        tokenMustExistInPool(token)
-    {
-        uint oldKValue = pools[poolPos].balanceToken * pools[poolPos].balanceCerUsd;
-        uint newBalanceToken = IERC20(token).balanceOf(address(this));
-        uint newKValue = newBalanceToken * pools[poolPos].balanceCerUsd;
-        require(
-            newKValue >= oldKValue,
-            "CS1: K value decreased"
-        );
-
-        // TODO: check if K value can decrease anyhow without using burnHumanAddress cheats
-
-        if (newBalanceToken != pools[poolPos].balanceToken)
-        {
-            pools[poolPos].balanceToken = newBalanceToken;
-        }
-    }
-
     function swapExactCerUsdToToken(
         address tokenOut,
         uint amountCerUsdIn,
@@ -229,6 +217,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         uint expireTimestamp
     )
         public
+        nonReentrant()
         tokenMustExistInPool(tokenOut)
         transactionIsNotExpired(expireTimestamp)
         safeTransferTokensNeeded(cerUsdContract, amountCerUsdIn)
@@ -248,6 +237,38 @@ contract CerbySwapV1 is AccessControlEnumerable {
         pools[poolPos].balanceToken -= outputTokenAmount;
 
         IERC20(tokenOut).safeTransfer(msg.sender, outputTokenAmount);
+
+        updateTokenBalanceAndCheckKValue(poolPos, tokenOut);
+    }
+
+    function updateTokenBalanceAndCheckKValue(uint poolPos, address token)
+        private
+    {
+        uint oldKValue = pools[poolPos].balanceToken * pools[poolPos].balanceCerUsd;
+        uint newBalanceToken = IERC20(token).balanceOf(address(this));
+        uint newKValue = newBalanceToken * pools[poolPos].balanceCerUsd;
+        require(
+            newKValue >= oldKValue,
+            "CS1: K value decreased"
+        );
+
+        // TODO: check if K value can decrease anyhow without using burnHumanAddress cheats
+
+        if (newBalanceToken != pools[poolPos].balanceToken)
+        {
+            pools[poolPos].balanceToken = newBalanceToken;
+        }
+    }
+
+    function sync(uint poolPos, address token)
+        public
+        nonReentrant()
+    {
+        uint newBalanceToken = IERC20(token).balanceOf(address(this));
+        if (newBalanceToken != pools[poolPos].balanceToken)
+        {
+            pools[poolPos].balanceToken = newBalanceToken;
+        }        
     }
 
     function getOutputCerUsd(uint poolPos, uint deltaTokenBalance)
