@@ -134,6 +134,12 @@ contract CerbySwapV1 is AccessControlEnumerable {
             "CS1: Output amount less than minimum specified"
         );
 
+        require(
+            // TODO: allow official pools???
+            pools[poolPos].creditCerUsd + outputCerUsd <= pools[poolPos].debitCerUsd,
+            "CS1: Unable to credit more than debitted"
+        );
+
         pools[poolPos].creditCerUsd += outputCerUsd;
         IERC20(cerUsdContract).transfer(msg.sender, outputCerUsd);
 
