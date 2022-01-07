@@ -171,11 +171,11 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "deltaTokenBalance",
+						"name": "increaseCerUsdBalance",
 						"type": "uint256"
 					}
 				],
-				"name": "getOutputCerUsd",
+				"name": "getOutputExactCerUsdForToken",
 				"outputs": [
 					{
 						"internalType": "uint112",
@@ -195,11 +195,11 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "deltaCerUsdBalance",
+						"name": "increaseTokenBalance",
 						"type": "uint256"
 					}
 				],
-				"name": "getOutputToken",
+				"name": "getOutputExactTokensForCerUsd",
 				"outputs": [
 					{
 						"internalType": "uint112",
@@ -474,7 +474,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "swapExactCerUsdToToken",
+				"name": "swapExactCerUsdForToken",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -509,11 +509,6 @@
 			},
 			{
 				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "poolPos",
-						"type": "uint256"
-					},
 					{
 						"internalType": "address",
 						"name": "token",
@@ -598,11 +593,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xdb684a8a61ed69b464468a5faf2cc609debbbabd312bb0a7acac307b2c793e33",
+			"keccak256": "0x3d40ffcc221db7a18a24be3e5a47fdfca06847182570c0f8907f3189a6af294f",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://5682b943a7de2f075262727dd164e8a68283ba94e3097ba5a2f57a7fafe1a60a",
-				"dweb:/ipfs/QmbSQLtWDLp7eW6SsQduXqKEcj86mTWT8tizz2VjJ5Nb4S"
+				"bzz-raw://09b57058b202ad68b849bfcdd8992797abc88e8db479317fbc005635406a8908",
+				"dweb:/ipfs/QmQbM8BKj6A6wArx8qXiHCSwNnr1ywNgUJov6wajCVL8Mf"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {

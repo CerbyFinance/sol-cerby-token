@@ -72,6 +72,12 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
         _;
     }
 
+    modifier poolMustBeSynced(address token)
+    {
+        sync(token);
+        _;
+    }
+
     modifier safeTransferTokensNeeded(address token, uint amount)
     {
         if (token != cerUsdContract)
@@ -103,6 +109,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
     function createPool(address token, uint112 addTokenAmount, uint112 mintCerUsdAmount, uint16 fee)
         public
         nonReentrant()
+        poolMustBeSynced(token)
         tokenDoesNotExistInPool(token)
         safeTransferTokensNeeded(token, addTokenAmount)
     {
@@ -137,6 +144,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
     function addTokenLiquidity(address token, uint addTokenAmount)
         public
         nonReentrant()
+        poolMustBeSynced(token)
         tokenMustExistInPool(token)
         safeTransferTokensNeeded(token, addTokenAmount)
     {
@@ -155,6 +163,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
     function removeTokenLiquidity(address token, uint removeTokenAmount)
         public
         nonReentrant()
+        poolMustBeSynced(token)
         tokenMustExistInPool(token)
     {
         // TODO: burn LP tokens
@@ -178,6 +187,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
     )
         public
         nonReentrant()
+        poolMustBeSynced(tokenIn)
         tokenMustExistInPool(tokenIn)
         transactionIsNotExpired(expireTimestamp)
         safeTransferTokensNeeded(tokenIn, amountTokenIn)
@@ -186,7 +196,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
         uint increaseTokenBalance = 
             IERC20(tokenIn).balanceOf(address(this)) - pools[poolPos].balanceToken;
 
-        uint112 outputCerUsdAmount = getOutputCerUsd(poolPos, increaseTokenBalance);
+        uint112 outputCerUsdAmount = getOutputExactTokensForCerUsd(poolPos, increaseTokenBalance);
         require(
             outputCerUsdAmount >= minAmountCerUsdOut,
             "CS1: Output amount less than minimum specified"
@@ -208,7 +218,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
         updateTokenBalanceAndCheckKValue(poolPos, tokenIn);
     }
 
-    function swapExactCerUsdToToken(
+    function swapExactCerUsdForToken(
         address tokenOut,
         uint amountCerUsdIn,
         uint minAmountTokenOut,
@@ -216,6 +226,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
     )
         public
         nonReentrant()
+        poolMustBeSynced(tokenOut)
         tokenMustExistInPool(tokenOut)
         transactionIsNotExpired(expireTimestamp)
         safeTransferTokensNeeded(cerUsdContract, amountCerUsdIn)
@@ -224,7 +235,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
         uint112 increaseCerUsdBalance = 
             uint112(IERC20(cerUsdContract).balanceOf(address(this))) - pools[poolPos].balanceCerUsd;
 
-        uint112 outputTokenAmount = getOutputToken(poolPos, increaseCerUsdBalance);
+        uint112 outputTokenAmount = getOutputExactCerUsdForToken(poolPos, increaseCerUsdBalance);
         require(
             outputTokenAmount >= minAmountTokenOut,
             "CS1: Output amount less than minimum specified"
@@ -258,10 +269,11 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
         }
     }
 
-    function sync(uint poolPos, address token)
+    function sync(address token)
         public
         nonReentrant()
     {
+        uint poolPos = tokenToPoolPosition[token];
         uint112 newBalanceToken = uint112(IERC20(token).balanceOf(address(this)));
         if (newBalanceToken != pools[poolPos].balanceToken)
         {
@@ -269,26 +281,26 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
         }        
     }
 
-    function getOutputCerUsd(uint poolPos, uint deltaTokenBalance)
+    function getOutputExactTokensForCerUsd(uint poolPos, uint increaseTokenBalance)
         public
         view
         returns (uint112)
     {
         return _getOutput(
-            deltaTokenBalance,
+            increaseTokenBalance,
             pools[poolPos].balanceToken,
             pools[poolPos].balanceCerUsd,
             pools[poolPos].fee
         );
     }
 
-    function getOutputToken(uint poolPos, uint deltaCerUsdBalance)
+    function getOutputExactCerUsdForToken(uint poolPos, uint increaseCerUsdBalance)
         public
         view
         returns (uint112)
     {
         return _getOutput(
-            deltaCerUsdBalance,
+            increaseCerUsdBalance,
             pools[poolPos].balanceCerUsd,
             pools[poolPos].balanceToken,
             pools[poolPos].fee
