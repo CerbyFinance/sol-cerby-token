@@ -26,8 +26,10 @@ contract CerbySwapV1 is AccessControlEnumerable {
     address constant testCerbyToken = 0x029581a9121998fcBb096ceafA92E3E10057878f;
     address constant cerbyToken = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
     address constant cerUsdToken = 0xA84d62F776606B9eEbd761E2d31F65442eCc437E;
-    uint16 constant FEE_DENORM = 10000;
-    uint16 constant DEFAULT_FEE = 9985; // 0.15% per transaction XXX <--> cerUSD
+    uint16 constant FEE_MIN_VALUE = 9900;
+    uint16 constant FEE_MAX_VALUE = 10000;
+    uint16 constant NORMAL_FEE = 9985; // 0.15% per transaction XXX <--> cerUSD
+    uint16 constant STABLECOIN_FEE = 9995; // 0.05% per transaction USDC <--> cerUSD
 
     uint reEntrancyGuardStatus;
     uint constant REENTRANCY_NOT_ENTERED = 1;
@@ -51,14 +53,14 @@ contract CerbySwapV1 is AccessControlEnumerable {
             testCerbyToken,
             1e18 * 1e6,
             1e18 * 3e5,
-            DEFAULT_FEE
+            NORMAL_FEE
         );
 
         createPool(
             testUsdcToken,
             1e18 * 1e6,
             1e18 * 1e6,
-            DEFAULT_FEE
+            STABLECOIN_FEE
         );
     }
 
@@ -126,20 +128,26 @@ contract CerbySwapV1 is AccessControlEnumerable {
         _;
     }
 
+    modifier feeIsInNormalRange(uint16 fee)
+    {
+        require(
+            FEE_MIN_VALUE <= fee &&
+            fee < FEE_MAX_VALUE,
+            "CS1: Fee must be in range 0.01% - 1.00%"
+        );
+        _;
+    }
+
     // TODO: add remove pool or disable pool to allow remove liquidity only
 
     function createPool(address token, uint112 addTokenAmount, uint112 mintCerUsdAmount, uint16 fee)
         public
         reEntrancyProtected()
         executeCronJobs()
+        feeIsInNormalRange(fee)
         tokenDoesNotExistInPool(token)
         safeTransferTokensNeeded(token, addTokenAmount)
     {
-        require(
-            fee == DEFAULT_FEE, // TODO: add other values
-            "CS1: Incorrect fee provided"
-        );
-
         ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
 
         // Admins can create official pools with no limit on selling
@@ -391,6 +399,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
     function adminUpdateFee(address token, uint16 newFee)
         public
         onlyRole(ROLE_ADMIN)
+        feeIsInNormalRange(newFee)
         tokenMustExistInPool(token)
         poolMustBeSynced(token)
     {
@@ -449,11 +458,11 @@ contract CerbySwapV1 is AccessControlEnumerable {
     {
         uint amountInWithFee = amountIn * poolFee;
         uint amountOut = 
-            (reservesOut * amountInWithFee) / (reservesIn * FEE_DENORM + amountInWithFee);
+            (reservesOut * amountInWithFee) / (reservesIn * FEE_MAX_VALUE + amountInWithFee);
         return amountOut;
     }
 
-    function getPoolByPos(uint pos)
+    function getPoolByPosition(uint pos)
         public
         view
         returns (Pool memory)
