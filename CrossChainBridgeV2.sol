@@ -126,23 +126,18 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         bytes[40] memory srcCaller = getSrcCaller();
         bytes[40] memory srcToken = getSrcToken();
 
-        uint8  srcChainType = uint8(_srcChainType);
-        uint16 srcChainId   = uint16(block.chainid); 
-
         bytes memory packed = abi.encodePacked(
             abi.encode(srcCaller), abi.encode(destCaller),
             abi.encode(srcToken), abi.encode(destToken), 
             destAmount,
-            srcChainType, srcChainId,
+            uint8(_srcChainType), uint16(block.chainid), // srcChainType, srcChainId
             destChainType, destChainId,
             destNonce
         );
 
         require(packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32, "package is invalid");
 
-        bytes32 computedBurnProofHash = sha256(
-            packed
-        );
+        bytes32 computedBurnProofHash = sha256(packed);
 
         require(computedBurnProofHash == destBurnProofHash, "CCB: Provided hash is invalid");
 
@@ -179,23 +174,18 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         bytes[40] memory srcCaller = getSrcCaller();
         bytes[40] memory srcToken = getSrcToken();
 
-        uint8  srcChainType = uint8(_srcChainType);
-        uint16 srcChainId   = uint16(block.chainid); 
-
         bytes memory packed = abi.encodePacked(
             abi.encode(srcCaller), abi.encode(destCaller),
             abi.encode(srcToken), abi.encode(destToken), 
             srcAmount,
-            srcChainType, srcChainId,
+            uint8(_srcChainType), uint16(block.chainid), // srcChainType, srcChainId
             destChainType, destChainId,
             srcNonceByToken[_srcToken]
         );
 
         require(packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32, "package is invalid");
 
-        bytes32 computedBurnProofHash = sha256(
-            packed
-        );
+        bytes32 computedBurnProofHash = sha256(packed);
 
         burnProofStorage[computedBurnProofHash] = States.Burned;
 
