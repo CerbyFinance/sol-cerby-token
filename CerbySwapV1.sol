@@ -27,6 +27,14 @@ contract CerbySwapV1 is AccessControlEnumerable {
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
 
+        // Empty pool to fill 0th pool position
+        createPool(
+            address(0),
+            0,
+            0,
+            0
+        );
+
         address cerbyToken = 0xE7126C0Fb4B1f5F79E5Bbec3948139dCF348B49C;
         createPool(
             cerbyToken,
@@ -65,7 +73,13 @@ contract CerbySwapV1 is AccessControlEnumerable {
 
     modifier safeTransferTokensNeeded(address token, uint amount)
     {
+        uint oldBalance = IERC20(token).balanceOf(address(this));
         IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
+        uint newBalance = IERC20(token).balanceOf(address(this));
+        require(
+            newBalance >= oldBalance + amount,
+            "CS1: Fee-on-transfers aren't supported"
+        );
         _;
     }
 
@@ -74,7 +88,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
         tokenMustExistInPool(token)
     {
-        uint poolPos = getPoolPositionByToken(token);
+        uint poolPos = tokenToPoolPosition[token];
         pools[poolPos].fee = newFee;
     }
 
@@ -98,9 +112,12 @@ contract CerbySwapV1 is AccessControlEnumerable {
                 fee
             )
         );
-        tokenToPoolPosition[token] = pools.length;
+        tokenToPoolPosition[token] = pools.length - 1;
 
         // TODO: mint LP tokens
+        // TODO: record current debit/credit to LP position
+
+        updateTokenBalanceAndCheckKValue(tokenToPoolPosition[token], token);
     }
 
 
@@ -109,16 +126,18 @@ contract CerbySwapV1 is AccessControlEnumerable {
         tokenMustExistInPool(token)
         safeTransferTokensNeeded(token, addTokenAmount)
     {
-        uint poolPos = getPoolPositionByToken(token);
+        uint poolPos = tokenToPoolPosition[token];
         uint mintCerUsdAmount = 
             (addTokenAmount * pools[poolPos].balanceCerUsd) / pools[poolPos].balanceToken;
         ICerbyTokenMinterBurner(cerUsdContract).mintHumanAddress(address(this), mintCerUsdAmount);
 
-        pools[poolPos].balanceToken += addTokenAmount;
-        pools[poolPos].balanceCerUsd += mintCerUsdAmount;
-
         // TODO: mint LP tokens
+        // TODO: record current debit/credit to LP position
+        // TODO: check if user modified transfer function
+
+        updateTokenBalanceAndCheckKValue(poolPos, token);
     }
+
     function removeTokenLiquidity(address token, uint addTokenAmount)
         public
         tokenMustExistInPool(token)
@@ -126,6 +145,8 @@ contract CerbySwapV1 is AccessControlEnumerable {
         // TODO: burn LP tokens
         // TODO: if debit > credit return cerUSD additionally
         // TODO: if debit < credit return reduced tokenAmount
+
+        updateTokenBalanceAndCheckKValue(tokenToPoolPosition[token], token);
     }
 
     // TODO: add swapTokenToExactCerUSD XXX --> cerUSD
@@ -144,27 +165,50 @@ contract CerbySwapV1 is AccessControlEnumerable {
         transactionIsNotExpired(expireTimestamp)
         safeTransferTokensNeeded(tokenIn, amountTokenIn)
     {
-        uint poolPos = getPoolPositionByToken(tokenIn);
+        uint poolPos = tokenToPoolPosition[tokenIn];
         uint increaseTokenBalance = 
             IERC20(tokenIn).balanceOf(address(this)) - pools[poolPos].balanceToken;
 
-        uint outputCerUsd = getOutputCerUsd(poolPos, increaseTokenBalance);
+        uint outputCerUsdAmount = getOutputCerUsd(poolPos, increaseTokenBalance);
         require(
-            outputCerUsd >= minAmountCerUsdOut,
+            outputCerUsdAmount >= minAmountCerUsdOut,
             "CS1: Output amount less than minimum specified"
         );
 
         require(
             // For user-created pools you can't sell more than bought
             // For official pools - no limits
-            pools[poolPos].creditCerUsd + outputCerUsd <= pools[poolPos].debitCerUsd,
+            pools[poolPos].creditCerUsd + outputCerUsdAmount <= pools[poolPos].debitCerUsd,
             "CS1: Can't sell more than bought"
         );
 
-        pools[poolPos].creditCerUsd += outputCerUsd;
-        IERC20(cerUsdContract).transfer(msg.sender, outputCerUsd);
+        pools[poolPos].creditCerUsd += outputCerUsdAmount;
+        pools[poolPos].balanceCerUsd -= outputCerUsdAmount;
+        pools[poolPos].balanceToken += amountTokenIn;
 
-        updateBalancesAndCheckKValue(poolPos, tokenIn);
+        IERC20(cerUsdContract).transfer(msg.sender, outputCerUsdAmount);
+
+        updateTokenBalanceAndCheckKValue(poolPos, tokenIn);
+    }
+
+    function updateTokenBalanceAndCheckKValue(uint poolPos, address token)
+        public
+        tokenMustExistInPool(token)
+    {
+        uint newBalanceToken = IERC20(token).balanceOf(address(this));
+        uint oldKValue = pools[poolPos].balanceToken * pools[poolPos].balanceCerUsd;
+        uint newKValue = newBalanceToken * pools[poolPos].balanceCerUsd;
+        require(
+            newKValue >= oldKValue,
+            "CS1: K value decreased"
+        );
+
+        // TODO: check if K value can decrease anyhow without using burnHumanAddress cheats
+
+        if (newBalanceToken != pools[poolPos].balanceToken)
+        {
+            pools[poolPos].balanceToken = newBalanceToken;
+        }
     }
 
     function swapExactCerUsdToToken(
@@ -178,51 +222,21 @@ contract CerbySwapV1 is AccessControlEnumerable {
         transactionIsNotExpired(expireTimestamp)
         safeTransferTokensNeeded(cerUsdContract, amountCerUsdIn)
     {
-        uint poolPos = getPoolPositionByToken(tokenOut);
+        uint poolPos = tokenToPoolPosition[tokenOut];
         uint increaseCerUsdBalance = 
             IERC20(cerUsdContract).balanceOf(address(this)) - pools[poolPos].balanceCerUsd;
 
-        uint outputToken = getOutputToken(poolPos, increaseCerUsdBalance);
+        uint outputTokenAmount = getOutputToken(poolPos, increaseCerUsdBalance);
         require(
-            outputToken >= minAmountTokenOut,
+            outputTokenAmount >= minAmountTokenOut,
             "CS1: Output amount less than minimum specified"
         );
 
         pools[poolPos].debitCerUsd += increaseCerUsdBalance;
-        IERC20(tokenOut).safeTransfer(msg.sender, outputToken);
+        pools[poolPos].balanceCerUsd += increaseCerUsdBalance;
+        pools[poolPos].balanceToken -= outputTokenAmount;
 
-        updateBalancesAndCheckKValue(poolPos, tokenOut);
-    }
-
-    function updateBalancesAndCheckKValue(uint poolPos, address token)
-        private
-    {
-        uint previousPoolKValue = pools[poolPos].balanceToken * pools[poolPos].balanceCerUsd;
-
-        updateBalances(poolPos, token);
-
-        uint newPoolKValue = pools[poolPos].balanceToken * pools[poolPos].balanceCerUsd;
-        require(
-            newPoolKValue >= previousPoolKValue,
-            "CS1: K value decreased"
-        );
-    }
-
-    function updateBalances(uint poolPos, address token)
-        public
-    {
-        uint newBalanceToken = IERC20(token).balanceOf(address(this));
-        uint newBalanceCerUsd = IERC20(cerUsdContract).balanceOf(address(this));
-        pools[poolPos].balanceToken = newBalanceToken;
-        pools[poolPos].balanceCerUsd = newBalanceCerUsd;
-    }
-
-    function getPoolPositionByToken(address token)
-        public
-        view
-        returns (uint)
-    {
-        return tokenToPoolPosition[token] - 1;
+        IERC20(tokenOut).safeTransfer(msg.sender, outputTokenAmount);
     }
 
     function getOutputCerUsd(uint poolPos, uint deltaTokenBalance)

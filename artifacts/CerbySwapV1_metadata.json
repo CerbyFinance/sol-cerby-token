@@ -213,25 +213,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					}
-				],
-				"name": "getPoolPositionByToken",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -563,7 +544,7 @@
 						"type": "address"
 					}
 				],
-				"name": "updateBalances",
+				"name": "updateTokenBalanceAndCheckKValue",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -622,11 +603,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xd3355d13bca1ae04c1dd2bef3ded421669cdbbbaf27767ef8389ee6eb4836568",
+			"keccak256": "0xbc2ace10f580d2c1758c1aef585110c65cfdd8d79b7cba340170f78d982dfe5e",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://2552e5294cb36db3b7f02f0dbbe9200f6906b5c8ba7da57cebfb942640d5a73f",
-				"dweb:/ipfs/QmemuB8QjrzcpL7Aw4hfwtpWdt7MC9f6GCPLaLe1jvFUvd"
+				"bzz-raw://8ee7781b28debb2affeaa95a4138c21aafdb28da50469a8d8e6055d643fc9906",
+				"dweb:/ipfs/Qmf5KzZyyhaqM22gAzqYRmA4wVrnJazVELHK5SheLwZQv8"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {
