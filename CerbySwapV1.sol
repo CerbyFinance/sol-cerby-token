@@ -125,10 +125,10 @@ contract CerbySwapV1 is AccessControlEnumerable {
         safeTransferTokenNeeded(tokenIn, amountTokenIn)
     {
         uint poolPos = getPoolPositionByToken(tokenIn);
-        uint deltaTokenBalance = 
+        uint increaseTokenBalance = 
             IERC20(tokenIn).balanceOf(address(this)) - pools[poolPos].balanceToken;
 
-        uint outputCerUsd = getOutputCerUsd(poolPos, deltaTokenBalance);
+        uint outputCerUsd = getOutputCerUsd(poolPos, increaseTokenBalance);
         require(
             outputCerUsd >= minAmountCerUsdOut,
             "CS1: Output amount less than minimum specified"
@@ -152,16 +152,16 @@ contract CerbySwapV1 is AccessControlEnumerable {
         safeTransferTokenNeeded(cerUsdContract, amountCerUsdIn)
     {
         uint poolPos = getPoolPositionByToken(tokenOut);
-        uint deltaCerUsdBalance = 
+        uint increaseCerUsdBalance = 
             IERC20(cerUsdContract).balanceOf(address(this)) - pools[poolPos].balanceCerUsd;
 
-        uint outputToken = getOutputToken(poolPos, deltaCerUsdBalance);
+        uint outputToken = getOutputToken(poolPos, increaseCerUsdBalance);
         require(
             outputToken >= minAmountTokenOut,
             "CS1: Output amount less than minimum specified"
         );
 
-        pools[poolPos].debitCerUsd += deltaCerUsdBalance;
+        pools[poolPos].debitCerUsd += increaseCerUsdBalance;
         IERC20(tokenOut).safeTransfer(msg.sender, outputToken);
 
         updateBalancesAndCheckKValue(poolPos, tokenOut);
