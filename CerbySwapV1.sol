@@ -88,6 +88,8 @@ contract CerbySwapV1 is AccessControlEnumerable {
             )
         );
         tokenToPoolPosition[token] = pools.length;
+
+        // TODO: mint LP tokens
     }
 
     function addTokenLiquidity(address token, uint addTokenAmount)
@@ -102,17 +104,18 @@ contract CerbySwapV1 is AccessControlEnumerable {
 
         pools[poolPos].balanceToken += addTokenAmount;
         pools[poolPos].balanceCerUsd += mintCerUsdAmount;
-    }
 
-    function addCerUsdDebit(address token, uint addDebitCerUsdAmount)
+        // TODO: mint LP tokens
+    }
+    function removeTokenLiquidity(address token, uint addTokenAmount)
         public
         tokenMustExistInPool(token)
-        safeTransferTokenNeeded(cerUsdContract, addDebitCerUsdAmount)
     {
-        uint poolPos = getPoolPositionByToken(cerUsdContract);
-        pools[poolPos].debitCerUsd += addDebitCerUsdAmount;
+        // TODO: burn LP tokens
+        // TODO: if debit > credit return cerUSD additionally
+        // TODO: if debit < credit return reduced tokenAmount
     }
-
+    
     function swapExactTokenToCerUsd(
         address tokenIn,
         uint amountTokenIn,
@@ -136,6 +139,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
 
         require(
             // TODO: allow official pools???
+            // Means you have to buy more than you can possible sell
             pools[poolPos].creditCerUsd + outputCerUsd <= pools[poolPos].debitCerUsd,
             "CS1: Unable to credit more than debitted"
         );
