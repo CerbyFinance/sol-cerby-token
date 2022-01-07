@@ -20,8 +20,9 @@ contract CerbySwapV1 is AccessControlEnumerable {
     Pool[] public pools;
     mapping(address => uint) public tokenToPoolPosition;
 
+    address constant testUsdcToken = 0xC7a0e9429BBc262d97f3e87BF38a95cAE8b05EDa;
     address constant testCerbyToken = 0x029581a9121998fcBb096ceafA92E3E10057878f;
-    address constant cerUsdContract = 0xA84d62F776606B9eEbd761E2d31F65442eCc437E;
+    address constant cerUsdToken = 0xA84d62F776606B9eEbd761E2d31F65442eCc437E;
     uint16 constant FEE_DENORM = 10000;
     uint16 constant DEFAULT_FEE = 9985; // 0.15% per transaction XXX <--> cerUSD
 
@@ -48,6 +49,13 @@ contract CerbySwapV1 is AccessControlEnumerable {
             1e18 * 3e5,
             DEFAULT_FEE
         );
+
+        createPool(
+            testUsdcToken,
+            1e18 * 1e6,
+            1e18 * 1e6,
+            DEFAULT_FEE
+        );
     }
 
     modifier reEntrancyProtected()
@@ -62,7 +70,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
     modifier tokenMustExistInPool(address token)
     {
         require(
-            tokenToPoolPosition[token] > 0 && token != cerUsdContract,
+            tokenToPoolPosition[token] > 0 && token != cerUsdToken,
             "CS1: Wrong token"
         );
         _;
@@ -71,7 +79,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
     modifier tokenDoesNotExistInPool(address token)
     {
         require(
-            tokenToPoolPosition[token] == 0 && token != cerUsdContract,
+            tokenToPoolPosition[token] == 0 && token != cerUsdToken,
             "CS1: Token exists"
         );
         _;
@@ -88,13 +96,13 @@ contract CerbySwapV1 is AccessControlEnumerable {
 
     modifier poolMustBeSynced(address token)
     {
-        sync(token);
+        syncTokenBalanceInPool(token);
         _;
     }
 
     modifier safeTransferTokensNeeded(address token, uint amount)
     {
-        if (token != cerUsdContract)
+        if (token != cerUsdToken)
         {
             uint oldBalance = IERC20(token).balanceOf(address(this));
             IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
@@ -122,7 +130,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
             "CS1: Incorrect fee provided"
         );
 
-        ICerbyTokenMinterBurner(cerUsdContract).mintHumanAddress(address(this), mintCerUsdAmount);
+        ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
 
         // Admins can create official pools with no limit on selling
         // Users can create regular pools where they can't sell more than bought
@@ -144,7 +152,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         updateTokenBalanceAndCheckKValue(tokenToPoolPosition[token], token);
     }
 
-    function addTokenLiquidity(address token, uint addTokenAmount)
+    function addTokenLiquidity(address token, uint112 addTokenAmount)
         public
         reEntrancyProtected()
         tokenMustExistInPool(token)
@@ -154,7 +162,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         uint poolPos = tokenToPoolPosition[token];
         uint mintCerUsdAmount = 
             (addTokenAmount * pools[poolPos].balanceCerUsd) / pools[poolPos].balanceToken;
-        ICerbyTokenMinterBurner(cerUsdContract).mintHumanAddress(address(this), mintCerUsdAmount);
+        ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
 
         // TODO: mint LP tokens
         // TODO: record current debit/credit to LP position
@@ -163,7 +171,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         updateTokenBalanceAndCheckKValue(poolPos, token);
     }
 
-    function removeTokenLiquidity(address token, uint removeTokenAmount)
+    function removeTokenLiquidity(address token, uint112 removeTokenAmount)
         public
         reEntrancyProtected()
         tokenMustExistInPool(token)
@@ -181,8 +189,41 @@ contract CerbySwapV1 is AccessControlEnumerable {
     // TODO: add swapCerUsdToExactToken cerUSD --> YYY
     // TODO: add swapExactTokenToToken XXX --> cerUSD --> YYY (XXX != YYY)
     // TODO: add swapTokenToExactToken XXX --> cerUSD --> YYY (XXX != YYY)
+
+    function swapExactTokenForToken(
+        address tokenIn,
+        address tokenOut,
+        uint112 amountTokenIn,
+        uint112 minAmountTokenOut,
+        uint32 expireTimestamp
+    )
+        public
+        reEntrancyProtected()
+        transactionIsNotExpired(expireTimestamp)
+        tokenMustExistInPool(tokenIn)
+        poolMustBeSynced(tokenIn)
+        returns (uint112)
+    {
+        uint112 amountCerUsdIn = _swapExactTokenToCerUsd(
+            tokenIn,
+            amountTokenIn,
+            0,
+            false
+        );
+        uint112 outputTokenOut = _swapExactCerUsdForToken(
+            tokenOut,
+            amountCerUsdIn,
+            minAmountTokenOut,
+            false
+        );
+        return outputTokenOut;
+    }
+
     
-    // "0x029581a9121998fcBb096ceafA92E3E10057878f", "10000000000000000000000", 0, "2041564156"
+    // "0x029581a9121998fcBb096ceafA92E3E10057878f", "997503992263724670916", 0, "2041564156"
+    // "0xC7a0e9429BBc262d97f3e87BF38a95cAE8b05EDa", "1000000000000000000000", 0, "2041564156"
+    // "0x029581a9121998fcBb096ceafA92E3E10057878f","0xC7a0e9429BBc262d97f3e87BF38a95cAE8b05EDa","10000000000000000000000","0","2041564156"
+    // "0xC7a0e9429BBc262d97f3e87BF38a95cAE8b05EDa","0x029581a9121998fcBb096ceafA92E3E10057878f","1000000000000000000000","0","2041564156"
     function swapExactTokenToCerUsd(
         address tokenIn,
         uint112 amountTokenIn,
@@ -194,13 +235,31 @@ contract CerbySwapV1 is AccessControlEnumerable {
         transactionIsNotExpired(expireTimestamp)
         tokenMustExistInPool(tokenIn)
         poolMustBeSynced(tokenIn)
+        returns (uint112)
+    {
+        return _swapExactTokenToCerUsd(
+            tokenIn,
+            amountTokenIn,
+            minAmountCerUsdOut,
+            true
+        );
+    }
+
+    function _swapExactTokenToCerUsd(
+        address tokenIn,
+        uint112 amountTokenIn,
+        uint112 minAmountCerUsdOut,
+        bool enableInternalCerUsdTransfers
+    )
+        private
         safeTransferTokensNeeded(tokenIn, amountTokenIn)
+        returns (uint112)
     {
         uint poolPos = tokenToPoolPosition[tokenIn];
         uint112 increaseTokenBalance = 
             uint112(IERC20(tokenIn).balanceOf(address(this))) - pools[poolPos].balanceToken;
 
-        uint112 outputCerUsdAmount = getOutputExactTokensForCerUsd(poolPos, increaseTokenBalance);
+        uint112 outputCerUsdAmount = uint112(getOutputExactTokensForCerUsd(poolPos, increaseTokenBalance));
         require(
             outputCerUsdAmount >= minAmountCerUsdOut,
             "CS1: Output amount less than minimum specified"
@@ -217,41 +276,66 @@ contract CerbySwapV1 is AccessControlEnumerable {
         pools[poolPos].balanceCerUsd -= outputCerUsdAmount;
         pools[poolPos].balanceToken += amountTokenIn;
 
-        IERC20(cerUsdContract).transfer(msg.sender, outputCerUsdAmount);
+        if (enableInternalCerUsdTransfers) {
+            IERC20(cerUsdToken).transfer(msg.sender, outputCerUsdAmount);
+        }
 
         updateTokenBalanceAndCheckKValue(poolPos, tokenIn);
+
+        return outputCerUsdAmount;
     }
 
     function swapExactCerUsdForToken(
         address tokenOut,
-        uint amountCerUsdIn,
-        uint minAmountTokenOut,
-        uint expireTimestamp
+        uint112 amountCerUsdIn,
+        uint112 minAmountTokenOut,
+        uint32 expireTimestamp
     )
         public
         reEntrancyProtected()
         tokenMustExistInPool(tokenOut)
         poolMustBeSynced(tokenOut)
         transactionIsNotExpired(expireTimestamp)
-        safeTransferTokensNeeded(cerUsdContract, amountCerUsdIn)
+        returns (uint112)
     {
-        uint poolPos = tokenToPoolPosition[tokenOut];
-        uint112 increaseCerUsdBalance = 
-            uint112(IERC20(cerUsdContract).balanceOf(address(this))) - pools[poolPos].balanceCerUsd;
+        return _swapExactCerUsdForToken(
+            tokenOut,
+            amountCerUsdIn,
+            minAmountTokenOut,
+            true
+        );
+    }
 
-        uint112 outputTokenAmount = getOutputExactCerUsdForToken(poolPos, increaseCerUsdBalance);
+    function _swapExactCerUsdForToken(
+        address tokenOut,
+        uint112 amountCerUsdIn,
+        uint112 minAmountTokenOut,
+        bool enableInternalCerUsdTransfers
+    )
+        private
+        returns (uint112)
+    {
+        if (enableInternalCerUsdTransfers) {
+            IERC20(cerUsdToken).transferFrom(msg.sender, address(this), amountCerUsdIn);
+        }
+
+        uint poolPos = tokenToPoolPosition[tokenOut];
+
+        uint112 outputTokenAmount = uint112(getOutputExactCerUsdForToken(poolPos, amountCerUsdIn));
         require(
             outputTokenAmount >= minAmountTokenOut,
             "CS1: Output amount less than minimum specified"
         );
 
-        pools[poolPos].debitCerUsd += int112(increaseCerUsdBalance);
-        pools[poolPos].balanceCerUsd += increaseCerUsdBalance;
+        pools[poolPos].debitCerUsd += int112(amountCerUsdIn);
+        pools[poolPos].balanceCerUsd += amountCerUsdIn;
         pools[poolPos].balanceToken -= outputTokenAmount;
 
         IERC20(tokenOut).safeTransfer(msg.sender, outputTokenAmount);
 
         updateTokenBalanceAndCheckKValue(poolPos, tokenOut);
+
+        return outputTokenAmount;
     }
 
     function updateTokenBalanceAndCheckKValue(uint poolPos, address token)
@@ -264,9 +348,6 @@ contract CerbySwapV1 is AccessControlEnumerable {
             newKValue >= oldKValue,
             "CS1: K value decreased"
         );
-
-        // TODO: check if K value can decrease anyhow without using burnHumanAddress cheats
-
         if (newBalanceToken != pools[poolPos].balanceToken)
         {
             pools[poolPos].balanceToken = newBalanceToken;
@@ -283,7 +364,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         pools[poolPos].fee = newFee;
     }
 
-    function sync(address token)
+    function syncTokenBalanceInPool(address token)
         public
     {
         uint poolPos = tokenToPoolPosition[token];
@@ -294,50 +375,78 @@ contract CerbySwapV1 is AccessControlEnumerable {
         }        
     }
 
-    function getOutputExactTokensForCerUsd(uint poolPos, uint112 increaseTokenBalance)
-        public
-        view
-        returns (uint112)
-    {
-        return _getOutput(
-            increaseTokenBalance,
-            pools[poolPos].balanceToken,
-            pools[poolPos].balanceCerUsd,
-            pools[poolPos].fee
-        );
-    }
-
-    function getOutputExactCerUsdForToken(uint poolPos, uint112 increaseCerUsdBalance)
-        public
-        view
-        returns (uint112)
-    {
-        return _getOutput(
-            increaseCerUsdBalance,
-            pools[poolPos].balanceCerUsd,
-            pools[poolPos].balanceToken,
-            pools[poolPos].fee
-        );
-    }
-
-    function _getOutput(uint112 amountIn, uint112 reservesIn, uint112 reservesOut, uint16 poolFee)
-        private
-        pure
-        returns (uint112)
-    {
-        uint amountInWithFee = amountIn * poolFee;
-        uint amountOut = 
-            (reservesOut * amountInWithFee) / (reservesIn * FEE_DENORM + amountInWithFee);
-        return uint112(amountOut);
-    }
-
-    function testGetPrice()
+    function getOutputExactTokensForCerUsd(uint poolPos, uint increaseTokenBalance)
         public
         view
         returns (uint)
     {
-        uint poolPos = tokenToPoolPosition[testCerbyToken];
-        return (pools[poolPos].balanceCerUsd * 1e18) / pools[poolPos].balanceToken;
+        return _getOutput(
+            uint112(increaseTokenBalance),
+            uint112(pools[poolPos].balanceToken),
+            uint112(pools[poolPos].balanceCerUsd),
+            uint112(pools[poolPos].fee)
+        );
     }
-    
+
+    function getOutputExactCerUsdForToken(uint poolPos, uint increaseCerUsdBalance)
+        public
+        view
+        returns (uint)
+    {
+        return _getOutput(
+            uint112(increaseCerUsdBalance),
+            uint112(pools[poolPos].balanceCerUsd),
+            uint112(pools[poolPos].balanceToken),
+            uint112(pools[poolPos].fee)
+        );
+    }
+
+    function _getOutput(uint amountIn, uint reservesIn, uint reservesOut, uint poolFee)
+        private
+        pure
+        returns (uint)
+    {
+        uint amountInWithFee = amountIn * poolFee;
+        uint amountOut = 
+            (reservesOut * amountInWithFee) / (reservesIn * FEE_DENORM + amountInWithFee);
+        return amountOut;
+    }
+
+    function testGetPrices()
+        public
+        view
+        returns (uint, uint)
+    {
+        uint poolPos1 = tokenToPoolPosition[testCerbyToken];
+        uint poolPos2 = tokenToPoolPosition[testUsdcToken];
+        return (
+            (uint(pools[poolPos1].balanceCerUsd) * 1e18) / uint(pools[poolPos1].balanceToken),
+            (uint(pools[poolPos2].balanceCerUsd) * 1e18) / uint(pools[poolPos2].balanceToken)            
+        );
+    }
+
+    function testGetBalances()
+        public
+        view
+        returns (uint, uint, uint)
+    {
+        return (
+            IERC20(testCerbyToken).balanceOf(address(this)),
+            IERC20(testUsdcToken).balanceOf(address(this)),
+            IERC20(cerUsdToken).balanceOf(address(this))
+        );
+    }
+
+    function testGetPools()
+        public
+        view
+        returns (Pool memory, Pool memory)
+    {
+        uint poolPos1 = tokenToPoolPosition[testCerbyToken];
+        uint poolPos2 = tokenToPoolPosition[testUsdcToken];
+        return (
+            pools[poolPos1],
+            pools[poolPos2]
+        );
+    }
 }

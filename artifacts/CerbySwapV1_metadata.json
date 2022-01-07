@@ -106,9 +106,9 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "addTokenAmount",
-						"type": "uint256"
+						"type": "uint112"
 					}
 				],
 				"name": "addTokenLiquidity",
@@ -170,17 +170,17 @@
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint112",
+						"internalType": "uint256",
 						"name": "increaseCerUsdBalance",
-						"type": "uint112"
+						"type": "uint256"
 					}
 				],
 				"name": "getOutputExactCerUsdForToken",
 				"outputs": [
 					{
-						"internalType": "uint112",
+						"internalType": "uint256",
 						"name": "",
-						"type": "uint112"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -194,17 +194,17 @@
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint112",
+						"internalType": "uint256",
 						"name": "increaseTokenBalance",
-						"type": "uint112"
+						"type": "uint256"
 					}
 				],
 				"name": "getOutputExactTokensForCerUsd",
 				"outputs": [
 					{
-						"internalType": "uint112",
+						"internalType": "uint256",
 						"name": "",
-						"type": "uint112"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -399,9 +399,9 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "removeTokenAmount",
-						"type": "uint256"
+						"type": "uint112"
 					}
 				],
 				"name": "removeTokenLiquidity",
@@ -472,23 +472,68 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "amountCerUsdIn",
-						"type": "uint256"
+						"type": "uint112"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "minAmountTokenOut",
-						"type": "uint256"
+						"type": "uint112"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint32",
 						"name": "expireTimestamp",
-						"type": "uint256"
+						"type": "uint32"
 					}
 				],
 				"name": "swapExactCerUsdForToken",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "uint112",
+						"name": "",
+						"type": "uint112"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenIn",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "tokenOut",
+						"type": "address"
+					},
+					{
+						"internalType": "uint112",
+						"name": "amountTokenIn",
+						"type": "uint112"
+					},
+					{
+						"internalType": "uint112",
+						"name": "minAmountTokenOut",
+						"type": "uint112"
+					},
+					{
+						"internalType": "uint32",
+						"name": "expireTimestamp",
+						"type": "uint32"
+					}
+				],
+				"name": "swapExactTokenForToken",
+				"outputs": [
+					{
+						"internalType": "uint112",
+						"name": "",
+						"type": "uint112"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -516,7 +561,13 @@
 					}
 				],
 				"name": "swapExactTokenToCerUsd",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "uint112",
+						"name": "",
+						"type": "uint112"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -528,15 +579,115 @@
 						"type": "address"
 					}
 				],
-				"name": "sync",
+				"name": "syncTokenBalanceInPool",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "testGetPrice",
+				"name": "testGetBalances",
 				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "testGetPools",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "token",
+								"type": "address"
+							},
+							{
+								"internalType": "uint112",
+								"name": "balanceToken",
+								"type": "uint112"
+							},
+							{
+								"internalType": "uint112",
+								"name": "balanceCerUsd",
+								"type": "uint112"
+							},
+							{
+								"internalType": "int112",
+								"name": "debitCerUsd",
+								"type": "int112"
+							},
+							{
+								"internalType": "uint16",
+								"name": "fee",
+								"type": "uint16"
+							}
+						],
+						"internalType": "struct Pool",
+						"name": "",
+						"type": "tuple"
+					},
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "token",
+								"type": "address"
+							},
+							{
+								"internalType": "uint112",
+								"name": "balanceToken",
+								"type": "uint112"
+							},
+							{
+								"internalType": "uint112",
+								"name": "balanceCerUsd",
+								"type": "uint112"
+							},
+							{
+								"internalType": "int112",
+								"name": "debitCerUsd",
+								"type": "int112"
+							},
+							{
+								"internalType": "uint16",
+								"name": "fee",
+								"type": "uint16"
+							}
+						],
+						"internalType": "struct Pool",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "testGetPrices",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
 					{
 						"internalType": "uint256",
 						"name": "",
@@ -619,11 +770,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xaea83223eb64dce349063ea3f8096266ff073d3b727a781fcdba2abe7a4e6ea7",
+			"keccak256": "0x0d7ebb85c281a509e288d90ef1b489a99308df15cf6a9944c64bd964914d7f13",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://57a16f8debfc4ce0eb7a56ebc1a5332662a9a7684f32401382fda74e74c6c644",
-				"dweb:/ipfs/QmYQLav34GDU5jbJwUCAkoyonmoUAxSvC6i3yFjpd6RwfH"
+				"bzz-raw://11a30982e42b6c9162527565cb5a51fb6aeca0ee31d95c80c74a56ca4624d95f",
+				"dweb:/ipfs/QmNTQq8cQoeez4qDRZncf3Z1dTCgAWfHCjoKnzs5xwQpQT"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {
