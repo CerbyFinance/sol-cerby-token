@@ -2,7 +2,9 @@
 
 pragma solidity ^0.8.10;
 
+import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./openzeppelin/token/ERC20/utils/SafeERC20.sol";
+import "./interfaces/ICerbyTokenMinterBurner.sol";
 
 struct Pool {
     address token;
@@ -13,7 +15,7 @@ struct Pool {
     uint fee;
 }
 
-contract CerbySwapV1 {
+contract CerbySwapV1 is AccessControlEnumerable {
     Pool[] pools;
     using SafeERC20 for IERC20;
 
@@ -23,21 +25,18 @@ contract CerbySwapV1 {
     uint constant FEE_DENORM = 10000;
 
     constructor() {
+        _setupRole(ROLE_ADMIN, msg.sender);
+
         address cerbyToken = 0xE7126C0Fb4B1f5F79E5Bbec3948139dCF348B49C;
-        pools.push(
-            Pool(
-                cerbyToken,
-                1e18 * 1e6,
-                1e18 * 3e5,
-                0,
-                0,
-                9970
-            )
+        adminCreatePool(
+            cerbyToken,
+            1e18 * 1e6,
+            1e18 * 3e5,
+            9970
         );
-        tokenToPoolPosition[cerbyToken] = pools.length;
     }
 
-    modifier checkToken(address token)
+    modifier tokenMustExistInPool(address token)
     {
         require(
             tokenToPoolPosition[token] > 0 && token != cerUsdContract,
@@ -46,13 +45,43 @@ contract CerbySwapV1 {
         _;
     }
 
-    modifier checkExpiration(uint expireTimestamp)
+    modifier tokenDoesNotExistInPool(address token)
+    {
+        require(
+            tokenToPoolPosition[token] == 0 && token != cerUsdContract,
+            "CS1: Token exists"
+        );
+        _;
+    }
+
+    modifier transactionIsNotExpired(uint expireTimestamp)
     {
         require(
             block.timestamp <= expireTimestamp,
             "CS1: Transaction is expired"
         );
         _;
+    }
+
+    function adminCreatePool(address token, uint addTokenAmount, uint mintCerUsdAmount, uint fee)
+        public
+        tokenDoesNotExistInPool(token)
+        onlyRole(ROLE_ADMIN)
+    {
+        IERC20(token).safeTransferFrom(msg.sender, address(this), addTokenAmount);        
+        ICerbyTokenMinterBurner(cerUsdContract).mintHumanAddress(address(this), mintCerUsdAmount);
+
+        pools.push(
+            Pool(
+                token,
+                addTokenAmount,
+                mintCerUsdAmount,
+                0,
+                0,
+                fee
+            )
+        );
+        tokenToPoolPosition[token] = pools.length;
     }
 
     function swapExactTokenToCerUsd(
@@ -62,8 +91,8 @@ contract CerbySwapV1 {
         uint expireTimestamp
     )
         public
-        checkToken(tokenIn)
-        checkExpiration(expireTimestamp)
+        tokenMustExistInPool(tokenIn)
+        transactionIsNotExpired(expireTimestamp)
     {
         IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amountTokenIn);
 
@@ -90,8 +119,8 @@ contract CerbySwapV1 {
         uint expireTimestamp
     )
         public
-        checkToken(tokenOut)
-        checkExpiration(expireTimestamp)
+        tokenMustExistInPool(tokenOut)
+        transactionIsNotExpired(expireTimestamp)
     {
         IERC20(cerUsdContract).transferFrom(msg.sender, address(this), amountCerUsdIn);
 
@@ -116,14 +145,20 @@ contract CerbySwapV1 {
     {
         uint previousPoolKValue = pools[poolPos].balanceToken * pools[poolPos].balanceCerUsd;
 
-        uint newBalanceToken = IERC20(token).balanceOf(address(this));
-        uint newBalanceCerUsd = IERC20(cerUsdContract).balanceOf(address(this));
+        updateBalances(poolPos, token);
+
         uint newPoolKValue = pools[poolPos].balanceToken * pools[poolPos].balanceCerUsd;
         require(
             newPoolKValue >= previousPoolKValue,
             "CS1: K value decreased"
         );
+    }
 
+    function updateBalances(uint poolPos, address token)
+        public
+    {
+        uint newBalanceToken = IERC20(token).balanceOf(address(this));
+        uint newBalanceCerUsd = IERC20(cerUsdContract).balanceOf(address(this));
         pools[poolPos].balanceToken = newBalanceToken;
         pools[poolPos].balanceCerUsd = newBalanceCerUsd;
     }
