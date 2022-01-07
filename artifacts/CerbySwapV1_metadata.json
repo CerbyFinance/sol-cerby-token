@@ -124,9 +124,9 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint16",
 						"name": "newFee",
-						"type": "uint256"
+						"type": "uint16"
 					}
 				],
 				"name": "adminUpdateFee",
@@ -142,19 +142,19 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "addTokenAmount",
-						"type": "uint256"
+						"type": "uint112"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "mintCerUsdAmount",
-						"type": "uint256"
+						"type": "uint112"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint16",
 						"name": "fee",
-						"type": "uint256"
+						"type": "uint16"
 					}
 				],
 				"name": "createPool",
@@ -178,9 +178,9 @@
 				"name": "getOutputCerUsd",
 				"outputs": [
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "",
-						"type": "uint256"
+						"type": "uint112"
 					}
 				],
 				"stateMutability": "view",
@@ -202,9 +202,9 @@
 				"name": "getOutputToken",
 				"outputs": [
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "",
-						"type": "uint256"
+						"type": "uint112"
 					}
 				],
 				"stateMutability": "view",
@@ -355,29 +355,24 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "balanceToken",
-						"type": "uint256"
+						"type": "uint112"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "balanceCerUsd",
-						"type": "uint256"
+						"type": "uint112"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "int112",
 						"name": "debitCerUsd",
-						"type": "uint256"
+						"type": "int112"
 					},
 					{
-						"internalType": "uint256",
-						"name": "creditCerUsd",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
+						"internalType": "uint16",
 						"name": "fee",
-						"type": "uint256"
+						"type": "uint16"
 					}
 				],
 				"stateMutability": "view",
@@ -492,19 +487,19 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "amountTokenIn",
-						"type": "uint256"
+						"type": "uint112"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "minAmountCerUsdOut",
-						"type": "uint256"
+						"type": "uint112"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint32",
 						"name": "expireTimestamp",
-						"type": "uint256"
+						"type": "uint32"
 					}
 				],
 				"name": "swapExactTokenToCerUsd",
@@ -603,11 +598,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x58adce7088b602c8133619886f1ad9335bfec32b7b2c681dc7030f5ab3b4dfe8",
+			"keccak256": "0xdb684a8a61ed69b464468a5faf2cc609debbbabd312bb0a7acac307b2c793e33",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://9c8294d524759fc94a2a0fbbce26328bb9d8de42edfd0c0edc230a1e7ae7bf0f",
-				"dweb:/ipfs/QmcYRbTjejv5HAXzeZk5W6n9eQVdygSK1N2pay2cktRkT7"
+				"bzz-raw://5682b943a7de2f075262727dd164e8a68283ba94e3097ba5a2f57a7fafe1a60a",
+				"dweb:/ipfs/QmbSQLtWDLp7eW6SsQduXqKEcj86mTWT8tizz2VjJ5Nb4S"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {

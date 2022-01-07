@@ -9,11 +9,10 @@ import "./interfaces/ICerbyTokenMinterBurner.sol";
 
 struct Pool {
     address token;
-    uint balanceToken;
-    uint balanceCerUsd;
-    uint debitCerUsd;
-    uint creditCerUsd;
-    uint fee;
+    uint112 balanceToken;
+    uint112 balanceCerUsd;
+    int112 debitCerUsd;
+    uint16 fee;
 }
 
 contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
@@ -23,8 +22,8 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
     mapping(address => uint) public tokenToPoolPosition;
 
     address constant cerUsdContract = 0x3B69b8C5c6a4c8c2a90dc93F3B0238BF70cC9640;
-    uint constant FEE_DENORM = 10000;
-    uint constant DEFAULT_FEE = 9985; // 0.15% per transaction XXX <--> cerUSD
+    uint16 constant FEE_DENORM = 10000;
+    uint16 constant DEFAULT_FEE = 9985; // 0.15% per transaction XXX <--> cerUSD
 
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
@@ -90,7 +89,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
         _;
     }
 
-    function adminUpdateFee(address token, uint newFee)
+    function adminUpdateFee(address token, uint16 newFee)
         public
         onlyRole(ROLE_ADMIN)
         tokenMustExistInPool(token)
@@ -101,7 +100,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
 
     // TODO: add remove pool or disable pool to allow remove liquidity only
 
-    function createPool(address token, uint addTokenAmount, uint mintCerUsdAmount, uint fee)
+    function createPool(address token, uint112 addTokenAmount, uint112 mintCerUsdAmount, uint16 fee)
         public
         nonReentrant()
         tokenDoesNotExistInPool(token)
@@ -116,14 +115,13 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
 
         // Admins can create official pools with no limit on selling
         // Users can create regular pools where they can't sell more than bought
-        uint newCerUsdDebit = hasRole(ROLE_ADMIN, msg.sender)? mintCerUsdAmount: 0;
+        int112 newCerUsdDebit = hasRole(ROLE_ADMIN, msg.sender)? int112(mintCerUsdAmount): int112(0);
         pools.push(
             Pool(
                 token,
                 addTokenAmount,
                 mintCerUsdAmount,
                 newCerUsdDebit,
-                0,
                 fee
             )
         );
@@ -174,9 +172,9 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
     
     function swapExactTokenToCerUsd(
         address tokenIn,
-        uint amountTokenIn,
-        uint minAmountCerUsdOut,
-        uint expireTimestamp
+        uint112 amountTokenIn,
+        uint112 minAmountCerUsdOut,
+        uint32 expireTimestamp
     )
         public
         nonReentrant()
@@ -188,7 +186,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
         uint increaseTokenBalance = 
             IERC20(tokenIn).balanceOf(address(this)) - pools[poolPos].balanceToken;
 
-        uint outputCerUsdAmount = getOutputCerUsd(poolPos, increaseTokenBalance);
+        uint112 outputCerUsdAmount = getOutputCerUsd(poolPos, increaseTokenBalance);
         require(
             outputCerUsdAmount >= minAmountCerUsdOut,
             "CS1: Output amount less than minimum specified"
@@ -197,11 +195,11 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
         require(
             // For user-created pools you can't sell more than bought
             // For official pools - no limits
-            pools[poolPos].creditCerUsd + outputCerUsdAmount <= pools[poolPos].debitCerUsd,
+            pools[poolPos].debitCerUsd - int112(outputCerUsdAmount) > 0,
             "CS1: Can't sell more than bought"
         );
 
-        pools[poolPos].creditCerUsd += outputCerUsdAmount;
+        pools[poolPos].debitCerUsd -= int112(outputCerUsdAmount);
         pools[poolPos].balanceCerUsd -= outputCerUsdAmount;
         pools[poolPos].balanceToken += amountTokenIn;
 
@@ -223,16 +221,16 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
         safeTransferTokensNeeded(cerUsdContract, amountCerUsdIn)
     {
         uint poolPos = tokenToPoolPosition[tokenOut];
-        uint increaseCerUsdBalance = 
-            IERC20(cerUsdContract).balanceOf(address(this)) - pools[poolPos].balanceCerUsd;
+        uint112 increaseCerUsdBalance = 
+            uint112(IERC20(cerUsdContract).balanceOf(address(this))) - pools[poolPos].balanceCerUsd;
 
-        uint outputTokenAmount = getOutputToken(poolPos, increaseCerUsdBalance);
+        uint112 outputTokenAmount = getOutputToken(poolPos, increaseCerUsdBalance);
         require(
             outputTokenAmount >= minAmountTokenOut,
             "CS1: Output amount less than minimum specified"
         );
 
-        pools[poolPos].debitCerUsd += increaseCerUsdBalance;
+        pools[poolPos].debitCerUsd += int112(increaseCerUsdBalance);
         pools[poolPos].balanceCerUsd += increaseCerUsdBalance;
         pools[poolPos].balanceToken -= outputTokenAmount;
 
@@ -245,7 +243,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
         private
     {
         uint oldKValue = pools[poolPos].balanceToken * pools[poolPos].balanceCerUsd;
-        uint newBalanceToken = IERC20(token).balanceOf(address(this));
+        uint112 newBalanceToken = uint112(IERC20(token).balanceOf(address(this)));
         uint newKValue = newBalanceToken * pools[poolPos].balanceCerUsd;
         require(
             newKValue >= oldKValue,
@@ -264,7 +262,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
         public
         nonReentrant()
     {
-        uint newBalanceToken = IERC20(token).balanceOf(address(this));
+        uint112 newBalanceToken = uint112(IERC20(token).balanceOf(address(this)));
         if (newBalanceToken != pools[poolPos].balanceToken)
         {
             pools[poolPos].balanceToken = newBalanceToken;
@@ -274,7 +272,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
     function getOutputCerUsd(uint poolPos, uint deltaTokenBalance)
         public
         view
-        returns (uint)
+        returns (uint112)
     {
         return _getOutput(
             deltaTokenBalance,
@@ -287,7 +285,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
     function getOutputToken(uint poolPos, uint deltaCerUsdBalance)
         public
         view
-        returns (uint)
+        returns (uint112)
     {
         return _getOutput(
             deltaCerUsdBalance,
@@ -300,11 +298,11 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard {
     function _getOutput(uint amountIn, uint reservesIn, uint reservesOut, uint poolFee)
         private
         pure
-        returns (uint)
+        returns (uint112)
     {
         uint amountInWithFee = amountIn * poolFee;
         uint amountOut = 
             (reservesOut * amountInWithFee) / (reservesIn * FEE_DENORM + amountInWithFee);
-        return amountOut;
+        return uint112(amountOut);
     }
 }
