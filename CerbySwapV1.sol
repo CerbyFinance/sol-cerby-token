@@ -201,6 +201,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         uint112 burnCerUsdAmount = uint112(
             (uint(removeTokenAmount) * uint(pools[poolPos].balanceCerUsd)) / uint(pools[poolPos].balanceToken)
         );
+        ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), burnCerUsdAmount);
 
         // TODO: burn LP tokens
         // TODO: if debit > credit return cerUSD additionally
@@ -216,7 +217,6 @@ contract CerbySwapV1 is AccessControlEnumerable {
 
     // TODO: add swapTokenToExactCerUSD XXX --> cerUSD
     // TODO: add swapCerUsdToExactToken cerUSD --> YYY
-    // TODO: add swapExactTokenToToken XXX --> cerUSD --> YYY (XXX != YYY)
     // TODO: add swapTokenToExactToken XXX --> cerUSD --> YYY (XXX != YYY)
 
     function swapExactTokenForToken(
