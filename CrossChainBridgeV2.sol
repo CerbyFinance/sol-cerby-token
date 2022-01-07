@@ -53,8 +53,7 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
     // it's common storage for all chains (evm, casper, solana etc)
     mapping(bytes32 => States) public burnProofStorage;
 
-    // don't compile
-    mapping(bytes[40] => uint256) public srcNonceByToken;
+    mapping(address => uint256) public srcNonceByToken;
 
     constructor() {
         _srcToken = address(1);
@@ -163,8 +162,8 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
 
      function burnAndCreateProof(
         bytes[40] memory destToken,
+        bytes[40] memory destCaller,
         uint256 srcAmount,
-        bytes32 destCaller,
         uint8   destChainType,
         uint16  destChainId
     ) external {
@@ -189,7 +188,7 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
             srcAmount,
             srcChainType, srcChainId,
             destChainType, destChainId,
-            srcNonceByToken[token]
+            srcNonceByToken[_srcToken]
         );
 
         require(packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32, "package is invalid");
@@ -198,7 +197,7 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
             packed
         );
 
-        transactionStorage[transactionHash] = States.Burned;
+        burnProofStorage[computedBurnProofHash] = States.Burned;
 
         iCerbyToken.burnByBridge(msg.sender, srcAmount);
 
@@ -208,11 +207,11 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
             srcCaller,
             destCaller,
             srcAmount,
-            srcNonceByToken[token],
+            srcNonceByToken[_srcToken],
             ChainType(destChainType),
             destChainId,
             computedBurnProofHash
         );
-        srcNonceByToken[token]++;
+        srcNonceByToken[_srcToken]++;
     }
 }
