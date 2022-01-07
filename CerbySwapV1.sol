@@ -37,6 +37,97 @@ contract CerbySwapV1 {
         tokenToPoolPosition[cerbyToken] = pools.length;
     }
 
+    modifier checkToken(address token)
+    {
+        require(
+            tokenToPoolPosition[token] > 0 && token != cerUsdContract,
+            "CS1: Wrong token"
+        );
+        _;
+    }
+
+    modifier checkExpiration(uint expireTimestamp)
+    {
+        require(
+            block.timestamp <= expireTimestamp,
+            "CS1: Transaction is expired"
+        );
+        _;
+    }
+
+    function swapExactTokenToCerUsd(
+        address tokenIn,
+        uint amountTokenIn,
+        uint minAmountCerUsdOut,
+        uint expireTimestamp
+    )
+        public
+        checkToken(tokenIn)
+        checkExpiration(expireTimestamp)
+    {
+        IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amountTokenIn);
+
+        uint poolPos = getPoolPositionByToken(tokenIn);
+        uint deltaTokenBalance = 
+            IERC20(tokenIn).balanceOf(address(this)) - pools[poolPos].balanceToken;
+
+        uint outputCerUsd = getOutputCerUsd(poolPos, deltaTokenBalance);
+        require(
+            outputCerUsd >= minAmountCerUsdOut,
+            "CS1: Output amount less than minimum specified"
+        );
+
+        pools[poolPos].creditCerUsd += outputCerUsd;
+        IERC20(cerUsdContract).transfer(msg.sender, outputCerUsd);
+
+        updateBalancesAndCheckKValue(poolPos, tokenIn);
+    }
+
+    function swapExactCerUsdToToken(
+        address tokenOut,
+        uint amountCerUsdIn,
+        uint minAmountTokenOut,
+        uint expireTimestamp
+    )
+        public
+        checkToken(tokenOut)
+        checkExpiration(expireTimestamp)
+    {
+        IERC20(cerUsdContract).safeTransferFrom(msg.sender, address(this), amountCerUsdIn);
+
+        uint poolPos = getPoolPositionByToken(tokenOut);
+        uint deltaCerUsdBalance = 
+            IERC20(cerUsdContract).balanceOf(address(this)) - pools[poolPos].balanceCerUsd;
+
+        uint outputToken = getOutputToken(poolPos, deltaCerUsdBalance);
+        require(
+            outputToken >= minAmountTokenOut,
+            "CS1: Output amount less than minimum specified"
+        );
+
+        pools[poolPos].debitCerUsd += deltaCerUsdBalance;
+        IERC20(tokenOut).transfer(msg.sender, outputToken);
+
+        updateBalancesAndCheckKValue(poolPos, tokenOut);
+    }
+
+    function updateBalancesAndCheckKValue(uint poolPos, address token)
+        private
+    {
+        uint previousPoolKValue = pools[poolPos].balanceToken * pools[poolPos].balanceCerUsd;
+
+        uint newBalanceToken = IERC20(token).balanceOf(address(this));
+        uint newBalanceCerUsd = IERC20(cerUsdContract).balanceOf(address(this));
+        uint newPoolKValue = pools[poolPos].balanceToken * pools[poolPos].balanceCerUsd;
+        require(
+            newPoolKValue >= previousPoolKValue,
+            "CS1: K value decreased"
+        );
+
+        pools[poolPos].balanceToken = newBalanceToken;
+        pools[poolPos].balanceCerUsd = newBalanceCerUsd;
+    }
+
     function getPoolPositionByToken(address token)
         public
         view
@@ -45,41 +136,17 @@ contract CerbySwapV1 {
         return tokenToPoolPosition[token] - 1;
     }
 
-    function swapExactTokenToCerUsd(
-        address tokenIn,
-        uint amountIn
-    )
-        public
-    {
-        require(
-            tokenToPoolPosition[tokenIn] > 0 && tokenIn != cerUsdContract,
-            "CS1: Wrong tokenIn"
-        );
-
-        IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amountIn);
-
-        uint poolPos = tokenToPoolPosition[tokenIn] - 1;
-        uint deltaTokenBalance = 
-            IERC20(tokenIn).balanceOf(address(this)) - pools[poolPos].balanceToken;
-
-        uint outputCerUsd = getOutputCerUsd(poolPos, deltaTokenBalance);
-        pools[poolPos].creditCerUsd += outputCerUsd;
-
-        IERC20(cerUsdContract).transfer(msg.sender, outputCerUsd);
-    }
-
     function getOutputCerUsd(uint poolPos, uint deltaTokenBalance)
         public
         view
         returns (uint)
     {
-        uint reservesIn = pools[poolPos].balanceToken;
-        uint reservesOut = pools[poolPos].balanceCerUsd;
-        uint amountInWithFee = deltaTokenBalance * pools[poolPos].fee;
-
-        uint amountOut = 
-            (reservesOut * amountInWithFee) / (reservesIn * FEE_DENORM + amountInWithFee);
-        return amountOut;
+        return _getOutput(
+            deltaTokenBalance,
+            pools[poolPos].balanceToken,
+            pools[poolPos].balanceCerUsd,
+            pools[poolPos].fee
+        );
     }
 
     function getOutputToken(uint poolPos, uint deltaCerUsdBalance)
@@ -87,10 +154,20 @@ contract CerbySwapV1 {
         view
         returns (uint)
     {
-        uint reservesIn = pools[poolPos].balanceCerUsd;
-        uint reservesOut = pools[poolPos].balanceToken;
-        uint amountInWithFee = deltaCerUsdBalance * pools[poolPos].fee;
+        return _getOutput(
+            deltaCerUsdBalance,
+            pools[poolPos].balanceCerUsd,
+            pools[poolPos].balanceToken,
+            pools[poolPos].fee
+        );
+    }
 
+    function _getOutput(uint amountIn, uint reservesIn, uint reservesOut, uint poolFee)
+        private
+        pure
+        returns (uint)
+    {
+        uint amountInWithFee = amountIn * poolFee;
         uint amountOut = 
             (reservesOut * amountInWithFee) / (reservesIn * FEE_DENORM + amountInWithFee);
         return amountOut;
