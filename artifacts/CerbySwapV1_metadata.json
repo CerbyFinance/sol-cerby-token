@@ -125,6 +125,24 @@
 					},
 					{
 						"internalType": "uint256",
+						"name": "newFee",
+						"type": "uint256"
+					}
+				],
+				"name": "adminUpdateFee",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
 						"name": "addTokenAmount",
 						"type": "uint256"
 					},
@@ -604,11 +622,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x2e32a5ca2d9fb1b83e9d9691f7b017017cece9e9f0c09a0b2fa49f1f3ab75a13",
+			"keccak256": "0xd3355d13bca1ae04c1dd2bef3ded421669cdbbbaf27767ef8389ee6eb4836568",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://d63cdb7e2887ed1ee51ae88661b45b9cf54090b868c29239c3c7d7186361c4ef",
-				"dweb:/ipfs/QmQvs535NW4wcZyD3QGAqLEo5GBBH2tJDyFAGdokivNK4N"
+				"bzz-raw://2552e5294cb36db3b7f02f0dbbe9200f6906b5c8ba7da57cebfb942640d5a73f",
+				"dweb:/ipfs/QmemuB8QjrzcpL7Aw4hfwtpWdt7MC9f6GCPLaLe1jvFUvd"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {

@@ -69,6 +69,15 @@ contract CerbySwapV1 is AccessControlEnumerable {
         _;
     }
 
+    function adminUpdateFee(address token, uint newFee)
+        public
+        onlyRole(ROLE_ADMIN)
+        tokenMustExistInPool(token)
+    {
+        uint poolPos = getPoolPositionByToken(token);
+        pools[poolPos].fee = newFee;
+    }
+
     function createPool(address token, uint addTokenAmount, uint mintCerUsdAmount, uint fee)
         public
         tokenDoesNotExistInPool(token)
