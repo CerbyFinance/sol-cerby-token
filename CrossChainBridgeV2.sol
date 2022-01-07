@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity ^0.8.11;
+pragma solidity ^0.8.7;
 
-import "./openzeppelin/access/AccessControlEnumerable.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/AccessControlEnumerable.sol";
 
 
 interface IMintableBurnableToken {
@@ -12,10 +12,21 @@ interface IMintableBurnableToken {
 }
 
 
-contract CasperBridge is AccessControlEnumerable {
+contract CrossChainBridgeV2 is AccessControlEnumerable {
+    event ProofOfBurn(
+        bytes[40] srcToken,
+        bytes[40] destToken,
+        bytes[40] srcCaller,
+        bytes[40] destCaller,
+        uint256   srcAmount,
+        uint256   srcNonce,
+        ChainType destChainType,
+        uint16    destChainId,
+        bytes32   burnProofHash
+    );
 
     event ProofOfMint(
-        //bytes[40]  srcToken, // ? 
+        bytes[40] srcToken,
         bytes[40] destToken,
         bytes[40] srcCaller,
         bytes[40] destCaller,
@@ -41,12 +52,49 @@ contract CasperBridge is AccessControlEnumerable {
 
     // it's common storage for all chains (evm, casper, solana etc)
     mapping(bytes32 => States) public burnProofStorage;
-    mapping(address => uint256) public currentNonce;
+
+    // don't compile
+    mapping(bytes[40] => uint256) public srcNonceByToken;
 
     constructor() {
         _srcToken = address(1);
         _srcChainType = ChainType.Evm;
     }
+
+
+    function getSrcCaller() private view returns(bytes[40] memory) {
+        bytes[40] memory srcCaller;
+        address _srcCaller = msg.sender;
+        assembly {
+            mstore(
+                add(
+                    srcCaller,
+                    40
+                ),
+                _srcCaller
+            )
+        }
+
+        return srcCaller;
+    }
+
+
+    function getSrcToken() private view returns(bytes[40] memory) {
+        bytes[40] memory srcToken;
+        address __srcToken = _srcToken; // **
+        assembly {
+            mstore(
+                add(
+                    srcToken,
+                    40
+                ),
+                __srcToken // ** or use .slot ?
+            )
+        }
+
+        return srcToken;
+    }
+
 
     function approveBurnProof(bytes32 proofHash) external {
         require(
@@ -60,6 +108,8 @@ contract CasperBridge is AccessControlEnumerable {
     function mintWithBurnProof(
         bytes[40] memory destToken,
         bytes[40] memory destCaller,
+        uint8     destChainType,
+        uint16    destChainId,
         bytes32   destBurnProofHash,
         uint256   destAmount,
         uint256   destNonce
@@ -69,50 +119,27 @@ contract CasperBridge is AccessControlEnumerable {
             "CCB: Proof is not approved or already executed"
         );
 
-        // get these field on our own chain
+        // or ignore ?
+        // TODO: require(destChainType is ChainType) 
 
-        // bytes[40] memory srcCaller = abi.encodePacked(msg.sender); // does not work
-        // bytes[40] memory srcToken  = abi.encodePacked(_srcToken);
+        // get fields with src prefix on our own chain
 
-        address _srcCaller = msg.sender;
-        bytes[40] memory srcCaller;
-        assembly {
-            mstore(
-                add(
-                    srcCaller,
-                    40
-                ),
-                _srcCaller
-            )
-        }
+        bytes[40] memory srcCaller = getSrcCaller();
+        bytes[40] memory srcToken = getSrcToken();
 
-
-        address __srcToken = _srcToken; // idk why, but it works only when reassigned
-        bytes[40] memory srcToken;
-        assembly {
-            mstore(
-                add(
-                    srcToken,
-                    40
-                ),
-                __srcToken // can't pass _srcToken for some reason
-            )
-        }
-
-
-        
         uint8  srcChainType = uint8(_srcChainType);
         uint16 srcChainId   = uint16(block.chainid); 
 
         bytes memory packed = abi.encodePacked(
-                abi.encode(srcCaller), abi.encode(destCaller),
-                abi.encode(srcToken), abi.encode(destToken), 
-                destAmount,
-                srcChainType, srcChainId,
-                destNonce
+            abi.encode(srcCaller), abi.encode(destCaller),
+            abi.encode(srcToken), abi.encode(destToken), 
+            destAmount,
+            srcChainType, srcChainId,
+            destChainType, destChainId,
+            destNonce
         );
 
-        require(packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 2 + 32, "package is invalid");
+        require(packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32, "package is invalid");
 
         bytes32 computedBurnProofHash = sha256(
             packed
@@ -125,12 +152,67 @@ contract CasperBridge is AccessControlEnumerable {
         IMintableBurnableToken(_srcToken).mintByBridge(msg.sender, destAmount);
 
         emit ProofOfMint(
-            // srcToken,
+            srcToken,
             destToken,
             srcCaller,
             destCaller,
             destAmount,
             destBurnProofHash
         );
+    }
+
+     function burnAndCreateProof(
+        bytes[40] memory destToken,
+        uint256 srcAmount,
+        bytes32 destCaller,
+        uint8   destChainType,
+        uint16  destChainId
+    ) external {
+        IMintableBurnableToken iCerbyToken = IMintableBurnableToken(_srcToken);
+        require(
+            srcAmount <= iCerbyToken.balanceOf(msg.sender),
+            "CCB: Amount must not exceed available balance. Try reducing the amount."
+        );
+
+        // or ignore ?
+        // TODO: require(destChainType is ChainType)
+
+        bytes[40] memory srcCaller = getSrcCaller();
+        bytes[40] memory srcToken = getSrcToken();
+
+        uint8  srcChainType = uint8(_srcChainType);
+        uint16 srcChainId   = uint16(block.chainid); 
+
+        bytes memory packed = abi.encodePacked(
+            abi.encode(srcCaller), abi.encode(destCaller),
+            abi.encode(srcToken), abi.encode(destToken), 
+            srcAmount,
+            srcChainType, srcChainId,
+            destChainType, destChainId,
+            srcNonceByToken[token]
+        );
+
+        require(packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32, "package is invalid");
+
+        bytes32 computedBurnProofHash = sha256(
+            packed
+        );
+
+        transactionStorage[transactionHash] = States.Burned;
+
+        iCerbyToken.burnByBridge(msg.sender, srcAmount);
+
+        emit ProofOfBurn(
+            srcToken,
+            destToken,
+            srcCaller,
+            destCaller,
+            srcAmount,
+            srcNonceByToken[token],
+            ChainType(destChainType),
+            destChainId,
+            computedBurnProofHash
+        );
+        srcNonceByToken[token]++;
     }
 }
