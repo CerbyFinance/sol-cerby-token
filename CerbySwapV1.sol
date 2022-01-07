@@ -63,12 +63,18 @@ contract CerbySwapV1 is AccessControlEnumerable {
         _;
     }
 
+    modifier safeTransferTokenNeeded(address token, uint amount)
+    {
+        IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
+        _;
+    }
+
     function adminCreatePool(address token, uint addTokenAmount, uint mintCerUsdAmount, uint fee)
         public
-        tokenDoesNotExistInPool(token)
         onlyRole(ROLE_ADMIN)
+        tokenDoesNotExistInPool(token)
+        safeTransferTokenNeeded(token, addTokenAmount)
     {
-        IERC20(token).safeTransferFrom(msg.sender, address(this), addTokenAmount);        
         ICerbyTokenMinterBurner(cerUsdContract).mintHumanAddress(address(this), mintCerUsdAmount);
 
         pools.push(
@@ -84,6 +90,29 @@ contract CerbySwapV1 is AccessControlEnumerable {
         tokenToPoolPosition[token] = pools.length;
     }
 
+    function addTokenLiquidity(address token, uint addTokenAmount)
+        public
+        tokenMustExistInPool(token)
+        safeTransferTokenNeeded(token, addTokenAmount)
+    {
+        uint poolPos = getPoolPositionByToken(token);
+        uint mintCerUsdAmount = 
+            (addTokenAmount * pools[poolPos].balanceCerUsd) / pools[poolPos].balanceToken;
+        ICerbyTokenMinterBurner(cerUsdContract).mintHumanAddress(address(this), mintCerUsdAmount);
+
+        pools[poolPos].balanceToken += addTokenAmount;
+        pools[poolPos].balanceCerUsd += mintCerUsdAmount;
+    }
+
+    function addCerUsdDebit(address token, uint addDebitCerUsdAmount)
+        public
+        tokenMustExistInPool(token)
+        safeTransferTokenNeeded(cerUsdContract, addDebitCerUsdAmount)
+    {
+        uint poolPos = getPoolPositionByToken(cerUsdContract);
+        pools[poolPos].debitCerUsd += addDebitCerUsdAmount;
+    }
+
     function swapExactTokenToCerUsd(
         address tokenIn,
         uint amountTokenIn,
@@ -93,9 +122,8 @@ contract CerbySwapV1 is AccessControlEnumerable {
         public
         tokenMustExistInPool(tokenIn)
         transactionIsNotExpired(expireTimestamp)
+        safeTransferTokenNeeded(tokenIn, amountTokenIn)
     {
-        IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amountTokenIn);
-
         uint poolPos = getPoolPositionByToken(tokenIn);
         uint deltaTokenBalance = 
             IERC20(tokenIn).balanceOf(address(this)) - pools[poolPos].balanceToken;
@@ -121,9 +149,8 @@ contract CerbySwapV1 is AccessControlEnumerable {
         public
         tokenMustExistInPool(tokenOut)
         transactionIsNotExpired(expireTimestamp)
+        safeTransferTokenNeeded(cerUsdContract, amountCerUsdIn)
     {
-        IERC20(cerUsdContract).transferFrom(msg.sender, address(this), amountCerUsdIn);
-
         uint poolPos = getPoolPositionByToken(tokenOut);
         uint deltaCerUsdBalance = 
             IERC20(cerUsdContract).balanceOf(address(this)) - pools[poolPos].balanceCerUsd;
