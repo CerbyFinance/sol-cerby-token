@@ -15,6 +15,12 @@ contract MintableBurnableToken is ERC20 {
         _mint(0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6, 1e18*1e9);
         _mint(0x539FaA851D86781009EC30dF437D794bCd090c8F, 1e18*1e9);
     }
+
+
+    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
+        _transfer(sender, recipient, amount);
+        return true;
+    }
     
     function mintByBridge(address to, uint amount) public {
         _mint(to, amount);
