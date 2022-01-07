@@ -604,11 +604,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x567c9f898136aab6bd8df54a7833f884458e0fa3f0941841405f1dc15f0d7832",
+			"keccak256": "0x2e32a5ca2d9fb1b83e9d9691f7b017017cece9e9f0c09a0b2fa49f1f3ab75a13",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://cc7f392a0893c472f634a69da13ffb0562e52d406a4e4d2e0730f2510f55a30e",
-				"dweb:/ipfs/QmTodGE3WXogkLMKh6Y7r96hLJU4MV8rXSDN4tVxs3Cx9h"
+				"bzz-raw://d63cdb7e2887ed1ee51ae88661b45b9cf54090b868c29239c3c7d7186361c4ef",
+				"dweb:/ipfs/QmQvs535NW4wcZyD3QGAqLEo5GBBH2tJDyFAGdokivNK4N"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {

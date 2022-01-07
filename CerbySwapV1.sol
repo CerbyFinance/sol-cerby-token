@@ -17,7 +17,7 @@ struct Pool {
 
 contract CerbySwapV1 is AccessControlEnumerable {
     using SafeERC20 for IERC20;
-    
+
     Pool[] public pools;
     mapping(address => uint) public tokenToPoolPosition;
 
@@ -121,8 +121,8 @@ contract CerbySwapV1 is AccessControlEnumerable {
 
     // TODO: add swapTokenToExactCerUSD XXX --> cerUSD
     // TODO: add swapCerUsdToExactToken cerUSD --> YYY
-    // TODO: add swapExactTokenToToken XXX --> cerUSD --> YYY
-    // TODO: add swapTokenToExactToken XXX --> cerUSD --> YYY
+    // TODO: add swapExactTokenToToken XXX --> cerUSD --> YYY (XXX != YYY)
+    // TODO: add swapTokenToExactToken XXX --> cerUSD --> YYY (XXX != YYY)
     
     function swapExactTokenToCerUsd(
         address tokenIn,
