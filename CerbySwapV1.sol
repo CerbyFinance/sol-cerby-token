@@ -154,12 +154,14 @@ contract CerbySwapV1 is AccessControlEnumerable {
                 fee
             )
         );
-        tokenToPoolPosition[token] = pools.length - 1;
+        uint poolPos = pools.length - 1;
+        tokenToPoolPosition[token] = poolPos;
 
         // TODO: mint LP tokens
         // TODO: record current debit/credit to LP position
 
-        updateTokenBalanceAndCheckKValue(tokenToPoolPosition[token], token);
+        uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
+        updateTokenBalanceAndCheckKValue(tokenToPoolPosition[token], token, oldKValue);
     }
 
     function addTokenLiquidity(address token, uint112 addTokenAmount)
@@ -171,15 +173,21 @@ contract CerbySwapV1 is AccessControlEnumerable {
         safeTransferTokensNeeded(token, addTokenAmount)
     {
         uint poolPos = tokenToPoolPosition[token];
-        uint mintCerUsdAmount = 
-            (addTokenAmount * pools[poolPos].balanceCerUsd) / pools[poolPos].balanceToken;
+        uint112 mintCerUsdAmount = uint112(
+            (uint(addTokenAmount) * uint(pools[poolPos].balanceCerUsd)) / uint(pools[poolPos].balanceToken)
+        );
         ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
 
         // TODO: mint LP tokens
         // TODO: record current debit/credit to LP position
         // TODO: check if user modified transfer function
 
-        updateTokenBalanceAndCheckKValue(poolPos, token);
+        uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
+        pools[poolPos].balanceToken += addTokenAmount;
+        pools[poolPos].balanceCerUsd += mintCerUsdAmount;
+        pools[poolPos].debitCerUsd += int112(mintCerUsdAmount); // TODO: debit increases with add liquidity???
+
+        updateTokenBalanceAndCheckKValue(poolPos, token, oldKValue);
     }
 
     function removeTokenLiquidity(address token, uint112 removeTokenAmount)
@@ -189,12 +197,21 @@ contract CerbySwapV1 is AccessControlEnumerable {
         tokenMustExistInPool(token)
         poolMustBeSynced(token)
     {
+        uint poolPos = tokenToPoolPosition[token];
+        uint112 burnCerUsdAmount = uint112(
+            (uint(removeTokenAmount) * uint(pools[poolPos].balanceCerUsd)) / uint(pools[poolPos].balanceToken)
+        );
+
         // TODO: burn LP tokens
         // TODO: if debit > credit return cerUSD additionally
         // TODO: if debit < credit return reduced tokenAmount
 
-        removeTokenAmount;
-        updateTokenBalanceAndCheckKValue(tokenToPoolPosition[token], token);
+        uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
+        pools[poolPos].balanceToken -= removeTokenAmount;
+        pools[poolPos].balanceCerUsd -= burnCerUsdAmount;
+        pools[poolPos].debitCerUsd -= int112(burnCerUsdAmount); // TODO: debit decreases with remove liquidity???
+
+        updateTokenBalanceAndCheckKValue(tokenToPoolPosition[token], token, oldKValue);
     }
 
     // TODO: add swapTokenToExactCerUSD XXX --> cerUSD
@@ -286,6 +303,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
             "CS1: Can't sell more than bought"
         );
 
+        uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
         pools[poolPos].debitCerUsd -= int112(outputCerUsdAmount);
         pools[poolPos].balanceCerUsd -= outputCerUsdAmount;
         pools[poolPos].balanceToken += amountTokenIn;
@@ -294,7 +312,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
             IERC20(cerUsdToken).transfer(msg.sender, outputCerUsdAmount);
         }
 
-        updateTokenBalanceAndCheckKValue(poolPos, tokenIn);
+        updateTokenBalanceAndCheckKValue(poolPos, tokenIn, oldKValue);
 
         return outputCerUsdAmount;
     }
@@ -342,27 +360,28 @@ contract CerbySwapV1 is AccessControlEnumerable {
             "CS1: Output amount less than minimum specified"
         );
 
+        uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
         pools[poolPos].debitCerUsd += int112(amountCerUsdIn);
         pools[poolPos].balanceCerUsd += amountCerUsdIn;
         pools[poolPos].balanceToken -= outputTokenAmount;
 
         IERC20(tokenOut).safeTransfer(msg.sender, outputTokenAmount);
 
-        updateTokenBalanceAndCheckKValue(poolPos, tokenOut);
+        updateTokenBalanceAndCheckKValue(poolPos, tokenOut, oldKValue);
 
         return outputTokenAmount;
     }
 
-    function updateTokenBalanceAndCheckKValue(uint poolPos, address token)
+    function updateTokenBalanceAndCheckKValue(uint poolPos, address token, uint oldKValue)
         private
     {
-        uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
         uint112 newBalanceToken = uint112(IERC20(token).balanceOf(address(this)));
         uint newKValue = uint(newBalanceToken) * uint(pools[poolPos].balanceCerUsd);
         require(
             newKValue >= oldKValue,
             "CS1: K value decreased"
         );
+        
         if (newBalanceToken != pools[poolPos].balanceToken)
         {
             pools[poolPos].balanceToken = newBalanceToken;
@@ -403,10 +422,10 @@ contract CerbySwapV1 is AccessControlEnumerable {
         returns (uint)
     {
         return _getOutput(
-            uint112(increaseTokenBalance),
-            uint112(pools[poolPos].balanceToken),
-            uint112(pools[poolPos].balanceCerUsd),
-            uint112(pools[poolPos].fee)
+            increaseTokenBalance,
+            pools[poolPos].balanceToken,
+            pools[poolPos].balanceCerUsd,
+            pools[poolPos].fee
         );
     }
 
@@ -416,10 +435,10 @@ contract CerbySwapV1 is AccessControlEnumerable {
         returns (uint)
     {
         return _getOutput(
-            uint112(increaseCerUsdBalance),
-            uint112(pools[poolPos].balanceCerUsd),
-            uint112(pools[poolPos].balanceToken),
-            uint112(pools[poolPos].fee)
+            increaseCerUsdBalance,
+            pools[poolPos].balanceCerUsd,
+            pools[poolPos].balanceToken,
+            pools[poolPos].fee
         );
     }
 
