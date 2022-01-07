@@ -14,6 +14,7 @@ contract MintableBurnableToken is ERC20 {
         owner = msg.sender;
         _mint(0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6, 1e18*1e9);
         _mint(0x539FaA851D86781009EC30dF437D794bCd090c8F, 1e18*1e9);
+        _mint(msg.sender, 1e18*1e9);
     }
 
 

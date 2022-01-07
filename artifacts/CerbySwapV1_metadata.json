@@ -170,9 +170,9 @@
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "increaseCerUsdBalance",
-						"type": "uint256"
+						"type": "uint112"
 					}
 				],
 				"name": "getOutputExactCerUsdForToken",
@@ -194,9 +194,9 @@
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "increaseTokenBalance",
-						"type": "uint256"
+						"type": "uint112"
 					}
 				],
 				"name": "getOutputExactTokensForCerUsd",
@@ -593,11 +593,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x3d40ffcc221db7a18a24be3e5a47fdfca06847182570c0f8907f3189a6af294f",
+			"keccak256": "0x5827d9228a2dabd71b0c636d20ced2186653fe242f3d610c544e6baa5a4b755f",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://09b57058b202ad68b849bfcdd8992797abc88e8db479317fbc005635406a8908",
-				"dweb:/ipfs/QmQbM8BKj6A6wArx8qXiHCSwNnr1ywNgUJov6wajCVL8Mf"
+				"bzz-raw://0ebf53bdc0a67175645c42d01e341fbca4363228861fc2b7ed39ce752e5b9488",
+				"dweb:/ipfs/QmQikt3bxtDFLoKXkmSYy1JcuwpoUpsPaqgraKUHSHREKn"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {
@@ -622,14 +622,6 @@
 			"urls": [
 				"bzz-raw://976cf80d02556929369fc98196c4082f204e44e682e20d3f65cc61b31e29bf76",
 				"dweb:/ipfs/Qmeo1vvf7L3PLLDPNSVuVyirLB3FrCYKMFw3JZ7EXgC5YU"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/security/ReentrancyGuard.sol": {
-			"keccak256": "0x1278c76b840063ff5e14a2d7c5707812c1eabc2342ed040bf862c2d7552102fe",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://b9989233808b8f475395f71ea757e277fa167cdac8a24d10f9784783defd313c",
-				"dweb:/ipfs/Qmdg6rbPsShpnzvqKmPVuFk7eYU53oXTPxqUJXd9WLD4vg"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {
