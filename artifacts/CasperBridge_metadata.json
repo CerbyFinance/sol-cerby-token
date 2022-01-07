@@ -14,6 +14,56 @@
 				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": false,
+						"internalType": "bytes32",
+						"name": "burnProofHash",
+						"type": "bytes32"
+					}
+				],
+				"name": "ApprovedBurnProof",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "bytes[40]",
+						"name": "destToken",
+						"type": "bytes[40]"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes[40]",
+						"name": "srcCaller",
+						"type": "bytes[40]"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes[40]",
+						"name": "destCaller",
+						"type": "bytes[40]"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "destAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes32",
+						"name": "burnProofHash",
+						"type": "bytes32"
+					}
+				],
+				"name": "ProofOfMint",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
 						"indexed": true,
 						"internalType": "bytes32",
 						"name": "role",
@@ -99,88 +149,13 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "addTokenAmount",
-						"type": "uint256"
-					}
-				],
-				"name": "addTokenLiquidity",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					},
-					{
-						"internalType": "uint16",
-						"name": "newFee",
-						"type": "uint16"
-					}
-				],
-				"name": "adminUpdateFee",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					},
-					{
-						"internalType": "uint112",
-						"name": "addTokenAmount",
-						"type": "uint112"
-					},
-					{
-						"internalType": "uint112",
-						"name": "mintCerUsdAmount",
-						"type": "uint112"
-					},
-					{
-						"internalType": "uint16",
-						"name": "fee",
-						"type": "uint16"
-					}
-				],
-				"name": "createPool",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "poolPos",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint112",
-						"name": "increaseCerUsdBalance",
-						"type": "uint112"
-					}
-				],
-				"name": "getOutputExactCerUsdForToken",
+				"inputs": [],
+				"name": "_srcToken",
 				"outputs": [
 					{
-						"internalType": "uint112",
+						"internalType": "address",
 						"name": "",
-						"type": "uint112"
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -189,22 +164,49 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "poolPos",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint112",
-						"name": "increaseTokenBalance",
-						"type": "uint112"
+						"internalType": "bytes32",
+						"name": "proofHash",
+						"type": "bytes32"
 					}
 				],
-				"name": "getOutputExactTokensForCerUsd",
+				"name": "approveBurnProof",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"name": "burnProofStorage",
 				"outputs": [
 					{
-						"internalType": "uint112",
+						"internalType": "enum CasperBridge.States",
 						"name": "",
-						"type": "uint112"
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "currentNonce",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -342,69 +344,32 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "pools",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
+						"internalType": "bytes[40]",
+						"name": "destToken",
+						"type": "bytes[40]"
 					},
 					{
-						"internalType": "uint112",
-						"name": "balanceToken",
-						"type": "uint112"
+						"internalType": "bytes[40]",
+						"name": "destCaller",
+						"type": "bytes[40]"
 					},
 					{
-						"internalType": "uint112",
-						"name": "balanceCerUsd",
-						"type": "uint112"
-					},
-					{
-						"internalType": "int112",
-						"name": "debitCerUsd",
-						"type": "int112"
-					},
-					{
-						"internalType": "uint16",
-						"name": "fee",
-						"type": "uint16"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "reEntrancyGuardStatus",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
+						"internalType": "bytes32",
+						"name": "destBurnProofHash",
+						"type": "bytes32"
 					},
 					{
 						"internalType": "uint256",
-						"name": "removeTokenAmount",
+						"name": "destAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "destNonce",
 						"type": "uint256"
 					}
 				],
-				"name": "removeTokenLiquidity",
+				"name": "mintWithBurnProof",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -463,107 +428,6 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenOut",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountCerUsdIn",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "minAmountTokenOut",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "expireTimestamp",
-						"type": "uint256"
-					}
-				],
-				"name": "swapExactCerUsdForToken",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenIn",
-						"type": "address"
-					},
-					{
-						"internalType": "uint112",
-						"name": "amountTokenIn",
-						"type": "uint112"
-					},
-					{
-						"internalType": "uint112",
-						"name": "minAmountCerUsdOut",
-						"type": "uint112"
-					},
-					{
-						"internalType": "uint32",
-						"name": "expireTimestamp",
-						"type": "uint32"
-					}
-				],
-				"name": "swapExactTokenToCerUsd",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					}
-				],
-				"name": "sync",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "testGetPrice",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "tokenToPoolPosition",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -604,7 +468,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/CerbySwapV1.sol": "CerbySwapV1"
+			"sol-defifactory-token/CrossChainBridgeV2.sol": "CasperBridge"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -618,20 +482,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xaea83223eb64dce349063ea3f8096266ff073d3b727a781fcdba2abe7a4e6ea7",
-			"license": "BSD-2-Clause",
+		"sol-defifactory-token/CrossChainBridgeV2.sol": {
+			"keccak256": "0xb036d9a0b3f0a30aed0d11a5e38f8cdbc9b61d196b43dd5c8cefd5798017724a",
+			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://57a16f8debfc4ce0eb7a56ebc1a5332662a9a7684f32401382fda74e74c6c644",
-				"dweb:/ipfs/QmYQLav34GDU5jbJwUCAkoyonmoUAxSvC6i3yFjpd6RwfH"
-			]
-		},
-		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {
-			"keccak256": "0xe9662b09cb4a69c4bcd634ae71ca5e60f630b89e2ef8f818ccf12ceb47707013",
-			"license": "BSD-2-Clause",
-			"urls": [
-				"bzz-raw://38d67dec9f8deaeb4adc5e58d8f483beef22cab8dbc191bc3247e3fc48e434eb",
-				"dweb:/ipfs/QmR1f6cNhWzmDt5qJ9gjuFJL21FwmnNnBhH3beJ2JbPqnz"
+				"bzz-raw://6749163d1b4391a34f2841c5b07fbc13fc50b91bbe7d71fb69e52dc4b735e5c2",
+				"dweb:/ipfs/QmWccJCGyeypRysUa6C4PCsktJLr3P7DP53pgBKf3DPA6T"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
@@ -648,30 +504,6 @@
 			"urls": [
 				"bzz-raw://976cf80d02556929369fc98196c4082f204e44e682e20d3f65cc61b31e29bf76",
 				"dweb:/ipfs/Qmeo1vvf7L3PLLDPNSVuVyirLB3FrCYKMFw3JZ7EXgC5YU"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {
-			"keccak256": "0xf8e8d118a7a8b2e134181f7da655f6266aa3a0f9134b2605747139fcb0c5d835",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://9ec48567e7ad06acb670980d5cdf3fd7f3949bf12894f02d68c3bb43e75aa84f",
-				"dweb:/ipfs/QmaG3R2J9cz92YT77vFjYrjMNU2wHp4ypwYD62HqDUqS5U"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/token/ERC20/utils/SafeERC20.sol": {
-			"keccak256": "0x99f5c21018d796db7833a2100bb0e7411999e248a3c950fb526eee5d2bf47cb7",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://b31b80dd57f8c28320b01fa4f3ed98ac1aa678f61846c1db2771c996b77a9451",
-				"dweb:/ipfs/QmcT2Di5L9t82A9XdYDZ4tWMEPGFVFazKDwC2Vrd135AA3"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/utils/Address.sol": {
-			"keccak256": "0x069b2631bb5b5193a58ccf7a06266c7361bd2c20095667af4402817605627f45",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://6a4c96fafff76deda5697c3c5c98cade6e6e1b178254544c106bf360c079ce4e",
-				"dweb:/ipfs/QmXmxubE3jnatFgZuN8ay1VV6hZ8WRmhvUjNpeVjki15HX"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/utils/Context.sol": {
