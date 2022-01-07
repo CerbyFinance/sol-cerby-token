@@ -27,7 +27,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
 
-        // Empty pool to fill 0th pool position
+        // Filling with empty pool 0th position
         createPool(
             address(0),
             0,
@@ -73,13 +73,18 @@ contract CerbySwapV1 is AccessControlEnumerable {
 
     modifier safeTransferTokensNeeded(address token, uint amount)
     {
-        uint oldBalance = IERC20(token).balanceOf(address(this));
-        IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
-        uint newBalance = IERC20(token).balanceOf(address(this));
-        require(
-            newBalance >= oldBalance + amount,
-            "CS1: Fee-on-transfers aren't supported"
-        );
+        if (token != cerUsdContract)
+        {
+            uint oldBalance = IERC20(token).balanceOf(address(this));
+            IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
+            uint newBalance = IERC20(token).balanceOf(address(this));
+            require(
+                newBalance >= oldBalance + amount,
+                "CS1: Fee-on-transfer tokens aren't supported"
+            );
+        } else {
+            IERC20(token).transferFrom(msg.sender, address(this), amount);
+        }
         _;
     }
 
@@ -97,6 +102,11 @@ contract CerbySwapV1 is AccessControlEnumerable {
         tokenDoesNotExistInPool(token)
         safeTransferTokensNeeded(token, addTokenAmount)
     {
+        require(
+            fee == 9970, // TODO: add other values
+            "CS1: Incorrect fee provided"
+        );
+
         ICerbyTokenMinterBurner(cerUsdContract).mintHumanAddress(address(this), mintCerUsdAmount);
 
         // Admins can create official pools with no limit on selling
