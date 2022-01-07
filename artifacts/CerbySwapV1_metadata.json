@@ -162,11 +162,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x1c69ba16606f26374aa1a14693018992232ef66529a43f662249bdc0d13b103c",
+			"keccak256": "0x9fa301db3997cfe72e4211bb27f9f05e6254a7f4cdc602254c1ba5f496481487",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://c377330eb23f2f45cae97cce620a443d51ae1e5434baf82e343a375a7126607e",
-				"dweb:/ipfs/QmdAp93WukkjEJLt9wvkXn69fmvj4x1q4pWYKKpKpN9Fm1"
+				"bzz-raw://bde07d0a4381521a1a5eb40d17c1172968cac71a409590718832c0f3949e090c",
+				"dweb:/ipfs/QmV7FvEXqxwiP6MHpPP1qKF3NLzVp3iEXVuW8mXNYZEEDF"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {

@@ -93,7 +93,7 @@ contract CerbySwapV1 {
         checkToken(tokenOut)
         checkExpiration(expireTimestamp)
     {
-        IERC20(cerUsdContract).safeTransferFrom(msg.sender, address(this), amountCerUsdIn);
+        IERC20(cerUsdContract).transferFrom(msg.sender, address(this), amountCerUsdIn);
 
         uint poolPos = getPoolPositionByToken(tokenOut);
         uint deltaCerUsdBalance = 
@@ -106,7 +106,7 @@ contract CerbySwapV1 {
         );
 
         pools[poolPos].debitCerUsd += deltaCerUsdBalance;
-        IERC20(tokenOut).transfer(msg.sender, outputToken);
+        IERC20(tokenOut).safeTransfer(msg.sender, outputToken);
 
         updateBalancesAndCheckKValue(poolPos, tokenOut);
     }
