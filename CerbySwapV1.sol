@@ -24,8 +24,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     address constant testCerbyToken = 0x029581a9121998fcBb096ceafA92E3E10057878f;
     address constant cerUsdToken = 0xA84d62F776606B9eEbd761E2d31F65442eCc437E;
     address constant lpErc1155V1 = 0x8e06e97c598B0Bb2910Df62C626EBf6cd55409e6;
-    uint16 constant FEE_MIN_VALUE = 9900;  // 1%
-    uint16 constant FEE_MAX_VALUE = 10000; // 0%
+    uint16 constant FEE_DENORM = 10000;
 
     uint constant NUMBER_OF_4HOUR_INTERVALS = 8;
     uint constant MINIMUM_LIQUIDITY = 1000;
@@ -450,11 +449,11 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         // TVL x0.15 - x15 ---> 1.00% - 0.01%
         // TVL x15 ---> 0.01%
         uint volumeMultiplied = last24HourTradeVolumeInCerUSD * 1e18 * 1000;
-        uint TVLMultiplied = pools[poolPos].balanceCerUsd * 2 * 150;
+        uint TVLMultiplied = pools[poolPos].balanceCerUsd * 2 * 150; // x2 because two tokens in pair
         if (volumeMultiplied <= TVLMultiplied) {
             fee = 9999;
         } else if (TVLMultiplied < volumeMultiplied && volumeMultiplied < 100 * TVLMultiplied) {
-            fee = 123; // formula needed
+            fee = 9999 - (volumeMultiplied - TVLMultiplied) / TVLMultiplied;
         } else if (volumeMultiplied > 100 * TVLMultiplied)
         {
             fee = 9900;
@@ -496,7 +495,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     {
         uint amountInWithFee = amountIn * poolFee;
         uint amountOut = 
-            (reservesOut * amountInWithFee) / (reservesIn * FEE_MAX_VALUE + amountInWithFee);
+            (reservesOut * amountInWithFee) / (reservesIn * FEE_DENORM + amountInWithFee);
         return amountOut;
     }
 
