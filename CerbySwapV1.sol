@@ -307,7 +307,9 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
             uint next4Hour = (current4Hour + 1) % NUMBER_OF_4HOUR_INTERVALS;
             pools[poolPos].balanceCerUsd -= outputCerUsdAmount;
             pools[poolPos].balanceToken += amountTokenIn;
-            pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += uint32(outputCerUsdAmount / 1e18);
+            unchecked {
+                pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += uint32(outputCerUsdAmount / 1e18);
+            }
             if (pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] > 0)
             {
                 pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] = 0;
@@ -371,7 +373,10 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
         pools[poolPos].balanceCerUsd += amountCerUsdIn;
         pools[poolPos].balanceToken -= outputTokenAmount;
-        pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += uint32(amountCerUsdIn / 1e18);
+
+        unchecked {
+            pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += uint32(amountCerUsdIn / 1e18);
+        }
         if (pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] > 0)
         {
             pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] = 0;
@@ -444,7 +449,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         // TVL x0.15 ---> 1.00%
         // TVL x0.15 - x15 ---> 1.00% - 0.01%
         // TVL x15 ---> 0.01%
-        uint volumeMultiplied = last24HourTradeVolumeInCerUSD * 1000;
+        uint volumeMultiplied = last24HourTradeVolumeInCerUSD * 1e18 * 1000;
         uint TVLMultiplied = pools[poolPos].balanceCerUsd * 2 * 150;
         if (volumeMultiplied <= TVLMultiplied) {
             fee = 9999;

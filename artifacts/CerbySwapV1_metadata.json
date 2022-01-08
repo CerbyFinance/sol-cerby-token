@@ -814,11 +814,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x98bcd2f7cef30ea9953a366beabdb4389b2b2a08cf605646905435873b22592e",
+			"keccak256": "0x5370c0770fdf7139f7d00734fd21e53880e8bdea7e763a45776b7dd36c34dc99",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://107fccb46f29249c3df7c766ad4fb7559bdda76b90f95057e19a7cfba9f3e446",
-				"dweb:/ipfs/QmQbRJpsuRpugytKbQTgjhvTEdwrkN9eYsTHQ9vnt5TaPq"
+				"bzz-raw://75ac34cbe73a6bdd6984a205af26ba012a61fc3fca3b47f99477ada74b869887",
+				"dweb:/ipfs/QmR2BW7ndK4iq7nZWESpPWqTdivibAZGd3CNoSeZFw5Gix"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
