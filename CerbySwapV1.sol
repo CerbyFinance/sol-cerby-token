@@ -11,15 +11,11 @@ import "./interfaces/ICerbyBotDetection.sol";
 import "./interfaces/ICerbySwapLP1155V1.sol";
 import "./CerbyCronJobsExecution.sol";
 
-struct Pool {
-    address token;
-    uint112 balanceToken;
-    uint112 balanceCerUsd;
-    uint32[8] hourlyTradeVolumeInCerUsd;
-}
 
 contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsExecution {
     using SafeERC20 for IERC20;
+
+
 
     Pool[] pools;
     mapping(address => uint) tokenToPoolPosition;
@@ -31,10 +27,18 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     uint16 constant FEE_MIN_VALUE = 9900;  // 1%
     uint16 constant FEE_MAX_VALUE = 10000; // 0%
 
+    uint constant NUMBER_OF_4HOUR_INTERVALS = 8;
     uint constant MINIMUM_LIQUIDITY = 1000;
     address constant DEAD_ADDRESS = address(0xdead);
 
     bool isInitializedAlready;
+
+    struct Pool {
+        address token;
+        uint112 balanceToken;
+        uint112 balanceCerUsd;
+        uint32[NUMBER_OF_4HOUR_INTERVALS] hourlyTradeVolumeInCerUsd;
+    }
 
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
@@ -48,7 +52,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
 
 
         // Filling with empty pool 0th position
-        uint32[8] memory hourlyTradeVolumeInCerUsd;
+        uint32[NUMBER_OF_4HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
         pools.push(Pool(
             address(0),
             0,
@@ -132,7 +136,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
 
         {
-            uint32[8] memory hourlyTradeVolumeInCerUsd;
+            uint32[NUMBER_OF_4HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
             Pool memory pool = Pool(
                 token,
                 addTokenAmount,
@@ -300,7 +304,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
         {
             uint current4Hour = getCurrent4Hour();
-            uint next4Hour = (current4Hour + 1) % pools[poolPos].hourlyTradeVolumeInCerUsd.length;
+            uint next4Hour = (current4Hour + 1) % NUMBER_OF_4HOUR_INTERVALS;
             pools[poolPos].balanceCerUsd -= outputCerUsdAmount;
             pools[poolPos].balanceToken += amountTokenIn;
             pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += uint32(outputCerUsdAmount / 1e18);
@@ -419,7 +423,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         view
         returns (uint)
     {
-        return (block.timestamp / 14400) % 8;
+        return (block.timestamp / 14400) % NUMBER_OF_4HOUR_INTERVALS;
     }
 
     function getCurrentFeeBasedOnTrades(uint poolPos)
@@ -429,7 +433,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     {
         uint current4Hour = getCurrent4Hour();
         uint last24HourTradeVolumeInCerUSD;
-        for(uint i; i<pools[poolPos].hourlyTradeVolumeInCerUsd.length; i++)
+        for(uint i; i<NUMBER_OF_4HOUR_INTERVALS; i++)
         {
             if (i == current4Hour) continue;
 

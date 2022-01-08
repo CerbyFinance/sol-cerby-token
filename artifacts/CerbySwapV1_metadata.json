@@ -252,7 +252,7 @@
 								"type": "uint32[8]"
 							}
 						],
-						"internalType": "struct Pool",
+						"internalType": "struct CerbySwapV1.Pool",
 						"name": "",
 						"type": "tuple"
 					}
@@ -293,7 +293,7 @@
 								"type": "uint32[8]"
 							}
 						],
-						"internalType": "struct Pool",
+						"internalType": "struct CerbySwapV1.Pool",
 						"name": "",
 						"type": "tuple"
 					}
@@ -699,7 +699,7 @@
 								"type": "uint32[8]"
 							}
 						],
-						"internalType": "struct Pool",
+						"internalType": "struct CerbySwapV1.Pool",
 						"name": "",
 						"type": "tuple"
 					},
@@ -726,7 +726,7 @@
 								"type": "uint32[8]"
 							}
 						],
-						"internalType": "struct Pool",
+						"internalType": "struct CerbySwapV1.Pool",
 						"name": "",
 						"type": "tuple"
 					}
@@ -814,11 +814,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x9554728fff346ae82ed9a672dc7c3bdd468e525165ac6e1ab819b1bb30990a96",
+			"keccak256": "0xd1e57e93f244ce8d429aefd5895ed11a0677688a04da6a5bbb33a245a4dc096e",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://bce4e58a6cc2c8e2a233e35395317137e82c0b58414ebab3fb012c143142e554",
-				"dweb:/ipfs/QmTg1dFF6X7zoH6w9AfxAfvfc2WAY3gJpk9S2sbe4iSi7W"
+				"bzz-raw://37087dc5e60cfb0a36e6cb4d283f492f496017762d50fd7972ab01c2cc24a784",
+				"dweb:/ipfs/QmdmWKzG9dsJFLzBsFURF74Sugg1FXirGcKFcS3adqSWCD"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
