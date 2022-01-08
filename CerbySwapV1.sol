@@ -170,8 +170,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
             ""
         );
 
-        uint oldKValue = uint(addTokenAmount) * uint(mintCerUsdAmount);
-        updateTokenBalanceAndCheckKValue(tokenToPoolPosition[token], token, oldKValue);
+        _syncTokenBalanceInPool(token);
     }
 
     function addTokenLiquidity(address token, uint112 addTokenAmount)
