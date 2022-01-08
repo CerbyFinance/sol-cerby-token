@@ -25,18 +25,17 @@ interface ICerbySwapLP1155V1 {
     ) 
         external;
 
-    function ownerSetURI(string memory newuri) 
-        external;
-
-    function ownerMint(
+    function adminSafeTransferFrom(
+        address from,
         address to,
         uint256 id,
         uint256 amount,
         bytes memory data
     ) 
         external;
-
-    function ownerMintBatch(
+    
+    function adminSafeBatchTransferFrom(
+        address from,
         address to,
         uint256[] memory ids,
         uint256[] memory amounts,
@@ -44,14 +43,30 @@ interface ICerbySwapLP1155V1 {
     ) 
         external;
 
-    function ownerBurn(
+    function adminMint(
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) 
+        external;
+
+    function adminMintBatch(
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) 
+        external;
+
+    function adminBurn(
         address from,
         uint256 id,
         uint256 amount
     ) 
         external;
 
-    function ownerBurnBatch(
+    function adminBurnBatch(
         address from,
         uint256[] memory ids,
         uint256[] memory amounts

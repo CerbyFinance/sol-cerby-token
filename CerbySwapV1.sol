@@ -58,7 +58,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
             0,
             hourlyTradeVolumeInCerUsd
         ));
-        ICerbySwapLP1155V1(lpErc1155V1).ownerMint(
+        ICerbySwapLP1155V1(lpErc1155V1).adminMint(
             DEAD_ADDRESS,
             0,
             MINIMUM_LIQUIDITY,
@@ -143,7 +143,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
             tokenToPoolPosition[token] = pools.length - 1;
         }
 
-        ICerbySwapLP1155V1(lpErc1155V1).ownerMint(
+        ICerbySwapLP1155V1(lpErc1155V1).adminMint(
             DEAD_ADDRESS,
             pools.length - 1,
             MINIMUM_LIQUIDITY,
@@ -151,7 +151,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         );
 
         uint lpAmount = sqrt(uint(addTokenAmount) * uint(mintCerUsdAmount)) - MINIMUM_LIQUIDITY;
-        ICerbySwapLP1155V1(lpErc1155V1).ownerMint(
+        ICerbySwapLP1155V1(lpErc1155V1).adminMint(
             msg.sender,
             pools.length - 1,
             lpAmount,
@@ -177,7 +177,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
 
         uint totalLPSupply = ICerbySwapLP1155V1(lpErc1155V1).totalSupply(poolPos);
         uint lpAmount = (addTokenAmount * totalLPSupply) / pools[poolPos].balanceToken;
-        ICerbySwapLP1155V1(lpErc1155V1).ownerMint(
+        ICerbySwapLP1155V1(lpErc1155V1).adminMint(
             msg.sender,
             poolPos,
             lpAmount,
@@ -198,7 +198,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         poolMustBeSynced(token)
     {
         uint poolPos = tokenToPoolPosition[token];
-        ICerbySwapLP1155V1(lpErc1155V1).ownerBurn(msg.sender, poolPos, removeLpAmount);
+        ICerbySwapLP1155V1(lpErc1155V1).adminBurn(msg.sender, poolPos, removeLpAmount);
 
         uint totalLPSupply = ICerbySwapLP1155V1(lpErc1155V1).totalSupply(poolPos);
         uint112 removeTokenAmount = uint112(
