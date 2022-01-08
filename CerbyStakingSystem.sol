@@ -3,10 +3,8 @@
 pragma solidity ^0.8.10;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
-import "./interfaces/ICerbyTokenMinterBurner.sol";
-import "./interfaces/ICerbyBotDetection.sol";
-import "./interfaces/ICerbyCronJobs.sol";
 import "./interfaces/ICerbyStakingSystem.sol";
+import "./CerbyCronJobsExecution.sol";
 
 // Staking 0x8888888AC6aa2482265e5346832CDd963c70A0D1
 // Bridge 0xEf038429e3BAaF784e1DE93075070df2A43D4278
@@ -30,14 +28,13 @@ struct Settings {
     uint MAXIMUM_STAKE_DAYS;
 }
 
-contract CerbyStakingSystem is AccessControlEnumerable {
+contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
     DailySnapshot[] public dailySnapshots;
     uint[] public cachedInterestPerShare;
     
     Stake[] public stakes;
     Settings public settings;
     
-    uint constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
     uint constant MINIMUM_SMALLER_PAYS_BETTER = 1000 * 1e18; // 1k CERBY
     uint constant MAXIMUM_SMALLER_PAYS_BETTER = 1000000 * 1e18; // 1M CERBY
     uint constant CACHED_DAYS_INTEREST = 100;
@@ -47,9 +44,6 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     uint constant APY_DENORM = 1e6;
     uint constant SECONDS_IN_ONE_DAY = 86400;
     
-    ICerbyTokenMinterBurner cerbyToken = ICerbyTokenMinterBurner(
-        0xdef1fac7Bf08f173D286BbBDcBeeADe695129840
-    );
 
     address constant BURN_WALLET = address(0x0);
     
@@ -143,27 +137,6 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         
         _setupRole(ROLE_ADMIN, msg.sender);
     }
-
-    modifier executeCronJobs()
-    {
-        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            ICerbyTokenMinterBurner(cerbyToken).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
-        );
-        iCerbyBotDetection.executeCronJobs();
-        _;
-    }
-    
-    modifier onlyRealUsers
-    {
-        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            ICerbyTokenMinterBurner(cerbyToken).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
-        );
-        require(
-            !iCerbyBotDetection.isBotAddress(msg.sender),
-            "SS: Only real users allowed!"
-        );
-        _;
-    }
     
     modifier onlyStakeOwners(uint stakeId)
     {
@@ -238,7 +211,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
             stakes[stakeIds[i]].endDay = today;
             stakes[stakeIds[i]].owner = BURN_WALLET;
 
-            cerbyToken.burnHumanAddress(address(this), stakes[stakeIds[i]].stakedAmount);
+            ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).burnHumanAddress(address(this), stakes[stakeIds[i]].stakedAmount);
 
             emit StakeOwnerChanged(stakeIds[i], BURN_WALLET);
             emit StakeEnded(stakeIds[i], today, 0, 0);
@@ -250,7 +223,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         uint totalStaked = getTotalTokensStaked();
-        uint totalSupply = cerbyToken.totalSupply();
+        uint totalSupply = ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).totalSupply();
         ICerbyStakingSystem iStaking = ICerbyStakingSystem(fromStakingContract);
         toIndex = minOfTwoUints(toIndex, iStaking.getDailySnapshotsLength());
         for(uint i = fromIndex; i<toIndex; i++)
@@ -344,7 +317,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         executeCronJobs
         onlyRole(ROLE_ADMIN)
     {
-        cerbyToken.burnHumanAddress(fromAddr, amountToBurn);
+        ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).burnHumanAddress(fromAddr, amountToBurn);
         
         uint today = getCurrentDaySinceLaunch();
         dailySnapshots[today].inflationAmount += amountToBurn;
@@ -354,7 +327,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function bulkTransferOwnership(uint[] calldata stakeIds, address newOwner)
         public
-        onlyRealUsers
+        checkForBots(msg.sender)
         executeCronJobs
     {
         for(uint i = 0; i<stakeIds.length; i++)
@@ -428,7 +401,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
                 dailySnapshots[currentSnapshotIndex].totalShares,
                 dailySnapshots[currentSnapshotIndex].sharePrice,
                 getTotalTokensStaked(),
-                cerbyToken.totalSupply()
+                ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).totalSupply()
             );
         }
         
@@ -474,7 +447,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function bulkStartStake(StartStake[] calldata startStakes)
         public
-        onlyRealUsers
+        checkForBots(msg.sender)
         executeCronJobs
     {
         for(uint i; i<startStakes.length; i++)
@@ -492,7 +465,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
             "SS: StakedAmount has to be larger than zero"
         );
         require(
-            _startStake.stakedAmount <= cerbyToken.balanceOf(msg.sender),
+            _startStake.stakedAmount <= ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).balanceOf(msg.sender),
             "SS: StakedAmount exceeds balance"
         );
         require(
@@ -504,7 +477,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
             "SS: Stake must be locked for less than max years"
         );
         
-        cerbyToken.transferCustom(msg.sender, address(this), _startStake.stakedAmount);
+        ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).transferCustom(msg.sender, address(this), _startStake.stakedAmount);
         
         uint today = getCurrentDaySinceLaunch();
         Stake memory stake = Stake(
@@ -538,7 +511,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function bulkEndStake(uint[] calldata stakeIds)
         public
-        onlyRealUsers
+        checkForBots(msg.sender)
         executeCronJobs
     {
         for(uint i; i<stakeIds.length; i++)
@@ -558,7 +531,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         uint today = getCurrentDaySinceLaunch();
         stakes[stakeId].endDay = today;
         
-        cerbyToken.transferCustom(address(this), msg.sender, stakes[stakeId].stakedAmount);
+        ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).transferCustom(address(this), msg.sender, stakes[stakeId].stakedAmount);
         
         uint interest;
         if (
@@ -574,13 +547,13 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         
         if (interest > 0)
         {
-            cerbyToken.mintHumanAddress(msg.sender, interest);
+            ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).mintHumanAddress(msg.sender, interest);
         }
         
         uint penalty = getPenaltyByStake(stakes[stakeId], today, interest);
         if (penalty > 0) 
         {
-            cerbyToken.burnHumanAddress(msg.sender, penalty);
+            ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).burnHumanAddress(msg.sender, penalty);
             dailySnapshots[today].inflationAmount += penalty;
         }
         
@@ -599,7 +572,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
     
     function bulkScrapeStake(uint[] calldata stakeIds)
         public
-        onlyRealUsers
+        checkForBots(msg.sender)
         executeCronJobs
     {
         for(uint i; i<stakeIds.length; i++)
@@ -652,7 +625,7 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         view
         returns(uint)
     {
-        return ICerbyTokenMinterBurner(cerbyToken).balanceOf(address(this));
+        return ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).balanceOf(address(this));
     }
     
     function getDailySnapshotsLength()

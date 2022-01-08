@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+// OpenZeppelin Contracts v4.4.1 (proxy/ERC1967/ERC1967Proxy.sol)
 
 pragma solidity ^0.8.0;
 
@@ -27,6 +28,6 @@ contract ERC1967Proxy is Proxy, ERC1967Upgrade {
      * @dev Returns the current implementation address.
      */
     function _implementation() internal view virtual override returns (address impl) {
-        return ERC1967Storage._getImplementation();
+        return ERC1967Upgrade._getImplementation();
     }
 }

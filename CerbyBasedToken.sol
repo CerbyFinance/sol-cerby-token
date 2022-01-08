@@ -6,15 +6,14 @@ import "./interfaces/ICerbyToken.sol";
 import "./interfaces/ICerbyBotDetection.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol";
+import "./CerbyCronJobsExecution.sol";
 
-contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Permit {
+contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20, ERC20Permit, CerbyCronJobsExecution {
     bytes32 public constant ROLE_MINTER = keccak256("ROLE_MINTER");
     bytes32 public constant ROLE_BURNER = keccak256("ROLE_BURNER");
     bytes32 public constant ROLE_TRANSFERER = keccak256("ROLE_TRANSFERER");
     bytes32 public constant ROLE_MODERATOR = keccak256("ROLE_MODERATOR");
     
-    uint internal constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
-    address constant CERBY_TOKEN_CONTRACT_ADDRESS = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
     address constant BURN_ADDRESS = address(0x0);
     
     bool public isPaused;
@@ -25,7 +24,7 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
     event BurnHumanAddress(address sender, uint amount);
 
     constructor(string memory name, string memory symbol) 
-        ERC20Mod(name, symbol) 
+        ERC20(name, symbol) 
         ERC20Permit(name)
     {
     }
@@ -55,20 +54,12 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
             CERBY_TOKEN_CONTRACT_ADDRESS, 
             sender, 
             recipient, 
-            tokenBalances[recipient], 
+            _balances[recipient], 
             transferAmount
         );
         _;
-    }
+    }    
     
-    modifier executeCronJobs()
-    {
-        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
-        );
-        iCerbyBotDetection.executeCronJobs();
-        _;
-    }
     
     modifier notPausedContract {
         require(
@@ -92,28 +83,6 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
             "T: !burn"
         );
         _;
-    }
-
-    function _approve(address owner, address spender, uint256 amount) 
-        internal
-        executeCronJobs
-        virtual
-        override
-    {
-        require(owner != BURN_ADDRESS, "ERC20: approve from the zero address");
-        require(spender != BURN_ADDRESS, "ERC20: approve to the zero address");
-
-        _allowances[owner][spender] = amount;
-        emit Approval(owner, spender, amount);
-    }
-    
-    function getUtilsContractAtPos(uint pos)
-        public
-        view
-        virtual
-        returns (address)
-    {
-        return ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(pos);
     }
     
     function updateNameAndSymbol(string calldata __name, string calldata __symbol)
@@ -139,12 +108,53 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
     {
         isPaused = false;
     }
+
+    function approve(address spender, uint256 amount) 
+        public 
+        virtual 
+        override
+        notPausedContract
+        executeCronJobs
+        returns (bool) 
+    {
+        _approve(_msgSender(), spender, amount);
+        return true;
+    }
+
+    function increaseAllowance(address spender, uint256 addedValue) 
+        public 
+        virtual 
+        override
+        notPausedContract
+        executeCronJobs
+        returns (bool) 
+    {
+        _approve(_msgSender(), spender, _allowances[_msgSender()][spender] + addedValue);
+        return true;
+    }
+
+    function decreaseAllowance(address spender, uint256 subtractedValue)
+        public 
+        virtual 
+        override
+        notPausedContract
+        executeCronJobs
+        returns (bool) 
+    {
+        uint256 currentAllowance = _allowances[_msgSender()][spender];
+        require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
+        unchecked {
+            _approve(_msgSender(), spender, currentAllowance - subtractedValue);
+        }
+
+        return true;
+    }
     
     function transfer(address recipient, uint256 amount) 
         public 
-        notPausedContract
         virtual 
         override 
+        notPausedContract
         returns (bool) 
     {
         _transfer(_msgSender(), recipient, amount);
@@ -153,10 +163,10 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
     
     function transferFrom(address sender, address recipient, uint256 amount) 
         public 
-        notPausedContract
-        recipientIsNotBurnAddress(recipient)
         virtual 
         override 
+        notPausedContract
+        recipientIsNotBurnAddress(recipient)
         returns (bool) 
     {
         _transfer(sender, recipient, amount);
@@ -194,13 +204,17 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
     function _transfer(address sender, address recipient, uint transferAmount) 
         internal
         virtual 
+        override 
         recipientIsNotBurnAddress(recipient)
         checkTransaction(sender, recipient, transferAmount)
-        override 
     {
-        tokenBalances[sender] -= transferAmount;
-        tokenBalances[recipient] += transferAmount;
-        
+        uint256 senderBalance = _balances[sender];
+        require(senderBalance >= transferAmount, "ERC20: transfer amount exceeds balance");
+        unchecked {
+            _balances[sender] = senderBalance - transferAmount;
+        }
+        _balances[recipient] += transferAmount;
+
         emit Transfer(sender, recipient, transferAmount);
     }
     
@@ -218,8 +232,8 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
         executeCronJobs
         recipientIsNotBurnAddress(to)
     {
-        tokenBalances[to] += desiredAmountToMint;
-        totalTokenSupply += desiredAmountToMint;
+        _balances[to] += desiredAmountToMint;
+        _totalSupply += desiredAmountToMint;
         
         emit Transfer(BURN_ADDRESS, to, desiredAmountToMint);
     }
@@ -237,8 +251,8 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
         private
         executeCronJobs
     {
-        tokenBalances[from] -= desiredAmountToBurn;
-        totalTokenSupply -= desiredAmountToBurn;
+        _balances[from] -= desiredAmountToBurn;
+        _totalSupply -= desiredAmountToBurn;
         
         emit Transfer(from, BURN_ADDRESS, desiredAmountToBurn);
     }

@@ -3,10 +3,12 @@
 pragma solidity ^0.8.11;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
+import "./openzeppelin/security/ReentrancyGuard.sol";
 import "./openzeppelin/token/ERC20/utils/SafeERC20.sol";
 import "./interfaces/ICerbyTokenMinterBurner.sol";
 import "./interfaces/ICerbyCronJobs.sol";
 import "./interfaces/ICerbyBotDetection.sol";
+import "./CerbyCronJobsExecution.sol";
 
 struct Pool {
     address token;
@@ -16,7 +18,7 @@ struct Pool {
     uint16 fee;
 }
 
-contract CerbySwapV1 is AccessControlEnumerable {
+contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsExecution {
     using SafeERC20 for IERC20;
 
     Pool[] pools;
@@ -24,21 +26,15 @@ contract CerbySwapV1 is AccessControlEnumerable {
 
     address constant testUsdcToken = 0xC7a0e9429BBc262d97f3e87BF38a95cAE8b05EDa;
     address constant testCerbyToken = 0x029581a9121998fcBb096ceafA92E3E10057878f;
-    address constant cerbyToken = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
     address constant cerUsdToken = 0xA84d62F776606B9eEbd761E2d31F65442eCc437E;
     uint16 constant FEE_MIN_VALUE = 9900;
     uint16 constant FEE_MAX_VALUE = 10000;
     uint16 constant NORMAL_FEE = 9985; // 0.15% per transaction XXX <--> cerUSD
     uint16 constant STABLECOIN_FEE = 9995; // 0.05% per transaction USDC <--> cerUSD
 
-    uint reEntrancyGuardStatus;
-    uint constant REENTRANCY_NOT_ENTERED = 1;
-    uint constant REENTRANCY_ENTERED = 2;
-    uint constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
 
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
-        reEntrancyGuardStatus = REENTRANCY_NOT_ENTERED;
 
         // Filling with empty pool 0th position
         pools.push(Pool(
@@ -62,15 +58,6 @@ contract CerbySwapV1 is AccessControlEnumerable {
             1e18 * 1e6,
             STABLECOIN_FEE
         );
-    }
-
-    modifier reEntrancyProtected()
-    {
-        require(reEntrancyGuardStatus == REENTRANCY_NOT_ENTERED, "CS1: Reentrant call");
-
-        reEntrancyGuardStatus = REENTRANCY_ENTERED;
-        _;
-        reEntrancyGuardStatus = REENTRANCY_NOT_ENTERED;
     }
 
     modifier tokenMustExistInPool(address token)
@@ -106,16 +93,6 @@ contract CerbySwapV1 is AccessControlEnumerable {
         _;
     }
 
-    modifier executeCronJobs()
-    {
-        // TODO: enable cron jobs!!!
-        /*ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            ICerbyTokenMinterBurner(cerbyToken).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
-        );
-        iCerbyBotDetection.executeCronJobs();*/
-        _;
-    }
-
     modifier safeTransferTokensNeeded(address token, uint amount)
     {
         uint oldBalance = IERC20(token).balanceOf(address(this));
@@ -142,7 +119,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
 
     function createPool(address token, uint112 addTokenAmount, uint112 mintCerUsdAmount, uint16 fee)
         public
-        reEntrancyProtected()
+        nonReentrant()
         executeCronJobs()
         feeIsInNormalRange(fee)
         tokenDoesNotExistInPool(token)
@@ -152,29 +129,28 @@ contract CerbySwapV1 is AccessControlEnumerable {
 
         // Admins can create official pools with no limit on selling
         // Users can create regular pools where they can't sell more than bought
-        int112 newCerUsdDebit = hasRole(ROLE_ADMIN, msg.sender)? int112(mintCerUsdAmount): int112(0);
-        pools.push(
-            Pool(
+        {
+            int112 newCerUsdDebit = hasRole(ROLE_ADMIN, msg.sender)? int112(mintCerUsdAmount): int112(0);
+            Pool memory pool = Pool(
                 token,
                 addTokenAmount,
                 mintCerUsdAmount,
                 newCerUsdDebit,
                 fee
-            )
-        );
-        uint poolPos = pools.length - 1;
-        tokenToPoolPosition[token] = poolPos;
+            );
+            pools.push(pool);
+            tokenToPoolPosition[token] = pools.length - 1;
+        }
 
         // TODO: mint LP tokens
         // TODO: record current debit/credit to LP position
-
-        uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
+        uint oldKValue = uint(addTokenAmount) * uint(mintCerUsdAmount);
         updateTokenBalanceAndCheckKValue(tokenToPoolPosition[token], token, oldKValue);
     }
 
     function addTokenLiquidity(address token, uint112 addTokenAmount)
         public
-        reEntrancyProtected()
+        nonReentrant()
         executeCronJobs()
         tokenMustExistInPool(token)
         poolMustBeSynced(token)
@@ -200,7 +176,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
 
     function removeTokenLiquidity(address token, uint112 removeTokenAmount)
         public
-        reEntrancyProtected()
+        nonReentrant()
         executeCronJobs()
         tokenMustExistInPool(token)
         poolMustBeSynced(token)
@@ -235,7 +211,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         uint32 expireTimestamp
     )
         public
-        reEntrancyProtected()
+        nonReentrant()
         executeCronJobs()
         transactionIsNotExpired(expireTimestamp)
         tokenMustExistInPool(tokenIn)
@@ -269,7 +245,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         uint32 expireTimestamp
     )
         public
-        reEntrancyProtected()
+        nonReentrant()
         executeCronJobs()
         transactionIsNotExpired(expireTimestamp)
         tokenMustExistInPool(tokenIn)
@@ -332,7 +308,7 @@ contract CerbySwapV1 is AccessControlEnumerable {
         uint32 expireTimestamp
     )
         public
-        reEntrancyProtected()
+        nonReentrant()
         executeCronJobs()
         tokenMustExistInPool(tokenOut)
         poolMustBeSynced(tokenOut)

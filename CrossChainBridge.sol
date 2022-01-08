@@ -2,8 +2,7 @@
 pragma solidity ^0.8.10;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
-import "./interfaces/ICerbyTokenMinterBurner.sol";
-import "./interfaces/ICerbyBotDetection.sol";
+import "./CerbyCronJobsExecution.sol";
 
 struct BulkFeeDependingOnDestinationChainId {
     address token;
@@ -38,7 +37,7 @@ struct BulkFeeDependingOnDestinationChainId {
 
 */
 
-contract CrossChainBridge is AccessControlEnumerable {
+contract CrossChainBridge is AccessControlEnumerable, CerbyCronJobsExecution {
     event ProofOfBurn(address addr, address token, uint amount, uint amountAsFee, uint currentNonce, uint sourceChain, uint destinationChain, bytes32 transactionHash);
     event ProofOfMint(address addr, address token, uint amountAsFee, uint finalAmount, bytes32 transactionHash);
     event ApprovedTransaction(bytes32 transactionHash);
@@ -48,7 +47,6 @@ contract CrossChainBridge is AccessControlEnumerable {
     enum States{ DefaultValue, Burned, Approved, Executed }
     mapping(bytes32 => States) public transactionStorage;
     
-    uint constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
     bytes32 public constant ROLE_APPROVER = keccak256("ROLE_APPROVER");
     
     
@@ -204,6 +202,8 @@ contract CrossChainBridge is AccessControlEnumerable {
     
     function mintWithBurnProof(SourceProofOfBurn memory sourceProofOfBurn) 
         external
+        executeCronJobs()
+        checkForBots(msg.sender)
     {
         require(
             transactionStorage[sourceProofOfBurn.transactionHash] == States.Approved,
@@ -226,34 +226,25 @@ contract CrossChainBridge is AccessControlEnumerable {
         require(
             amountAsFeeHasToBeLargerThanZero > 0,
             "CCB: Destination is forbidden (mint)"
-        );
-        
-        ICerbyTokenMinterBurner iCerbyToken = ICerbyTokenMinterBurner(sourceProofOfBurn.sourceTokenAddr);
-        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            iCerbyToken.getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
-        );
-        require(
-            !iCerbyBotDetection.isBotAddress(msg.sender),
-            "CCB: Minting is temporary disabled!"
-        );
-        iCerbyBotDetection.executeCronJobs();
+        );        
         
         transactionStorage[sourceProofOfBurn.transactionHash] = States.Executed;
-        
+                
         uint amountAsFee = sourceProofOfBurn.amountAsFee;
         uint finalAmount = sourceProofOfBurn.amountToBridge - amountAsFee; 
         
-        iCerbyToken.mintHumanAddress(msg.sender, finalAmount);
+        ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).mintHumanAddress(msg.sender, finalAmount);
         
-        emit ProofOfMint(msg.sender, sourceProofOfBurn.sourceTokenAddr, amountAsFee, finalAmount, transactionHash);
+        emit ProofOfMint(msg.sender, sourceProofOfBurn.sourceTokenAddr, amountAsFee, finalAmount, transactionHash);        
     }
     
     function burnAndCreateProof(address token, uint amount, uint destinationChainId) 
         external
+        executeCronJobs()
+        checkForBots(msg.sender)
     {
-        ICerbyTokenMinterBurner iCerbyToken = ICerbyTokenMinterBurner(token);
         require(
-            amount <= iCerbyToken.balanceOf(msg.sender),
+            amount <= ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).balanceOf(msg.sender),
             "CCB: Amount must not exceed available balance. Try reducing the amount."
         );
         require(
@@ -271,23 +262,14 @@ contract CrossChainBridge is AccessControlEnumerable {
             "CCB: Amount is lower than the minimum permitted amount"
         );
         
-        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            iCerbyToken.getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
-        );
-        require(
-            !iCerbyBotDetection.isBotAddress(msg.sender),
-            "CCB: Burning is temporary disabled!"
-        );
-        iCerbyBotDetection.executeCronJobs();
-        
         bytes32 transactionHash = keccak256(abi.encodePacked(
-                msg.sender, token, amount, amountAsFee, block.chainid, destinationChainId, currentNonce[token]
-            ));
+            msg.sender, token, amount, amountAsFee, block.chainid, destinationChainId, currentNonce[token]
+        ));
             
         transactionStorage[transactionHash] = States.Burned;
         
-        iCerbyToken.burnHumanAddress(msg.sender, amount);
-        iCerbyToken.mintHumanAddress(beneficiaryAddress, amountAsFee);
+        ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).burnHumanAddress(msg.sender, amount);
+        ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).mintHumanAddress(beneficiaryAddress, amountAsFee);
         
         emit ProofOfBurn(msg.sender, token, amount, amountAsFee, currentNonce[token], block.chainid, destinationChainId, transactionHash);
         currentNonce[token]++;
