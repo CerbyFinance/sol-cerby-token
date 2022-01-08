@@ -419,7 +419,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         view
         returns (uint)
     {
-        return (block.timestamp / 14400) % 7;
+        return (block.timestamp / 14400) % 8;
     }
 
     function getCurrentFeeBasedOnTrades(uint poolPos)
