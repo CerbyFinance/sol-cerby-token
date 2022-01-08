@@ -379,18 +379,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/openzeppelin/token/ERC1155/ERC1155.sol": {
-			"keccak256": "0x54d189069e561db1fb0e23458d022ddb6ce0a7a5a29ab8bbb8e969524a60902a",
+			"keccak256": "0x093e45116e5a9cdddd6df8b2de611029f64e5bcb0f1ce53781fd8119b5f777f1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1eb3f823724a15a71c57c4adaa7241a65cbd93b3a54978f4ba933bc9791c8b29",
-				"dweb:/ipfs/QmX1M8GvVjYe3aQAujSZUhYSDA4VRxHTBmtBosFbV9auc9"
+				"bzz-raw://bff457b9cf396d1c4e109900c9443a3fdfaf54a9cc56192ca511394e515959f0",
+				"dweb:/ipfs/QmV7Vb4GtE7QP7UhXHKyq4TZGy2AiGhVDLwAUMS9RbsHtx"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC1155/IERC1155.sol": {

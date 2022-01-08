@@ -283,11 +283,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
-			"keccak256": "0x1ec8150ef4a64df2151cc2dbb3742cb677949af9d0b1fa19a7e73aa240377a96",
+			"keccak256": "0xf4674285401d40342cec42473ac2c38e5cf38497d19549b1e87a7644e8e82d67",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://4a4110866e1b5c34e381466dc1f42fd238ed754fb7ef77ff690a462ed3757db3",
-				"dweb:/ipfs/QmYL7t1Re9pJ3BvB81su6vK8wFTvrri6fVj3vCMgbMUrYd"
+				"bzz-raw://b32180cc5ae77c0fe09aecf42b3b6a1a16c83640a63f97ba0182d6b4a2d92014",
+				"dweb:/ipfs/QmWjnnCwhTuveCMsHdHf1HVhUw7spZt4eGCG1M7zVAc9x9"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/IAccessControl.sol": {
