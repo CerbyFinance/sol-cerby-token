@@ -125,6 +125,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
 
     function adminCreatePool(address token, uint112 addTokenAmount, uint112 mintCerUsdAmount)
         public
+        onlyRole(ROLE_ADMIN)
         nonReentrant()
         tokenDoesNotExistInPool(token)
         safeTransferTokensNeeded(token, addTokenAmount)
