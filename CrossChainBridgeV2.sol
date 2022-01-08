@@ -20,7 +20,7 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         uint256   srcAmount,
         uint256   srcNonce,
         ChainType destChainType,
-        uint16    destChainId,
+        uint32    destChainId,
         bytes32   burnProofHash
     );
 
@@ -104,7 +104,7 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         bytes memory destToken,  
         bytes memory destCaller,
         uint8     destChainType,
-        uint16    destChainId,
+        uint32    destChainId,
         bytes32   destBurnProofHash,
         uint256   destAmount,
         uint256   destNonce
@@ -127,7 +127,7 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
             srcCaller, destCaller,
             srcToken, destToken, 
             destAmount,
-            uint8(_srcChainType), uint16(block.chainid), // srcChainType, srcChainId
+            uint8(_srcChainType), uint32(block.chainid), // srcChainType, srcChainId
             destChainType, destChainId,
             destNonce
         );
@@ -157,8 +157,8 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         bytes memory destCaller,
         uint256 srcAmount,
         uint8   destChainType,
-        uint16  destChainId
-    ) external {
+        uint32  destChainId
+    ) external returns (bytes32 burnProofHash) {
         IMintableBurnableToken iCerbyToken = IMintableBurnableToken(_srcToken);
         require(
             srcAmount <= iCerbyToken.balanceOf(msg.sender),
@@ -178,7 +178,7 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
             srcCaller, destCaller,
             srcToken, destToken, 
             srcAmount,
-            uint8(_srcChainType), uint16(block.chainid), // srcChainType, srcChainId
+            uint8(_srcChainType), uint32(block.chainid), // srcChainType, srcChainId
             destChainType, destChainId,
             srcNonceByToken[_srcToken]
         );
@@ -203,5 +203,7 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
             computedBurnProofHash
         );
         srcNonceByToken[_srcToken]++;
+
+        return computedBurnProofHash;
     }
 }
