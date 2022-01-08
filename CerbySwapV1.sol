@@ -175,8 +175,8 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
 
     function addTokenLiquidity(address token, uint112 addTokenAmount)
         public
-        nonReentrant()
         //executeCronJobs() TODO: enable on production
+        nonReentrant()
         tokenMustExistInPool(token)
         poolMustBeSynced(token)
         safeTransferTokensNeeded(token, addTokenAmount)
@@ -204,8 +204,8 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
 
     function removeTokenLiquidity(address token, uint removeLpAmount)
         public
-        nonReentrant()
         //executeCronJobs() TODO: enable on production
+        nonReentrant()
         tokenMustExistInPool(token)
         poolMustBeSynced(token)
     {
@@ -240,8 +240,8 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         uint32 expireTimestamp
     )
         public
-        nonReentrant()
         //executeCronJobs() TODO: enable on production
+        nonReentrant()
         transactionIsNotExpired(expireTimestamp)
         tokenMustExistInPool(tokenIn)
         poolMustBeSynced(tokenIn)
@@ -274,8 +274,8 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         uint32 expireTimestamp
     )
         public
-        nonReentrant()
         //executeCronJobs() TODO: enable on production
+        nonReentrant()
         transactionIsNotExpired(expireTimestamp)
         tokenMustExistInPool(tokenIn)
         poolMustBeSynced(tokenIn)
@@ -330,8 +330,8 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         uint32 expireTimestamp
     )
         public
-        nonReentrant()
         //executeCronJobs() TODO: enable on production
+        nonReentrant()
         tokenMustExistInPool(tokenOut)
         poolMustBeSynced(tokenOut)
         transactionIsNotExpired(expireTimestamp)
@@ -406,6 +406,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
 
     function syncTokenBalanceInPool(address token)
         public
+        tokenMustExistInPool(token)
         //executeCronJobs() TODO: enable on production
     {
         _syncTokenBalanceInPool(token);        
