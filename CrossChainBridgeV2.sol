@@ -11,13 +11,12 @@ interface IMintableBurnableToken {
     function burnByBridge(address from, uint256 amount) external;
 }
 
-
 contract CrossChainBridgeV2 is AccessControlEnumerable {
     event ProofOfBurn(
-        bytes[40] srcToken,
-        bytes[40] destToken,
-        bytes[40] srcCaller,
-        bytes[40] destCaller,
+        bytes     srcToken,
+        bytes     destToken,
+        bytes     srcCaller,
+        bytes     destCaller,
         uint256   srcAmount,
         uint256   srcNonce,
         ChainType destChainType,
@@ -26,10 +25,10 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
     );
 
     event ProofOfMint(
-        bytes[40] srcToken,
-        bytes[40] destToken,
-        bytes[40] srcCaller,
-        bytes[40] destCaller,
+        bytes     srcToken,
+        bytes     destToken,
+        bytes     srcCaller,
+        bytes     destCaller,
         uint256   destAmount,
         bytes32   burnProofHash
     );
@@ -51,8 +50,8 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
     ChainType _srcChainType;
 
     // it's common storage for all chains (evm, casper, solana etc)
+    // also it can be splitted in two storages (src and dest)
     mapping(bytes32 => States) public burnProofStorage;
-
     mapping(address => uint256) public srcNonceByToken;
 
     constructor() {
@@ -60,9 +59,8 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         _srcChainType = ChainType.Evm;
     }
 
-
-    function getSrcCaller() private view returns(bytes[40] memory) {
-        bytes[40] memory srcCaller;
+    function getSrcCaller() private view returns(bytes memory) {
+        bytes memory srcCaller = new bytes(40); 
         address _srcCaller = msg.sender;
         assembly {
             mstore(
@@ -77,9 +75,8 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         return srcCaller;
     }
 
-
-    function getSrcToken() private view returns(bytes[40] memory) {
-        bytes[40] memory srcToken;
+    function getSrcToken() private view returns(bytes memory) {
+        bytes memory srcToken = new bytes(40);
         address __srcToken = _srcToken; // **
         assembly {
             mstore(
@@ -94,7 +91,6 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         return srcToken;
     }
 
-
     function approveBurnProof(bytes32 proofHash) external {
         require(
             burnProofStorage[proofHash] == States.DefaultValue,
@@ -105,8 +101,8 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
     }
 
     function mintWithBurnProof(
-        bytes[40] memory destToken,
-        bytes[40] memory destCaller,
+        bytes memory destToken,  
+        bytes memory destCaller,
         uint8     destChainType,
         uint16    destChainId,
         bytes32   destBurnProofHash,
@@ -118,17 +114,18 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
             "CCB: Proof is not approved or already executed"
         );
 
+        require(destCaller.length == 40, "invalid caller length");
+        require(destToken.length == 40,  "invalid token length");
+
         // or ignore ?
         // TODO: require(destChainType is ChainType) 
 
-        // get fields with src prefix on our own chain
-
-        bytes[40] memory srcCaller = getSrcCaller();
-        bytes[40] memory srcToken = getSrcToken();
+        bytes memory srcCaller = getSrcCaller();
+        bytes memory srcToken = getSrcToken();
 
         bytes memory packed = abi.encodePacked(
-            abi.encode(srcCaller), abi.encode(destCaller),
-            abi.encode(srcToken), abi.encode(destToken), 
+            srcCaller, destCaller,
+            srcToken, destToken, 
             destAmount,
             uint8(_srcChainType), uint16(block.chainid), // srcChainType, srcChainId
             destChainType, destChainId,
@@ -156,8 +153,8 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
     }
 
      function burnAndCreateProof(
-        bytes[40] memory destToken,
-        bytes[40] memory destCaller,
+        bytes memory destToken, 
+        bytes memory destCaller,
         uint256 srcAmount,
         uint8   destChainType,
         uint16  destChainId
@@ -168,15 +165,18 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
             "CCB: Amount must not exceed available balance. Try reducing the amount."
         );
 
+        require(destCaller.length == 40, "invalid caller length");
+        require(destToken.length == 40,  "invalid token length");
+
         // or ignore ?
         // TODO: require(destChainType is ChainType)
 
-        bytes[40] memory srcCaller = getSrcCaller();
-        bytes[40] memory srcToken = getSrcToken();
+        bytes memory srcCaller = getSrcCaller();
+        bytes memory srcToken = getSrcToken();
 
         bytes memory packed = abi.encodePacked(
-            abi.encode(srcCaller), abi.encode(destCaller),
-            abi.encode(srcToken), abi.encode(destToken), 
+            srcCaller, destCaller,
+            srcToken, destToken, 
             srcAmount,
             uint8(_srcChainType), uint16(block.chainid), // srcChainType, srcChainId
             destChainType, destChainId,
