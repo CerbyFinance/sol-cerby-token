@@ -20,10 +20,28 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     Pool[] pools;
     mapping(address => uint) tokenToPoolPosition;
 
-    address constant testUsdcToken = 0xC7a0e9429BBc262d97f3e87BF38a95cAE8b05EDa;
-    address constant testCerbyToken = 0x029581a9121998fcBb096ceafA92E3E10057878f;
-    address constant cerUsdToken = 0xA84d62F776606B9eEbd761E2d31F65442eCc437E;
-    address constant lpErc1155V1 = 0x8e06e97c598B0Bb2910Df62C626EBf6cd55409e6;
+    /* KOVAN 
+    // "0x37E140032ac3a8428ed43761a9881d4741Eb3a73", "997503992263724670916", 0, "2041564156"
+    // "0x14769F96e57B80c66837701DE0B43686Fb4632De", "1000000000000000000000", 0, "2041564156"
+    // "0x37E140032ac3a8428ed43761a9881d4741Eb3a73","0x14769F96e57B80c66837701DE0B43686Fb4632De","10000000000000000000000","0","2041564156"
+    // "0x14769F96e57B80c66837701DE0B43686Fb4632De","0x37E140032ac3a8428ed43761a9881d4741Eb3a73","1000000000000000000000","0","2041564156"
+    
+    address constant lpErc1155V1 = 0x5DEBC34b9619B258d36a7816641dFF2833fFa30c;
+    address constant testCerbyToken = 0x3d982cB3BC8D1248B17f22b567524bF7BFFD3b11;
+    address constant cerUsdToken = 0x37E140032ac3a8428ed43761a9881d4741Eb3a73;
+    address constant testUsdcToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De;*/
+
+    /* Localhost
+    // "0xde402E9D305bAd483d47bc858cC373c5a040A62D", "997503992263724670916", 0, "2041564156"
+    // "0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2", "1000000000000000000000", 0, "2041564156"
+    // "0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2","0xde402E9D305bAd483d47bc858cC373c5a040A62D","10000000000000000000000","0","2041564156"
+    // "0xde402E9D305bAd483d47bc858cC373c5a040A62D","0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2","1000000000000000000000","0","20415641
+    */
+    address constant lpErc1155V1 = 0xE94EFBCaA00665C8faA47E18741DA9f212a15c20;
+    address constant testCerbyToken = 0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2;
+    address constant cerUsdToken = 0x04D7000CC826349A872757D82b3E0F68a713B3c5;
+    address constant testUsdcToken = 0xde402E9D305bAd483d47bc858cC373c5a040A62D;
+
     uint16 constant FEE_DENORM = 10000;
 
     uint constant NUMBER_OF_4HOUR_INTERVALS = 8;
@@ -41,6 +59,8 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
 
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
+
+        initialize();
     }
 
     function initialize() 
@@ -251,11 +271,6 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         return outputTokenOut;
     }
 
-    
-    // "0x029581a9121998fcBb096ceafA92E3E10057878f", "997503992263724670916", 0, "2041564156"
-    // "0xC7a0e9429BBc262d97f3e87BF38a95cAE8b05EDa", "1000000000000000000000", 0, "2041564156"
-    // "0x029581a9121998fcBb096ceafA92E3E10057878f","0xC7a0e9429BBc262d97f3e87BF38a95cAE8b05EDa","10000000000000000000000","0","2041564156"
-    // "0xC7a0e9429BBc262d97f3e87BF38a95cAE8b05EDa","0x029581a9121998fcBb096ceafA92E3E10057878f","1000000000000000000000","0","2041564156"
     function swapExactTokenToCerUsd(
         address tokenIn,
         uint112 amountTokenIn,
@@ -450,12 +465,12 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         uint volumeMultiplied = last24HourTradeVolumeInCerUSD * 1e18 * 1000;
         uint TVLMultiplied = pools[poolPos].balanceCerUsd * 2 * 150; // x2 because two tokens in pair
         if (volumeMultiplied <= TVLMultiplied) {
-            fee = 9999;
+            fee = 9900;
         } else if (TVLMultiplied < volumeMultiplied && volumeMultiplied < 100 * TVLMultiplied) {
-            fee = 9999 - (volumeMultiplied - TVLMultiplied) / TVLMultiplied;
+            fee = 9900 + (volumeMultiplied - TVLMultiplied) / TVLMultiplied;
         } else if (volumeMultiplied > 100 * TVLMultiplied)
         {
-            fee = 9900;
+            fee = 9999;
         }
 
         return fee;
