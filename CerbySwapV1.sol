@@ -432,10 +432,11 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         returns (uint fee)
     {
         uint current4Hour = getCurrent4Hour();
+        uint next4Hour = (current4Hour + 1) % NUMBER_OF_4HOUR_INTERVALS;
         uint last24HourTradeVolumeInCerUSD;
         for(uint i; i<NUMBER_OF_4HOUR_INTERVALS; i++)
         {
-            if (i == current4Hour) continue;
+            if (i == current4Hour || i == next4Hour) continue;
 
             last24HourTradeVolumeInCerUSD += pools[poolPos].hourlyTradeVolumeInCerUsd[i];
         }
