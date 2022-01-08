@@ -116,7 +116,8 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     }
 
     // TODO: add remove pool or disable pool to allow remove liquidity only
-
+    // TODO: adminCreatePool, disable/enable userCreatePool
+    // TODO: check if debit is negative do we allow buys/sells???
     function createPool(address token, uint112 addTokenAmount, uint112 mintCerUsdAmount, uint16 fee)
         public
         nonReentrant()
