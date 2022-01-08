@@ -106,9 +106,9 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "addTokenAmount",
-						"type": "uint256"
+						"type": "uint112"
 					}
 				],
 				"name": "addTokenLiquidity",
@@ -170,17 +170,17 @@
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint112",
+						"internalType": "uint256",
 						"name": "increaseCerUsdBalance",
-						"type": "uint112"
+						"type": "uint256"
 					}
 				],
 				"name": "getOutputExactCerUsdForToken",
 				"outputs": [
 					{
-						"internalType": "uint112",
+						"internalType": "uint256",
 						"name": "",
-						"type": "uint112"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -194,17 +194,109 @@
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint112",
+						"internalType": "uint256",
 						"name": "increaseTokenBalance",
-						"type": "uint112"
+						"type": "uint256"
 					}
 				],
 				"name": "getOutputExactTokensForCerUsd",
 				"outputs": [
 					{
-						"internalType": "uint112",
+						"internalType": "uint256",
 						"name": "",
-						"type": "uint112"
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "pos",
+						"type": "uint256"
+					}
+				],
+				"name": "getPoolByPosition",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "token",
+								"type": "address"
+							},
+							{
+								"internalType": "uint112",
+								"name": "balanceToken",
+								"type": "uint112"
+							},
+							{
+								"internalType": "uint112",
+								"name": "balanceCerUsd",
+								"type": "uint112"
+							},
+							{
+								"internalType": "int112",
+								"name": "debitCerUsd",
+								"type": "int112"
+							},
+							{
+								"internalType": "uint16",
+								"name": "fee",
+								"type": "uint16"
+							}
+						],
+						"internalType": "struct Pool",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "getPoolByToken",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "token",
+								"type": "address"
+							},
+							{
+								"internalType": "uint112",
+								"name": "balanceToken",
+								"type": "uint112"
+							},
+							{
+								"internalType": "uint112",
+								"name": "balanceCerUsd",
+								"type": "uint112"
+							},
+							{
+								"internalType": "int112",
+								"name": "debitCerUsd",
+								"type": "int112"
+							},
+							{
+								"internalType": "uint16",
+								"name": "fee",
+								"type": "uint16"
+							}
+						],
+						"internalType": "struct Pool",
+						"name": "",
+						"type": "tuple"
 					}
 				],
 				"stateMutability": "view",
@@ -267,6 +359,25 @@
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "pos",
+						"type": "uint256"
+					}
+				],
+				"name": "getUtilsContractAtPos",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -342,66 +453,14 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "pools",
-				"outputs": [
-					{
 						"internalType": "address",
 						"name": "token",
 						"type": "address"
 					},
 					{
 						"internalType": "uint112",
-						"name": "balanceToken",
-						"type": "uint112"
-					},
-					{
-						"internalType": "uint112",
-						"name": "balanceCerUsd",
-						"type": "uint112"
-					},
-					{
-						"internalType": "int112",
-						"name": "debitCerUsd",
-						"type": "int112"
-					},
-					{
-						"internalType": "uint16",
-						"name": "fee",
-						"type": "uint16"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "reEntrancyGuardStatus",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
 						"name": "removeTokenAmount",
-						"type": "uint256"
+						"type": "uint112"
 					}
 				],
 				"name": "removeTokenLiquidity",
@@ -472,23 +531,68 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "amountCerUsdIn",
-						"type": "uint256"
+						"type": "uint112"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint112",
 						"name": "minAmountTokenOut",
-						"type": "uint256"
+						"type": "uint112"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "uint32",
 						"name": "expireTimestamp",
-						"type": "uint256"
+						"type": "uint32"
 					}
 				],
 				"name": "swapExactCerUsdForToken",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "uint112",
+						"name": "",
+						"type": "uint112"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenIn",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "tokenOut",
+						"type": "address"
+					},
+					{
+						"internalType": "uint112",
+						"name": "amountTokenIn",
+						"type": "uint112"
+					},
+					{
+						"internalType": "uint112",
+						"name": "minAmountTokenOut",
+						"type": "uint112"
+					},
+					{
+						"internalType": "uint32",
+						"name": "expireTimestamp",
+						"type": "uint32"
+					}
+				],
+				"name": "swapExactTokenForToken",
+				"outputs": [
+					{
+						"internalType": "uint112",
+						"name": "",
+						"type": "uint112"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -516,7 +620,13 @@
 					}
 				],
 				"name": "swapExactTokenToCerUsd",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "uint112",
+						"name": "",
+						"type": "uint112"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -528,15 +638,25 @@
 						"type": "address"
 					}
 				],
-				"name": "sync",
+				"name": "syncTokenBalanceInPool",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "testGetPrice",
+				"name": "testGetBalances",
 				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
 					{
 						"internalType": "uint256",
 						"name": "",
@@ -547,15 +667,86 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
+				"inputs": [],
+				"name": "testGetPools",
+				"outputs": [
 					{
-						"internalType": "address",
+						"components": [
+							{
+								"internalType": "address",
+								"name": "token",
+								"type": "address"
+							},
+							{
+								"internalType": "uint112",
+								"name": "balanceToken",
+								"type": "uint112"
+							},
+							{
+								"internalType": "uint112",
+								"name": "balanceCerUsd",
+								"type": "uint112"
+							},
+							{
+								"internalType": "int112",
+								"name": "debitCerUsd",
+								"type": "int112"
+							},
+							{
+								"internalType": "uint16",
+								"name": "fee",
+								"type": "uint16"
+							}
+						],
+						"internalType": "struct Pool",
 						"name": "",
-						"type": "address"
+						"type": "tuple"
+					},
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "token",
+								"type": "address"
+							},
+							{
+								"internalType": "uint112",
+								"name": "balanceToken",
+								"type": "uint112"
+							},
+							{
+								"internalType": "uint112",
+								"name": "balanceCerUsd",
+								"type": "uint112"
+							},
+							{
+								"internalType": "int112",
+								"name": "debitCerUsd",
+								"type": "int112"
+							},
+							{
+								"internalType": "uint16",
+								"name": "fee",
+								"type": "uint16"
+							}
+						],
+						"internalType": "struct Pool",
+						"name": "",
+						"type": "tuple"
 					}
 				],
-				"name": "tokenToPoolPosition",
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "testGetPrices",
 				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
 					{
 						"internalType": "uint256",
 						"name": "",
@@ -579,16 +770,16 @@
 					"details": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role."
 				},
 				"grantRole(bytes32,address)": {
-					"details": "Overload {grantRole} to track enumerable memberships"
+					"details": "Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role."
 				},
 				"hasRole(bytes32,address)": {
 					"details": "Returns `true` if `account` has been granted `role`."
 				},
 				"renounceRole(bytes32,address)": {
-					"details": "Overload {renounceRole} to track enumerable memberships"
+					"details": "Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been revoked `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`."
 				},
 				"revokeRole(bytes32,address)": {
-					"details": "Overload {revokeRole} to track enumerable memberships"
+					"details": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role."
 				},
 				"supportsInterface(bytes4)": {
 					"details": "See {IERC165-supportsInterface}."
@@ -612,18 +803,50 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
+		"sol-defifactory-token/CerbyCronJobsExecution.sol": {
+			"keccak256": "0xca3a4f7fb970f4b274c03e0c3e467377bf31a5addd4f8236e4f6c8a9dc1cebad",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://7f86e8c42644b8066a79261b1bb5c43a128951e3d5956aaa4942a5bc08d920c7",
+				"dweb:/ipfs/QmZ1Vdfe3xoamtuiAtxuD8B46jUjX5yrEPkF5fN9ueP86Q"
+			]
+		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xaea83223eb64dce349063ea3f8096266ff073d3b727a781fcdba2abe7a4e6ea7",
+			"keccak256": "0xa9a89264dcb7cb0a7edb849f01a7a6a4ced5ca12fed739a7ce17fab9f2ec079d",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://57a16f8debfc4ce0eb7a56ebc1a5332662a9a7684f32401382fda74e74c6c644",
-				"dweb:/ipfs/QmYQLav34GDU5jbJwUCAkoyonmoUAxSvC6i3yFjpd6RwfH"
+				"bzz-raw://ec8d5b3b8019bba51f0f3899aa23593eecb05e989000643934b19eb1071912ea",
+				"dweb:/ipfs/QmdyBockH1JwAXKHnKCrKP5zv2HkjQbx8W4QuxpUTLLRut"
+			]
+		},
+		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
+			"keccak256": "0x9b905563f93d66ea6f18aaea9c07d545092817e11bae89ae0c8cd59f4f50e505",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://51de5e7294d47d594ed80f368b8cffa09d67af65d9f3f3699f3e5b7bb96f33ce",
+				"dweb:/ipfs/QmRKwyPpezfDG6s4Y1BimYvvjzZ3amPxhEMACjMv2U3fFw"
+			]
+		},
+		"sol-defifactory-token/interfaces/ICerbyCronJobs.sol": {
+			"keccak256": "0x9548d0f358b80d5721839abb25aa5e42bdd6b7c436bf222dedddb66223305d88",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://7b58f862c79af6250975b7c558cec4e930e9a0a807cfc5ecc256ee566fa7defb",
+				"dweb:/ipfs/QmVW391ejnmEQVeUCpcAnkp9VpzjJhiqqkvyuSh3sEyaNQ"
+			]
+		},
+		"sol-defifactory-token/interfaces/ICerbyToken.sol": {
+			"keccak256": "0x1cf233391c970f48f8e1a2db9a3e81c4ebb8c2ff423c6d1c553df632f04abf2d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://845a3faee636b03fa2b2e09a4d43df33ce2f1ac5f031c9f4d9f7a5f2a1d5ee7e",
+				"dweb:/ipfs/QmV6PFf9HzucpBj4y6zvW7BbuMRGhQAEa7MRWKCCREgB7V"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {
@@ -635,83 +858,107 @@
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
-			"keccak256": "0x216169e68f87c4f54a41e18c8b62d4d41a438db352bb5103e07ece489d3409e1",
+			"keccak256": "0x1ec8150ef4a64df2151cc2dbb3742cb677949af9d0b1fa19a7e73aa240377a96",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0a31be9f4c3c67f99b833f476c76a2b9d58efc75d24f5a150fc9e43d82e241d0",
-				"dweb:/ipfs/QmXCT1p75AnsZ5LexnBZFNbkBeisG2KjAoh8TMSSQdNeqz"
+				"bzz-raw://4a4110866e1b5c34e381466dc1f42fd238ed754fb7ef77ff690a462ed3757db3",
+				"dweb:/ipfs/QmYL7t1Re9pJ3BvB81su6vK8wFTvrri6fVj3vCMgbMUrYd"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {
-			"keccak256": "0x0d616363c1a1e6f9f489303f94df0cbe606826ab4944d315c3801a07f9b8d4ee",
+			"keccak256": "0x1304796e9cdc64294735b4222849a240363b2aff374bb58b7c728f8dc0f4aa75",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://976cf80d02556929369fc98196c4082f204e44e682e20d3f65cc61b31e29bf76",
-				"dweb:/ipfs/Qmeo1vvf7L3PLLDPNSVuVyirLB3FrCYKMFw3JZ7EXgC5YU"
+				"bzz-raw://c87398b4ba8f7c7e6613a5967e5407a5af6807e753d326d5e3b8c29697d33e36",
+				"dweb:/ipfs/QmWGzaF9UWB5rNW1h9kvkJaWSf95WkQZ7RVR3bJ24oVgwG"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/access/IAccessControl.sol": {
+			"keccak256": "0x59ce320a585d7e1f163cd70390a0ef2ff9cec832e2aa544293a00692465a7a57",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://bb2c137c343ef0c4c7ce7b18c1d108afdc9d315a04e48307288d2d05adcbde3a",
+				"dweb:/ipfs/QmUxhrAQM3MM3FF5j7AtcXLXguWCJBHJ14BRdVtuoQc8Fh"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/access/IAccessControlEnumerable.sol": {
+			"keccak256": "0xba4459ab871dfa300f5212c6c30178b63898c03533a1ede28436f11546626676",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://3dcc7b09bfa6e18aab262ca372f4a9b1fc82e294b430706a4e1378cf58e6a276",
+				"dweb:/ipfs/QmT8oSAcesdctR15HMLhr2a1HRpXymxdjTfdtfTYJcj2N2"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/security/ReentrancyGuard.sol": {
+			"keccak256": "0x0e9621f60b2faabe65549f7ed0f24e8853a45c1b7990d47e8160e523683f3935",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://287a2f8d5814dd0f05f22b740f18ca8321acc21c9bd03a6cb2203ea626e2f3f2",
+				"dweb:/ipfs/QmZRQv9iuwU817VuqkA2WweiaibKii69x9QxYBBEfbNEud"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {
-			"keccak256": "0xf8e8d118a7a8b2e134181f7da655f6266aa3a0f9134b2605747139fcb0c5d835",
+			"keccak256": "0x61437cb513a887a1bbad006e7b1c8b414478427d33de47c5600af3c748f108da",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://9ec48567e7ad06acb670980d5cdf3fd7f3949bf12894f02d68c3bb43e75aa84f",
-				"dweb:/ipfs/QmaG3R2J9cz92YT77vFjYrjMNU2wHp4ypwYD62HqDUqS5U"
+				"bzz-raw://2c3d0973630ed74f2b5ce3944677a885dc70ec32fc83b35f55045a10224da32b",
+				"dweb:/ipfs/QmbefZ5RoEZKNHXCALfh683PnaNYzKPcKMFjyY1DVAgq8A"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/utils/SafeERC20.sol": {
-			"keccak256": "0x99f5c21018d796db7833a2100bb0e7411999e248a3c950fb526eee5d2bf47cb7",
+			"keccak256": "0xc3d946432c0ddbb1f846a0d3985be71299df331b91d06732152117f62f0be2b5",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b31b80dd57f8c28320b01fa4f3ed98ac1aa678f61846c1db2771c996b77a9451",
-				"dweb:/ipfs/QmcT2Di5L9t82A9XdYDZ4tWMEPGFVFazKDwC2Vrd135AA3"
+				"bzz-raw://4632c341a06ba5c079b51ca5a915efab4e6ab57735b37839b3e8365ff806a43e",
+				"dweb:/ipfs/QmTHT3xHYed2wajEoA5qu7ii2BxLpPhQZHwAhtLK5Z7ANK"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/utils/Address.sol": {
-			"keccak256": "0x069b2631bb5b5193a58ccf7a06266c7361bd2c20095667af4402817605627f45",
+			"keccak256": "0x51b758a8815ecc9596c66c37d56b1d33883a444631a3f916b9fe65cb863ef7c4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6a4c96fafff76deda5697c3c5c98cade6e6e1b178254544c106bf360c079ce4e",
-				"dweb:/ipfs/QmXmxubE3jnatFgZuN8ay1VV6hZ8WRmhvUjNpeVjki15HX"
+				"bzz-raw://997ca03557985b3c6f9143a18b6c3a710b3bc1c7f189ee956d305a966ecfb922",
+				"dweb:/ipfs/QmQaD3Wb62F88SHqmpLttvF6wKuPDQep2LLUcKPekeRzvz"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/utils/Context.sol": {
-			"keccak256": "0xf930d2df426bfcfc1f7415be724f04081c96f4fb9ec8d0e3a521c07692dface0",
+			"keccak256": "0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://fc2bfdea0d2562c76fb3c4cf70a86c6ba25c5a30e8f8515c95aafdf8383f8395",
-				"dweb:/ipfs/QmTbFya18786ckJfLYUoWau9jBTKfmWnWm5XSViWvB7PXN"
+				"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92",
+				"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/utils/Strings.sol": {
-			"keccak256": "0x456e9b3a2bfe189b5249857f624f4139e59331db518483b456c4e587a20552e0",
+			"keccak256": "0x32c202bd28995dd20c4347b7c6467a6d3241c74c8ad3edcbb610cd9205916c45",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1123c9545decc48a011370ebab4bf53dda98524fa21f9498e68851ba8f0ffc0f",
-				"dweb:/ipfs/QmUpgMg8EFDnv87ePKUjXxXpJT3qwHRj9VDNSnRxu7T9sy"
+				"bzz-raw://8179c356adb19e70d6b31a1eedc8c5c7f0c00e669e2540f4099e3844c6074d30",
+				"dweb:/ipfs/QmWFbivarEobbqhS1go64ootVuHfVohBseerYy9FTEd1W2"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/utils/introspection/ERC165.sol": {
-			"keccak256": "0x5718c5df9bd67ac68a796961df938821bb5dc0cd4c6118d77e9145afb187409b",
+			"keccak256": "0xd10975de010d89fd1c78dc5e8a9a7e7f496198085c151648f20cba166b32582b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d10e1d9b26042424789246603906ad06143bf9a928f4e99de8b5e3bdc662f549",
-				"dweb:/ipfs/Qmejonoaj5MLekPus229rJQHcC6E9dz2xorjHJR84fMfmn"
+				"bzz-raw://fb0048dee081f6fffa5f74afc3fb328483c2a30504e94a0ddd2a5114d731ec4d",
+				"dweb:/ipfs/QmZptt1nmYoA5SgjwnSgWqgUSDgm4q52Yos3xhnMv3MV43"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/utils/introspection/IERC165.sol": {
-			"keccak256": "0xa28007762d9da9db878dd421960c8cb9a10471f47ab5c1b3309bfe48e9e79ff4",
+			"keccak256": "0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://796ab6e88af7bf0e78def0f059310c903af6a312b565344e0ff524a0f26e81c6",
-				"dweb:/ipfs/QmcsVgLgzWdor3UnAztUkXKNGcysm1MPneWksF72AvnwBx"
+				"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f",
+				"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/utils/structs/EnumerableSet.sol": {
-			"keccak256": "0x641d1c42bddc802820044fc0297346d82411f1c86647c2994a5897199c7049c5",
+			"keccak256": "0x9772845c886f87a3aab315f8d6b68aa599027c20f441b131cd4afaf65b588900",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://a1a73b4d9b6065412e18d9e21e3ba6387d5dc6b69161d8527101c0041b62f762",
-				"dweb:/ipfs/QmQ51saPEQxKqbkLxfvpXz4x7uDzC49gyH4kVXK8exoAU2"
+				"bzz-raw://ad2f29a9c17a4f746416c9e254e17671f43c409dbfa6e4d7d76c3e4a83212d31",
+				"dweb:/ipfs/QmTqU65L6iu6yqmXKzcNLPioR8etzKPWycpDJCm17ifVdS"
 			]
 		}
 	},

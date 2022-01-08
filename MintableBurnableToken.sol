@@ -8,8 +8,8 @@ contract MintableBurnableToken is ERC20 {
     address owner;
     constructor()
         //ERC20("Cerby Token", "CERBY", 18)
-        ERC20("Cerby USD Token", "cerUSD", 18)
-        //ERC20("USD Coin", "USDC", 18)
+        //ERC20("Cerby USD Token", "cerUSD", 18)
+        ERC20("USD Coin", "USDC", 18)
     {
         owner = msg.sender;
         _mint(0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6, 1e18*1e9);
