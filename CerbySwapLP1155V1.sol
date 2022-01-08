@@ -2,12 +2,12 @@
 pragma solidity ^0.8.11;
 
 
-import "./openzeppelin/access/AccessControlEnumerable.sol";
+import "./openzeppelin/access/Ownable.sol";
 import "./openzeppelin/token/ERC1155/ERC1155.sol";
 import "./CerbyCronJobsExecution.sol";
 
 
-contract CerbySwapLP1155V1 is ERC1155, CerbyCronJobsExecution, AccessControlEnumerable {
+contract CerbySwapLP1155V1 is ERC1155, CerbyCronJobsExecution, Ownable {
 
     constructor()
         ERC1155("")
@@ -65,58 +65,58 @@ contract CerbySwapLP1155V1 is ERC1155, CerbyCronJobsExecution, AccessControlEnum
         _safeBatchTransferFrom(from, to, ids, amounts, data);
     }
 
-    function adminSetURI(string memory newuri) 
+    function ownerSetURI(string memory newuri) 
         public
-        onlyRole(ROLE_ADMIN)
+        onlyOwner
     {
         _uri = newuri;
     }
 
-    function adminMint(
+    function ownerMint(
         address to,
         uint256 id,
         uint256 amount,
         bytes memory data
     ) 
         public
-        onlyRole(ROLE_ADMIN)
+        onlyOwner
         executeCronJobs()
     {
         _mint(to, id, amount, data);
     }
 
-    function adminMintBatch(
+    function ownerMintBatch(
         address to,
         uint256[] memory ids,
         uint256[] memory amounts,
         bytes memory data
     ) 
         public
-        onlyRole(ROLE_ADMIN)
+        onlyOwner
         executeCronJobs()
     {
         _mintBatch(to, ids, amounts, data);
     }
 
-    function adminBurn(
+    function ownerBurn(
         address from,
         uint256 id,
         uint256 amount
     ) 
         public
-        onlyRole(ROLE_ADMIN)
+        onlyOwner
         executeCronJobs()
     {
         _burn(from, id, amount);
     }
 
-    function adminBurnBatch(
+    function ownerBurnBatch(
         address from,
         uint256[] memory ids,
         uint256[] memory amounts
     ) 
         public
-        onlyRole(ROLE_ADMIN)
+        onlyOwner
         executeCronJobs()
     {
         _burnBatch(from, ids, amounts);

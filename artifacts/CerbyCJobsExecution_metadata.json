@@ -38,7 +38,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/CerbyCronJobsExecution.sol": "CerbyCronJobsExecution"
+			"sol-defifactory-token/CerbyCronJobsExecution.sol": "CerbyCJobsExecution"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -53,11 +53,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyCronJobsExecution.sol": {
-			"keccak256": "0x2ba3f1ccdebeb6c7bef64847799fe5de1e4502ad6600e5fd7849dff2d4463ca5",
+			"keccak256": "0xc73f2522137c749d7441e7a0eef30f90a0ac0fbe19561fcabb7c12a88007bbc7",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://98834734e07a181e98e248a2bda2e5d81b71f2ad51d8b6576754de68822aa85e",
-				"dweb:/ipfs/QmQNPszhgNMRtEW78T3xY4saSNdwKHQdGUZLPAxatiwAXs"
+				"bzz-raw://0a6a8167b43f487901888fd2ea018bd5b5618a4147bd42f6746eda40c3a36c0a",
+				"dweb:/ipfs/QmYpadJ3L6r65cdD79Fb4GEfUj4XBdNP6UcAq5ctZxtDwV"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
