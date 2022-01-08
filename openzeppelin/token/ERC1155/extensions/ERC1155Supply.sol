@@ -14,7 +14,7 @@ import "../ERC1155.sol";
  * same id are not going to be minted.
  */
 abstract contract ERC1155Supply is ERC1155 {
-    mapping(uint256 => uint256) private _totalSupply;
+    mapping(uint256 => uint256) internal _totalSupply;
 
     /**
      * @dev Total amount of tokens in with a given id.

@@ -124,24 +124,6 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint16",
-						"name": "newFee",
-						"type": "uint16"
-					}
-				],
-				"name": "adminUpdateFee",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					},
-					{
 						"internalType": "uint112",
 						"name": "addTokenAmount",
 						"type": "uint112"
@@ -157,7 +139,25 @@
 						"type": "uint16"
 					}
 				],
-				"name": "createPool",
+				"name": "adminCreatePool",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint16",
+						"name": "newFee",
+						"type": "uint16"
+					}
+				],
+				"name": "adminUpdateFee",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -238,11 +238,6 @@
 								"type": "uint112"
 							},
 							{
-								"internalType": "int112",
-								"name": "debitCerUsd",
-								"type": "int112"
-							},
-							{
 								"internalType": "uint16",
 								"name": "fee",
 								"type": "uint16"
@@ -282,11 +277,6 @@
 								"internalType": "uint112",
 								"name": "balanceCerUsd",
 								"type": "uint112"
-							},
-							{
-								"internalType": "int112",
-								"name": "debitCerUsd",
-								"type": "int112"
 							},
 							{
 								"internalType": "uint16",
@@ -451,6 +441,13 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "initialize",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -458,9 +455,9 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint112",
-						"name": "removeTokenAmount",
-						"type": "uint112"
+						"internalType": "uint256",
+						"name": "removeLpAmount",
+						"type": "uint256"
 					}
 				],
 				"name": "removeTokenLiquidity",
@@ -688,11 +685,6 @@
 								"type": "uint112"
 							},
 							{
-								"internalType": "int112",
-								"name": "debitCerUsd",
-								"type": "int112"
-							},
-							{
 								"internalType": "uint16",
 								"name": "fee",
 								"type": "uint16"
@@ -718,11 +710,6 @@
 								"internalType": "uint112",
 								"name": "balanceCerUsd",
 								"type": "uint112"
-							},
-							{
-								"internalType": "int112",
-								"name": "debitCerUsd",
-								"type": "int112"
 							},
 							{
 								"internalType": "uint16",
@@ -818,11 +805,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x6acbba0be62c840968ce1dcfe3954078cf4c3bf4ffc0f60978c99c483c51b7d2",
+			"keccak256": "0x7ea15e8aedbdfabac3a467803bda5dc12444614d4c7e9b4972fe47e406a80bb5",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://b65795eb4676d0a6570c20aefbaea0ed382e2b7ba26551f6387ce2936ae7fd56",
-				"dweb:/ipfs/QmfEJcALkLC4SNZUmsTs7Xpv74EW9keBDNsWxgGF4NuL3B"
+				"bzz-raw://e73ab58370d85f919ba9712c7e1049555a527e611b63e9d5061b4042079439f5",
+				"dweb:/ipfs/QmTkNgsamm24Ge73vFFwQgTuYSEYD2TpnnRhbbRY4oeV7e"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
@@ -839,6 +826,14 @@
 			"urls": [
 				"bzz-raw://7b58f862c79af6250975b7c558cec4e930e9a0a807cfc5ecc256ee566fa7defb",
 				"dweb:/ipfs/QmVW391ejnmEQVeUCpcAnkp9VpzjJhiqqkvyuSh3sEyaNQ"
+			]
+		},
+		"sol-defifactory-token/interfaces/ICerbySwapLP1155V1.sol": {
+			"keccak256": "0x50773fa33d1591eb512696e00bd57d13f105b42c07e8621223e8983b0b686a54",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://c5806642f693a8bc5c771f6d24656f5df44f466c38c8f4b8e9897f3b255ff465",
+				"dweb:/ipfs/QmUSmNvw9yZvmdn7XDNBuqoDUtNHaDwZ1MywfBJtMNYpbH"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyToken.sol": {

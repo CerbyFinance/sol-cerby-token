@@ -3,11 +3,11 @@ pragma solidity ^0.8.11;
 
 
 import "./openzeppelin/access/Ownable.sol";
-import "./openzeppelin/token/ERC1155/ERC1155.sol";
+import "./openzeppelin/token/ERC1155/extensions/ERC1155Supply.sol";
 import "./CerbyCronJobsExecution.sol";
 
 
-contract CerbySwapLP1155V1 is ERC1155, CerbyCronJobsExecution, Ownable {
+contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ownable {
 
     constructor()
         ERC1155("")
@@ -55,8 +55,9 @@ contract CerbySwapLP1155V1 is ERC1155, CerbyCronJobsExecution, Ownable {
         public 
         virtual 
         override
-        executeCronJobs()
-        checkForBots(msg.sender) 
+        // TODO: enable on production
+        /*executeCronJobs()
+        checkForBots(msg.sender) */
     {
         require(
             from == _msgSender() || isApprovedForAll(from, _msgSender()),
@@ -67,7 +68,8 @@ contract CerbySwapLP1155V1 is ERC1155, CerbyCronJobsExecution, Ownable {
 
     function ownerSetURI(string memory newuri) 
         public
-        onlyOwner
+        // TODO: enable on production
+        //onlyOwner
     {
         _uri = newuri;
     }
@@ -79,8 +81,9 @@ contract CerbySwapLP1155V1 is ERC1155, CerbyCronJobsExecution, Ownable {
         bytes memory data
     ) 
         public
-        onlyOwner
-        executeCronJobs()
+        // TODO: enable on production
+        /*onlyOwner
+        executeCronJobs()*/
     {
         _mint(to, id, amount, data);
     }
@@ -92,8 +95,9 @@ contract CerbySwapLP1155V1 is ERC1155, CerbyCronJobsExecution, Ownable {
         bytes memory data
     ) 
         public
-        onlyOwner
-        executeCronJobs()
+        // TODO: enable on production
+        /*onlyOwner
+        executeCronJobs()*/
     {
         _mintBatch(to, ids, amounts, data);
     }
@@ -104,8 +108,9 @@ contract CerbySwapLP1155V1 is ERC1155, CerbyCronJobsExecution, Ownable {
         uint256 amount
     ) 
         public
-        onlyOwner
-        executeCronJobs()
+        // TODO: enable on production
+        /*onlyOwner
+        executeCronJobs()*/
     {
         _burn(from, id, amount);
     }
@@ -116,8 +121,9 @@ contract CerbySwapLP1155V1 is ERC1155, CerbyCronJobsExecution, Ownable {
         uint256[] memory amounts
     ) 
         public
-        onlyOwner
-        executeCronJobs()
+        // TODO: enable on production
+        /*onlyOwner
+        executeCronJobs()*/
     {
         _burnBatch(from, ids, amounts);
     }

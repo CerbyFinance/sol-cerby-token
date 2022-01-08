@@ -8,13 +8,13 @@ import "./openzeppelin/token/ERC20/utils/SafeERC20.sol";
 import "./interfaces/ICerbyTokenMinterBurner.sol";
 import "./interfaces/ICerbyCronJobs.sol";
 import "./interfaces/ICerbyBotDetection.sol";
+import "./interfaces/ICerbySwapLP1155V1.sol";
 import "./CerbyCronJobsExecution.sol";
 
 struct Pool {
     address token;
     uint112 balanceToken;
     uint112 balanceCerUsd;
-    int112 debitCerUsd;
     uint16 fee;
 }
 
@@ -27,31 +27,49 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     address constant testUsdcToken = 0xC7a0e9429BBc262d97f3e87BF38a95cAE8b05EDa;
     address constant testCerbyToken = 0x029581a9121998fcBb096ceafA92E3E10057878f;
     address constant cerUsdToken = 0xA84d62F776606B9eEbd761E2d31F65442eCc437E;
+    address constant lpErc1155V1 = 0x8e06e97c598B0Bb2910Df62C626EBf6cd55409e6;
     uint16 constant FEE_MIN_VALUE = 9900;
     uint16 constant FEE_MAX_VALUE = 10000;
     uint16 constant NORMAL_FEE = 9985; // 0.15% per transaction XXX <--> cerUSD
     uint16 constant STABLECOIN_FEE = 9995; // 0.05% per transaction USDC <--> cerUSD
 
+    uint constant MINIMUM_LIQUIDITY = 1000;
+    address constant DEAD_ADDRESS = address(0xdead);
+
+    bool isInitializedAlready;
+
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
+    }
+
+    function initialize() 
+        public
+    {
+        require(!isInitializedAlready, "CS1: Already initialized");
+        isInitializedAlready = true;
 
         // Filling with empty pool 0th position
         pools.push(Pool(
             address(0),
             0,
             0,
-            0,
             0
         ));
+        ICerbySwapLP1155V1(lpErc1155V1).ownerMint(
+            DEAD_ADDRESS,
+            0,
+            MINIMUM_LIQUIDITY,
+            ""
+        );
 
-        createPool(
+        adminCreatePool(
             testCerbyToken,
             1e18 * 1e6,
             1e18 * 3e5,
             NORMAL_FEE
         );
 
-        createPool(
+        adminCreatePool(
             testUsdcToken,
             1e18 * 1e6,
             1e18 * 1e6,
@@ -117,33 +135,41 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     // TODO: add remove pool or disable pool to allow remove liquidity only
     // TODO: adminCreatePool, disable/enable userCreatePool
     // TODO: check if debit is negative do we allow buys/sells???
-    function createPool(address token, uint112 addTokenAmount, uint112 mintCerUsdAmount, uint16 fee)
+    function adminCreatePool(address token, uint112 addTokenAmount, uint112 mintCerUsdAmount, uint16 fee)
         public
         nonReentrant()
-        executeCronJobs()
         feeIsInNormalRange(fee)
         tokenDoesNotExistInPool(token)
         safeTransferTokensNeeded(token, addTokenAmount)
     {
         ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
 
-        // Admins can create official pools with no limit on selling
-        // Users can create regular pools where they can't sell more than bought
         {
-            int112 newCerUsdDebit = hasRole(ROLE_ADMIN, msg.sender)? int112(mintCerUsdAmount): int112(0);
             Pool memory pool = Pool(
                 token,
                 addTokenAmount,
                 mintCerUsdAmount,
-                newCerUsdDebit,
                 fee
             );
             pools.push(pool);
             tokenToPoolPosition[token] = pools.length - 1;
         }
 
-        // TODO: mint LP tokens
-        // TODO: record current debit/credit to LP position
+        ICerbySwapLP1155V1(lpErc1155V1).ownerMint(
+            DEAD_ADDRESS,
+            pools.length - 1,
+            MINIMUM_LIQUIDITY,
+            ""
+        );
+
+        uint lpAmount = sqrt(uint(addTokenAmount) * uint(mintCerUsdAmount)) - MINIMUM_LIQUIDITY;
+        ICerbySwapLP1155V1(lpErc1155V1).ownerMint(
+            msg.sender,
+            pools.length - 1,
+            lpAmount,
+            ""
+        );
+
         uint oldKValue = uint(addTokenAmount) * uint(mintCerUsdAmount);
         updateTokenBalanceAndCheckKValue(tokenToPoolPosition[token], token, oldKValue);
     }
@@ -151,7 +177,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     function addTokenLiquidity(address token, uint112 addTokenAmount)
         public
         nonReentrant()
-        executeCronJobs()
+        //executeCronJobs() TODO: enable on production
         tokenMustExistInPool(token)
         poolMustBeSynced(token)
         safeTransferTokensNeeded(token, addTokenAmount)
@@ -162,41 +188,45 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         );
         ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
 
-        // TODO: mint LP tokens
-        // TODO: record current debit/credit to LP position
-        // TODO: check if user modified transfer function
+        uint totalLPSupply = ICerbySwapLP1155V1(lpErc1155V1).totalSupply(poolPos);
+        uint lpAmount = (addTokenAmount * totalLPSupply) / pools[poolPos].balanceToken;
+        ICerbySwapLP1155V1(lpErc1155V1).ownerMint(
+            msg.sender,
+            poolPos,
+            lpAmount,
+            ""
+        );
 
-        uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
         pools[poolPos].balanceToken += addTokenAmount;
         pools[poolPos].balanceCerUsd += mintCerUsdAmount;
-        pools[poolPos].debitCerUsd += int112(mintCerUsdAmount); // TODO: debit increases with add liquidity???
 
-        updateTokenBalanceAndCheckKValue(poolPos, token, oldKValue);
+        _syncTokenBalanceInPool(token);
     }
 
-    function removeTokenLiquidity(address token, uint112 removeTokenAmount)
+    function removeTokenLiquidity(address token, uint removeLpAmount)
         public
         nonReentrant()
-        executeCronJobs()
+        //executeCronJobs() TODO: enable on production
         tokenMustExistInPool(token)
         poolMustBeSynced(token)
     {
         uint poolPos = tokenToPoolPosition[token];
+        ICerbySwapLP1155V1(lpErc1155V1).ownerBurn(msg.sender, poolPos, removeLpAmount);
+
+        uint totalLPSupply = ICerbySwapLP1155V1(lpErc1155V1).totalSupply(poolPos);
+        uint112 removeTokenAmount = uint112(
+            (uint(pools[poolPos].balanceToken) * removeLpAmount) / totalLPSupply
+        );
+
         uint112 burnCerUsdAmount = uint112(
-            (uint(removeTokenAmount) * uint(pools[poolPos].balanceCerUsd)) / uint(pools[poolPos].balanceToken)
+            (uint(pools[poolPos].balanceCerUsd) * removeLpAmount) / totalLPSupply
         );
         ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), burnCerUsdAmount);
 
-        // TODO: burn LP tokens
-        // TODO: if debit > credit return cerUSD additionally
-        // TODO: if debit < credit return reduced tokenAmount
-
-        uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
         pools[poolPos].balanceToken -= removeTokenAmount;
         pools[poolPos].balanceCerUsd -= burnCerUsdAmount;
-        pools[poolPos].debitCerUsd -= int112(burnCerUsdAmount); // TODO: debit decreases with remove liquidity???
 
-        updateTokenBalanceAndCheckKValue(tokenToPoolPosition[token], token, oldKValue);
+        _syncTokenBalanceInPool(token);
     }
 
     // TODO: add swapTokenToExactCerUSD XXX --> cerUSD
@@ -212,7 +242,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     )
         public
         nonReentrant()
-        executeCronJobs()
+        //executeCronJobs() TODO: enable on production
         transactionIsNotExpired(expireTimestamp)
         tokenMustExistInPool(tokenIn)
         poolMustBeSynced(tokenIn)
@@ -246,7 +276,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     )
         public
         nonReentrant()
-        executeCronJobs()
+        //executeCronJobs() TODO: enable on production
         transactionIsNotExpired(expireTimestamp)
         tokenMustExistInPool(tokenIn)
         poolMustBeSynced(tokenIn)
@@ -280,15 +310,8 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
             "CS1: Output amount less than minimum specified"
         );
 
-        require(
-            // For user-created pools you can't sell more than bought
-            // For official pools - no limits
-            pools[poolPos].debitCerUsd - int112(outputCerUsdAmount) > 0,
-            "CS1: Can't sell more than bought"
-        );
 
         uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
-        pools[poolPos].debitCerUsd -= int112(outputCerUsdAmount);
         pools[poolPos].balanceCerUsd -= outputCerUsdAmount;
         pools[poolPos].balanceToken += amountTokenIn;
 
@@ -309,7 +332,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     )
         public
         nonReentrant()
-        executeCronJobs()
+        //executeCronJobs() TODO: enable on production
         tokenMustExistInPool(tokenOut)
         poolMustBeSynced(tokenOut)
         transactionIsNotExpired(expireTimestamp)
@@ -345,7 +368,6 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         );
 
         uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
-        pools[poolPos].debitCerUsd += int112(amountCerUsdIn);
         pools[poolPos].balanceCerUsd += amountCerUsdIn;
         pools[poolPos].balanceToken -= outputTokenAmount;
 
@@ -385,7 +407,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
 
     function syncTokenBalanceInPool(address token)
         public
-        executeCronJobs()
+        //executeCronJobs() TODO: enable on production
     {
         _syncTokenBalanceInPool(token);        
     }
@@ -452,6 +474,19 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         returns (Pool memory)
     {
         return pools[tokenToPoolPosition[token]];
+    }
+
+    function sqrt(uint x)
+        private
+        pure
+        returns (uint y) 
+    {
+        uint z = (x + 1) / 2;
+        y = x;
+        while (z < y) {
+            y = z;
+            z = (x / z + z) / 2;
+        }
     }
 
     function testGetPrices()
