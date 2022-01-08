@@ -810,19 +810,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyCronJobsExecution.sol": {
-			"keccak256": "0x360916f1553ed040c46f18ac8c99fbd49353c01c05a24787db0e8f88b1d14b67",
+			"keccak256": "0x2ba3f1ccdebeb6c7bef64847799fe5de1e4502ad6600e5fd7849dff2d4463ca5",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://3dac2b2fd6c9b657f69300316fe2882faf15b17e634a29997668fae09a56c23f",
-				"dweb:/ipfs/QmVyBRbPPBExvsoJbE37vYezmL5KHz2TU4itqG5AfWniK3"
+				"bzz-raw://98834734e07a181e98e248a2bda2e5d81b71f2ad51d8b6576754de68822aa85e",
+				"dweb:/ipfs/QmQNPszhgNMRtEW78T3xY4saSNdwKHQdGUZLPAxatiwAXs"
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x5c7e2c2822158b9408cdb4c1f3b31fba1ccbb984fe0216cb596c46a682d6cc56",
+			"keccak256": "0x6acbba0be62c840968ce1dcfe3954078cf4c3bf4ffc0f60978c99c483c51b7d2",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://b0d57912b7731ddaa6df36b96bdeab59ac8b2848f256648e962358ad9513dad3",
-				"dweb:/ipfs/QmPZyY3WdnaMoVqcXLsW8Y334nx2iXX5RoeF36vC2jUwzc"
+				"bzz-raw://b65795eb4676d0a6570c20aefbaea0ed382e2b7ba26551f6387ce2936ae7fd56",
+				"dweb:/ipfs/QmfEJcALkLC4SNZUmsTs7Xpv74EW9keBDNsWxgGF4NuL3B"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

@@ -32,7 +32,6 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     uint16 constant NORMAL_FEE = 9985; // 0.15% per transaction XXX <--> cerUSD
     uint16 constant STABLECOIN_FEE = 9995; // 0.05% per transaction USDC <--> cerUSD
 
-
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
 
