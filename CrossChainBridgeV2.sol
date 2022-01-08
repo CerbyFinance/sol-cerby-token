@@ -158,7 +158,7 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         uint256 srcAmount,
         uint8   destChainType,
         uint32  destChainId
-    ) external {
+    ) external returns (bytes32 burnProofHash) {
         IMintableBurnableToken iCerbyToken = IMintableBurnableToken(_srcToken);
         require(
             srcAmount <= iCerbyToken.balanceOf(msg.sender),
@@ -203,5 +203,7 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
             computedBurnProofHash
         );
         srcNonceByToken[_srcToken]++;
+
+        return computedBurnProofHash;
     }
 }
