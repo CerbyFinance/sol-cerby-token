@@ -2,17 +2,17 @@
 pragma solidity ^0.8.11;
 
 
-import "./openzeppelin/access/Ownable.sol";
+import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./openzeppelin/token/ERC1155/extensions/ERC1155Supply.sol";
 import "./CerbyCronJobsExecution.sol";
 
 
-contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ownable {
+contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessControlEnumerable {
 
     constructor()
         ERC1155("")
     {
-
+        _setupRole(ROLE_ADMIN, msg.sender);
     }
 
     function setApprovalForAll(address operator, bool approved) 
@@ -66,15 +66,48 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ownable {
         _safeBatchTransferFrom(from, to, ids, amounts, data);
     }
 
-    function ownerSetURI(string memory newuri) 
+    function adminSafeTransferFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) 
         public
-        // TODO: enable on production
-        //onlyOwner
+        onlyRole(ROLE_ADMIN)
+        executeCronJobs()
+        checkForBots(msg.sender)
+    {
+        _safeTransferFrom(from, to, id, amount, data);
+    }
+    
+    function adminSafeBatchTransferFrom(
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) 
+        public 
+        onlyRole(ROLE_ADMIN)
+        executeCronJobs()
+        checkForBots(msg.sender)
+    {
+        require(
+            from == _msgSender() || isApprovedForAll(from, _msgSender()),
+            "ERC1155: transfer caller is not owner nor approved"
+        );
+        _safeBatchTransferFrom(from, to, ids, amounts, data);
+    }
+
+    function adminSetURI(string memory newuri) 
+        public
+        onlyRole(ROLE_ADMIN)
     {
         _uri = newuri;
     }
 
-    function ownerMint(
+    function adminMint(
         address to,
         uint256 id,
         uint256 amount,
@@ -82,13 +115,13 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ownable {
     ) 
         public
         // TODO: enable on production
-        /*onlyOwner
+        /*onlyRole(ROLE_ADMIN)
         executeCronJobs()*/
     {
         _mint(to, id, amount, data);
     }
 
-    function ownerMintBatch(
+    function adminMintBatch(
         address to,
         uint256[] memory ids,
         uint256[] memory amounts,
@@ -96,33 +129,33 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ownable {
     ) 
         public
         // TODO: enable on production
-        /*onlyOwner
+        /*onlyRole(ROLE_ADMIN)
         executeCronJobs()*/
     {
         _mintBatch(to, ids, amounts, data);
     }
 
-    function ownerBurn(
+    function adminBurn(
         address from,
         uint256 id,
         uint256 amount
     ) 
         public
         // TODO: enable on production
-        /*onlyOwner
+        /*onlyRole(ROLE_ADMIN)
         executeCronJobs()*/
     {
         _burn(from, id, amount);
     }
 
-    function ownerBurnBatch(
+    function adminBurnBatch(
         address from,
         uint256[] memory ids,
         uint256[] memory amounts
     ) 
         public
         // TODO: enable on production
-        /*onlyOwner
+        /*onlyRole(ROLE_ADMIN)
         executeCronJobs()*/
     {
         _burnBatch(from, ids, amounts);
