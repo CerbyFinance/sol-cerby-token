@@ -132,11 +132,6 @@
 						"internalType": "uint112",
 						"name": "mintCerUsdAmount",
 						"type": "uint112"
-					},
-					{
-						"internalType": "uint16",
-						"name": "fee",
-						"type": "uint16"
 					}
 				],
 				"name": "adminCreatePool",
@@ -145,21 +140,35 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
+				"inputs": [],
+				"name": "getCurrent4Hour",
+				"outputs": [
 					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					},
-					{
-						"internalType": "uint16",
-						"name": "newFee",
-						"type": "uint16"
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
-				"name": "adminUpdateFee",
-				"outputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "poolPos",
+						"type": "uint256"
+					}
+				],
+				"name": "getCurrentFeeBasedOnTrades",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "fee",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -238,9 +247,9 @@
 								"type": "uint112"
 							},
 							{
-								"internalType": "uint16",
-								"name": "fee",
-								"type": "uint16"
+								"internalType": "uint32[8]",
+								"name": "hourlyTradeVolumeInCerUsd",
+								"type": "uint32[8]"
 							}
 						],
 						"internalType": "struct Pool",
@@ -279,9 +288,9 @@
 								"type": "uint112"
 							},
 							{
-								"internalType": "uint16",
-								"name": "fee",
-								"type": "uint16"
+								"internalType": "uint32[8]",
+								"name": "hourlyTradeVolumeInCerUsd",
+								"type": "uint32[8]"
 							}
 						],
 						"internalType": "struct Pool",
@@ -685,9 +694,9 @@
 								"type": "uint112"
 							},
 							{
-								"internalType": "uint16",
-								"name": "fee",
-								"type": "uint16"
+								"internalType": "uint32[8]",
+								"name": "hourlyTradeVolumeInCerUsd",
+								"type": "uint32[8]"
 							}
 						],
 						"internalType": "struct Pool",
@@ -712,9 +721,9 @@
 								"type": "uint112"
 							},
 							{
-								"internalType": "uint16",
-								"name": "fee",
-								"type": "uint16"
+								"internalType": "uint32[8]",
+								"name": "hourlyTradeVolumeInCerUsd",
+								"type": "uint32[8]"
 							}
 						],
 						"internalType": "struct Pool",
@@ -805,11 +814,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xef9c36f3331ab0e0b97ef9418dbbe2263167307072e19b9e0bf195ed3036043a",
+			"keccak256": "0xed59d0778b704de01fa0306065c1daf447455244876ab5a3803f38798ad9b6a5",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://14e7d08269c96a0a7e8785f90a24a28f4a35654b945ef793b9ff67519563e955",
-				"dweb:/ipfs/QmeESPPKQiQnB1X3nS3bHwumQmJLiJbXDWyEHB6VPeVgmh"
+				"bzz-raw://2f40dfc7af05f93f9af6cbdb2e357c01c29e10add12afc4c975b7f44da12650f",
+				"dweb:/ipfs/Qmd471VqQ5CkHnBq1BbYWPBHr9dNQqZYX5arJYmWHrkBho"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

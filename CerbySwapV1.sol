@@ -15,7 +15,7 @@ struct Pool {
     address token;
     uint112 balanceToken;
     uint112 balanceCerUsd;
-    uint16 fee;
+    uint32[8] hourlyTradeVolumeInCerUsd;
 }
 
 contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsExecution {
@@ -28,10 +28,8 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     address constant testCerbyToken = 0x029581a9121998fcBb096ceafA92E3E10057878f;
     address constant cerUsdToken = 0xA84d62F776606B9eEbd761E2d31F65442eCc437E;
     address constant lpErc1155V1 = 0x8e06e97c598B0Bb2910Df62C626EBf6cd55409e6;
-    uint16 constant FEE_MIN_VALUE = 9900;
-    uint16 constant FEE_MAX_VALUE = 10000;
-    uint16 constant NORMAL_FEE = 9985; // 0.15% per transaction XXX <--> cerUSD
-    uint16 constant STABLECOIN_FEE = 9995; // 0.05% per transaction USDC <--> cerUSD
+    uint16 constant FEE_MIN_VALUE = 9900;  // 1%
+    uint16 constant FEE_MAX_VALUE = 10000; // 0%
 
     uint constant MINIMUM_LIQUIDITY = 1000;
     address constant DEAD_ADDRESS = address(0xdead);
@@ -48,12 +46,14 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         require(!isInitializedAlready, "CS1: Already initialized");
         isInitializedAlready = true;
 
+
         // Filling with empty pool 0th position
+        uint32[8] memory hourlyTradeVolumeInCerUsd;
         pools.push(Pool(
             address(0),
             0,
             0,
-            0
+            hourlyTradeVolumeInCerUsd
         ));
         ICerbySwapLP1155V1(lpErc1155V1).ownerMint(
             DEAD_ADDRESS,
@@ -65,15 +65,13 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         adminCreatePool(
             testCerbyToken,
             1e18 * 1e6,
-            1e18 * 3e5,
-            NORMAL_FEE
+            1e18 * 3e5
         );
 
         adminCreatePool(
             testUsdcToken,
             1e18 * 1e6,
-            1e18 * 1e6,
-            STABLECOIN_FEE
+            1e18 * 1e6
         );
     }
 
@@ -122,34 +120,24 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         _;
     }
 
-    modifier feeIsInNormalRange(uint16 fee)
-    {
-        require(
-            FEE_MIN_VALUE <= fee &&
-            fee < FEE_MAX_VALUE,
-            "CS1: Fee must be in range 0.01% - 1.00%"
-        );
-        _;
-    }
-
     // TODO: add remove pool or disable pool to allow remove liquidity only
     // TODO: adminCreatePool, disable/enable userCreatePool
     // TODO: check if debit is negative do we allow buys/sells???
-    function adminCreatePool(address token, uint112 addTokenAmount, uint112 mintCerUsdAmount, uint16 fee)
+    function adminCreatePool(address token, uint112 addTokenAmount, uint112 mintCerUsdAmount)
         public
         nonReentrant()
-        feeIsInNormalRange(fee)
         tokenDoesNotExistInPool(token)
         safeTransferTokensNeeded(token, addTokenAmount)
     {
         ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
 
         {
+            uint32[8] memory hourlyTradeVolumeInCerUsd;
             Pool memory pool = Pool(
                 token,
                 addTokenAmount,
                 mintCerUsdAmount,
-                fee
+                hourlyTradeVolumeInCerUsd
             );
             pools.push(pool);
             tokenToPoolPosition[token] = pools.length - 1;
@@ -309,10 +297,18 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
             "CS1: Output amount less than minimum specified"
         );
 
-
         uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
-        pools[poolPos].balanceCerUsd -= outputCerUsdAmount;
-        pools[poolPos].balanceToken += amountTokenIn;
+        {
+            uint current4Hour = getCurrent4Hour();
+            uint next4Hour = (current4Hour + 1) % pools[poolPos].hourlyTradeVolumeInCerUsd.length;
+            pools[poolPos].balanceCerUsd -= outputCerUsdAmount;
+            pools[poolPos].balanceToken += amountTokenIn;
+            pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += uint32(outputCerUsdAmount / 1e18);
+            if (pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] > 0)
+            {
+                pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] = 0;
+            }
+        }
 
         if (enableInternalCerUsdTransfers) {
             IERC20(cerUsdToken).transfer(msg.sender, outputCerUsdAmount);
@@ -366,9 +362,16 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
             "CS1: Output amount less than minimum specified"
         );
 
+        uint current4Hour = getCurrent4Hour();
+        uint next4Hour = (getCurrent4Hour() + 1) % pools[poolPos].hourlyTradeVolumeInCerUsd.length;
         uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
         pools[poolPos].balanceCerUsd += amountCerUsdIn;
         pools[poolPos].balanceToken -= outputTokenAmount;
+        pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += uint32(amountCerUsdIn / 1e18);
+        if (pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] > 0)
+        {
+            pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] = 0;
+        }
 
         IERC20(tokenOut).safeTransfer(msg.sender, outputTokenAmount);
 
@@ -393,17 +396,6 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         }
     }
 
-    function adminUpdateFee(address token, uint16 newFee)
-        public
-        onlyRole(ROLE_ADMIN)
-        feeIsInNormalRange(newFee)
-        tokenMustExistInPool(token)
-        poolMustBeSynced(token)
-    {
-        uint poolPos = tokenToPoolPosition[token];
-        pools[poolPos].fee = newFee;
-    }
-
     function syncTokenBalanceInPool(address token)
         public
         //executeCronJobs() TODO: enable on production
@@ -422,6 +414,45 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         }
     }
 
+    function getCurrent4Hour()
+        public
+        view
+        returns (uint)
+    {
+        return (block.timestamp / 14400) % 7;
+    }
+
+    function getCurrentFeeBasedOnTrades(uint poolPos)
+        public
+        view
+        returns (uint fee)
+    {
+        uint current4Hour = getCurrent4Hour();
+        uint last24HourTradeVolumeInCerUSD;
+        for(uint i; i<pools[poolPos].hourlyTradeVolumeInCerUsd.length; i++)
+        {
+            if (i == current4Hour) continue;
+
+            last24HourTradeVolumeInCerUSD += pools[poolPos].hourlyTradeVolumeInCerUsd[i];
+        }
+
+        // TVL x0.15 ---> 1.00%
+        // TVL x0.15 - x15 ---> 1.00% - 0.01%
+        // TVL x15 ---> 0.01%
+        uint volumeMultiplied = last24HourTradeVolumeInCerUSD * 1000;
+        uint TVLMultiplied = pools[poolPos].balanceCerUsd * 2 * 150;
+        if (volumeMultiplied <= TVLMultiplied) {
+            fee = 9999;
+        } else if (TVLMultiplied < volumeMultiplied && volumeMultiplied < 100 * TVLMultiplied) {
+            fee = 123; // formula needed
+        } else if (volumeMultiplied > 100 * TVLMultiplied)
+        {
+            fee = 9900;
+        }
+
+        return fee;
+    }
+
     function getOutputExactTokensForCerUsd(uint poolPos, uint increaseTokenBalance)
         public
         view
@@ -431,7 +462,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
             increaseTokenBalance,
             pools[poolPos].balanceToken,
             pools[poolPos].balanceCerUsd,
-            pools[poolPos].fee
+            getCurrentFeeBasedOnTrades(poolPos)
         );
     }
 
@@ -444,7 +475,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
             increaseCerUsdBalance,
             pools[poolPos].balanceCerUsd,
             pools[poolPos].balanceToken,
-            pools[poolPos].fee
+            getCurrentFeeBasedOnTrades(poolPos)
         );
     }
 
