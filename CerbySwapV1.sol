@@ -45,6 +45,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     uint constant NUMBER_OF_4HOUR_INTERVALS = 8;
     uint constant MINIMUM_LIQUIDITY = 1000;
     address constant DEAD_ADDRESS = address(0xdead);
+    address feeToBeneficiary = DEAD_ADDRESS;
 
     bool isInitializedAlready;
 
@@ -52,48 +53,15 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         address token;
         uint112 balanceToken;
         uint112 balanceCerUsd;
+        uint112 lastRootKValue;
         uint32[NUMBER_OF_4HOUR_INTERVALS] hourlyTradeVolumeInCerUsd;
     }
 
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
+        feeToBeneficiary = msg.sender;
 
         initialize(); // TODO: Remove on production. Must not do any mints in contract creation!
-    }
-
-    function initialize() 
-        public
-    {
-        require(!isInitializedAlready, "CS1: Already initialized");
-        isInitializedAlready = true;
-
-
-        // Filling with empty pool 0th position
-        uint32[NUMBER_OF_4HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
-        pools.push(Pool(
-            address(0),
-            0,
-            0,
-            hourlyTradeVolumeInCerUsd
-        ));
-        ICerbySwapLP1155V1(lpErc1155V1).adminMint(
-            DEAD_ADDRESS,
-            0,
-            MINIMUM_LIQUIDITY,
-            ""
-        );
-
-        adminCreatePool(
-            testCerbyToken,
-            1e18 * 1e6,
-            1e18 * 3e5
-        );
-
-        adminCreatePool(
-            testUsdcToken,
-            1e18 * 1e6,
-            1e18 * 1e6
-        );
     }
 
     modifier tokenMustExistInPool(address token)
@@ -141,6 +109,47 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         _;
     }
 
+    function initialize() 
+        public
+    {
+        require(!isInitializedAlready, "CS1: Already initialized");
+        isInitializedAlready = true;
+
+        // Filling with empty pool 0th position
+        uint32[NUMBER_OF_4HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
+        pools.push(Pool(
+            address(0),
+            0,
+            0,
+            0,
+            hourlyTradeVolumeInCerUsd
+        ));
+        ICerbySwapLP1155V1(lpErc1155V1).adminMint(
+            DEAD_ADDRESS,
+            0,
+            MINIMUM_LIQUIDITY
+        );
+
+        adminCreatePool(
+            testCerbyToken,
+            1e18 * 1e6,
+            1e18 * 3e5
+        );
+
+        adminCreatePool(
+            testUsdcToken,
+            1e18 * 1e6,
+            1e18 * 1e6
+        );
+    }
+
+    function adminUpdateFeeToBeneficiary(address newFeeToBeneficiary)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        feeToBeneficiary = newFeeToBeneficiary;
+    }
+
     function adminCreatePool(address token, uint112 addTokenAmount, uint112 mintCerUsdAmount)
         public
         onlyRole(ROLE_ADMIN)
@@ -151,11 +160,13 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
 
         {
+            uint112 newRootKValue = uint112(sqrt(uint(addTokenAmount) * uint(mintCerUsdAmount)));
             uint32[NUMBER_OF_4HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
             Pool memory pool = Pool(
                 token,
                 addTokenAmount,
                 mintCerUsdAmount,
+                newRootKValue,
                 hourlyTradeVolumeInCerUsd
             );
             pools.push(pool);
@@ -165,16 +176,14 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         ICerbySwapLP1155V1(lpErc1155V1).adminMint(
             DEAD_ADDRESS,
             pools.length - 1,
-            MINIMUM_LIQUIDITY,
-            ""
+            MINIMUM_LIQUIDITY
         );
 
         uint lpAmount = sqrt(uint(addTokenAmount) * uint(mintCerUsdAmount)) - MINIMUM_LIQUIDITY;
         ICerbySwapLP1155V1(lpErc1155V1).adminMint(
             msg.sender,
             pools.length - 1,
-            lpAmount,
-            ""
+            lpAmount
         );
 
         _syncTokenBalanceInPool(token);
@@ -199,12 +208,20 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         ICerbySwapLP1155V1(lpErc1155V1).adminMint(
             msg.sender,
             poolPos,
-            lpAmount,
-            ""
+            lpAmount
         );
 
+
+        uint112 lastRootKValue = pools[poolPos].lastRootKValue;
+        uint112 newRootKValue = uint112(sqrt(uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd)));
+        pools[poolPos].lastRootKValue = newRootKValue;
         pools[poolPos].balanceToken += addTokenAmount;
         pools[poolPos].balanceCerUsd += mintCerUsdAmount;
+
+        uint lpTokensToMint = _getMintFeeLiquidityAmount(lastRootKValue, newRootKValue, totalLPSupply);
+        if (lpTokensToMint > 0) {
+            ICerbySwapLP1155V1(lpErc1155V1).adminMint(feeToBeneficiary, poolPos, lpTokensToMint);
+        }
 
         _syncTokenBalanceInPool(token);
     }
@@ -229,10 +246,31 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         );
         ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), burnCerUsdAmount);
 
+        uint112 lastRootKValue = pools[poolPos].lastRootKValue;
+        uint112 newRootKValue = uint112(sqrt(uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd)));
+        pools[poolPos].lastRootKValue = newRootKValue;
         pools[poolPos].balanceToken -= removeTokenAmount;
         pools[poolPos].balanceCerUsd -= burnCerUsdAmount;
 
+        uint lpTokensToMint = _getMintFeeLiquidityAmount(lastRootKValue, newRootKValue, totalLPSupply);
+        if (lpTokensToMint > 0) {
+            ICerbySwapLP1155V1(lpErc1155V1).adminMint(feeToBeneficiary, poolPos, lpTokensToMint);
+        }
+
         _syncTokenBalanceInPool(token);
+    }
+
+    function _getMintFeeLiquidityAmount(uint lastRootKValue, uint newRootKValue, uint totalLPSupply)
+        private
+        pure
+        returns (uint lpTokensToMint)
+    {
+        if (
+            newRootKValue > lastRootKValue && 
+            lastRootKValue > 0
+        ) {
+            lpTokensToMint = (totalLPSupply * (newRootKValue - lastRootKValue)) / (newRootKValue * 5 + lastRootKValue);
+        }
     }
 
     // TODO: add swapTokenToExactCerUSD XXX --> cerUSD
