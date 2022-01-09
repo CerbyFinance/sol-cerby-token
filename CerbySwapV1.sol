@@ -97,18 +97,6 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         _;
     }
 
-    modifier safeTransferTokensNeeded(address token, uint amount)
-    {
-        uint oldBalance = IERC20(token).balanceOf(address(this));
-        IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
-        uint newBalance = IERC20(token).balanceOf(address(this));
-        require(
-            newBalance >= oldBalance + amount,
-            "CS1: Fee-on-transfer tokens aren't supported"
-        );
-        _;
-    }
-
     function initialize() 
         public
     {
@@ -155,38 +143,52 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         onlyRole(ROLE_ADMIN)
         nonReentrant()
         tokenDoesNotExistInPool(token)
-        safeTransferTokensNeeded(token, addTokenAmount)
     {
-        ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
+        uint poolPos = pools.length;
+        uint112 newRootKValue = uint112(sqrt(uint(addTokenAmount) * uint(mintCerUsdAmount)));
+        uint32[NUMBER_OF_4HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
+        Pool memory pool = Pool(
+            token,
+            addTokenAmount,
+            mintCerUsdAmount,
+            newRootKValue,
+            hourlyTradeVolumeInCerUsd
+        );
+        pools.push(pool);
+        tokenToPoolPosition[token] = poolPos;
 
-        {
-            uint112 newRootKValue = uint112(sqrt(uint(addTokenAmount) * uint(mintCerUsdAmount)));
-            uint32[NUMBER_OF_4HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
-            Pool memory pool = Pool(
-                token,
-                addTokenAmount,
-                mintCerUsdAmount,
-                newRootKValue,
-                hourlyTradeVolumeInCerUsd
-            );
-            pools.push(pool);
-            tokenToPoolPosition[token] = pools.length - 1;
-        }
+        // transferring tokens from msg.sender to contract
+        uint oldBalance = IERC20(token).balanceOf(address(this));
+        IERC20(token).safeTransferFrom(msg.sender, address(this), addTokenAmount);
+        uint newBalance = IERC20(token).balanceOf(address(this));
+        require(
+            newBalance >= oldBalance + addTokenAmount,
+            "CS1: Fee-on-transfer tokens aren't supported"
+        );
+        
+        // minting cerUSD tokens based on admin input
+        ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);    
 
+        // minting 1000 lp tokens to prevent attack
         ICerbySwapLP1155V1(lpErc1155V1).adminMint(
             DEAD_ADDRESS,
-            pools.length - 1,
+            poolPos,
             MINIMUM_LIQUIDITY
         );
 
+        // minting initial lp tokens
         uint lpAmount = sqrt(uint(addTokenAmount) * uint(mintCerUsdAmount)) - MINIMUM_LIQUIDITY;
         ICerbySwapLP1155V1(lpErc1155V1).adminMint(
             msg.sender,
-            pools.length - 1,
+            poolPos,
             lpAmount
         );
 
-        _syncTokenBalanceInPool(token);
+        // syncing balance
+        if (newBalance > pools[poolPos].balanceToken)
+        {
+            pools[poolPos].balanceToken = uint112(newBalance);
+        }
     }
 
     function addTokenLiquidity(address token, uint112 addTokenAmount)
@@ -195,35 +197,56 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         nonReentrant()
         tokenMustExistInPool(token)
         poolMustBeSynced(token)
-        safeTransferTokensNeeded(token, addTokenAmount)
     {
         uint poolPos = tokenToPoolPosition[token];
+
+        // transferring tokens from msg.sender to contract
+        uint oldBalance = IERC20(token).balanceOf(address(this));
+        IERC20(token).safeTransferFrom(msg.sender, address(this), addTokenAmount);
+        uint newBalance = IERC20(token).balanceOf(address(this));
+        require(
+            newBalance >= oldBalance + addTokenAmount,
+            "CS1: Fee-on-transfer tokens aren't supported"
+        );
+
+        // finding out real amount of tokens increased in contract balance
+        uint increaseTokenBalance = newBalance - oldBalance;
+
+        // minting cerUSD according to current price
         uint112 mintCerUsdAmount = uint112(
-            (uint(addTokenAmount) * uint(pools[poolPos].balanceCerUsd)) / uint(pools[poolPos].balanceToken)
+            (increaseTokenBalance * uint(pools[poolPos].balanceCerUsd)) / uint(pools[poolPos].balanceToken)
         );
         ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
 
+        // minting LP tokens
         uint totalLPSupply = ICerbySwapLP1155V1(lpErc1155V1).totalSupply(poolPos);
-        uint lpAmount = (addTokenAmount * totalLPSupply) / pools[poolPos].balanceToken;
+        uint lpAmount = (increaseTokenBalance * totalLPSupply) / pools[poolPos].balanceToken;
         ICerbySwapLP1155V1(lpErc1155V1).adminMint(
             msg.sender,
             poolPos,
             lpAmount
         );
 
-
+        // storing sqrt(k) value before updating pool
         uint112 lastRootKValue = pools[poolPos].lastRootKValue;
         uint112 newRootKValue = uint112(sqrt(uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd)));
+
+        // updating pool
         pools[poolPos].lastRootKValue = newRootKValue;
-        pools[poolPos].balanceToken += addTokenAmount;
+        pools[poolPos].balanceToken += uint112(increaseTokenBalance);
         pools[poolPos].balanceCerUsd += mintCerUsdAmount;
 
+        // minting trade fees
         uint lpTokensToMint = _getMintFeeLiquidityAmount(lastRootKValue, newRootKValue, totalLPSupply);
         if (lpTokensToMint > 0) {
             ICerbySwapLP1155V1(lpErc1155V1).adminMint(feeToBeneficiary, poolPos, lpTokensToMint);
         }
 
-        _syncTokenBalanceInPool(token);
+        // syncing pool
+        if (newBalance > pools[poolPos].balanceToken)
+        {
+            pools[poolPos].balanceToken = uint112(newBalance);
+        }
     }
 
     function removeTokenLiquidity(address token, uint removeLpAmount)
@@ -234,30 +257,53 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         poolMustBeSynced(token)
     {
         uint poolPos = tokenToPoolPosition[token];
-        ICerbySwapLP1155V1(lpErc1155V1).adminBurn(msg.sender, poolPos, removeLpAmount);
 
+        // calculating amount of tokens to transfer
         uint totalLPSupply = ICerbySwapLP1155V1(lpErc1155V1).totalSupply(poolPos);
         uint112 removeTokenAmount = uint112(
             (uint(pools[poolPos].balanceToken) * removeLpAmount) / totalLPSupply
-        );
+        );        
 
+        // calculating amount of cerUSD to burn
         uint112 burnCerUsdAmount = uint112(
             (uint(pools[poolPos].balanceCerUsd) * removeLpAmount) / totalLPSupply
         );
-        ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), burnCerUsdAmount);
 
+        // storing sqrt(k) value before updating pool
         uint112 lastRootKValue = pools[poolPos].lastRootKValue;
         uint112 newRootKValue = uint112(sqrt(uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd)));
+
+        // updating pool
         pools[poolPos].lastRootKValue = newRootKValue;
         pools[poolPos].balanceToken -= removeTokenAmount;
         pools[poolPos].balanceCerUsd -= burnCerUsdAmount;
 
+        // burning LP tokens
+        ICerbySwapLP1155V1(lpErc1155V1).adminBurn(msg.sender, poolPos, removeLpAmount);
+
+        // burning cerUSD
+        ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), burnCerUsdAmount);
+
+        // transfering tokens
+        uint oldBalance = IERC20(token).balanceOf(address(this));
+        IERC20(token).safeTransfer(msg.sender, removeTokenAmount);
+        uint newBalance = IERC20(token).balanceOf(address(this));
+        require(
+            newBalance + removeTokenAmount >= oldBalance,
+            "CS1: Fee-on-transfer tokens aren't supported"
+        );
+
+        // minting trade fees
         uint lpTokensToMint = _getMintFeeLiquidityAmount(lastRootKValue, newRootKValue, totalLPSupply);
         if (lpTokensToMint > 0) {
             ICerbySwapLP1155V1(lpErc1155V1).adminMint(feeToBeneficiary, poolPos, lpTokensToMint);
-        }
+        }        
 
-        _syncTokenBalanceInPool(token);
+        // syncing pool
+        if (newBalance > pools[poolPos].balanceToken)
+        {
+            pools[poolPos].balanceToken = uint112(newBalance);
+        }
     }
 
     function _getMintFeeLiquidityAmount(uint lastRootKValue, uint newRootKValue, uint totalLPSupply)
@@ -292,12 +338,15 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         poolMustBeSynced(tokenIn)
         returns (uint112)
     {
+        // swapping XXX ---> cerUSD
         uint112 amountCerUsdIn = _swapExactTokenToCerUsd(
             tokenIn,
             amountTokenIn,
             0,
             false
         );
+
+        // swapping cerUSD ---> YYY
         uint112 outputTokenOut = _swapExactCerUsdForToken(
             tokenOut,
             amountCerUsdIn,
@@ -336,12 +385,19 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         bool enableInternalCerUsdTransfers
     )
         private
-        safeTransferTokensNeeded(tokenIn, amountTokenIn)
         returns (uint112)
     {
+        // transferring tokens from msg.sender to contract
+        uint oldBalance = IERC20(tokenIn).balanceOf(address(this));
+        IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amountTokenIn);
+        uint newBalance = IERC20(tokenIn).balanceOf(address(this));
+        require(
+            newBalance >= oldBalance + amountTokenIn,
+            "CS1: Fee-on-transfer tokens aren't supported"
+        );
+
         uint poolPos = tokenToPoolPosition[tokenIn];
-        uint112 increaseTokenBalance = 
-            uint112(IERC20(tokenIn).balanceOf(address(this))) - pools[poolPos].balanceToken;
+        uint112 increaseTokenBalance = uint112(newBalance - oldBalance);
 
         uint112 outputCerUsdAmount = uint112(getOutputExactTokensForCerUsd(poolPos, increaseTokenBalance));
         require(
@@ -349,7 +405,6 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
             "CS1: Output amount less than minimum specified"
         );
 
-        uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
         {
             uint current4Hour = getCurrent4Hour();
             uint next4Hour = (current4Hour + 1) % NUMBER_OF_4HOUR_INTERVALS;
@@ -368,7 +423,10 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
             IERC20(cerUsdToken).transfer(msg.sender, outputCerUsdAmount);
         }
 
-        updateTokenBalanceAndCheckKValue(poolPos, tokenIn, oldKValue);
+        if (newBalance > pools[poolPos].balanceToken)
+        {
+            pools[poolPos].balanceToken = uint112(newBalance);
+        }
 
         return outputCerUsdAmount;
     }
@@ -418,7 +476,6 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
 
         uint current4Hour = getCurrent4Hour();
         uint next4Hour = (getCurrent4Hour() + 1) % pools[poolPos].hourlyTradeVolumeInCerUsd.length;
-        uint oldKValue = uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd);
         pools[poolPos].balanceCerUsd += amountCerUsdIn;
         pools[poolPos].balanceToken -= outputTokenAmount;
 
@@ -430,27 +487,20 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
             pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] = 0;
         }
 
+        uint oldBalance = IERC20(tokenOut).balanceOf(address(this));
         IERC20(tokenOut).safeTransfer(msg.sender, outputTokenAmount);
+        uint newBalance = IERC20(tokenOut).balanceOf(address(this));
+        require(
+            newBalance + outputTokenAmount >= oldBalance,
+            "CS1: Fee-on-transfer tokens aren't supported"
+        );
 
-        updateTokenBalanceAndCheckKValue(poolPos, tokenOut, oldKValue);
+        if (newBalance > pools[poolPos].balanceToken)
+        {
+            pools[poolPos].balanceToken = uint112(newBalance);
+        }
 
         return outputTokenAmount;
-    }
-
-    function updateTokenBalanceAndCheckKValue(uint poolPos, address token, uint oldKValue)
-        private
-    {
-        uint112 newBalanceToken = uint112(IERC20(token).balanceOf(address(this)));
-        uint newKValue = uint(newBalanceToken) * uint(pools[poolPos].balanceCerUsd);
-        require(
-            newKValue >= oldKValue,
-            "CS1: K value decreased"
-        );
-        
-        if (newBalanceToken != pools[poolPos].balanceToken)
-        {
-            pools[poolPos].balanceToken = newBalanceToken;
-        }
     }
 
     function syncTokenBalanceInPool(address token)
