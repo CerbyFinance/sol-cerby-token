@@ -15,8 +15,6 @@ import "./CerbyCronJobsExecution.sol";
 contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsExecution {
     using SafeERC20 for IERC20;
 
-
-
     Pool[] pools;
     mapping(address => uint) tokenToPoolPosition;
 
@@ -60,7 +58,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
 
-        initialize();
+        initialize(); // TODO: Remove on production. Must not do any mints in contract creation!
     }
 
     function initialize() 
