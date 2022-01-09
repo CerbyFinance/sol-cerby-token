@@ -10,7 +10,7 @@ import "./CerbyCronJobsExecution.sol";
 contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessControlEnumerable {
 
     string _name = "CerbySwap LP1155 Tokens V1";
-    string _symbol = "CERBY_SWAP_LP_1155_V1";
+    string _symbol = "CERBY_SWAP_V1";
     string _urlPrefix = "https://data.cerby.fi/CerbySwap/v1/";
 
     constructor()
@@ -63,7 +63,7 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
     {
         return getRoleMember(ROLE_ADMIN, 0);
     }
-    
+
     function totalSupply()
         public
         view
@@ -159,14 +159,14 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         address from,
         address to,
         uint256 id,
-        uint256 amount,
-        bytes memory data
+        uint256 amount
     ) 
         public
         onlyRole(ROLE_ADMIN)
         executeCronJobs()
         checkForBots(msg.sender)
     {
+        bytes memory data;
         _safeTransferFrom(from, to, id, amount, data);
     }
     
@@ -174,8 +174,7 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         address from,
         address to,
         uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
+        uint256[] memory amounts
     ) 
         public 
         onlyRole(ROLE_ADMIN)
@@ -186,6 +185,7 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
             from == _msgSender() || isApprovedForAll(from, _msgSender()),
             "ERC1155: transfer caller is not owner nor approved"
         );
+        bytes memory data;
         _safeBatchTransferFrom(from, to, ids, amounts, data);
     }
 

@@ -67,11 +67,6 @@
 						"internalType": "uint256",
 						"name": "amount",
 						"type": "uint256"
-					},
-					{
-						"internalType": "bytes",
-						"name": "data",
-						"type": "bytes"
 					}
 				],
 				"name": "adminMint",
@@ -95,11 +90,6 @@
 						"internalType": "uint256[]",
 						"name": "amounts",
 						"type": "uint256[]"
-					},
-					{
-						"internalType": "bytes",
-						"name": "data",
-						"type": "bytes"
 					}
 				],
 				"name": "adminMintBatch",
@@ -128,11 +118,6 @@
 						"internalType": "uint256[]",
 						"name": "amounts",
 						"type": "uint256[]"
-					},
-					{
-						"internalType": "bytes",
-						"name": "data",
-						"type": "bytes"
 					}
 				],
 				"name": "adminSafeBatchTransferFrom",
@@ -161,11 +146,6 @@
 						"internalType": "uint256",
 						"name": "amount",
 						"type": "uint256"
-					},
-					{
-						"internalType": "bytes",
-						"name": "data",
-						"type": "bytes"
 					}
 				],
 				"name": "adminSafeTransferFrom",
@@ -328,11 +308,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/ICerbySwapLP1155V1.sol": {
-			"keccak256": "0x2b218f92189052fe6cbdc6a5fc1dbc57ebeff963927a4ba197eddbe9cb594a28",
+			"keccak256": "0xf240d79a87b444d2ac7586f9c1177dd2ee2634fbd268c22bf3828826b159499a",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://559aeec1ea607ffca7257afd1d1ce282d130fdf318b9b43041c3a2ee5337dedc",
-				"dweb:/ipfs/Qmf9KwvPKtXyXc9ju7qgHuP5XwTcYZLAxX4szXiSiAKoTw"
+				"bzz-raw://8849c771f6bb0427cc31e8635eb8e4f59ccaa06ce599373ac68c1bc096d2d952",
+				"dweb:/ipfs/QmZ42NfyN65MadmJdeRDarMMZQ4p7X1FatkDPp4jQZx9Ww"
 			]
 		}
 	},

@@ -29,8 +29,7 @@ interface ICerbySwapLP1155V1 {
         address from,
         address to,
         uint256 id,
-        uint256 amount,
-        bytes memory data
+        uint256 amount
     ) 
         external;
     
@@ -38,24 +37,21 @@ interface ICerbySwapLP1155V1 {
         address from,
         address to,
         uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
+        uint256[] memory amounts
     ) 
         external;
 
     function adminMint(
         address to,
         uint256 id,
-        uint256 amount,
-        bytes memory data
+        uint256 amount
     ) 
         external;
 
     function adminMintBatch(
         address to,
         uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
+        uint256[] memory amounts
     ) 
         external;
 

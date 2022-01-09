@@ -329,11 +329,6 @@
 						"internalType": "uint256[]",
 						"name": "amounts",
 						"type": "uint256[]"
-					},
-					{
-						"internalType": "bytes",
-						"name": "data",
-						"type": "bytes"
 					}
 				],
 				"name": "adminSafeBatchTransferFrom",
@@ -362,11 +357,6 @@
 						"internalType": "uint256",
 						"name": "amount",
 						"type": "uint256"
-					},
-					{
-						"internalType": "bytes",
-						"name": "data",
-						"type": "bytes"
 					}
 				],
 				"name": "adminSafeTransferFrom",
@@ -972,11 +962,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapLP1155V1.sol": {
-			"keccak256": "0xb18b404fb459150421b918852cbd28b43ec944390649b224c9bbed8609da303f",
+			"keccak256": "0x8db7f7e4009381ce2097cc16e131c1b0691c92ee58661ffe2c0378313346358e",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://90696725b55833f5b360d6e2ab2080292c5797f9896bb386b232e12e31991681",
-				"dweb:/ipfs/QmYiN3LugFCdDhyjfj3HcMD2PbwUKw9vGGA6UBUVkQqNyu"
+				"bzz-raw://72c2874be23c3b7b868af937d98c889beedba22ee6d65580a89b52ff577a7770",
+				"dweb:/ipfs/QmXmYnn2HoAwd8dsQMUM75Hhfdtp5DinRLPprHWPi8V2QS"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
