@@ -142,6 +142,8 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         tokenDoesNotExistInPool(token)
     {
         uint poolPos = pools.length;
+
+        // create new pool recordnj
         uint112 newRootKValue = uint112(sqrt(uint(addTokenAmount) * uint(mintCerUsdAmount)));
         uint32[NUMBER_OF_4HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
         Pool memory pool = Pool(
@@ -193,7 +195,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         //executeCronJobs() TODO: enable on production
         nonReentrant()
         tokenMustExistInPool(token)
-        poolMustBeSynced(token)
+        poolMustBeSynced(token) // TODO: remove modifier
     {
         uint poolPos = tokenToPoolPosition[token];
 
@@ -250,7 +252,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         //executeCronJobs() TODO: enable on production
         nonReentrant()
         tokenMustExistInPool(token)
-        poolMustBeSynced(token)
+        poolMustBeSynced(token) // TODO: remove modifier
     {
         uint poolPos = tokenToPoolPosition[token];
 
