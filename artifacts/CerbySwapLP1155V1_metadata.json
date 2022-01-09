@@ -278,11 +278,6 @@
 						"internalType": "uint256",
 						"name": "amount",
 						"type": "uint256"
-					},
-					{
-						"internalType": "bytes",
-						"name": "data",
-						"type": "bytes"
 					}
 				],
 				"name": "adminMint",
@@ -306,11 +301,6 @@
 						"internalType": "uint256[]",
 						"name": "amounts",
 						"type": "uint256[]"
-					},
-					{
-						"internalType": "bytes",
-						"name": "data",
-						"type": "bytes"
 					}
 				],
 				"name": "adminMintBatch",
@@ -388,11 +378,29 @@
 				"inputs": [
 					{
 						"internalType": "string",
-						"name": "newuri",
+						"name": "newUrlPrefix",
 						"type": "string"
 					}
 				],
 				"name": "adminSetURI",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "newName",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "newSymbol",
+						"type": "string"
+					}
+				],
+				"name": "adminUpdateNameAndSymbol",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -443,6 +451,19 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "decimals",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
 				"type": "function"
 			},
 			{
@@ -637,6 +658,32 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "name",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -776,6 +823,32 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "symbol",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -798,7 +871,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "",
+						"name": "id",
 						"type": "uint256"
 					}
 				],
@@ -864,9 +937,6 @@
 				},
 				"totalSupply(uint256)": {
 					"details": "Total amount of tokens in with a given id."
-				},
-				"uri(uint256)": {
-					"details": "See {IERC1155MetadataURI-uri}. This implementation returns the same URI for *all* token types. It relies on the token type ID substitution mechanism https://eips.ethereum.org/EIPS/eip-1155#metadata[defined in the EIP]. Clients calling this function must replace the `\\{id\\}` substring with the actual token type ID."
 				}
 			},
 			"version": 1
@@ -902,11 +972,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapLP1155V1.sol": {
-			"keccak256": "0x87bc15539b8d6942dcf4d2120b1021aa0e75213bff9a6201e3dabbbed5ce2466",
+			"keccak256": "0xb18b404fb459150421b918852cbd28b43ec944390649b224c9bbed8609da303f",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://46d324aef24de73b4e1d9ee3b8093b13672b0e60c74ef5a617d48a1f62198e35",
-				"dweb:/ipfs/QmNQ9pVoa2Cg9wpg3Pz3Cqf9WqJ4bAV7LGfotkHvhZ9Emr"
+				"bzz-raw://90696725b55833f5b360d6e2ab2080292c5797f9896bb386b232e12e31991681",
+				"dweb:/ipfs/QmYiN3LugFCdDhyjfj3HcMD2PbwUKw9vGGA6UBUVkQqNyu"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
