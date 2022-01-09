@@ -140,6 +140,13 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "adminInitialize",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -470,13 +477,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "initialize",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -832,7 +832,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
@@ -847,11 +847,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x49f4ca10c25a5d2576ec715a659e117caade59fd823ac77e8572805ed6a051bf",
+			"keccak256": "0xf612f8de763da182572e1733c2d5f825bbaac7bcc70fe8aaa9605c5e01e72488",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://8e2a3b4f0beff37f04dd918e9b4d69aa0f090cd0cad8fd8d7c79ffddb1af018e",
-				"dweb:/ipfs/QmRVFjAgZ5i6WuSwiFwXpgJgD3rMD9tSRbkASB1vbsWWNS"
+				"bzz-raw://bb654f2c96c28ce4a9b86dbe278b41bd60847a52117f38c1bc239dd293ef22f4",
+				"dweb:/ipfs/QmfRPEZUEEVchRvDR4QgzHc2hb1ok8jodLi2FL9hg5x4mz"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

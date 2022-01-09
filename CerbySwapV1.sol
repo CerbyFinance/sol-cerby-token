@@ -61,7 +61,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         _setupRole(ROLE_ADMIN, msg.sender);
         feeToBeneficiary = msg.sender;
 
-        initialize(); // TODO: Remove on production. Must not do any mints in contract creation!
+        adminInitialize(); // TODO: Remove on production. Must not do any mints in contract creation!
     }
 
     modifier tokenMustExistInPool(address token)
@@ -97,8 +97,9 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         _;
     }
 
-    function initialize() 
+    function adminInitialize() 
         public
+        onlyRole(ROLE_ADMIN)
     {
         require(!isInitializedAlready, "CS1: Already initialized");
         isInitializedAlready = true;
@@ -112,12 +113,8 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
             0,
             hourlyTradeVolumeInCerUsd
         ));
-        ICerbySwapLP1155V1(lpErc1155V1).adminMint(
-            DEAD_ADDRESS,
-            0,
-            MINIMUM_LIQUIDITY
-        );
 
+        // TODO: remove on production
         adminCreatePool(
             testCerbyToken,
             1e18 * 1e6,
@@ -387,6 +384,8 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         private
         returns (uint112)
     {
+        uint poolPos = tokenToPoolPosition[tokenIn];
+
         // transferring tokens from msg.sender to contract
         uint oldBalance = IERC20(tokenIn).balanceOf(address(this));
         IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amountTokenIn);
@@ -396,33 +395,41 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
             "CS1: Fee-on-transfer tokens aren't supported"
         );
 
-        uint poolPos = tokenToPoolPosition[tokenIn];
+        // finding out real amount of token increase in contract
         uint112 increaseTokenBalance = uint112(newBalance - oldBalance);
 
+        // calculating the amount we have to send to user
         uint112 outputCerUsdAmount = uint112(getOutputExactTokensForCerUsd(poolPos, increaseTokenBalance));
         require(
             outputCerUsdAmount >= minAmountCerUsdOut,
             "CS1: Output amount less than minimum specified"
         );
 
-        {
-            uint current4Hour = getCurrent4Hour();
-            uint next4Hour = (current4Hour + 1) % NUMBER_OF_4HOUR_INTERVALS;
-            pools[poolPos].balanceCerUsd -= outputCerUsdAmount;
-            pools[poolPos].balanceToken += amountTokenIn;
-            unchecked {
-                pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += uint32(outputCerUsdAmount / 1e18);
-            }
-            if (pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] > 0)
-            {
-                pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] = 0;
-            }
+        // updating pool values
+        pools[poolPos].balanceCerUsd -= outputCerUsdAmount;
+        pools[poolPos].balanceToken += amountTokenIn;
+
+        // updating 4hour trade pool values
+        uint current4Hour = getCurrent4Hour();
+        uint next4Hour = (current4Hour + 1) % NUMBER_OF_4HOUR_INTERVALS;
+        unchecked {
+            // wrapping any uint32 overflows
+            // stores in USD value
+            pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += uint32(outputCerUsdAmount / 1e18);
         }
 
+        // clearing next 4hour trade value
+        if (pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] > 0)
+        {
+            pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] = 0;
+        }        
+
+        // transferring cerUSD tokens
         if (enableInternalCerUsdTransfers) {
             IERC20(cerUsdToken).transfer(msg.sender, outputCerUsdAmount);
         }
 
+        // syncing balance
         if (newBalance > pools[poolPos].balanceToken)
         {
             pools[poolPos].balanceToken = uint112(newBalance);
@@ -462,31 +469,40 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         private
         returns (uint112)
     {
+        uint poolPos = tokenToPoolPosition[tokenOut];
+
+        // transferring cerUsd tokens
         if (enableInternalCerUsdTransfers) {
             IERC20(cerUsdToken).transferFrom(msg.sender, address(this), amountCerUsdIn);
         }
 
-        uint poolPos = tokenToPoolPosition[tokenOut];
-
+        // calculating amount of tokens to be sent to msg.sender
         uint112 outputTokenAmount = uint112(getOutputExactCerUsdForToken(poolPos, amountCerUsdIn));
         require(
             outputTokenAmount >= minAmountTokenOut,
             "CS1: Output amount less than minimum specified"
         );
 
-        uint current4Hour = getCurrent4Hour();
-        uint next4Hour = (getCurrent4Hour() + 1) % pools[poolPos].hourlyTradeVolumeInCerUsd.length;
+        // updating pool values
         pools[poolPos].balanceCerUsd += amountCerUsdIn;
         pools[poolPos].balanceToken -= outputTokenAmount;
 
+        // updating 4hour trade pool values
+        uint current4Hour = getCurrent4Hour();
+        uint next4Hour = (getCurrent4Hour() + 1) % pools[poolPos].hourlyTradeVolumeInCerUsd.length;
         unchecked {
+            // wrapping any uint32 overflows
+            // stores in USD value
             pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += uint32(amountCerUsdIn / 1e18);
         }
+
+        // clearing next 4hour trade value
         if (pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] > 0)
         {
             pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] = 0;
         }
 
+        // transferring tokens from contract to msg.sender
         uint oldBalance = IERC20(tokenOut).balanceOf(address(this));
         IERC20(tokenOut).safeTransfer(msg.sender, outputTokenAmount);
         uint newBalance = IERC20(tokenOut).balanceOf(address(this));
@@ -495,6 +511,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
             "CS1: Fee-on-transfer tokens aren't supported"
         );
 
+        // syncing balance
         if (newBalance > pools[poolPos].balanceToken)
         {
             pools[poolPos].balanceToken = uint112(newBalance);
