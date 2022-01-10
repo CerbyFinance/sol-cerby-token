@@ -52,7 +52,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     address constant cerUsdToken = 0x04D7000CC826349A872757D82b3E0F68a713B3c5;
     address constant testUsdcToken = 0xde402E9D305bAd483d47bc858cC373c5a040A62D;
 
-    address nativeToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De; // TODO: deploy and update
+    address nativeToken;
 
     uint16 constant FEE_DENORM = 10000;
 
@@ -76,6 +76,15 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         _setupRole(ROLE_ADMIN, msg.sender);
 
         feeToBeneficiary = msg.sender;
+
+        // TODO: fill weth, wbnb, wmatic etc
+        if (block.chainid == 12345) {
+            nativeToken = BURN_ADDRESS;
+        } else if (block.chainid == 98765) {
+            nativeToken = DEAD_ADDRESS;
+        } 
+
+        nativeToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De; // TODO: update
     }
 
     modifier tokenMustExistInPool(address token)
