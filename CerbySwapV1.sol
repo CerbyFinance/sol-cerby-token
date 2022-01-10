@@ -14,8 +14,18 @@ import "./CerbyCronJobsExecution.sol";
 contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     using SafeERC20 for IERC20;
 
+    enum ErrorTypes {
+        DEFAULT_ERROR_0, ALREADY_INITIALIZED_1, TOKEN_EXISTS_2, TOKEN_DOES_NOT_EXIST_3, 
+        TRANSACTION_EXPIRED_4, FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_5,
+        AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_6, 
+        AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_7,
+        OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_8,
+        OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_9
+    }
+
     Pool[] pools;
     mapping(address => uint) tokenToPoolPosition;
+    uint totalCerUsdBalance;
 
     /* KOVAN 
     // "0x37E140032ac3a8428ed43761a9881d4741Eb3a73", "997503992263724670916", 0, "2041564156"
@@ -41,10 +51,12 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     address constant wethToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De; // TODO: update
 
     uint16 constant FEE_DENORM = 10000;
+    bytes32 constant ROLE_ROUTER = keccak256(abi.encode("ROLE_ROUTER"));
 
     uint constant NUMBER_OF_4HOUR_INTERVALS = 8;
     uint constant MINIMUM_LIQUIDITY = 1000;
     address constant DEAD_ADDRESS = address(0xdead);
+    address constant BURN_ADDRESS = address(0x0);
     address feeToBeneficiary = DEAD_ADDRESS;
 
     bool isInitializedAlready;
@@ -59,6 +71,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
+        _setupRole(ROLE_ROUTER, msg.sender);
         feeToBeneficiary = msg.sender;
 
         adminInitialize(); // TODO: Remove on production. Must not do any mints in contract creation!
@@ -68,7 +81,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     {
         require(
             tokenToPoolPosition[token] > 0 && token != cerUsdToken,
-            "CS1: Wrong token"
+            string(abi.encode(ErrorTypes.TOKEN_DOES_NOT_EXIST_3))
         );
         _;
     }
@@ -77,7 +90,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     {
         require(
             tokenToPoolPosition[token] == 0 && token != cerUsdToken,
-            "CS1: Token exists"
+            string(abi.encode(ErrorTypes.TOKEN_EXISTS_2))
         );
         _;
     }
@@ -86,7 +99,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     {
         require(
             block.timestamp <= expireTimestamp,
-            "CS1: Transaction is expired"
+            string(abi.encode(ErrorTypes.TRANSACTION_EXPIRED_4))
         );
         _;
     }
@@ -95,7 +108,10 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         public
         onlyRole(ROLE_ADMIN)
     {
-        require(!isInitializedAlready, "CS1: Already initialized");
+        require(
+            !isInitializedAlready, 
+            string(abi.encode(ErrorTypes.ALREADY_INITIALIZED_1))
+        );
         isInitializedAlready = true;
 
         // Filling with empty pool 0th position
@@ -109,13 +125,14 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         ));
 
         // TODO: remove on production
-        adminCreatePool(
+        routerCreatePool(
             testCerbyToken,
             1e18 * 1e6,
             1e18 * 3e5
         );
 
-        adminCreatePool(
+        // TODO: remove on production
+        routerCreatePool(
             testUsdcToken,
             1e18 * 1e6,
             1e18 * 1e6
@@ -129,9 +146,9 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         feeToBeneficiary = newFeeToBeneficiary;
     }
 
-    function adminCreatePool(address token, uint112 addTokenAmount, uint112 mintCerUsdAmount)
+    function routerCreatePool(address token, uint112 addTokenAmount, uint112 mintCerUsdAmount)
         public
-        onlyRole(ROLE_ADMIN)
+        onlyRole(ROLE_ROUTER)
         tokenDoesNotExistInPool(token)
     {
         uint poolPos = pools.length;
@@ -155,7 +172,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint newBalance = IERC20(token).balanceOf(address(this));
         require(
             newBalance >= oldBalance + addTokenAmount,
-            "CS1: Fee-on-transfer tokens aren't supported"
+            string(abi.encode(ErrorTypes.FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_5))
         );
         
         // minting cerUSD tokens based on admin input
@@ -183,224 +200,217 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         }
     }
 
-    function addTokenLiquidity(address token, uint112 addTokenAmount)
+    function addTokenLiquidity(address token, uint expireTimestamp, address transferTo)
         public
         //executeCronJobs() TODO: enable on production
         tokenMustExistInPool(token)
+        transactionIsNotExpired(expireTimestamp)
     {
         uint poolPos = tokenToPoolPosition[token];
 
-        // syncing balance
-        uint oldBalance = IERC20(token).balanceOf(address(this));
-        if (oldBalance != pools[poolPos].balanceToken)
-        {
-            pools[poolPos].balanceToken = uint112(oldBalance);
-        }
+        // finding out how many tokens router have sent to us
+        uint newTokenBalance = IERC20(token).balanceOf(address(this));
+        uint amountTokensIn = newTokenBalance - pools[poolPos].balanceToken;
+        require(
+            amountTokensIn > 0,
+            string(abi.encode(ErrorTypes.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_6))
+        );
+
+        // finding out if for some reason we've received cerUSD tokens as well
+        uint newTotalCerUsdBalance = IERC20(cerUsdToken).balanceOf(address(this));
+        uint amountCerUsdIn = newTotalCerUsdBalance - totalCerUsdBalance;
 
         // calculating amount of cerUSD to mint
-        uint112 mintCerUsdAmount = uint112(
-            (addTokenAmount * uint(pools[poolPos].balanceCerUsd)) / uint(pools[poolPos].balanceToken)
-        );
+        uint mintCerUsdAmount = 
+            (amountTokensIn * uint(pools[poolPos].balanceCerUsd)) / uint(pools[poolPos].balanceToken) - 
+                amountCerUsdIn;
 
         // storing sqrt(k) value before updating pool
         uint112 lastRootKValue = pools[poolPos].lastRootKValue;
         uint112 newRootKValue = uint112(sqrt(uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd)));
 
         // updating pool
+        totalCerUsdBalance += amountCerUsdIn + mintCerUsdAmount;
         pools[poolPos].lastRootKValue = newRootKValue;
-        pools[poolPos].balanceToken += uint112(addTokenAmount);
-        pools[poolPos].balanceCerUsd += mintCerUsdAmount;
-
-        // transferring tokens from msg.sender to contract
-        IERC20(token).safeTransferFrom(msg.sender, address(this), addTokenAmount);
-        uint newBalance = IERC20(token).balanceOf(address(this));
-        require(
-            newBalance >= oldBalance + addTokenAmount,
-            "CS1: Fee-on-transfer tokens aren't supported"
-        );
+        pools[poolPos].balanceToken = uint112(newTokenBalance);
+        pools[poolPos].balanceCerUsd += uint112(amountCerUsdIn + mintCerUsdAmount);
 
         // minting cerUSD according to current price
         ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
 
         // minting LP tokens
         uint totalLPSupply = ICerbySwapLP1155V1(lpErc1155V1).totalSupply(poolPos);
-        uint lpAmount = (addTokenAmount * totalLPSupply) / pools[poolPos].balanceToken;
+        uint lpAmount = (amountTokensIn * totalLPSupply) / pools[poolPos].balanceToken;
         ICerbySwapLP1155V1(lpErc1155V1).adminMint(
-            msg.sender,
+            transferTo,
             poolPos,
             lpAmount
         );
 
         // minting trade fees
-        uint lpTokensToMint = _getMintFeeLiquidityAmount(lastRootKValue, newRootKValue, totalLPSupply);
-        if (lpTokensToMint > 0) {
-            ICerbySwapLP1155V1(lpErc1155V1).adminMint(feeToBeneficiary, poolPos, lpTokensToMint);
-        }
-
-        // syncing pool
-        if (newBalance > pools[poolPos].balanceToken)
-        {
-            pools[poolPos].balanceToken = uint112(newBalance);
+        uint amountLpTokensToMintAsFee = _getMintFeeLiquidityAmount(lastRootKValue, newRootKValue, totalLPSupply);
+        if (amountLpTokensToMintAsFee > 0) {
+            ICerbySwapLP1155V1(lpErc1155V1).adminMint(feeToBeneficiary, poolPos, amountLpTokensToMintAsFee);
         }
     }
 
-    function removeTokenLiquidity(address token, uint removeLpAmount)
+    function removeTokenLiquidity(address token, uint expireTimestamp, address transferTo)
         public
         //executeCronJobs() TODO: enable on production
         tokenMustExistInPool(token)
+        transactionIsNotExpired(expireTimestamp)
     {
         uint poolPos = tokenToPoolPosition[token];
 
-        // syncing balance
-        uint oldBalance = IERC20(token).balanceOf(address(this));
-        if (oldBalance != pools[poolPos].balanceToken)
-        {
-            pools[poolPos].balanceToken = uint112(oldBalance);
-        }
+        // finding out if for some reason we've received tokens
+        uint oldTokenBalance = IERC20(token).balanceOf(address(this));
+        uint amountTokensIn = oldTokenBalance - pools[poolPos].balanceToken;
+
+        // finding out if for some reason we've received cerUSD tokens as well
+        uint amountCerUsdIn = IERC20(cerUsdToken).balanceOf(address(this)) - totalCerUsdBalance;
+
+        // finding out amount of LP tokens router have sent to us to burn
+        uint amountLpTokensBalanceToBurn = 
+            ICerbySwapLP1155V1(lpErc1155V1).balanceOf(address(this), poolPos);
 
         // calculating amount of tokens to transfer
         uint totalLPSupply = ICerbySwapLP1155V1(lpErc1155V1).totalSupply(poolPos);
-        uint112 removeTokenAmount = uint112(
-            (uint(pools[poolPos].balanceToken) * removeLpAmount) / totalLPSupply
-        );        
+        uint amountTokensOut = 
+            (uint(pools[poolPos].balanceToken) * amountLpTokensBalanceToBurn) / totalLPSupply;       
 
         // calculating amount of cerUSD to burn
-        uint112 burnCerUsdAmount = uint112(
-            (uint(pools[poolPos].balanceCerUsd) * removeLpAmount) / totalLPSupply
-        );
+        uint amountCerUsdToBurn = 
+            (uint(pools[poolPos].balanceCerUsd) * amountLpTokensBalanceToBurn) / totalLPSupply;
 
         // storing sqrt(k) value before updating pool
         uint112 lastRootKValue = pools[poolPos].lastRootKValue;
         uint112 newRootKValue = uint112(sqrt(uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd)));
 
         // updating pool
+        totalCerUsdBalance += amountCerUsdIn;
         pools[poolPos].lastRootKValue = newRootKValue;
-        pools[poolPos].balanceToken -= removeTokenAmount;
-        pools[poolPos].balanceCerUsd -= burnCerUsdAmount;
+        pools[poolPos].balanceToken = 
+            pools[poolPos].balanceToken + uint112(amountTokensIn) - uint112(amountTokensOut);
+        pools[poolPos].balanceCerUsd = 
+            pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn) - uint112(amountCerUsdToBurn);
 
         // burning LP tokens
-        ICerbySwapLP1155V1(lpErc1155V1).adminBurn(msg.sender, poolPos, removeLpAmount);
+        ICerbySwapLP1155V1(lpErc1155V1).adminBurn(address(this), poolPos, amountLpTokensBalanceToBurn);
 
         // burning cerUSD
-        ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), burnCerUsdAmount);
+        ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), amountCerUsdToBurn);
 
         // transfering tokens
-        IERC20(token).safeTransfer(msg.sender, removeTokenAmount);
-        uint newBalance = IERC20(token).balanceOf(address(this));
+        IERC20(token).safeTransfer(transferTo, amountTokensOut);
+        uint newTokenBalance = IERC20(token).balanceOf(address(this));
         require(
-            newBalance + removeTokenAmount >= oldBalance,
-            "CS1: Fee-on-transfer tokens aren't supported"
+            newTokenBalance + amountTokensOut == oldTokenBalance,
+            string(abi.encode(ErrorTypes.FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_5))
         );
 
         // minting trade fees
-        uint lpTokensToMint = _getMintFeeLiquidityAmount(lastRootKValue, newRootKValue, totalLPSupply);
-        if (lpTokensToMint > 0) {
-            ICerbySwapLP1155V1(lpErc1155V1).adminMint(feeToBeneficiary, poolPos, lpTokensToMint);
-        }        
-
-        // syncing pool
-        if (newBalance > pools[poolPos].balanceToken)
-        {
-            pools[poolPos].balanceToken = uint112(newBalance);
+        uint amountLpTokensToMintAsFee = 
+            _getMintFeeLiquidityAmount(lastRootKValue, newRootKValue, totalLPSupply);
+        if (amountLpTokensToMintAsFee > 0) {
+            ICerbySwapLP1155V1(lpErc1155V1).
+                adminMint(feeToBeneficiary, poolPos, amountLpTokensToMintAsFee);
         }
     }
 
     function _getMintFeeLiquidityAmount(uint lastRootKValue, uint newRootKValue, uint totalLPSupply)
         private
         pure
-        returns (uint lpTokensToMint)
+        returns (uint amountLpTokensToMintAsFee)
     {
         if (
             newRootKValue > lastRootKValue && 
             lastRootKValue > 0
         ) {
-            lpTokensToMint = (totalLPSupply * (newRootKValue - lastRootKValue)) / (newRootKValue * 5 + lastRootKValue);
+            amountLpTokensToMintAsFee = (totalLPSupply * (newRootKValue - lastRootKValue)) / (newRootKValue * 5 + lastRootKValue);
         }
     }
-
-    // TODO: add swapTokenToExactCerUSD XXX --> cerUSD
-    // TODO: add swapCerUsdToExactToken cerUSD --> YYY
-    // TODO: add swapTokenToExactToken XXX --> cerUSD --> YYY (XXX != YYY)
 
     function swapExactTokenForToken(
         address tokenIn,
         address tokenOut,
-        uint112 amountTokenIn,
         uint112 minAmountTokenOut,
-        uint32 expireTimestamp
+        uint32 expireTimestamp,
+        address transferTo
     )
         public
         //executeCronJobs() TODO: enable on production
         transactionIsNotExpired(expireTimestamp)
         tokenMustExistInPool(tokenIn)
-        returns (uint112)
+        returns (uint)
     {
-        // swapping XXX ---> cerUSD
-        uint112 amountCerUsdIn = _swapExactTokenToCerUsd(
-            tokenIn,
-            amountTokenIn,
-            0,
-            false
-        );
+        uint outputTokenOut;
+        if (tokenIn == cerUsdToken && tokenOut != cerUsdToken) {
+            // swapping cerUSD ---> YYY
+            outputTokenOut = _swapExactCerUsdForToken(
+                tokenOut,
+                minAmountTokenOut,
+                transferTo
+            );
+        } else if (tokenIn != cerUsdToken && tokenOut == cerUsdToken) {
+            // swapping XXX ---> cerUSD
+            outputTokenOut = _swapExactTokenToCerUsd(
+                tokenIn,
+                minAmountTokenOut,
+                transferTo
+            );
+        } else {
+            // swapping XXX ---> cerUSD
+            _swapExactTokenToCerUsd(
+                tokenIn,
+                0,
+                BURN_ADDRESS
+            );
 
-        // swapping cerUSD ---> YYY
-        uint112 outputTokenOut = _swapExactCerUsdForToken(
-            tokenOut,
-            amountCerUsdIn,
-            minAmountTokenOut,
-            false
-        );
+            // swapping cerUSD ---> YYY
+            outputTokenOut = _swapExactCerUsdForToken(
+                tokenOut,
+                minAmountTokenOut,
+                transferTo
+            );
+        }
         return outputTokenOut;
-    }
-
-    function swapExactTokenToCerUsd(
-        address tokenIn,
-        uint112 amountTokenIn,
-        uint112 minAmountCerUsdOut,
-        uint32 expireTimestamp
-    )
-        public
-        //executeCronJobs() TODO: enable on production
-        transactionIsNotExpired(expireTimestamp)
-        tokenMustExistInPool(tokenIn)
-        returns (uint112)
-    {
-        return _swapExactTokenToCerUsd(
-            tokenIn,
-            amountTokenIn,
-            minAmountCerUsdOut,
-            true
-        );
     }
 
     function _swapExactTokenToCerUsd(
         address tokenIn,
-        uint112 amountTokenIn,
         uint112 minAmountCerUsdOut,
-        bool enableInternalCerUsdTransfers
+        address transferTo
     )
         private
-        returns (uint112)
+        returns (uint)
     {
         uint poolPos = tokenToPoolPosition[tokenIn];
 
-        // syncing balance
-        uint oldBalance = IERC20(tokenIn).balanceOf(address(this));
-        if (oldBalance != pools[poolPos].balanceToken)
-        {
-            pools[poolPos].balanceToken = uint112(oldBalance);
-        }
+        // finding out how many tokens router have sent to us
+        uint newTokenBalance = IERC20(tokenIn).balanceOf(address(this));
+        uint amountTokensIn = newTokenBalance - pools[poolPos].balanceToken;
+        require(
+            amountTokensIn > 0,
+            string(abi.encode(ErrorTypes.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_6))
+        );
+
+        // finding out if for some reason we've received cerUSD tokens as well
+        uint newTotalCerUsdBalance = IERC20(cerUsdToken).balanceOf(address(this));
+        uint amountCerUsdIn = newTotalCerUsdBalance - totalCerUsdBalance;
 
         // calculating the amount we have to send to user
-        uint112 outputCerUsdAmount = uint112(getOutputExactTokensForCerUsd(poolPos, amountTokenIn));
+        uint amountCerUsdOut = getOutputExactTokensForCerUsd(poolPos, amountTokensIn);
         require(
-            outputCerUsdAmount >= minAmountCerUsdOut,
-            "CS1: Output amount less than minimum specified"
+            amountCerUsdOut >= minAmountCerUsdOut,
+            string(abi.encode(ErrorTypes.OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_8))
         );
 
         // updating pool values
-        pools[poolPos].balanceCerUsd -= outputCerUsdAmount;
-        pools[poolPos].balanceToken += amountTokenIn;
+        totalCerUsdBalance =
+            totalCerUsdBalance + amountCerUsdIn - amountCerUsdOut;
+        pools[poolPos].balanceCerUsd = 
+            pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn) - uint112(amountCerUsdOut);
+        pools[poolPos].balanceToken = uint112(newTokenBalance);
 
         // updating 4hour trade pool values
         uint current4Hour = getCurrent4Hour();
@@ -408,85 +418,57 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         unchecked {
             // wrapping any uint32 overflows
             // stores in USD value
-            pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += uint32(outputCerUsdAmount / 1e18);
+            pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += uint32(amountCerUsdOut / 1e18);
         }
 
         // clearing next 4hour trade value
         if (pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] > 0)
         {
             pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] = 0;
-        }        
-
-        // transferring tokens from msg.sender to contract
-        IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amountTokenIn);
-        uint newBalance = IERC20(tokenIn).balanceOf(address(this));
-        require(
-            newBalance >= oldBalance + amountTokenIn,
-            "CS1: Fee-on-transfer tokens aren't supported"
-        );  
+        }
 
         // transferring cerUSD tokens
-        if (enableInternalCerUsdTransfers) {
-            IERC20(cerUsdToken).transfer(msg.sender, outputCerUsdAmount);
+        if (transferTo != BURN_ADDRESS) {
+            IERC20(cerUsdToken).transfer(transferTo, amountCerUsdOut);
         }
 
-        // syncing balance
-        if (newBalance > pools[poolPos].balanceToken)
-        {
-            pools[poolPos].balanceToken = uint112(newBalance);
-        }
-
-        return outputCerUsdAmount;
-    }
-
-    function swapExactCerUsdForToken(
-        address tokenOut,
-        uint112 amountCerUsdIn,
-        uint112 minAmountTokenOut,
-        uint32 expireTimestamp
-    )
-        public
-        //executeCronJobs() TODO: enable on production
-        tokenMustExistInPool(tokenOut)
-        transactionIsNotExpired(expireTimestamp)
-        returns (uint112)
-    {
-        return _swapExactCerUsdForToken(
-            tokenOut,
-            amountCerUsdIn,
-            minAmountTokenOut,
-            true
-        );
+        return amountCerUsdOut;
     }
 
     function _swapExactCerUsdForToken(
         address tokenOut,
-        uint112 amountCerUsdIn,
         uint112 minAmountTokenOut,
-        bool enableInternalCerUsdTransfers
+        address transferTo
     )
         private
-        returns (uint112)
+        returns (uint)
     {
         uint poolPos = tokenToPoolPosition[tokenOut];
 
-        // syncing balance
-        uint oldBalance = IERC20(tokenOut).balanceOf(address(this));
-        if (oldBalance != pools[poolPos].balanceToken)
-        {
-            pools[poolPos].balanceToken = uint112(oldBalance);
-        }
-
-        // calculating amount of tokens to be sent to msg.sender
-        uint112 outputTokenAmount = uint112(getOutputExactCerUsdForToken(poolPos, amountCerUsdIn));
+        // finding out how many cerUSD tokens router have sent to us
+        uint newTotalCerUsdBalance = IERC20(cerUsdToken).balanceOf(address(this));
+        uint amountCerUsdIn = newTotalCerUsdBalance - totalCerUsdBalance;
         require(
-            outputTokenAmount >= minAmountTokenOut,
-            "CS1: Output amount less than minimum specified"
+            amountCerUsdIn > 0,
+            string(abi.encode(ErrorTypes.AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_7))
+        );
+
+        // finding out if for some reason we've received tokens as well
+        uint oldTokenBalance = IERC20(tokenOut).balanceOf(address(this));
+        uint amountTokensIn = oldTokenBalance - pools[poolPos].balanceToken;
+
+        // calculating amount of tokens to be sent to user
+        uint amountTokensOut = getOutputExactCerUsdForToken(poolPos, amountCerUsdIn);
+        require(
+            amountTokensOut >= minAmountTokenOut,
+            string(abi.encode(ErrorTypes.OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_9))
         );
 
         // updating pool values
-        pools[poolPos].balanceCerUsd += amountCerUsdIn;
-        pools[poolPos].balanceToken -= outputTokenAmount;
+        totalCerUsdBalance += amountCerUsdIn;
+        pools[poolPos].balanceCerUsd += uint112(amountCerUsdIn);
+        pools[poolPos].balanceToken = 
+            pools[poolPos].balanceToken + uint112(amountTokensIn) - uint112(amountTokensOut);
 
         // updating 4hour trade pool values
         uint current4Hour = getCurrent4Hour();
@@ -504,25 +486,19 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         }
 
         // transferring cerUsd tokens
-        if (enableInternalCerUsdTransfers) {
-            IERC20(cerUsdToken).transferFrom(msg.sender, address(this), amountCerUsdIn);
+        if (transferTo != BURN_ADDRESS) {
+            IERC20(cerUsdToken).transferFrom(transferTo, address(this), amountCerUsdIn);
         }
 
-        // transferring tokens from contract to msg.sender
-        IERC20(tokenOut).safeTransfer(msg.sender, outputTokenAmount);
-        uint newBalance = IERC20(tokenOut).balanceOf(address(this));
+        // transferring tokens from contract to user
+        IERC20(tokenOut).safeTransfer(transferTo, amountTokensOut);
+        uint newTokenBalance = IERC20(tokenOut).balanceOf(address(this));
         require(
-            newBalance + outputTokenAmount >= oldBalance,
-            "CS1: Fee-on-transfer tokens aren't supported"
+            newTokenBalance == pools[poolPos].balanceToken,
+            string(abi.encode(ErrorTypes.FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_5))
         );
 
-        // syncing balance
-        if (newBalance > pools[poolPos].balanceToken)
-        {
-            pools[poolPos].balanceToken = uint112(newBalance);
-        }
-
-        return outputTokenAmount;
+        return amountTokensOut;
     }
 
     function syncTokenBalanceInPool(address token)
@@ -531,58 +507,8 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         //executeCronJobs() TODO: enable on production
     {
         uint poolPos = tokenToPoolPosition[token];
-        uint112 newBalanceToken = uint112(IERC20(token).balanceOf(address(this)));
-        if (newBalanceToken != pools[poolPos].balanceToken)
-        {
-            pools[poolPos].balanceToken = newBalanceToken;
-        }
-    }
-
-    function _safeTransferFrom(address token, address from, uint amount, uint oldBalance)
-        private
-    {
-        if (token == wethToken) {
-            require(
-                msg.value >= amount,
-                "CS1: Wrong amount of native tokens provided"
-            );
-        } else {
-            IERC20(token).safeTransferFrom(from, address(this), amount);
-            uint newBalance = IERC20(token).balanceOf(address(this));
-            require(
-                newBalance >= oldBalance + amount,
-                "CS1: Fee-on-transfer tokens aren't supported"
-            );
-        }
-    }
-
-    function _safeTransfer(address token, address to, uint amount, uint oldBalance)
-        private
-    {
-        if (token == wethToken) {
-            payable(to).transfer(amount);
-        } else {
-            IERC20(token).safeTransfer(to, amount);
-            uint newBalance = IERC20(token).balanceOf(address(this));
-            require(
-                newBalance + amount >= oldBalance,
-                "CS1: Fee-on-transfer tokens aren't supported"
-            );
-        }
-    }
-
-    function _getContractBalance(address token)
-        private
-        view
-        returns (uint)
-    {
-        uint balance;
-        if (token == wethToken) {
-            balance = token.balance;
-        } else {
-            balance = IERC20(token).balanceOf(token);
-        }
-        return balance;
+        pools[poolPos].balanceToken = uint112(IERC20(token).balanceOf(address(this)));
+        totalCerUsdBalance = IERC20(cerUsdToken).balanceOf(address(this));
     }
 
     function getCurrent4Hour()

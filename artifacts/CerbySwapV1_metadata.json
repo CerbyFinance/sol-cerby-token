@@ -106,35 +106,17 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint112",
-						"name": "addTokenAmount",
-						"type": "uint112"
+						"internalType": "uint256",
+						"name": "expireTimestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "transferTo",
+						"type": "address"
 					}
 				],
 				"name": "addTokenLiquidity",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					},
-					{
-						"internalType": "uint112",
-						"name": "addTokenAmount",
-						"type": "uint112"
-					},
-					{
-						"internalType": "uint112",
-						"name": "mintCerUsdAmount",
-						"type": "uint112"
-					}
-				],
-				"name": "adminCreatePool",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -536,6 +518,29 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint112",
+						"name": "addTokenAmount",
+						"type": "uint112"
+					},
+					{
+						"internalType": "uint112",
+						"name": "mintCerUsdAmount",
+						"type": "uint112"
+					}
+				],
+				"name": "routerCreatePool",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes4",
 						"name": "interfaceId",
 						"type": "bytes4"
@@ -556,40 +561,6 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenOut",
-						"type": "address"
-					},
-					{
-						"internalType": "uint112",
-						"name": "amountCerUsdIn",
-						"type": "uint112"
-					},
-					{
-						"internalType": "uint112",
-						"name": "minAmountTokenOut",
-						"type": "uint112"
-					},
-					{
-						"internalType": "uint32",
-						"name": "expireTimestamp",
-						"type": "uint32"
-					}
-				],
-				"name": "swapExactCerUsdForToken",
-				"outputs": [
-					{
-						"internalType": "uint112",
-						"name": "",
-						"type": "uint112"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
 						"name": "tokenIn",
 						"type": "address"
 					},
@@ -600,11 +571,6 @@
 					},
 					{
 						"internalType": "uint112",
-						"name": "amountTokenIn",
-						"type": "uint112"
-					},
-					{
-						"internalType": "uint112",
 						"name": "minAmountTokenOut",
 						"type": "uint112"
 					},
@@ -612,48 +578,19 @@
 						"internalType": "uint32",
 						"name": "expireTimestamp",
 						"type": "uint32"
+					},
+					{
+						"internalType": "address",
+						"name": "transferTo",
+						"type": "address"
 					}
 				],
 				"name": "swapExactTokenForToken",
 				"outputs": [
 					{
-						"internalType": "uint112",
+						"internalType": "uint256",
 						"name": "",
-						"type": "uint112"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenIn",
-						"type": "address"
-					},
-					{
-						"internalType": "uint112",
-						"name": "amountTokenIn",
-						"type": "uint112"
-					},
-					{
-						"internalType": "uint112",
-						"name": "minAmountCerUsdOut",
-						"type": "uint112"
-					},
-					{
-						"internalType": "uint32",
-						"name": "expireTimestamp",
-						"type": "uint32"
-					}
-				],
-				"name": "swapExactTokenToCerUsd",
-				"outputs": [
-					{
-						"internalType": "uint112",
-						"name": "",
-						"type": "uint112"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -832,7 +769,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -847,11 +784,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xe1e7af2e9643d748f6477ca83cd1c4ed59d2c23e796e26ae1c712fdffaf09cb5",
+			"keccak256": "0xb54374a640b17073019cd8c2d7038749f187da087344024abbdbbce1d0c96a89",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://3184f097884bce66557326861921d2891d26a44bc0018a2a5a0d90a18e250310",
-				"dweb:/ipfs/QmTPMSgdpoa5E413UXqw9asYCzVvkUWF4oZPCj3n3uAerr"
+				"bzz-raw://7993bedfca0f4170427eefa43e64013d4129715d56cb2821a3600d2033a212ac",
+				"dweb:/ipfs/QmV93iozs7ZQaBZejizu1uwR7ocRdUuhjhAUGX6167eAcB"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

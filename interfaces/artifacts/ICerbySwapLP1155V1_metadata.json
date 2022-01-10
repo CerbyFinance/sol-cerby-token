@@ -156,6 +156,30 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					}
+				],
+				"name": "balanceOf",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "id",
 						"type": "uint256"
@@ -308,11 +332,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/ICerbySwapLP1155V1.sol": {
-			"keccak256": "0xf240d79a87b444d2ac7586f9c1177dd2ee2634fbd268c22bf3828826b159499a",
+			"keccak256": "0xdb69d089b09e4ae9e3dec3daab7984b3eb79cf0e84300b4841528b1bbd22c6dd",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://8849c771f6bb0427cc31e8635eb8e4f59ccaa06ce599373ac68c1bc096d2d952",
-				"dweb:/ipfs/QmZ42NfyN65MadmJdeRDarMMZQ4p7X1FatkDPp4jQZx9Ww"
+				"bzz-raw://b27cdf799539e0371cc705a544f7fa74b229c96073d6592d7d208f39ab3e8684",
+				"dweb:/ipfs/QmaUcXzutxkQJc8DPVhbbUaUsoDLbiALmkur8gNQPsSaK9"
 			]
 		}
 	},
