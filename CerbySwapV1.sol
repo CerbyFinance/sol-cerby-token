@@ -3,7 +3,6 @@
 pragma solidity ^0.8.11;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
-import "./openzeppelin/security/ReentrancyGuard.sol";
 import "./openzeppelin/token/ERC20/utils/SafeERC20.sol";
 import "./interfaces/ICerbyTokenMinterBurner.sol";
 import "./interfaces/ICerbyCronJobs.sol";
@@ -12,7 +11,7 @@ import "./interfaces/ICerbySwapLP1155V1.sol";
 import "./CerbyCronJobsExecution.sol";
 
 
-contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsExecution {
+contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     using SafeERC20 for IERC20;
 
     Pool[] pools;
@@ -91,12 +90,6 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         _;
     }
 
-    modifier poolMustBeSynced(address token)
-    {
-        _syncTokenBalanceInPool(token);
-        _;
-    }
-
     function adminInitialize() 
         public
         onlyRole(ROLE_ADMIN)
@@ -138,12 +131,11 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     function adminCreatePool(address token, uint112 addTokenAmount, uint112 mintCerUsdAmount)
         public
         onlyRole(ROLE_ADMIN)
-        nonReentrant()
         tokenDoesNotExistInPool(token)
     {
         uint poolPos = pools.length;
 
-        // create new pool recordnj
+        // create new pool record
         uint112 newRootKValue = uint112(sqrt(uint(addTokenAmount) * uint(mintCerUsdAmount)));
         uint32[NUMBER_OF_4HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
         Pool memory pool = Pool(
@@ -193,11 +185,16 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     function addTokenLiquidity(address token, uint112 addTokenAmount)
         public
         //executeCronJobs() TODO: enable on production
-        nonReentrant()
         tokenMustExistInPool(token)
-        poolMustBeSynced(token) // TODO: remove modifier
     {
         uint poolPos = tokenToPoolPosition[token];
+
+        // syncing balance
+        uint oldBalance = IERC20(token).balanceOf(address(this));
+        if (oldBalance != pools[poolPos].balanceToken)
+        {
+            pools[poolPos].balanceToken = uint112(oldBalance);
+        }
 
         // calculating amount of cerUSD to mint
         uint112 mintCerUsdAmount = uint112(
@@ -214,7 +211,6 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         pools[poolPos].balanceCerUsd += mintCerUsdAmount;
 
         // transferring tokens from msg.sender to contract
-        uint oldBalance = IERC20(token).balanceOf(address(this));
         IERC20(token).safeTransferFrom(msg.sender, address(this), addTokenAmount);
         uint newBalance = IERC20(token).balanceOf(address(this));
         require(
@@ -250,11 +246,16 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     function removeTokenLiquidity(address token, uint removeLpAmount)
         public
         //executeCronJobs() TODO: enable on production
-        nonReentrant()
         tokenMustExistInPool(token)
-        poolMustBeSynced(token) // TODO: remove modifier
     {
         uint poolPos = tokenToPoolPosition[token];
+
+        // syncing balance
+        uint oldBalance = IERC20(token).balanceOf(address(this));
+        if (oldBalance != pools[poolPos].balanceToken)
+        {
+            pools[poolPos].balanceToken = uint112(oldBalance);
+        }
 
         // calculating amount of tokens to transfer
         uint totalLPSupply = ICerbySwapLP1155V1(lpErc1155V1).totalSupply(poolPos);
@@ -283,7 +284,6 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), burnCerUsdAmount);
 
         // transfering tokens
-        uint oldBalance = IERC20(token).balanceOf(address(this));
         IERC20(token).safeTransfer(msg.sender, removeTokenAmount);
         uint newBalance = IERC20(token).balanceOf(address(this));
         require(
@@ -330,10 +330,8 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     )
         public
         //executeCronJobs() TODO: enable on production
-        nonReentrant()
         transactionIsNotExpired(expireTimestamp)
         tokenMustExistInPool(tokenIn)
-        poolMustBeSynced(tokenIn)
         returns (uint112)
     {
         // swapping XXX ---> cerUSD
@@ -362,10 +360,8 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     )
         public
         //executeCronJobs() TODO: enable on production
-        nonReentrant()
         transactionIsNotExpired(expireTimestamp)
         tokenMustExistInPool(tokenIn)
-        poolMustBeSynced(tokenIn)
         returns (uint112)
     {
         return _swapExactTokenToCerUsd(
@@ -386,6 +382,13 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         returns (uint112)
     {
         uint poolPos = tokenToPoolPosition[tokenIn];
+
+        // syncing balance
+        uint oldBalance = IERC20(tokenIn).balanceOf(address(this));
+        if (oldBalance != pools[poolPos].balanceToken)
+        {
+            pools[poolPos].balanceToken = uint112(oldBalance);
+        }
 
         // calculating the amount we have to send to user
         uint112 outputCerUsdAmount = uint112(getOutputExactTokensForCerUsd(poolPos, amountTokenIn));
@@ -414,7 +417,6 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         }        
 
         // transferring tokens from msg.sender to contract
-        uint oldBalance = IERC20(tokenIn).balanceOf(address(this));
         IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amountTokenIn);
         uint newBalance = IERC20(tokenIn).balanceOf(address(this));
         require(
@@ -444,9 +446,7 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
     )
         public
         //executeCronJobs() TODO: enable on production
-        nonReentrant()
         tokenMustExistInPool(tokenOut)
-        poolMustBeSynced(tokenOut)
         transactionIsNotExpired(expireTimestamp)
         returns (uint112)
     {
@@ -468,6 +468,13 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         returns (uint112)
     {
         uint poolPos = tokenToPoolPosition[tokenOut];
+
+        // syncing balance
+        uint oldBalance = IERC20(tokenOut).balanceOf(address(this));
+        if (oldBalance != pools[poolPos].balanceToken)
+        {
+            pools[poolPos].balanceToken = uint112(oldBalance);
+        }
 
         // calculating amount of tokens to be sent to msg.sender
         uint112 outputTokenAmount = uint112(getOutputExactCerUsdForToken(poolPos, amountCerUsdIn));
@@ -501,7 +508,6 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         }
 
         // transferring tokens from contract to msg.sender
-        uint oldBalance = IERC20(tokenOut).balanceOf(address(this));
         IERC20(tokenOut).safeTransfer(msg.sender, outputTokenAmount);
         uint newBalance = IERC20(tokenOut).balanceOf(address(this));
         require(
@@ -522,12 +528,6 @@ contract CerbySwapV1 is AccessControlEnumerable, ReentrancyGuard, CerbyCronJobsE
         public
         tokenMustExistInPool(token)
         //executeCronJobs() TODO: enable on production
-    {
-        _syncTokenBalanceInPool(token);        
-    }
-
-    function _syncTokenBalanceInPool(address token)
-        private
     {
         uint poolPos = tokenToPoolPosition[token];
         uint112 newBalanceToken = uint112(IERC20(token).balanceOf(address(this)));

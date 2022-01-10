@@ -847,11 +847,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xdf5e44464d2a82329b9607bd2ab6ab93dd5d43723d146d5ca46508a54b430a9f",
+			"keccak256": "0x2718ae49370783b8372c2dc285cc5fadb06c590eda809c4df2c09374e89a5ed4",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://1d7b27d588ff339e8ae57ebf298f0b945eae279f5ee7b3d056f483421268e469",
-				"dweb:/ipfs/QmcMSTaht2TFoTwXFv5NebA2JXtj4kx44DwL5Mxv89B76j"
+				"bzz-raw://c35c6d731216538f15f4384764493a98a1e54d188052c9882f59bf94ce9f4b67",
+				"dweb:/ipfs/QmYsBhqiZfJcK27QQ5eyHQVxoocgG1jn8VVkCzwkfMUhEj"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
@@ -924,14 +924,6 @@
 			"urls": [
 				"bzz-raw://3dcc7b09bfa6e18aab262ca372f4a9b1fc82e294b430706a4e1378cf58e6a276",
 				"dweb:/ipfs/QmT8oSAcesdctR15HMLhr2a1HRpXymxdjTfdtfTYJcj2N2"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/security/ReentrancyGuard.sol": {
-			"keccak256": "0x0e9621f60b2faabe65549f7ed0f24e8853a45c1b7990d47e8160e523683f3935",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://287a2f8d5814dd0f05f22b740f18ca8321acc21c9bd03a6cb2203ea626e2f3f2",
-				"dweb:/ipfs/QmZRQv9iuwU817VuqkA2WweiaibKii69x9QxYBBEfbNEud"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {
