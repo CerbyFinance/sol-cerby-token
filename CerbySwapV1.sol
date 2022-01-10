@@ -283,6 +283,17 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         // burning cerUSD
         ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), amountCerUsdToBurn);
 
+        // stack too deep hack
+        {
+            // minting trade fees
+            uint amountLpTokensToMintAsFee = 
+                _getMintFeeLiquidityAmount(lastRootKValue, newRootKValue, totalLPSupply);
+            if (amountLpTokensToMintAsFee > 0) {
+                ICerbySwapLP1155V1(lpErc1155V1).
+                    adminMint(feeToBeneficiary, poolPos, amountLpTokensToMintAsFee);
+            }
+        }
+
         // transfering tokens
         IERC20(token).safeTransfer(transferTo, amountTokensOut);
         uint newTokenBalance = IERC20(token).balanceOf(address(this));
@@ -290,14 +301,6 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             newTokenBalance + amountTokensOut == oldTokenBalance,
             string(abi.encode(ErrorTypes.FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_0x5))
         );
-
-        // minting trade fees
-        uint amountLpTokensToMintAsFee = 
-            _getMintFeeLiquidityAmount(lastRootKValue, newRootKValue, totalLPSupply);
-        if (amountLpTokensToMintAsFee > 0) {
-            ICerbySwapLP1155V1(lpErc1155V1).
-                adminMint(feeToBeneficiary, poolPos, amountLpTokensToMintAsFee);
-        }
     }
 
     function _getMintFeeLiquidityAmount(uint lastRootKValue, uint newRootKValue, uint totalLPSupply)
