@@ -73,8 +73,6 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         _setupRole(ROLE_ADMIN, msg.sender);
         _setupRole(ROLE_ROUTER, msg.sender);
         feeToBeneficiary = msg.sender;
-
-        adminInitialize(); // TODO: Remove on production. Must not do any mints in contract creation!
     }
 
     modifier tokenMustExistInPool(address token)
@@ -125,17 +123,19 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         ));
 
         // TODO: remove on production
+        IERC20(testCerbyToken).safeTransferFrom(msg.sender, address(this), 1e18 * 1e6);
+        ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), 1e18 * 5e5);
         routerCreatePool(
             testCerbyToken,
-            1e18 * 1e6,
-            1e18 * 3e5
+            msg.sender
         );
 
         // TODO: remove on production
+        IERC20(testUsdcToken).safeTransferFrom(msg.sender, address(this), 1e18 * 7e5);
+        ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), 1e18 * 7e5);
         routerCreatePool(
             testUsdcToken,
-            1e18 * 1e6,
-            1e18 * 1e6
+            msg.sender
         );
     }
 
@@ -146,37 +146,37 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         feeToBeneficiary = newFeeToBeneficiary;
     }
 
-    function routerCreatePool(address token, uint112 addTokenAmount, uint112 mintCerUsdAmount)
+    function routerCreatePool(address token, address transferTo)
         public
         onlyRole(ROLE_ROUTER)
         tokenDoesNotExistInPool(token)
     {
         uint poolPos = pools.length;
 
+        // finding out how many tokens router have sent to us
+        uint newTokenBalance = IERC20(token).balanceOf(address(this));
+        uint amountTokensIn = newTokenBalance - pools[poolPos].balanceToken;
+        require(
+            amountTokensIn > 0,
+            string(abi.encode(ErrorTypes.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_6))
+        );
+
+        // finding out if for some reason we've received cerUSD tokens as well
+        uint newTotalCerUsdBalance = IERC20(cerUsdToken).balanceOf(address(this));
+        uint amountCerUsdIn = newTotalCerUsdBalance - totalCerUsdBalance;
+
         // create new pool record
-        uint112 newRootKValue = uint112(sqrt(uint(addTokenAmount) * uint(mintCerUsdAmount)));
+        uint112 newRootKValue = uint112(sqrt(uint(amountTokensIn) * uint(amountCerUsdIn)));
         uint32[NUMBER_OF_4HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
         Pool memory pool = Pool(
             token,
-            addTokenAmount,
-            mintCerUsdAmount,
+            uint112(amountTokensIn),
+            uint112(amountCerUsdIn),
             newRootKValue,
             hourlyTradeVolumeInCerUsd
         );
         pools.push(pool);
-        tokenToPoolPosition[token] = poolPos;
-
-        // transferring tokens from msg.sender to contract
-        uint oldBalance = IERC20(token).balanceOf(address(this));
-        IERC20(token).safeTransferFrom(msg.sender, address(this), addTokenAmount);
-        uint newBalance = IERC20(token).balanceOf(address(this));
-        require(
-            newBalance >= oldBalance + addTokenAmount,
-            string(abi.encode(ErrorTypes.FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_5))
-        );
-        
-        // minting cerUSD tokens based on admin input
-        ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);    
+        tokenToPoolPosition[token] = poolPos;   
 
         // minting 1000 lp tokens to prevent attack
         ICerbySwapLP1155V1(lpErc1155V1).adminMint(
@@ -186,18 +186,12 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         );
 
         // minting initial lp tokens
-        uint lpAmount = sqrt(uint(addTokenAmount) * uint(mintCerUsdAmount)) - MINIMUM_LIQUIDITY;
+        uint lpAmount = sqrt(uint(amountTokensIn) * uint(amountCerUsdIn)) - MINIMUM_LIQUIDITY;
         ICerbySwapLP1155V1(lpErc1155V1).adminMint(
-            msg.sender,
+            transferTo,
             poolPos,
             lpAmount
         );
-
-        // syncing balance
-        if (newBalance > pools[poolPos].balanceToken)
-        {
-            pools[poolPos].balanceToken = uint112(newBalance);
-        }
     }
 
     function addTokenLiquidity(address token, uint expireTimestamp, address transferTo)
