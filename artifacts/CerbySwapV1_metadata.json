@@ -106,11 +106,6 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
-						"name": "expireTimestamp",
-						"type": "uint256"
-					},
-					{
 						"internalType": "address",
 						"name": "transferTo",
 						"type": "address"
@@ -469,9 +464,9 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
-						"name": "removeLpAmount",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "transferTo",
+						"type": "address"
 					}
 				],
 				"name": "removeTokenLiquidity",
@@ -523,14 +518,9 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint112",
-						"name": "addTokenAmount",
-						"type": "uint112"
-					},
-					{
-						"internalType": "uint112",
-						"name": "mintCerUsdAmount",
-						"type": "uint112"
+						"internalType": "address",
+						"name": "transferTo",
+						"type": "address"
 					}
 				],
 				"name": "routerCreatePool",
@@ -573,11 +563,6 @@
 						"internalType": "uint112",
 						"name": "minAmountTokenOut",
 						"type": "uint112"
-					},
-					{
-						"internalType": "uint32",
-						"name": "expireTimestamp",
-						"type": "uint32"
 					},
 					{
 						"internalType": "address",
@@ -784,11 +769,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xb54374a640b17073019cd8c2d7038749f187da087344024abbdbbce1d0c96a89",
+			"keccak256": "0xa4ec1d83986b9d74c89e41adadb4d6d23c9ca9a085da1547cf119cfdf6c820a3",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://7993bedfca0f4170427eefa43e64013d4129715d56cb2821a3600d2033a212ac",
-				"dweb:/ipfs/QmV93iozs7ZQaBZejizu1uwR7ocRdUuhjhAUGX6167eAcB"
+				"bzz-raw://75e0d3ef4a8e19fe2ebe01047fa426461a40f921f6f0744d53cdae03d2cd4736",
+				"dweb:/ipfs/QmVUBKvQbCNDWm3LrRqy4Aa6Zxyw93QLarKQh7RhcrNter"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
@@ -808,11 +793,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapLP1155V1.sol": {
-			"keccak256": "0xf240d79a87b444d2ac7586f9c1177dd2ee2634fbd268c22bf3828826b159499a",
+			"keccak256": "0xdb69d089b09e4ae9e3dec3daab7984b3eb79cf0e84300b4841528b1bbd22c6dd",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://8849c771f6bb0427cc31e8635eb8e4f59ccaa06ce599373ac68c1bc096d2d952",
-				"dweb:/ipfs/QmZ42NfyN65MadmJdeRDarMMZQ4p7X1FatkDPp4jQZx9Ww"
+				"bzz-raw://b27cdf799539e0371cc705a544f7fa74b229c96073d6592d7d208f39ab3e8684",
+				"dweb:/ipfs/QmaUcXzutxkQJc8DPVhbbUaUsoDLbiALmkur8gNQPsSaK9"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyToken.sol": {

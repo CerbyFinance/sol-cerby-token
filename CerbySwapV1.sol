@@ -15,12 +15,12 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     using SafeERC20 for IERC20;
 
     enum ErrorTypes {
-        DEFAULT_ERROR_0, ALREADY_INITIALIZED_1, TOKEN_EXISTS_2, TOKEN_DOES_NOT_EXIST_3, 
-        TRANSACTION_EXPIRED_4, FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_5,
-        AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_6, 
-        AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_7,
-        OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_8,
-        OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_9
+        DEFAULT_ERROR_0x0, ALREADY_INITIALIZED_0x1, TOKEN_ALREAD_EXISTS_0x2, TOKEN_DOES_NOT_EXIST_0x3, 
+        _EMPTY_SPOT_ERROR_0x4, FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_0x5,
+        AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_0x6, 
+        AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_0x7,
+        OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_0x8,
+        OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_0x9
     }
 
     Pool[] pools;
@@ -79,7 +79,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     {
         require(
             tokenToPoolPosition[token] > 0 && token != cerUsdToken,
-            string(abi.encode(ErrorTypes.TOKEN_DOES_NOT_EXIST_3))
+            string(abi.encode(ErrorTypes.TOKEN_DOES_NOT_EXIST_0x3))
         );
         _;
     }
@@ -88,16 +88,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     {
         require(
             tokenToPoolPosition[token] == 0 && token != cerUsdToken,
-            string(abi.encode(ErrorTypes.TOKEN_EXISTS_2))
-        );
-        _;
-    }
-
-    modifier transactionIsNotExpired(uint expireTimestamp)
-    {
-        require(
-            block.timestamp <= expireTimestamp,
-            string(abi.encode(ErrorTypes.TRANSACTION_EXPIRED_4))
+            string(abi.encode(ErrorTypes.TOKEN_ALREAD_EXISTS_0x2))
         );
         _;
     }
@@ -108,7 +99,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     {
         require(
             !isInitializedAlready, 
-            string(abi.encode(ErrorTypes.ALREADY_INITIALIZED_1))
+            string(abi.encode(ErrorTypes.ALREADY_INITIALIZED_0x1))
         );
         isInitializedAlready = true;
 
@@ -158,7 +149,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountTokensIn = newTokenBalance - pools[poolPos].balanceToken;
         require(
             amountTokensIn > 0,
-            string(abi.encode(ErrorTypes.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_6))
+            string(abi.encode(ErrorTypes.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_0x6))
         );
 
         // finding out if for some reason we've received cerUSD tokens as well
@@ -194,11 +185,10 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         );
     }
 
-    function addTokenLiquidity(address token, uint expireTimestamp, address transferTo)
+    function addTokenLiquidity(address token, address transferTo)
         public
         //executeCronJobs() TODO: enable on production
         tokenMustExistInPool(token)
-        transactionIsNotExpired(expireTimestamp)
     {
         uint poolPos = tokenToPoolPosition[token];
 
@@ -207,7 +197,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountTokensIn = newTokenBalance - pools[poolPos].balanceToken;
         require(
             amountTokensIn > 0,
-            string(abi.encode(ErrorTypes.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_6))
+            string(abi.encode(ErrorTypes.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_0x6))
         );
 
         // finding out if for some reason we've received cerUSD tokens as well
@@ -229,7 +219,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         pools[poolPos].balanceToken = uint112(newTokenBalance);
         pools[poolPos].balanceCerUsd += uint112(amountCerUsdIn + mintCerUsdAmount);
 
-        // minting cerUSD according to current price
+        // minting cerUSD according to current pool
         ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
 
         // minting LP tokens
@@ -248,11 +238,10 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         }
     }
 
-    function removeTokenLiquidity(address token, uint expireTimestamp, address transferTo)
+    function removeTokenLiquidity(address token, address transferTo)
         public
         //executeCronJobs() TODO: enable on production
         tokenMustExistInPool(token)
-        transactionIsNotExpired(expireTimestamp)
     {
         uint poolPos = tokenToPoolPosition[token];
 
@@ -299,7 +288,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint newTokenBalance = IERC20(token).balanceOf(address(this));
         require(
             newTokenBalance + amountTokensOut == oldTokenBalance,
-            string(abi.encode(ErrorTypes.FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_5))
+            string(abi.encode(ErrorTypes.FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_0x5))
         );
 
         // minting trade fees
@@ -328,12 +317,10 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         address tokenIn,
         address tokenOut,
         uint112 minAmountTokenOut,
-        uint32 expireTimestamp,
         address transferTo
     )
         public
         //executeCronJobs() TODO: enable on production
-        transactionIsNotExpired(expireTimestamp)
         tokenMustExistInPool(tokenIn)
         returns (uint)
     {
@@ -385,7 +372,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountTokensIn = newTokenBalance - pools[poolPos].balanceToken;
         require(
             amountTokensIn > 0,
-            string(abi.encode(ErrorTypes.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_6))
+            string(abi.encode(ErrorTypes.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_0x6))
         );
 
         // finding out if for some reason we've received cerUSD tokens as well
@@ -396,7 +383,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountCerUsdOut = getOutputExactTokensForCerUsd(poolPos, amountTokensIn);
         require(
             amountCerUsdOut >= minAmountCerUsdOut,
-            string(abi.encode(ErrorTypes.OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_8))
+            string(abi.encode(ErrorTypes.OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_0x8))
         );
 
         // updating pool values
@@ -444,7 +431,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountCerUsdIn = newTotalCerUsdBalance - totalCerUsdBalance;
         require(
             amountCerUsdIn > 0,
-            string(abi.encode(ErrorTypes.AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_7))
+            string(abi.encode(ErrorTypes.AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_0x7))
         );
 
         // finding out if for some reason we've received tokens as well
@@ -455,7 +442,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountTokensOut = getOutputExactCerUsdForToken(poolPos, amountCerUsdIn);
         require(
             amountTokensOut >= minAmountTokenOut,
-            string(abi.encode(ErrorTypes.OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_9))
+            string(abi.encode(ErrorTypes.OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_0x9))
         );
 
         // updating pool values
@@ -489,7 +476,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint newTokenBalance = IERC20(tokenOut).balanceOf(address(this));
         require(
             newTokenBalance == pools[poolPos].balanceToken,
-            string(abi.encode(ErrorTypes.FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_5))
+            string(abi.encode(ErrorTypes.FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_0x5))
         );
 
         return amountTokensOut;
