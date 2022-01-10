@@ -327,7 +327,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         }
     }
 
-    function swapExactTokenForToken(
+    function swapExactTokensForTokens(
         address tokenIn,
         address tokenOut,
         uint amountTokensIn,
@@ -341,7 +341,28 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
     {
-        IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amountTokensIn);
+        return _swapExactTokensForTokens(
+            msg.sender,
+            tokenIn,
+            tokenOut,
+            amountTokensIn,
+            minAmountTokensOut,
+            transferTo
+        );
+    }
+
+    function _swapExactTokensForTokens(
+        address fromWallet,
+        address tokenIn,
+        address tokenOut,
+        uint amountTokensIn,
+        uint minAmountTokensOut,
+        address transferTo    
+    )
+        private
+        returns (uint)
+    {
+        IERC20(tokenIn).safeTransferFrom(fromWallet, address(this), amountTokensIn);
 
         uint outputTokensOut;
         if (tokenIn == cerUsdToken && tokenOut != cerUsdToken) {
@@ -390,6 +411,27 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
     {
+        return _swapTokenForExactToken(
+            msg.sender,
+            tokenIn,
+            tokenOut,
+            maxAmountTokensIn,
+            amountTokensOut,
+            transferTo
+        );        
+    }
+
+    function _swapTokenForExactToken(
+        address fromWallet,
+        address tokenIn,
+        address tokenOut,
+        uint maxAmountTokensIn,
+        uint amountTokensOut,
+        address transferTo
+    )
+        private
+        returns (uint)
+    {
         uint amountTokensIn;
         uint outputTokensOut;
         if (tokenIn == cerUsdToken && tokenOut != cerUsdToken) {
@@ -401,7 +443,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
                 OUTPUT_CERUSD_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_X
             );
 
-            IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amountTokensIn);
+            IERC20(tokenIn).safeTransferFrom(fromWallet, address(this), amountTokensIn);
 
             // swapping cerUSD ---> YYY
             outputTokensOut = _swapExactCerUsdForToken(
@@ -418,7 +460,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
                 OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_Y
             );
 
-            IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amountTokensIn);
+            IERC20(tokenIn).safeTransferFrom(fromWallet, address(this), amountTokensIn);
 
             // swapping XXX ---> cerUSD
             outputTokensOut = _swapExactTokenForCerUsd(
@@ -439,7 +481,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
                 OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_Y
             );
 
-            IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amountTokensIn);
+            IERC20(tokenIn).safeTransferFrom(fromWallet, address(this), amountTokensIn);
 
             // swapping XXX ---> cerUSD
             _swapExactTokenForCerUsd(

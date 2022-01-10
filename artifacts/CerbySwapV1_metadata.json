@@ -661,7 +661,7 @@
 						"type": "address"
 					}
 				],
-				"name": "swapExactTokenForToken",
+				"name": "swapExactTokensForTokens",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -904,11 +904,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xc0981d65520f23dacbff0540edf2ddf29e9a13f30cd799edb298dedeeca25ff9",
+			"keccak256": "0x7fa66cbd91afa82affa03a1c18ef5f62bc3150266dafec23ca96e8c63c1e3592",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://78466a3582b9df45f92dce299ddd5fc4243460cff5aaf6eb6719b00f676515f3",
-				"dweb:/ipfs/QmP93cfnbwXuCrm75nbw5vW4UTZ2LAqEJSYhQhvyWJxs2q"
+				"bzz-raw://cba84ff8f3be267dc1704aefe445321c3c10b2a555006311bc0dd603ea867ca5",
+				"dweb:/ipfs/QmQrmvdQbfujUL7fNyE8y59fnMDyUp6dtJ7QZk6U7MPDrv"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
