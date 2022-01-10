@@ -15,12 +15,12 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     using SafeERC20 for IERC20;
 
     enum ErrorTypes {
-        DEFAULT_ERROR_0x0, ALREADY_INITIALIZED_0x1, TOKEN_ALREAD_EXISTS_0x2, TOKEN_DOES_NOT_EXIST_0x3, 
-        _EMPTY_SPOT_ERROR_0x4, FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_0x5,
-        AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_0x6, 
-        AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_0x7,
-        OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_0x8,
-        OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_0x9
+        DEFAULT_ERROR_0, ALREADY_INITIALIZED_1, TOKEN_ALREAD_EXISTS_2, TOKEN_DOES_NOT_EXIST_3, 
+        _EMPTY_SPOT_ERROR_4, FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_5,
+        AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_6, 
+        AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_7,
+        OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_8,
+        OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_9
     }
 
     Pool[] pools;
@@ -79,7 +79,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     {
         require(
             tokenToPoolPosition[token] > 0 && token != cerUsdToken,
-            string(abi.encode(ErrorTypes.TOKEN_DOES_NOT_EXIST_0x3))
+            string(abi.encodePacked(48 + uint8(ErrorTypes.TOKEN_DOES_NOT_EXIST_3)))
         );
         _;
     }
@@ -88,7 +88,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     {
         require(
             tokenToPoolPosition[token] == 0 && token != cerUsdToken,
-            string(abi.encode(ErrorTypes.TOKEN_ALREAD_EXISTS_0x2))
+            string(abi.encodePacked(48 + uint8(ErrorTypes.TOKEN_ALREAD_EXISTS_2)))
         );
         _;
     }
@@ -99,7 +99,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     {
         require(
             !isInitializedAlready, 
-            string(abi.encode(ErrorTypes.ALREADY_INITIALIZED_0x1))
+            string(abi.encodePacked(48 + uint8(ErrorTypes.ALREADY_INITIALIZED_1)))
         );
         isInitializedAlready = true;
 
@@ -149,7 +149,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountTokensIn = newTokenBalance - pools[poolPos].balanceToken;
         require(
             amountTokensIn > 0,
-            string(abi.encode(ErrorTypes.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_0x6))
+            string(abi.encodePacked(48 + uint8(ErrorTypes.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_6)))
         );
 
         // finding out if for some reason we've received cerUSD tokens as well
@@ -197,7 +197,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountTokensIn = newTokenBalance - pools[poolPos].balanceToken;
         require(
             amountTokensIn > 0,
-            string(abi.encode(ErrorTypes.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_0x6))
+            string(abi.encodePacked(48 + uint8(ErrorTypes.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_6)))
         );
 
         // finding out if for some reason we've received cerUSD tokens as well
@@ -299,7 +299,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint newTokenBalance = IERC20(token).balanceOf(address(this));
         require(
             newTokenBalance + amountTokensOut == oldTokenBalance,
-            string(abi.encode(ErrorTypes.FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_0x5))
+            string(abi.encodePacked(48 + uint8(ErrorTypes.FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_5)))
         );
     }
 
@@ -376,7 +376,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountTokensIn = newTokenBalance - pools[poolPos].balanceToken;
         require(
             amountTokensIn > 0,
-            string(abi.encode(ErrorTypes.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_0x6))
+            string(abi.encodePacked(48 + uint8(ErrorTypes.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_6)))
         );
 
         // finding out if for some reason we've received cerUSD tokens as well
@@ -387,7 +387,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountCerUsdOut = getOutputExactTokensForCerUsd(poolPos, amountTokensIn);
         require(
             amountCerUsdOut >= minAmountCerUsdOut,
-            string(abi.encode(ErrorTypes.OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_0x8))
+            string(abi.encodePacked(48 + uint8(ErrorTypes.OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_8)))
         );
 
         // updating pool values
@@ -435,7 +435,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountCerUsdIn = newTotalCerUsdBalance - totalCerUsdBalance;
         require(
             amountCerUsdIn > 0,
-            string(abi.encode(ErrorTypes.AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_0x7))
+            string(abi.encodePacked(48 + uint8(ErrorTypes.AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_7)))
         );
 
         // finding out if for some reason we've received tokens as well
@@ -446,7 +446,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountTokensOut = getOutputExactCerUsdForToken(poolPos, amountCerUsdIn);
         require(
             amountTokensOut >= minAmountTokenOut,
-            string(abi.encode(ErrorTypes.OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_0x9))
+            string(abi.encodePacked(48 + uint8(ErrorTypes.OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_9)))
         );
 
         // updating pool values
@@ -480,7 +480,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint newTokenBalance = IERC20(tokenOut).balanceOf(address(this));
         require(
             newTokenBalance == pools[poolPos].balanceToken,
-            string(abi.encode(ErrorTypes.FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_0x5))
+            string(abi.encodePacked(48 + uint8(ErrorTypes.FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_5)))
         );
 
         return amountTokensOut;
