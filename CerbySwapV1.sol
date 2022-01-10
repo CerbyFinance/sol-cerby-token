@@ -48,7 +48,6 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     address constant testCerbyToken = 0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2;
     address constant cerUsdToken = 0x04D7000CC826349A872757D82b3E0F68a713B3c5;
     address constant testUsdcToken = 0xde402E9D305bAd483d47bc858cC373c5a040A62D;
-    address constant wethToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De; // TODO: update
 
     uint16 constant FEE_DENORM = 10000;
     bytes32 constant ROLE_ROUTER = keccak256(abi.encode("ROLE_ROUTER"));
@@ -57,7 +56,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     uint constant MINIMUM_LIQUIDITY = 1000;
     address constant DEAD_ADDRESS = address(0xdead);
     address constant BURN_ADDRESS = address(0x0);
-    address feeToBeneficiary = DEAD_ADDRESS;
+    address public feeToBeneficiary = DEAD_ADDRESS;
 
     bool isInitializedAlready;
 
@@ -72,6 +71,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
         _setupRole(ROLE_ROUTER, msg.sender);
+
         feeToBeneficiary = msg.sender;
     }
 
@@ -316,6 +316,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         }
     }
 
+    // TODO: add swapTokenForExactToken
     function swapExactTokenForToken(
         address tokenIn,
         address tokenOut,

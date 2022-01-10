@@ -138,6 +138,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "feeToBeneficiary",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getCurrent4Hour",
 				"outputs": [
 					{
@@ -769,11 +782,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x07af0027845367d0022630902c4bc224bebc3f81a185b0be2f510351b16da455",
+			"keccak256": "0xffef64089d0253a109e651a1767c538c879aad305b8c83d05894da97c32cb2b7",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://a8637d6002b1bc9c8f6720da24a3c3316dc068c7f917f8e0d0aa99fb285f1970",
-				"dweb:/ipfs/QmTANfoA9xArThdzzYnQKYSrkyGLiA3qxfjmp4dRXHJpDx"
+				"bzz-raw://1801a8dd118a50e7323f91f1c28a1058e017ff0d640410e27a9eddcad142512a",
+				"dweb:/ipfs/QmVxDpajSNkBq48JvRLNg8YNQzji3okmJ51dX8myFLbodW"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
