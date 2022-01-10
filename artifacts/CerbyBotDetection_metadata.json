@@ -101,22 +101,66 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					}
+				],
+				"name": "bulkMarkAddressAsBot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					},
+					{
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "bulkMarkAddressAsBotBool",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					},
+					{
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "bulkMarkAddressAsHuman",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
 					},
 					{
 						"internalType": "uint256",
-						"name": "amountTokensIn",
+						"name": "value",
 						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "transferTo",
-						"type": "address"
 					}
 				],
-				"name": "addTokenLiquidity",
+				"name": "bulkMarkAsUniswapPair",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -125,232 +169,111 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "token",
+						"name": "tokenAddr",
 						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountTokensIn",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountCerUsdIn",
-						"type": "uint256"
 					},
 					{
 						"internalType": "address",
-						"name": "transferTo",
+						"name": "sender",
 						"type": "address"
-					}
-				],
-				"name": "adminCreatePool",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "adminInitialize",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
+					},
 					{
 						"internalType": "address",
-						"name": "newFeeToBeneficiary",
+						"name": "recipient",
 						"type": "address"
-					}
-				],
-				"name": "adminUpdateFeeToBeneficiary",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "feeToBeneficiary",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getCurrent4Hour",
-				"outputs": [
+					},
 					{
 						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "poolPos",
-						"type": "uint256"
-					}
-				],
-				"name": "getCurrentFeeBasedOnTrades",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "fee",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "poolPos",
+						"name": "recipientBalance",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "amountTokensOut",
+						"name": "transferAmount",
 						"type": "uint256"
 					}
 				],
-				"name": "getInputCerUsdForExactToken",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "poolPos",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountCerUsdOut",
-						"type": "uint256"
-					}
-				],
-				"name": "getInputTokenForExactCerUsd",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "poolPos",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountCerUsdIn",
-						"type": "uint256"
-					}
-				],
-				"name": "getOutputExactCerUsdForToken",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "poolPos",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountTokensIn",
-						"type": "uint256"
-					}
-				],
-				"name": "getOutputExactTokensForCerUsd",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "pos",
-						"type": "uint256"
-					}
-				],
-				"name": "getPoolByPosition",
+				"name": "checkTransactionInfo",
 				"outputs": [
 					{
 						"components": [
 							{
-								"internalType": "address",
-								"name": "token",
-								"type": "address"
+								"internalType": "bool",
+								"name": "isBuy",
+								"type": "bool"
 							},
 							{
-								"internalType": "uint112",
-								"name": "balanceToken",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint112",
-								"name": "balanceCerUsd",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint112",
-								"name": "lastRootKValue",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint32[8]",
-								"name": "hourlyTradeVolumeInCerUsd",
-								"type": "uint32[8]"
+								"internalType": "bool",
+								"name": "isSell",
+								"type": "bool"
 							}
 						],
-						"internalType": "struct CerbySwapV1.Pool",
-						"name": "",
+						"internalType": "struct TransactionInfo",
+						"name": "output",
 						"type": "tuple"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "cronJobs",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "targetContract",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes4",
+						"name": "signature",
+						"type": "bytes4"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "executeCronJobs",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					}
+				],
+				"name": "getCooldownPeriodSell",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getCronJobsLength",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -360,43 +283,21 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "token",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "addr",
 						"type": "address"
 					}
 				],
-				"name": "getPoolByToken",
+				"name": "getReceiveTimestamp",
 				"outputs": [
 					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "token",
-								"type": "address"
-							},
-							{
-								"internalType": "uint112",
-								"name": "balanceToken",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint112",
-								"name": "balanceCerUsd",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint112",
-								"name": "lastRootKValue",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint32[8]",
-								"name": "hourlyTradeVolumeInCerUsd",
-								"type": "uint32[8]"
-							}
-						],
-						"internalType": "struct CerbySwapV1.Pool",
+						"internalType": "uint256",
 						"name": "",
-						"type": "tuple"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -459,25 +360,6 @@
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "pos",
-						"type": "uint256"
-					}
-				],
-				"name": "getUtilsContractAtPos",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -554,21 +436,224 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "token",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isBotAddress",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isContract",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isMarkedAsBotStorage",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					}
+				],
+				"name": "isMarkedAsBotStorageBulk",
+				"outputs": [
+					{
+						"internalType": "address[]",
+						"name": "",
+						"type": "address[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isMarkedAsHumanStorage",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					}
+				],
+				"name": "isMarkedAsHumanStorageBulk",
+				"outputs": [
+					{
+						"internalType": "address[]",
+						"name": "",
+						"type": "address[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isUniswapPair",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "markAddressAsBot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "markAddressAsHuman",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "markAddressAsNotBot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "amountLpTokensBalanceToBurn",
+						"name": "value",
 						"type": "uint256"
-					},
+					}
+				],
+				"name": "markAsUniswapPair",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
 					{
 						"internalType": "address",
-						"name": "transferTo",
+						"name": "targetContract",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "abiCall",
+						"type": "string"
+					}
+				],
+				"name": "registerJob",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "targetContract",
 						"type": "address"
 					}
 				],
-				"name": "removeTokenLiquidity",
+				"name": "removeJobs",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -632,214 +717,18 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenIn",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "tokenOut",
+						"name": "tokenAddr",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "amountTokensIn",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "minAmountTokensOut",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "expireTimestamp",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "transferTo",
-						"type": "address"
-					}
-				],
-				"name": "swapExactTokenForToken",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
+						"name": "newCooldownSellPeriod",
 						"type": "uint256"
 					}
 				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenIn",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "tokenOut",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "maxAmountTokensIn",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountTokensOut",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "expireTimestamp",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "transferTo",
-						"type": "address"
-					}
-				],
-				"name": "swapTokenForExactToken",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					}
-				],
-				"name": "syncTokenBalanceInPool",
+				"name": "updateCooldownPeriodSell",
 				"outputs": [],
 				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "testGetBalances",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "testGetPools",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "token",
-								"type": "address"
-							},
-							{
-								"internalType": "uint112",
-								"name": "balanceToken",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint112",
-								"name": "balanceCerUsd",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint112",
-								"name": "lastRootKValue",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint32[8]",
-								"name": "hourlyTradeVolumeInCerUsd",
-								"type": "uint32[8]"
-							}
-						],
-						"internalType": "struct CerbySwapV1.Pool",
-						"name": "",
-						"type": "tuple"
-					},
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "token",
-								"type": "address"
-							},
-							{
-								"internalType": "uint112",
-								"name": "balanceToken",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint112",
-								"name": "balanceCerUsd",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint112",
-								"name": "lastRootKValue",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint32[8]",
-								"name": "hourlyTradeVolumeInCerUsd",
-								"type": "uint32[8]"
-							}
-						],
-						"internalType": "struct CerbySwapV1.Pool",
-						"name": "",
-						"type": "tuple"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "testGetPrices",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
 				"type": "function"
 			}
 		],
@@ -881,7 +770,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/CerbySwapV1.sol": "CerbySwapV1"
+			"sol-defifactory-token/CerbyBotDetection.sol": "CerbyBotDetection"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -895,60 +784,20 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/CerbyCronJobsExecution.sol": {
-			"keccak256": "0x2ba3f1ccdebeb6c7bef64847799fe5de1e4502ad6600e5fd7849dff2d4463ca5",
+		"sol-defifactory-token/CerbyBotDetection.sol": {
+			"keccak256": "0xc52367b7762fdd5e1a3097791b6d00c444faa84ebe20f59019c34fcd904a051b",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://98834734e07a181e98e248a2bda2e5d81b71f2ad51d8b6576754de68822aa85e",
-				"dweb:/ipfs/QmQNPszhgNMRtEW78T3xY4saSNdwKHQdGUZLPAxatiwAXs"
+				"bzz-raw://e9c138c70887e4b1240dc9d4bbbd9c9c75c2f592c91f946a08c1c36528127a18",
+				"dweb:/ipfs/QmaLeZP5XoHmfB1j96F8wgurEyrmeRUU8dsR8EwZ5USfxJ"
 			]
 		},
-		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xc0981d65520f23dacbff0540edf2ddf29e9a13f30cd799edb298dedeeca25ff9",
-			"license": "BSD-2-Clause",
-			"urls": [
-				"bzz-raw://78466a3582b9df45f92dce299ddd5fc4243460cff5aaf6eb6719b00f676515f3",
-				"dweb:/ipfs/QmP93cfnbwXuCrm75nbw5vW4UTZ2LAqEJSYhQhvyWJxs2q"
-			]
-		},
-		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
-			"keccak256": "0x9b905563f93d66ea6f18aaea9c07d545092817e11bae89ae0c8cd59f4f50e505",
-			"license": "BUSL-1.1",
-			"urls": [
-				"bzz-raw://51de5e7294d47d594ed80f368b8cffa09d67af65d9f3f3699f3e5b7bb96f33ce",
-				"dweb:/ipfs/QmRKwyPpezfDG6s4Y1BimYvvjzZ3amPxhEMACjMv2U3fFw"
-			]
-		},
-		"sol-defifactory-token/interfaces/ICerbyCronJobs.sol": {
-			"keccak256": "0x9548d0f358b80d5721839abb25aa5e42bdd6b7c436bf222dedddb66223305d88",
-			"license": "BUSL-1.1",
-			"urls": [
-				"bzz-raw://7b58f862c79af6250975b7c558cec4e930e9a0a807cfc5ecc256ee566fa7defb",
-				"dweb:/ipfs/QmVW391ejnmEQVeUCpcAnkp9VpzjJhiqqkvyuSh3sEyaNQ"
-			]
-		},
-		"sol-defifactory-token/interfaces/ICerbySwapLP1155V1.sol": {
-			"keccak256": "0xdb69d089b09e4ae9e3dec3daab7984b3eb79cf0e84300b4841528b1bbd22c6dd",
-			"license": "BUSL-1.1",
-			"urls": [
-				"bzz-raw://b27cdf799539e0371cc705a544f7fa74b229c96073d6592d7d208f39ab3e8684",
-				"dweb:/ipfs/QmaUcXzutxkQJc8DPVhbbUaUsoDLbiALmkur8gNQPsSaK9"
-			]
-		},
-		"sol-defifactory-token/interfaces/ICerbyToken.sol": {
-			"keccak256": "0x1cf233391c970f48f8e1a2db9a3e81c4ebb8c2ff423c6d1c553df632f04abf2d",
+		"sol-defifactory-token/interfaces/IWeth.sol": {
+			"keccak256": "0xaebf064916d07f10ca2ca496bff1160dc28ad0a0ae92bbb52fd0f21ff964d9e8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://845a3faee636b03fa2b2e09a4d43df33ce2f1ac5f031c9f4d9f7a5f2a1d5ee7e",
-				"dweb:/ipfs/QmV6PFf9HzucpBj4y6zvW7BbuMRGhQAEa7MRWKCCREgB7V"
-			]
-		},
-		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {
-			"keccak256": "0xe9662b09cb4a69c4bcd634ae71ca5e60f630b89e2ef8f818ccf12ceb47707013",
-			"license": "BSD-2-Clause",
-			"urls": [
-				"bzz-raw://38d67dec9f8deaeb4adc5e58d8f483beef22cab8dbc191bc3247e3fc48e434eb",
-				"dweb:/ipfs/QmR1f6cNhWzmDt5qJ9gjuFJL21FwmnNnBhH3beJ2JbPqnz"
+				"bzz-raw://6e85dbc5e9dd412cc18ca50e53160765f510e2e6b5c5be6de3a25f3dc8eb39b1",
+				"dweb:/ipfs/QmYmKKacDwTZz4vUQud2us8qXP7GqUzEGS3b9AAriKjYMr"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
@@ -981,30 +830,6 @@
 			"urls": [
 				"bzz-raw://3dcc7b09bfa6e18aab262ca372f4a9b1fc82e294b430706a4e1378cf58e6a276",
 				"dweb:/ipfs/QmT8oSAcesdctR15HMLhr2a1HRpXymxdjTfdtfTYJcj2N2"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {
-			"keccak256": "0x61437cb513a887a1bbad006e7b1c8b414478427d33de47c5600af3c748f108da",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://2c3d0973630ed74f2b5ce3944677a885dc70ec32fc83b35f55045a10224da32b",
-				"dweb:/ipfs/QmbefZ5RoEZKNHXCALfh683PnaNYzKPcKMFjyY1DVAgq8A"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/token/ERC20/utils/SafeERC20.sol": {
-			"keccak256": "0xc3d946432c0ddbb1f846a0d3985be71299df331b91d06732152117f62f0be2b5",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://4632c341a06ba5c079b51ca5a915efab4e6ab57735b37839b3e8365ff806a43e",
-				"dweb:/ipfs/QmTHT3xHYed2wajEoA5qu7ii2BxLpPhQZHwAhtLK5Z7ANK"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/utils/Address.sol": {
-			"keccak256": "0x51b758a8815ecc9596c66c37d56b1d33883a444631a3f916b9fe65cb863ef7c4",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://997ca03557985b3c6f9143a18b6c3a710b3bc1c7f189ee956d305a966ecfb922",
-				"dweb:/ipfs/QmQaD3Wb62F88SHqmpLttvF6wKuPDQep2LLUcKPekeRzvz"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/utils/Context.sol": {

@@ -56,6 +56,8 @@ contract CerbyBotDetection is AccessControlEnumerable {
         _setupRole(ROLE_ADMIN, 0x9980a0447456b5cdce209D7dC94820FF15600022); // Cerby blacklister
         _setupRole(ROLE_ADMIN, 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840); // Cerby Token Contract
         
+        markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28);
+
         markAddressAsHuman(STAKING_CONTRACT, true); // Staking contract
         markAddressAsHuman(0xdEF78a28c78A461598d948bc0c689ce88f812AD8, true); // Cross Chain Bridge Wallet
         markAddressAsHuman(0xDef1C0ded9bec7F1a1670819833240f027b25EfF, true); // 0x: Exchange Proxy
