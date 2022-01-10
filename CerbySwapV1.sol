@@ -38,6 +38,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     address constant testCerbyToken = 0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2;
     address constant cerUsdToken = 0x04D7000CC826349A872757D82b3E0F68a713B3c5;
     address constant testUsdcToken = 0xde402E9D305bAd483d47bc858cC373c5a040A62D;
+    address constant wethToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De; // TODO: update
 
     uint16 constant FEE_DENORM = 10000;
 
@@ -535,6 +536,53 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         {
             pools[poolPos].balanceToken = newBalanceToken;
         }
+    }
+
+    function _safeTransferFrom(address token, address from, uint amount, uint oldBalance)
+        private
+    {
+        if (token == wethToken) {
+            require(
+                msg.value >= amount,
+                "CS1: Wrong amount of native tokens provided"
+            );
+        } else {
+            IERC20(token).safeTransferFrom(from, address(this), amount);
+            uint newBalance = IERC20(token).balanceOf(address(this));
+            require(
+                newBalance >= oldBalance + amount,
+                "CS1: Fee-on-transfer tokens aren't supported"
+            );
+        }
+    }
+
+    function _safeTransfer(address token, address to, uint amount, uint oldBalance)
+        private
+    {
+        if (token == wethToken) {
+            payable(to).transfer(amount);
+        } else {
+            IERC20(token).safeTransfer(to, amount);
+            uint newBalance = IERC20(token).balanceOf(address(this));
+            require(
+                newBalance + amount >= oldBalance,
+                "CS1: Fee-on-transfer tokens aren't supported"
+            );
+        }
+    }
+
+    function _getContractBalance(address token)
+        private
+        view
+        returns (uint)
+    {
+        uint balance;
+        if (token == wethToken) {
+            balance = token.balance;
+        } else {
+            balance = IERC20(token).balanceOf(token);
+        }
+        return balance;
     }
 
     function getCurrent4Hour()
