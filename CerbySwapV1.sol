@@ -52,6 +52,8 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     address constant cerUsdToken = 0x04D7000CC826349A872757D82b3E0F68a713B3c5;
     address constant testUsdcToken = 0xde402E9D305bAd483d47bc858cC373c5a040A62D;
 
+    address nativeToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De; // TODO: deploy and update
+
     uint16 constant FEE_DENORM = 10000;
 
     uint constant NUMBER_OF_4HOUR_INTERVALS = 8;
@@ -327,6 +329,56 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         }
     }
 
+    function swapExactNativeForTokens(
+        address tokenOut,
+        uint amountTokensIn,
+        uint minAmountTokensOut,
+        uint expireTimestamp,
+        address transferTo
+    )
+        public
+        payable
+        //executeCronJobs() TODO: enable on production
+        tokenMustExistInPool(nativeToken)
+        transactionIsNotExpired(expireTimestamp)
+        returns (uint)
+    {
+        // TODO: wrap eth --> weth
+        return _swapExactTokensForTokens(
+            address(this),
+            nativeToken,
+            tokenOut,
+            amountTokensIn,
+            minAmountTokensOut,
+            transferTo
+        );
+    }
+
+    function swapNativeForExactTokens(
+        address tokenOut,
+        uint maxAmountTokensIn,
+        uint amountTokensOut,
+        uint expireTimestamp,
+        address transferTo
+    )
+        public
+        payable
+        //executeCronJobs() TODO: enable on production
+        tokenMustExistInPool(nativeToken)
+        transactionIsNotExpired(expireTimestamp)
+        returns (uint)
+    {
+        // TODO: wrap eth --> weth
+        return _swapTokenForExactToken(
+            address(this),
+            nativeToken,
+            tokenOut,
+            maxAmountTokensIn,
+            amountTokensOut,
+            transferTo
+        );   
+    }
+
     function swapExactTokensForTokens(
         address tokenIn,
         address tokenOut,
@@ -362,7 +414,10 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         private
         returns (uint)
     {
-        IERC20(tokenIn).safeTransferFrom(fromWallet, address(this), amountTokensIn);
+        if (fromWallet != address(this))
+        {
+            IERC20(tokenIn).safeTransferFrom(fromWallet, address(this), amountTokensIn);
+        }
 
         uint outputTokensOut;
         if (tokenIn == cerUsdToken && tokenOut != cerUsdToken) {
@@ -443,7 +498,10 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
                 OUTPUT_CERUSD_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_X
             );
 
-            IERC20(tokenIn).safeTransferFrom(fromWallet, address(this), amountTokensIn);
+            if (fromWallet != address(this))
+            {
+                IERC20(tokenIn).safeTransferFrom(fromWallet, address(this), amountTokensIn);
+            }
 
             // swapping cerUSD ---> YYY
             outputTokensOut = _swapExactCerUsdForToken(
@@ -460,7 +518,10 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
                 OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_Y
             );
 
-            IERC20(tokenIn).safeTransferFrom(fromWallet, address(this), amountTokensIn);
+            if (fromWallet != address(this))
+            {
+                IERC20(tokenIn).safeTransferFrom(fromWallet, address(this), amountTokensIn);
+            }            
 
             // swapping XXX ---> cerUSD
             outputTokensOut = _swapExactTokenForCerUsd(
@@ -481,7 +542,10 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
                 OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_Y
             );
 
-            IERC20(tokenIn).safeTransferFrom(fromWallet, address(this), amountTokensIn);
+            if (fromWallet != address(this))
+            {
+                IERC20(tokenIn).safeTransferFrom(fromWallet, address(this), amountTokensIn);
+            }
 
             // swapping XXX ---> cerUSD
             _swapExactTokenForCerUsd(

@@ -632,6 +632,45 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "tokenOut",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountTokensIn",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "minAmountTokensOut",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expireTimestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "transferTo",
+						"type": "address"
+					}
+				],
+				"name": "swapExactNativeForTokens",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
 						"name": "tokenIn",
 						"type": "address"
 					},
@@ -670,6 +709,45 @@
 					}
 				],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenOut",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "maxAmountTokensIn",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountTokensOut",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expireTimestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "transferTo",
+						"type": "address"
+					}
+				],
+				"name": "swapNativeForExactTokens",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
@@ -904,11 +982,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x7fa66cbd91afa82affa03a1c18ef5f62bc3150266dafec23ca96e8c63c1e3592",
+			"keccak256": "0x31d225f92077ecf09a42b514d9af0fbf62f051dd944ae36984b73683e393bebb",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://cba84ff8f3be267dc1704aefe445321c3c10b2a555006311bc0dd603ea867ca5",
-				"dweb:/ipfs/QmQrmvdQbfujUL7fNyE8y59fnMDyUp6dtJ7QZk6U7MPDrv"
+				"bzz-raw://77bd8732f553d62ea6e5b578bd8f4010a1e702001d7a0d2c1b4e3b3a78900590",
+				"dweb:/ipfs/QmVio69hCRX7LN8LvxWLo1hyk3hSpcz9uTgMds5VdbQTMx"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
