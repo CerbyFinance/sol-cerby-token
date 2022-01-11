@@ -41,6 +41,7 @@ expireTimestamp = timestampSeconds + 86400
 transferTo = currentWallet
 
 - after test
+# swap exact Cerby for CerUsd (check pool balances change)
 afterCerbyPool = getPoolByToken(testCerbyToken)
 afterUsdcPool = getPoolByToken(testUsdcToken)
 amountTokensOut = getOutputExactTokensForCerUsd(beforeCerbyPool, amountTokensIn)
