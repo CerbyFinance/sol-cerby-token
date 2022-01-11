@@ -8,6 +8,7 @@ import "./interfaces/ICerbyTokenMinterBurner.sol";
 import "./interfaces/ICerbyCronJobs.sol";
 import "./interfaces/ICerbyBotDetection.sol";
 import "./interfaces/ICerbySwapLP1155V1.sol";
+import "./interfaces/IWeth.sol";
 import "./CerbyCronJobsExecution.sol";
 
 
@@ -378,7 +379,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         returns (uint)
     {
         // TODO: wrap eth --> weth
-        return _swapTokenForExactToken(
+        return _swapTokensForExactTokens(
             address(this),
             nativeToken,
             tokenOut,
@@ -386,6 +387,57 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             amountTokensOut,
             transferTo
         );   
+    }
+
+    function swapTokensForExactNative(
+        address tokenIn,
+        uint maxAmountTokensIn,
+        uint amountTokensOut,
+        uint expireTimestamp,
+        address transferTo
+    )
+        public
+        payable
+        //executeCronJobs() TODO: enable on production
+        tokenMustExistInPool(nativeToken)
+        transactionIsNotExpired(expireTimestamp)
+        returns (uint)
+    {
+        return _swapTokensForExactTokens(
+            msg.sender,
+            tokenIn,
+            nativeToken,
+            maxAmountTokensIn,
+            amountTokensOut,
+            address(this)
+        );
+
+        // TODO: unwrap weth --> eth
+    }
+
+    function swapExactTokensForNative(
+        address tokenIn,
+        uint amountTokensIn,
+        uint minAmountTokensOut,
+        uint expireTimestamp,
+        address transferTo
+    )
+        public
+        payable
+        //executeCronJobs() TODO: enable on production
+        tokenMustExistInPool(nativeToken)
+        transactionIsNotExpired(expireTimestamp)
+        returns (uint)
+    {
+        return _swapExactTokensForTokens(
+            address(this),
+            tokenIn,
+            nativeToken,
+            amountTokensIn,
+            minAmountTokensOut,
+            transferTo
+        );   
+        // TODO: unwrap weth --> eth
     }
 
     function swapExactTokensForTokens(
@@ -461,7 +513,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         return outputTokensOut;
     }
 
-    function swapTokenForExactToken(
+    function swapTokensForExactTokens(
         address tokenIn,
         address tokenOut,
         uint maxAmountTokensIn,
@@ -475,7 +527,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
     {
-        return _swapTokenForExactToken(
+        return _swapTokensForExactTokens(
             msg.sender,
             tokenIn,
             tokenOut,
@@ -485,7 +537,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         );        
     }
 
-    function _swapTokenForExactToken(
+    function _swapTokensForExactTokens(
         address fromWallet,
         address tokenIn,
         address tokenOut,

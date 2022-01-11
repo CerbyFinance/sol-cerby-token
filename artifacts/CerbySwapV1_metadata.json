@@ -675,6 +675,45 @@
 						"type": "address"
 					},
 					{
+						"internalType": "uint256",
+						"name": "amountTokensIn",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "minAmountTokensOut",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expireTimestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "transferTo",
+						"type": "address"
+					}
+				],
+				"name": "swapExactTokensForNative",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenIn",
+						"type": "address"
+					},
+					{
 						"internalType": "address",
 						"name": "tokenOut",
 						"type": "address"
@@ -758,6 +797,45 @@
 						"type": "address"
 					},
 					{
+						"internalType": "uint256",
+						"name": "maxAmountTokensIn",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountTokensOut",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expireTimestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "transferTo",
+						"type": "address"
+					}
+				],
+				"name": "swapTokensForExactNative",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenIn",
+						"type": "address"
+					},
+					{
 						"internalType": "address",
 						"name": "tokenOut",
 						"type": "address"
@@ -783,7 +861,7 @@
 						"type": "address"
 					}
 				],
-				"name": "swapTokenForExactToken",
+				"name": "swapTokensForExactTokens",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -982,11 +1060,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x13bf78bbb421b7a329d015edffa67e3c238f24cc235bc91eaa62bb417cab292d",
+			"keccak256": "0x7132d99af558240050006bd6f6cc51776451300547c70e94ec6078d4527aed5b",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://94ad00c3a1102ea59485ba62cb8ab832189a3c1ac1a40be41b0a5f7a03a8c0f1",
-				"dweb:/ipfs/QmZHw6uSUk4uCehHP99SXiagJp97xfsP28bYNY5iJoM4gS"
+				"bzz-raw://c8b26c036928d74db7e54d124783fefec760a2c2befd6a22745a4e6a10ac778b",
+				"dweb:/ipfs/QmfUZ3XZYXBXu1eFiSuwyf5qUwYG2P8HevkPdVVrrtgAyV"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
@@ -1027,6 +1105,14 @@
 			"urls": [
 				"bzz-raw://38d67dec9f8deaeb4adc5e58d8f483beef22cab8dbc191bc3247e3fc48e434eb",
 				"dweb:/ipfs/QmR1f6cNhWzmDt5qJ9gjuFJL21FwmnNnBhH3beJ2JbPqnz"
+			]
+		},
+		"sol-defifactory-token/interfaces/IWeth.sol": {
+			"keccak256": "0xaebf064916d07f10ca2ca496bff1160dc28ad0a0ae92bbb52fd0f21ff964d9e8",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6e85dbc5e9dd412cc18ca50e53160765f510e2e6b5c5be6de3a25f3dc8eb39b1",
+				"dweb:/ipfs/QmYmKKacDwTZz4vUQud2us8qXP7GqUzEGS3b9AAriKjYMr"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
