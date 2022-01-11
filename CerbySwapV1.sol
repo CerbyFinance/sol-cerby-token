@@ -55,7 +55,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
     address nativeToken;
 
-    uint16 constant FEE_DENORM = 10000;
+    uint constant FEE_DENORM = 10000;
 
     uint constant NUMBER_OF_4HOUR_INTERVALS = 8;
     uint constant MINIMUM_LIQUIDITY = 1000;
@@ -114,13 +114,14 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         _;
     }
 
-    function testSetupTokens(address _lpErc1155V1, address _testCerbyToken, address _cerUsdToken, address _testUsdcToken)
+    function testSetupTokens(address _lpErc1155V1, address _testCerbyToken, address _cerUsdToken, address _testUsdcToken, address _nativeToken)
         public
     {
         lpErc1155V1 = _lpErc1155V1;
         testCerbyToken= _testCerbyToken;
         cerUsdToken = _cerUsdToken;
         testUsdcToken = _testUsdcToken;
+        nativeToken = _nativeToken;
     }
 
     function adminInitialize() 
@@ -175,7 +176,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         address transferTo
     )
         public
-        onlyRole(ROLE_ADMIN)
+        // onlyRole(ROLE_ADMIN) // TODO: enable on production
         tokenDoesNotExistInPool(token)
     {
         uint poolPos = pools.length;
@@ -849,6 +850,14 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         returns (uint)
     {
         return (block.timestamp / 14400) % NUMBER_OF_4HOUR_INTERVALS;
+    }
+
+    function getCurrentFeeBasedOnTrades(address token)
+        public
+        view
+        returns (uint fee)
+    {
+        return getCurrentFeeBasedOnTrades(tokenToPoolPosition[token]);
     }
 
     function getCurrentFeeBasedOnTrades(uint poolPos)

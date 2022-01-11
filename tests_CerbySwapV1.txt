@@ -5,5 +5,47 @@
 - TestUsdcToken.sol
 - CerbySwapLP1155V1.sol
 - CerbySwapV1.sol
-2. POST CerbySwapV1.testSetupTokens(address _lpErc1155V1, address _testCerbyToken, address _cerUsdToken, address _testUsdcToken)
+2. POST CerbySwapV1.testSetupTokens(address _lpErc1155V1, address _testCerbyToken, address _cerUsdToken, address _testUsdcToken, address _nativeToken)
 3. POST CerbySwapV1.Initialize()
+4. actual test
+
+- before test:
+beforeCerbyPool = getPoolByToken(testCerbyToken)
+beforeUsdcPool = getPoolByToken(testUsdcToken)
+fee = getCurrentFeeBasedOnTrades(address token)
+constant FEE_DENORM = 10000;
+
+- add functions:
+_getOutput(uint amountIn, uint reservesIn, uint reservesOut, uint poolFee)
+_getInput(uint amountOut, uint reservesIn, uint reservesOut, uint poolFee)
+getOutputExactTokensForCerUsd(uint poolPos, uint amountTokensIn)
+getOutputExactCerUsdForToken(uint poolPos, uint amountCerUsdIn)
+getInputTokenForExactCerUsd(uint poolPos, uint amountCerUsdOut)
+getInputCerUsdForExactToken(uint poolPos, uint amountTokensOut)
+вместо poolPos передавать beforeCerbyPool/afterCerbyPool сам объект пула
+
+- actual test
+function swapExactTokensForTokens(
+    address tokenIn,
+    address tokenOut,
+    uint amountTokensIn,
+    uint minAmountTokensOut,
+    uint expireTimestamp,
+    address transferTo
+)
+tokenIn = testCerbyToken
+tokenOut = testCerUsdToken
+amountTokensIn = 1e18 * 1000
+minAmountTokensOut = 0
+expireTimestamp = timestampSeconds + 86400
+transferTo = currentWallet
+
+- after test
+afterCerbyPool = getPoolByToken(testCerbyToken)
+afterUsdcPool = getPoolByToken(testUsdcToken)
+amountTokensOut = getOutputExactTokensForCerUsd(beforeCerbyPool, amountTokensIn)
+
+check if (
+    afterCerbyPool.balanceToken == beforeCerbyPool.balanceToken + amountTokensIn &&
+    afterCerbyPool.balanceCerUsd == beforeCerbyPool.balanceCerUsd - amountTokensOut
+)
