@@ -210,14 +210,27 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         );
     }
 
+    // TODO: addNativeLiquidity, removeNativeLiquidity
+
     function addTokenLiquidity(address token, uint amountTokensIn, address transferTo)
         public
         //executeCronJobs() TODO: enable on production
+    {
+        _addTokenLiquidity(
+            msg.sender,
+            token,
+            amountTokensIn,
+            transferTo
+        );        
+    }
+
+    function _addTokenLiquidity(address fromAddress, address token, uint amountTokensIn, address transferTo)
+        private
         tokenMustExistInPool(token)
     {
         uint poolPos = tokenToPoolPosition[token];
 
-        IERC20(token).safeTransferFrom(msg.sender, address(this), amountTokensIn);
+        IERC20(token).safeTransferFrom(fromAddress, address(this), amountTokensIn);
 
         // finding out how many tokens we've actually received
         uint newTokenBalance = IERC20(token).balanceOf(address(this));
@@ -267,6 +280,13 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
     function removeTokenLiquidity(address token, uint amountLpTokensBalanceToBurn, address transferTo)
         public
+        tokenMustExistInPool(token)
+    {
+        _removeTokenLiquidity(msg.sender, token, amountLpTokensBalanceToBurn, transferTo);
+    }
+
+    function _removeTokenLiquidity(address fromAddress, address token, uint amountLpTokensBalanceToBurn, address transferTo)
+        private
         //executeCronJobs() TODO: enable on production
         tokenMustExistInPool(token)
     {
@@ -301,7 +321,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn) - uint112(amountCerUsdToBurn);
 
         // burning LP tokens
-        ICerbySwapLP1155V1(lpErc1155V1).adminBurn(address(this), poolPos, amountLpTokensBalanceToBurn);
+        ICerbySwapLP1155V1(lpErc1155V1).adminBurn(fromAddress, poolPos, amountLpTokensBalanceToBurn);
 
         // burning cerUSD
         ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), amountCerUsdToBurn);
