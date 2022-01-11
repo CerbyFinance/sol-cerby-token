@@ -210,7 +210,31 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         );
     }
 
-    // TODO: addNativeLiquidity, removeNativeLiquidity
+    function addNativeLiquidity(uint amountTokensIn, address transferTo)
+        public
+        payable
+    {
+        // TODO: wrap eth to weth
+        _addTokenLiquidity(
+            msg.sender,
+            nativeToken,
+            amountTokensIn,
+            transferTo
+        );
+    }
+
+    function removeNativeLiquidity(uint amountTokensIn, address transferTo)
+        public
+        payable
+    {
+        _removeTokenLiquidity(
+            msg.sender,
+            nativeToken,
+            amountTokensIn,
+            address(this)
+        );
+        // TODO: unwrap weth to eth
+    }
 
     function addTokenLiquidity(address token, uint amountTokensIn, address transferTo)
         public
@@ -280,6 +304,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
     function removeTokenLiquidity(address token, uint amountLpTokensBalanceToBurn, address transferTo)
         public
+        //executeCronJobs() TODO: enable on production
         tokenMustExistInPool(token)
     {
         _removeTokenLiquidity(msg.sender, token, amountLpTokensBalanceToBurn, transferTo);
@@ -287,7 +312,6 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
     function _removeTokenLiquidity(address fromAddress, address token, uint amountLpTokensBalanceToBurn, address transferTo)
         private
-        //executeCronJobs() TODO: enable on production
         tokenMustExistInPool(token)
     {
         uint poolPos = tokenToPoolPosition[token];
