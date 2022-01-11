@@ -1,6 +1,8 @@
 module.exports = {
-  contracts_directory: "../",
-  contracts_build_directory: "../artifacts/some",
+  // contracts_directory: "../",
+  contracts_build_directory: "./compiled",
+  test_directory: "./test",
+
   networks: {
     development: {
       host: "127.0.0.1",
