@@ -164,7 +164,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
     function adminUpdateFeeToBeneficiary(address newFeeToBeneficiary)
         public
-        onlyRole(ROLE_ADMIN)
+        // onlyRole(ROLE_ADMIN) // TODO: enable on production
     {
         feeToBeneficiary = newFeeToBeneficiary;
     }
@@ -294,10 +294,11 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint112 newRootKValue = uint112(sqrt(uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd)));
 
         // updating pool
-        totalCerUsdBalance += amountCerUsdIn + mintCerUsdAmount;
+        totalCerUsdBalance = newTotalCerUsdBalance;
         pools[poolPos].lastRootKValue = newRootKValue;
         pools[poolPos].balanceToken = uint112(newTokenBalance);
-        pools[poolPos].balanceCerUsd += uint112(amountCerUsdIn + mintCerUsdAmount);
+        pools[poolPos].balanceCerUsd = 
+            pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn + mintCerUsdAmount);
 
         // minting cerUSD according to current pool
         ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
@@ -361,14 +362,14 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             uint112 newRootKValue = uint112(sqrt(uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd)));
 
             // updating pool        
-            totalCerUsdBalance += amountCerUsdIn;
+            totalCerUsdBalance = totalCerUsdBalance + amountCerUsdIn - amountCerUsdToBurn;
             pools[poolPos].lastRootKValue = newRootKValue;
             pools[poolPos].balanceToken = 
                 pools[poolPos].balanceToken + uint112(amountTokensIn) - uint112(amountTokensOut);
             pools[poolPos].balanceCerUsd = 
                 pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn) - uint112(amountCerUsdToBurn);
 
-            // burning LP tokens
+            // burning LP tokens received by this contract
             ICerbySwapLP1155V1(lpErc1155V1).burn(poolPos, amountLpTokensBalanceToBurn);
 
             // burning cerUSD
@@ -742,8 +743,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         );
 
         // updating pool values
-        totalCerUsdBalance =
-            totalCerUsdBalance + amountCerUsdIn - amountCerUsdOut;
+        totalCerUsdBalance = newTotalCerUsdBalance;
         pools[poolPos].balanceCerUsd = 
             pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn) - uint112(amountCerUsdOut);
         pools[poolPos].balanceToken = uint112(newTokenBalance);
@@ -801,8 +801,8 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         );
 
         // updating pool values
-        totalCerUsdBalance += amountCerUsdIn;
-        pools[poolPos].balanceCerUsd += uint112(amountCerUsdIn);
+        totalCerUsdBalance = newTotalCerUsdBalance;
+        pools[poolPos].balanceCerUsd = pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn);
         pools[poolPos].balanceToken = 
             pools[poolPos].balanceToken + uint112(amountTokensIn) - uint112(amountTokensOut);
 
