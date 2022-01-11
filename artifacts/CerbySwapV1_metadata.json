@@ -1097,11 +1097,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x72502f724913eb5daf8ef1d0e729cfb9d9bfe3aa3d703934bd9f977919e646b3",
+			"keccak256": "0xce5e83d7f8c7b0432c191cdafcd085f69d1464ef5a777a4f566bd2984d65d043",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://8da84f2c7652b0527a2bd01fd89455d45befe27e8bf7c83857532cea18d70247",
-				"dweb:/ipfs/QmPqam27Y4Z6tMzET1vNkr56Jb1WdTDAJB7b6BYjwU2WM8"
+				"bzz-raw://8ae5ac8d7e9d768ddb2f99d450d7a7dfe12d6eaa16a816181e931a8a2358f229",
+				"dweb:/ipfs/QmNxo41RyDuHtY9Kaf2gff1eDQ2d9zwfRS65iAWnwkQsME"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
