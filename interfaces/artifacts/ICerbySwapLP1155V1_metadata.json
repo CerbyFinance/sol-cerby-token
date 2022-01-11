@@ -183,6 +183,24 @@
 						"internalType": "uint256",
 						"name": "id",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "burn",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
 					}
 				],
 				"name": "exists",
@@ -325,18 +343,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/ICerbySwapLP1155V1.sol": {
-			"keccak256": "0xdb69d089b09e4ae9e3dec3daab7984b3eb79cf0e84300b4841528b1bbd22c6dd",
+			"keccak256": "0x4fd58e5a6f2e95452a89ea11a1f9d4e32a5be87667cfc625b5ad9a6aa123f6bf",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://b27cdf799539e0371cc705a544f7fa74b229c96073d6592d7d208f39ab3e8684",
-				"dweb:/ipfs/QmaUcXzutxkQJc8DPVhbbUaUsoDLbiALmkur8gNQPsSaK9"
+				"bzz-raw://b08d4a0e18f994857d69c2e702a6a6034e44c86fe1883e15e01fb8f2d2fd9899",
+				"dweb:/ipfs/QmZW5qjbyLzkg1MELNsDpGWf2xJbX9P5huC2iq1QFaDzQT"
 			]
 		}
 	},

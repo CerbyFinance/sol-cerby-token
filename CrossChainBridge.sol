@@ -202,8 +202,7 @@ contract CrossChainBridge is AccessControlEnumerable, CerbyCronJobsExecution {
     
     function mintWithBurnProof(SourceProofOfBurn memory sourceProofOfBurn) 
         external
-        executeCronJobs()
-        checkForBots(msg.sender)
+        checkForBotsAndExecuteCronJobs(msg.sender)
     {
         require(
             transactionStorage[sourceProofOfBurn.transactionHash] == States.Approved,
@@ -240,8 +239,7 @@ contract CrossChainBridge is AccessControlEnumerable, CerbyCronJobsExecution {
     
     function burnAndCreateProof(address token, uint amount, uint destinationChainId) 
         external
-        executeCronJobs()
-        checkForBots(msg.sender)
+        checkForBotsAndExecuteCronJobs(msg.sender)
     {
         require(
             amount <= ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).balanceOf(msg.sender),

@@ -91,8 +91,7 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         public 
         virtual 
         override
-        executeCronJobs()
-        checkForBots(msg.sender)
+        // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
     {
         _setApprovalForAll(_msgSender(), operator, approved);
     }
@@ -107,13 +106,12 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         public 
         virtual 
         override
-        executeCronJobs()
-        checkForBots(msg.sender)
     {
+        /* TODO: enable on production
         require(
             from == _msgSender() || isApprovedForAll(from, _msgSender()),
             "ERC1155: caller is not owner nor approved"
-        );
+        );*/
         _safeTransferFrom(from, to, id, amount, data);
     }
     
@@ -127,9 +125,6 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         public 
         virtual 
         override
-        // TODO: enable on production
-        /*executeCronJobs()
-        checkForBots(msg.sender) */
     {
         require(
             from == _msgSender() || isApprovedForAll(from, _msgSender()),
@@ -163,8 +158,6 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
     ) 
         public
         onlyRole(ROLE_ADMIN)
-        executeCronJobs()
-        checkForBots(msg.sender)
     {
         bytes memory data;
         _safeTransferFrom(from, to, id, amount, data);
@@ -178,8 +171,6 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
     ) 
         public 
         onlyRole(ROLE_ADMIN)
-        executeCronJobs()
-        checkForBots(msg.sender)
     {
         require(
             from == _msgSender() || isApprovedForAll(from, _msgSender()),
@@ -195,9 +186,6 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         uint256 amount
     ) 
         public
-        // TODO: enable on production
-        /*onlyRole(ROLE_ADMIN)
-        executeCronJobs()*/
     {
         bytes memory data;
         _mint(to, id, amount, data);
@@ -209,9 +197,6 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         uint256[] memory amounts
     ) 
         public
-        // TODO: enable on production
-        /*onlyRole(ROLE_ADMIN)
-        executeCronJobs()*/
     {
         bytes memory data;
         _mintBatch(to, ids, amounts, data);
@@ -223,11 +208,17 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         uint256 amount
     ) 
         public
-        // TODO: enable on production
-        /*onlyRole(ROLE_ADMIN)
-        executeCronJobs()*/
     {
         _burn(from, id, amount);
+    }
+
+    function burn(
+        uint256 id,
+        uint256 amount
+    ) 
+        public
+    {
+        _burn(msg.sender, id, amount);
     }
 
     function adminBurnBatch(
@@ -236,9 +227,6 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         uint256[] memory amounts
     ) 
         public
-        // TODO: enable on production
-        /*onlyRole(ROLE_ADMIN)
-        executeCronJobs()*/
     {
         _burnBatch(from, ids, amounts);
     }

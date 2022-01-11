@@ -176,7 +176,7 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
 
     function adminBulkTransferOwnership(uint[] calldata stakeIds, address oldOwner, address newOwner)
         public
-        executeCronJobs
+        checkForBotsAndExecuteCronJobs(msg.sender)
         onlyRole(ROLE_ADMIN)
     {
         for(uint i = 0; i<stakeIds.length; i++)
@@ -196,7 +196,7 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
 
     function adminBulkDestroyStakes(uint[] calldata stakeIds, address stakeOwner)
         public
-        executeCronJobs
+        checkForBotsAndExecuteCronJobs(msg.sender)
         onlyRole(ROLE_ADMIN)
     {
         uint today = getCurrentDaySinceLaunch();
@@ -314,7 +314,7 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
     
     function adminBurnAndAddToStakersInflation(address fromAddr, uint amountToBurn)
         public
-        executeCronJobs
+        checkForBotsAndExecuteCronJobs(msg.sender)
         onlyRole(ROLE_ADMIN)
     {
         ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).burnHumanAddress(fromAddr, amountToBurn);
@@ -327,8 +327,7 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
     
     function bulkTransferOwnership(uint[] calldata stakeIds, address newOwner)
         public
-        checkForBots(msg.sender)
-        executeCronJobs
+        checkForBotsAndExecuteCronJobs(msg.sender)
     {
         for(uint i = 0; i<stakeIds.length; i++)
         {
@@ -447,8 +446,7 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
     
     function bulkStartStake(StartStake[] calldata startStakes)
         public
-        checkForBots(msg.sender)
-        executeCronJobs
+        checkForBotsAndExecuteCronJobs(msg.sender)
     {
         for(uint i; i<startStakes.length; i++)
         {
@@ -511,8 +509,7 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
     
     function bulkEndStake(uint[] calldata stakeIds)
         public
-        checkForBots(msg.sender)
-        executeCronJobs
+        checkForBotsAndExecuteCronJobs(msg.sender)
     {
         for(uint i; i<stakeIds.length; i++)
         {
@@ -572,8 +569,7 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
     
     function bulkScrapeStake(uint[] calldata stakeIds)
         public
-        checkForBots(msg.sender)
-        executeCronJobs
+        checkForBotsAndExecuteCronJobs(msg.sender)
     {
         for(uint i; i<stakeIds.length; i++)
         {

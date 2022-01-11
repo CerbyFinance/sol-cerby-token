@@ -114,7 +114,7 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20, ERC20Permit
         virtual 
         override
         notPausedContract
-        executeCronJobs
+        checkForBotsAndExecuteCronJobs(msg.sender)
         returns (bool) 
     {
         _approve(_msgSender(), spender, amount);
@@ -126,7 +126,7 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20, ERC20Permit
         virtual 
         override
         notPausedContract
-        executeCronJobs
+        checkForBotsAndExecuteCronJobs(msg.sender)
         returns (bool) 
     {
         _approve(_msgSender(), spender, _allowances[_msgSender()][spender] + addedValue);
@@ -138,7 +138,7 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20, ERC20Permit
         virtual 
         override
         notPausedContract
-        executeCronJobs
+        checkForBotsAndExecuteCronJobs(msg.sender)
         returns (bool) 
     {
         uint256 currentAllowance = _allowances[_msgSender()][spender];
@@ -229,7 +229,6 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20, ERC20Permit
     
     function _mintHumanAddress(address to, uint desiredAmountToMint) 
         private
-        executeCronJobs
         recipientIsNotBurnAddress(to)
     {
         _balances[to] += desiredAmountToMint;
@@ -249,7 +248,6 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20, ERC20Permit
 
     function _burnHumanAddress(address from, uint desiredAmountToBurn)
         private
-        executeCronJobs
     {
         _balances[from] -= desiredAmountToBurn;
         _totalSupply -= desiredAmountToBurn;

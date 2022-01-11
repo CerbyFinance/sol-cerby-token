@@ -10,10 +10,14 @@ abstract contract CerbyCronJobsExecution {
     uint internal constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
     address internal constant CERBY_TOKEN_CONTRACT_ADDRESS = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
     
-    modifier executeCronJobs()
+    modifier checkForBotsAndExecuteCronJobs(address addr)
     {
         ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
             getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
+        );
+        require(
+            !iCerbyBotDetection.isBotAddress(addr),
+            "CCJE: Transactions are temporary disabled"
         );
         iCerbyBotDetection.executeCronJobs();
         _;

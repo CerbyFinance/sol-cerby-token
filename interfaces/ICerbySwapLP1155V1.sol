@@ -67,6 +67,12 @@ interface ICerbySwapLP1155V1 {
     ) 
         external;
 
+    function burn(
+        uint id,
+        uint amount
+    ) 
+        external;
+
     function adminBurnBatch(
         address from,
         uint[] memory ids,

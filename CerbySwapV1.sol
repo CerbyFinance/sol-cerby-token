@@ -213,6 +213,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     function addNativeLiquidity(uint amountTokensIn, address transferTo)
         public
         payable
+        // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
     {
         // TODO: wrap eth to weth
         _addTokenLiquidity(
@@ -226,6 +227,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     function removeNativeLiquidity(uint amountTokensIn, address transferTo)
         public
         payable
+        // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
     {
         _removeTokenLiquidity(
             msg.sender,
@@ -238,7 +240,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
     function addTokenLiquidity(address token, uint amountTokensIn, address transferTo)
         public
-        //executeCronJobs() TODO: enable on production
+        // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
     {
         _addTokenLiquidity(
             msg.sender,
@@ -304,7 +306,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
     function removeTokenLiquidity(address token, uint amountLpTokensBalanceToBurn, address transferTo)
         public
-        //executeCronJobs() TODO: enable on production
+        // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
         tokenMustExistInPool(token)
     {
         _removeTokenLiquidity(msg.sender, token, amountLpTokensBalanceToBurn, transferTo);
@@ -315,6 +317,11 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         tokenMustExistInPool(token)
     {
         uint poolPos = tokenToPoolPosition[token];
+
+        if (fromAddress != address(this)) {
+            bytes memory data;
+            ICerbySwapLP1155V1(lpErc1155V1).safeTransferFrom(fromAddress, address(this), poolPos, amountLpTokensBalanceToBurn, data);
+        }
 
         // finding out if for some reason we've received tokens
         uint oldTokenBalance = IERC20(token).balanceOf(address(this));
@@ -345,7 +352,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn) - uint112(amountCerUsdToBurn);
 
         // burning LP tokens
-        ICerbySwapLP1155V1(lpErc1155V1).adminBurn(fromAddress, poolPos, amountLpTokensBalanceToBurn);
+        ICerbySwapLP1155V1(lpErc1155V1).burn(poolPos, amountLpTokensBalanceToBurn);
 
         // burning cerUSD
         ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), amountCerUsdToBurn);
@@ -392,7 +399,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     )
         public
         payable
-        //executeCronJobs() TODO: enable on production
+        // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
         tokenMustExistInPool(nativeToken)
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
@@ -417,7 +424,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     )
         public
         payable
-        //executeCronJobs() TODO: enable on production
+        // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
         tokenMustExistInPool(nativeToken)
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
@@ -442,7 +449,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     )
         public
         payable
-        //executeCronJobs() TODO: enable on production
+        // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
         tokenMustExistInPool(nativeToken)
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
@@ -468,7 +475,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     )
         public
         payable
-        //executeCronJobs() TODO: enable on production
+        // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
         tokenMustExistInPool(nativeToken)
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
@@ -493,7 +500,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         address transferTo
     )
         public
-        //executeCronJobs() TODO: enable on production
+        // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
         tokenMustExistInPool(tokenIn)
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
@@ -566,7 +573,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         address transferTo
     )
         public
-        //executeCronJobs() TODO: enable on production
+        // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
         tokenMustExistInPool(tokenIn)
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
@@ -722,7 +729,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
         // transferring cerUSD tokens
         if (transferTo != BURN_ADDRESS) {
-            IERC20(cerUsdToken).transfer(transferTo, amountCerUsdOut);
+            IERC20(cerUsdToken).safeTransfer(transferTo, amountCerUsdOut);
         }
 
         return amountCerUsdOut;
@@ -780,7 +787,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
         // transferring cerUsd tokens
         if (transferTo != BURN_ADDRESS) {
-            IERC20(cerUsdToken).transferFrom(transferTo, address(this), amountCerUsdIn);
+            IERC20(cerUsdToken).safeTransferFrom(transferTo, address(this), amountCerUsdIn);
         }
 
         // transferring tokens from contract to user
@@ -797,7 +804,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     function syncTokenBalanceInPool(address token)
         public
         tokenMustExistInPool(token)
-        //executeCronJobs() TODO: enable on production
+        // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
     {
         uint poolPos = tokenToPoolPosition[token];
         pools[poolPos].balanceToken = uint112(IERC20(token).balanceOf(address(this)));
