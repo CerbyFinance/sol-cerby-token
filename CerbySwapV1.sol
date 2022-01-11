@@ -60,7 +60,6 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     uint constant NUMBER_OF_4HOUR_INTERVALS = 8;
     uint constant MINIMUM_LIQUIDITY = 1000;
     address constant DEAD_ADDRESS = address(0xdead);
-    address constant BURN_ADDRESS = address(0x0);
     address public feeToBeneficiary = DEAD_ADDRESS;
 
     bool isInitializedAlready;
@@ -80,7 +79,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
         // TODO: fill weth, wbnb, wmatic etc
         if (block.chainid == 12345) {
-            nativeToken = BURN_ADDRESS;
+            nativeToken = DEAD_ADDRESS;
         } else if (block.chainid == 98765) {
             nativeToken = DEAD_ADDRESS;
         } 
@@ -210,14 +209,16 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         );
     }
 
-    function addNativeLiquidity(uint amountTokensIn, address transferTo)
+    function addNativeLiquidity(address transferTo)
         public
         payable
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
     {
-        // TODO: wrap eth to weth
+        uint amountTokensIn = msg.value;
+        IWeth(nativeToken).deposit{value: amountTokensIn}();
+
         _addTokenLiquidity(
-            msg.sender,
+            address(this),
             nativeToken,
             amountTokensIn,
             transferTo
@@ -226,16 +227,16 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
     function removeNativeLiquidity(uint amountTokensIn, address transferTo)
         public
-        payable
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
     {
-        _removeTokenLiquidity(
+        uint amountTokensOut = _removeTokenLiquidity(
             msg.sender,
             nativeToken,
             amountTokensIn,
             address(this)
         );
-        // TODO: unwrap weth to eth
+        IWeth(nativeToken).withdraw(amountTokensOut);
+        payable(msg.sender).transfer(amountTokensOut);
     }
 
     function addTokenLiquidity(address token, uint amountTokensIn, address transferTo)
@@ -310,13 +311,15 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         public
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
         tokenMustExistInPool(token)
+        returns (uint)
     {
-        _removeTokenLiquidity(msg.sender, token, amountLpTokensBalanceToBurn, transferTo);
+        return _removeTokenLiquidity(msg.sender, token, amountLpTokensBalanceToBurn, transferTo);
     }
 
     function _removeTokenLiquidity(address fromAddress, address token, uint amountLpTokensBalanceToBurn, address transferTo)
         private
         tokenMustExistInPool(token)
+        returns (uint)
     {
         uint poolPos = tokenToPoolPosition[token];
 
@@ -341,26 +344,26 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountCerUsdToBurn = 
             (uint(pools[poolPos].balanceCerUsd) * amountLpTokensBalanceToBurn) / totalLPSupply;
 
-        // storing sqrt(k) value before updating pool
-        uint112 lastRootKValue = pools[poolPos].lastRootKValue;
-        uint112 newRootKValue = uint112(sqrt(uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd)));
+        { // scope to avoid stack too deep error            
+            // storing sqrt(k) value before updating pool
+            uint112 lastRootKValue = pools[poolPos].lastRootKValue;
+            uint112 newRootKValue = uint112(sqrt(uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd)));
 
-        // updating pool
-        totalCerUsdBalance += amountCerUsdIn;
-        pools[poolPos].lastRootKValue = newRootKValue;
-        pools[poolPos].balanceToken = 
-            pools[poolPos].balanceToken + uint112(amountTokensIn) - uint112(amountTokensOut);
-        pools[poolPos].balanceCerUsd = 
-            pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn) - uint112(amountCerUsdToBurn);
+            // updating pool        
+            totalCerUsdBalance += amountCerUsdIn;
+            pools[poolPos].lastRootKValue = newRootKValue;
+            pools[poolPos].balanceToken = 
+                pools[poolPos].balanceToken + uint112(amountTokensIn) - uint112(amountTokensOut);
+            pools[poolPos].balanceCerUsd = 
+                pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn) - uint112(amountCerUsdToBurn);
 
-        // burning LP tokens
-        ICerbySwapLP1155V1(lpErc1155V1).burn(poolPos, amountLpTokensBalanceToBurn);
+            // burning LP tokens
+            ICerbySwapLP1155V1(lpErc1155V1).burn(poolPos, amountLpTokensBalanceToBurn);
 
-        // burning cerUSD
-        ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), amountCerUsdToBurn);
+            // burning cerUSD
+            ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), amountCerUsdToBurn);
 
-        // stack too deep hack
-        {
+        
             // minting trade fees
             uint amountLpTokensToMintAsFee = 
                 _getMintFeeLiquidityAmount(lastRootKValue, newRootKValue, totalLPSupply);
@@ -371,12 +374,17 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         }
 
         // transfering tokens
-        IERC20(token).safeTransfer(transferTo, amountTokensOut);
+        if (transferTo != address(this))
+        {
+            IERC20(token).safeTransfer(transferTo, amountTokensOut);
+        }
         uint newTokenBalance = IERC20(token).balanceOf(address(this));
         require(
             newTokenBalance + amountTokensOut == oldTokenBalance,
             FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_F
         );
+
+        return amountTokensOut;
     }
 
     function _getMintFeeLiquidityAmount(uint lastRootKValue, uint newRootKValue, uint totalLPSupply)
@@ -553,7 +561,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             _swapExactTokenForCerUsd(
                 tokenIn,
                 0,
-                BURN_ADDRESS
+                address(this)
             );
 
             // swapping cerUSD ---> YYY
@@ -665,7 +673,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             _swapExactTokenForCerUsd(
                 tokenIn,
                 0,
-                BURN_ADDRESS
+                address(this)
             );
 
             // swapping cerUSD ---> YYY
@@ -730,7 +738,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         }
 
         // transferring cerUSD tokens
-        if (transferTo != BURN_ADDRESS) {
+        if (transferTo != address(this)) {
             IERC20(cerUsdToken).safeTransfer(transferTo, amountCerUsdOut);
         }
 
@@ -787,13 +795,10 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] = 0;
         }
 
-        // transferring cerUsd tokens
-        if (transferTo != BURN_ADDRESS) {
-            IERC20(cerUsdToken).safeTransferFrom(transferTo, address(this), amountCerUsdIn);
-        }
-
         // transferring tokens from contract to user
-        IERC20(tokenOut).safeTransfer(transferTo, amountTokensOut);
+        if (transferTo != address(this)) {
+            IERC20(tokenOut).safeTransfer(transferTo, amountTokensOut);
+        }
         uint newTokenBalance = IERC20(tokenOut).balanceOf(address(this));
         require(
             newTokenBalance == pools[poolPos].balanceToken,

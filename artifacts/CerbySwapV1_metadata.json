@@ -101,11 +101,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "amountTokensIn",
-						"type": "uint256"
-					},
-					{
 						"internalType": "address",
 						"name": "transferTo",
 						"type": "address"
@@ -583,7 +578,7 @@
 				],
 				"name": "removeNativeLiquidity",
 				"outputs": [],
-				"stateMutability": "payable",
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -605,7 +600,13 @@
 					}
 				],
 				"name": "removeTokenLiquidity",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -1096,11 +1097,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x638c68106cf8ebf009bda46ac2c799367de8755493026ccb313632d3d89bc9b3",
+			"keccak256": "0x72502f724913eb5daf8ef1d0e729cfb9d9bfe3aa3d703934bd9f977919e646b3",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://9cae897eaf336793eafd9408d4727943bd10a9d6083cee6b3b79e0e634f2d14f",
-				"dweb:/ipfs/QmTEUwydyzKvARcrp1AyB37r3QMQ9jLR11SBygpVMuH8mz"
+				"bzz-raw://8da84f2c7652b0527a2bd01fd89455d45befe27e8bf7c83857532cea18d70247",
+				"dweb:/ipfs/QmPqam27Y4Z6tMzET1vNkr56Jb1WdTDAJB7b6BYjwU2WM8"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
