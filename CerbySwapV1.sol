@@ -125,7 +125,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
     function adminInitialize() 
         public
-        onlyRole(ROLE_ADMIN)
+        // onlyRole(ROLE_ADMIN) // TODO: enable on production
     {
         require(
             !isInitializedAlready, 
