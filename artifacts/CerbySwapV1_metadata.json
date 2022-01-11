@@ -567,7 +567,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "amountTokensIn",
+						"name": "amountLpTokensBalanceToBurn",
 						"type": "uint256"
 					},
 					{
@@ -671,11 +671,6 @@
 						"internalType": "address",
 						"name": "tokenOut",
 						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountTokensIn",
-						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
@@ -793,11 +788,6 @@
 						"internalType": "address",
 						"name": "tokenOut",
 						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "maxAmountTokensIn",
-						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
@@ -1097,11 +1087,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xce5e83d7f8c7b0432c191cdafcd085f69d1464ef5a777a4f566bd2984d65d043",
+			"keccak256": "0x14f21b5eb35c5e61feef6221775cad7a65c0b32faae9778ebdfe0e7ecb66afb8",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://8ae5ac8d7e9d768ddb2f99d450d7a7dfe12d6eaa16a816181e931a8a2358f229",
-				"dweb:/ipfs/QmNxo41RyDuHtY9Kaf2gff1eDQ2d9zwfRS65iAWnwkQsME"
+				"bzz-raw://fd424567c5ef31ae7417502404ce3339ff4b7a7109f90c24b44515d05992cf2e",
+				"dweb:/ipfs/QmdCNn7ZWXoD1gkA5sVXnciDqZwsNkvxh18CMmQvwDnh6U"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

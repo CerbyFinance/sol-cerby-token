@@ -225,18 +225,18 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         );
     }
 
-    function removeNativeLiquidity(uint amountTokensIn, address transferTo)
+    function removeNativeLiquidity(uint amountLpTokensBalanceToBurn, address transferTo)
         public
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
     {
         uint amountTokensOut = _removeTokenLiquidity(
             msg.sender,
             nativeToken,
-            amountTokensIn,
+            amountLpTokensBalanceToBurn,
             address(this)
         );
         IWeth(nativeToken).withdraw(amountTokensOut);
-        payable(msg.sender).transfer(amountTokensOut);
+        payable(transferTo).transfer(amountTokensOut);
     }
 
     function addTokenLiquidity(address token, uint amountTokensIn, address transferTo)
@@ -402,7 +402,6 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
     function swapExactNativeForTokens(
         address tokenOut,
-        uint amountTokensIn,
         uint minAmountTokensOut,
         uint expireTimestamp,
         address transferTo
@@ -414,7 +413,9 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
     {
-        // TODO: wrap eth --> weth
+        uint amountTokensIn = msg.value;
+        IWeth(nativeToken).deposit{value: amountTokensIn}();
+
         return _swapExactTokensForTokens(
             address(this),
             nativeToken,
@@ -427,7 +428,6 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
     function swapNativeForExactTokens(
         address tokenOut,
-        uint maxAmountTokensIn,
         uint amountTokensOut,
         uint expireTimestamp,
         address transferTo
@@ -439,15 +439,23 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
     {
-        // TODO: wrap eth --> weth
-        return _swapTokensForExactTokens(
+        uint maxAmountTokensIn = msg.value;
+        IWeth(nativeToken).deposit{value: maxAmountTokensIn}();
+        
+        _swapTokensForExactTokens(
             address(this),
             nativeToken,
             tokenOut,
             maxAmountTokensIn,
             amountTokensOut,
             transferTo
-        );   
+        );
+
+        uint remainingNative = maxAmountTokensIn - amountTokensOut;
+        IWeth(nativeToken).withdraw(remainingNative);
+
+        payable(transferTo).transfer(remainingNative);
+        return amountTokensOut;
     }
 
     function swapTokensForExactNative(
@@ -464,7 +472,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
     {
-        return _swapTokensForExactTokens(
+        _swapTokensForExactTokens(
             msg.sender,
             tokenIn,
             nativeToken,
@@ -473,7 +481,10 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             address(this)
         );
 
-        // TODO: unwrap weth --> eth
+        IWeth(nativeToken).withdraw(amountTokensOut);
+
+        payable(transferTo).transfer(amountTokensOut);
+        return amountTokensOut;
     }
 
     function swapExactTokensForNative(
@@ -490,7 +501,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
     {
-        return _swapExactTokensForTokens(
+        uint amountTokensOut = _swapExactTokensForTokens(
             address(this),
             tokenIn,
             nativeToken,
@@ -498,7 +509,11 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             minAmountTokensOut,
             transferTo
         );   
-        // TODO: unwrap weth --> eth
+
+        IWeth(nativeToken).withdraw(amountTokensOut);
+
+        payable(transferTo).transfer(amountTokensOut);
+        return amountTokensOut;
     }
 
     function swapExactTokensForTokens(
