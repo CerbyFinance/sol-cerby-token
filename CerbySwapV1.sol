@@ -10,6 +10,7 @@ import "./interfaces/ICerbyBotDetection.sol";
 import "./interfaces/ICerbySwapLP1155V1.sol";
 import "./interfaces/IWeth.sol";
 import "./CerbyCronJobsExecution.sol";
+import "./CerbySwapLP1155V1.sol";
 
 
 contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
@@ -68,7 +69,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         address token;
         uint112 balanceToken;
         uint112 balanceCerUsd;
-        uint112 lastRootKValue;
+        uint112 lastSqrtKValue;
         uint32[NUMBER_OF_4HOUR_INTERVALS] hourlyTradeVolumeInCerUsd;
     }
 
@@ -192,13 +193,13 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         );
 
         // create new pool record
-        uint112 newRootKValue = uint112(sqrt(uint(amountTokensIn) * uint(amountCerUsdIn)));
+        uint112 newSqrtKValue = uint112(sqrt(uint(amountTokensIn) * uint(amountCerUsdIn)));
         uint32[NUMBER_OF_4HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
         Pool memory pool = Pool(
             token,
             uint112(amountTokensIn),
             uint112(amountCerUsdIn),
-            newRootKValue,
+            newSqrtKValue,
             hourlyTradeVolumeInCerUsd
         );
         pools.push(pool);
@@ -290,12 +291,12 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
                 amountCerUsdIn;
 
         // storing sqrt(k) value before updating pool
-        uint112 lastRootKValue = pools[poolPos].lastRootKValue;
-        uint112 newRootKValue = uint112(sqrt(uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd)));
+        uint112 lastSqrtKValue = pools[poolPos].lastSqrtKValue;
+        uint112 newSqrtKValue = uint112(sqrt(uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd)));
 
         // updating pool
         totalCerUsdBalance = newTotalCerUsdBalance;
-        pools[poolPos].lastRootKValue = newRootKValue;
+        pools[poolPos].lastSqrtKValue = newSqrtKValue;
         pools[poolPos].balanceToken = uint112(newTokenBalance);
         pools[poolPos].balanceCerUsd = 
             pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn + mintCerUsdAmount);
@@ -313,7 +314,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         );
 
         // minting trade fees
-        uint amountLpTokensToMintAsFee = _getMintFeeLiquidityAmount(lastRootKValue, newRootKValue, totalLPSupply);
+        uint amountLpTokensToMintAsFee = _getMintFeeLiquidityAmount(lastSqrtKValue, newSqrtKValue, totalLPSupply);
         if (amountLpTokensToMintAsFee > 0) {
             ICerbySwapLP1155V1(lpErc1155V1).adminMint(feeToBeneficiary, poolPos, amountLpTokensToMintAsFee);
         }
@@ -358,12 +359,12 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
         { // scope to avoid stack too deep error            
             // storing sqrt(k) value before updating pool
-            uint112 lastRootKValue = pools[poolPos].lastRootKValue;
-            uint112 newRootKValue = uint112(sqrt(uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd)));
+            uint112 lastSqrtKValue = pools[poolPos].lastSqrtKValue;
+            uint112 newSqrtKValue = uint112(sqrt(uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd)));
 
             // updating pool        
             totalCerUsdBalance = totalCerUsdBalance + amountCerUsdIn - amountCerUsdToBurn;
-            pools[poolPos].lastRootKValue = newRootKValue;
+            pools[poolPos].lastSqrtKValue = newSqrtKValue;
             pools[poolPos].balanceToken = 
                 pools[poolPos].balanceToken + uint112(amountTokensIn) - uint112(amountTokensOut);
             pools[poolPos].balanceCerUsd = 
@@ -378,7 +379,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         
             // minting trade fees
             uint amountLpTokensToMintAsFee = 
-                _getMintFeeLiquidityAmount(lastRootKValue, newRootKValue, totalLPSupply);
+                _getMintFeeLiquidityAmount(lastSqrtKValue, newSqrtKValue, totalLPSupply);
             if (amountLpTokensToMintAsFee > 0) {
                 ICerbySwapLP1155V1(lpErc1155V1).
                     adminMint(feeToBeneficiary, poolPos, amountLpTokensToMintAsFee);
@@ -399,16 +400,16 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         return amountTokensOut;
     }
 
-    function _getMintFeeLiquidityAmount(uint lastRootKValue, uint newRootKValue, uint totalLPSupply)
+    function _getMintFeeLiquidityAmount(uint lastSqrtKValue, uint newSqrtKValue, uint totalLPSupply)
         private
         pure
         returns (uint amountLpTokensToMintAsFee)
     {
         if (
-            newRootKValue > lastRootKValue && 
-            lastRootKValue > 0
+            newSqrtKValue > lastSqrtKValue && 
+            lastSqrtKValue > 0
         ) {
-            amountLpTokensToMintAsFee = (totalLPSupply * (newRootKValue - lastRootKValue)) / (newRootKValue * 5 + lastRootKValue);
+            amountLpTokensToMintAsFee = (totalLPSupply * (newSqrtKValue - lastSqrtKValue)) / (newSqrtKValue * 5 + lastSqrtKValue);
         }
     }
 

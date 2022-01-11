@@ -371,7 +371,7 @@
 							},
 							{
 								"internalType": "uint112",
-								"name": "lastRootKValue",
+								"name": "lastSqrtKValue",
 								"type": "uint112"
 							},
 							{
@@ -417,7 +417,7 @@
 							},
 							{
 								"internalType": "uint112",
-								"name": "lastRootKValue",
+								"name": "lastSqrtKValue",
 								"type": "uint112"
 							},
 							{
@@ -977,7 +977,7 @@
 							},
 							{
 								"internalType": "uint112",
-								"name": "lastRootKValue",
+								"name": "lastSqrtKValue",
 								"type": "uint112"
 							},
 							{
@@ -1009,7 +1009,7 @@
 							},
 							{
 								"internalType": "uint112",
-								"name": "lastRootKValue",
+								"name": "lastSqrtKValue",
 								"type": "uint112"
 							},
 							{
@@ -1124,8 +1124,8 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
-			"runs": 200
+			"enabled": true,
+			"runs": 10
 		},
 		"remappings": []
 	},
@@ -1138,12 +1138,20 @@
 				"dweb:/ipfs/QmQDr5UENtMMk2dsakRZ8p9RcuRx4tqMUYxHXES8wF4cnX"
 			]
 		},
+		"sol-defifactory-token/CerbySwapLP1155V1.sol": {
+			"keccak256": "0xefd1ec0dbc904bb4593a39e770ce5a0f3e5ecc6224e537f629327577ba23e8c8",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://6423da906d2883ccf59f0a069f13698466828df252396ce43865caf3391665b6",
+				"dweb:/ipfs/QmZ9Y57bVtjj6cmiLxe3Z42SdHTibDkXaHXwsMdndDg2FD"
+			]
+		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x0d28e92f1a623a94620596be66bfd53ab2e5bb8552c27217de0cde922dc2c752",
+			"keccak256": "0x9b457fdfc243005d4cdcdbc8f6028d36a5496d72ba9fb510fe164179b68807aa",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://f8d0597259fe68b097ff65dda125d264896d70fecc7795aa2aa281400f434071",
-				"dweb:/ipfs/QmYexh7go2P7o3ZkyjY6qzt2ZAtA3ZfzBiKF1zCxaPBQoy"
+				"bzz-raw://11580a0d470554d758dd68209c496272a41a48607ef60a991d9afd51e2602021",
+				"dweb:/ipfs/QmeQdM11rw8jCr5Yk84Uom7HWQPME9XDxrnaXr3Ni5CVxg"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
@@ -1224,6 +1232,46 @@
 			"urls": [
 				"bzz-raw://3dcc7b09bfa6e18aab262ca372f4a9b1fc82e294b430706a4e1378cf58e6a276",
 				"dweb:/ipfs/QmT8oSAcesdctR15HMLhr2a1HRpXymxdjTfdtfTYJcj2N2"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/token/ERC1155/ERC1155.sol": {
+			"keccak256": "0x093e45116e5a9cdddd6df8b2de611029f64e5bcb0f1ce53781fd8119b5f777f1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://bff457b9cf396d1c4e109900c9443a3fdfaf54a9cc56192ca511394e515959f0",
+				"dweb:/ipfs/QmV7Vb4GtE7QP7UhXHKyq4TZGy2AiGhVDLwAUMS9RbsHtx"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/token/ERC1155/IERC1155.sol": {
+			"keccak256": "0x8e93de94c9062ebc94fb7e2e3929b0781ac6a2b7772e2f7a59045861c93e5be9",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f920a631bf986c610fe573d3c70a2bb6f224f86f4a8550016470c7ee476c9ab5",
+				"dweb:/ipfs/QmYzsyVMfnaREKHcHv5RPS8Xg5r1Q38E2SDsGBTnXeFWzb"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/token/ERC1155/IERC1155Receiver.sol": {
+			"keccak256": "0xc743d2235b8854045c308d2f8f1ed88efed6c2bebf2b7a4a51ea42480c82e566",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://05e54e397a053f319187999ef4d65446a7f15f693ddd66dfaed4d856f67dac4e",
+				"dweb:/ipfs/QmbGTFVdZxShg76UPcuLAXm6HBjZx3Vn6CL1eaBhV9rST1"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/token/ERC1155/extensions/ERC1155Supply.sol": {
+			"keccak256": "0x4e4ed8092997a334a0eb5294840cde3f3507f33e9dd62e634c7d7e00be69005a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://994244f42bb643a2050a7d506b6a9cbd71c14a8d425b63ee7dc197d5e2c83d6e",
+				"dweb:/ipfs/QmU5yhczp7AMqsoH46hfpadKhaw8Cfe41orRJe7QAxxR6f"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/token/ERC1155/extensions/IERC1155MetadataURI.sol": {
+			"keccak256": "0xa66d18b9a85458d28fc3304717964502ae36f7f8a2ff35bc83f6f85d74b03574",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e46c80ea068989111d6103e5521223f9ef337e93de76deed8b03f75c6f7b2797",
+				"dweb:/ipfs/QmNoSE6knNfFncdDDLTb3fGR6oSQty1srG96Vsx3E9wQdw"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {
