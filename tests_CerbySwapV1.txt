@@ -1,0 +1,9 @@
+1. deploy 
+- WETH.sol
+- TestCerbyToken.sol
+- TestCerUsdToken.sol
+- TestUsdcToken.sol
+- CerbySwapLP1155V1.sol
+- CerbySwapV1.sol
+2. POST CerbySwapV1.testSetupTokens(address _lpErc1155V1, address _testCerbyToken, address _cerUsdToken, address _testUsdcToken)
+3. POST CerbySwapV1.Initialize

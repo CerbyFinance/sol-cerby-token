@@ -1024,6 +1024,34 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_lpErc1155V1",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_testCerbyToken",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_cerUsdToken",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_testUsdcToken",
+						"type": "address"
+					}
+				],
+				"name": "testSetupTokens",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -1087,11 +1115,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x14f21b5eb35c5e61feef6221775cad7a65c0b32faae9778ebdfe0e7ecb66afb8",
+			"keccak256": "0x33007231f675f5186553ad0d150082a9e6deadc9bdfb4932c1c7b6ed0fde2815",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://fd424567c5ef31ae7417502404ce3339ff4b7a7109f90c24b44515d05992cf2e",
-				"dweb:/ipfs/QmdCNn7ZWXoD1gkA5sVXnciDqZwsNkvxh18CMmQvwDnh6U"
+				"bzz-raw://6b26bb5aefcc179e13dadd19f6f7133c911bfb75c882ebb638e8cafa0ace545e",
+				"dweb:/ipfs/QmNcypYFW4Nw8vbMzZ5NwZrue8bkUTrDeP6ZUJBm4Dhtdo"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

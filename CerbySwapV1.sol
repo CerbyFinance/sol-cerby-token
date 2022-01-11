@@ -48,10 +48,10 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     // "0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2","0xde402E9D305bAd483d47bc858cC373c5a040A62D","10000000000000000000000","0","2041564156"
     // "0xde402E9D305bAd483d47bc858cC373c5a040A62D","0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2","1000000000000000000000","0","20415641
     */
-    address constant lpErc1155V1 = 0xE94EFBCaA00665C8faA47E18741DA9f212a15c20;
-    address constant testCerbyToken = 0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2;
-    address constant cerUsdToken = 0x04D7000CC826349A872757D82b3E0F68a713B3c5;
-    address constant testUsdcToken = 0xde402E9D305bAd483d47bc858cC373c5a040A62D;
+    address lpErc1155V1 = 0xE94EFBCaA00665C8faA47E18741DA9f212a15c20;
+    address testCerbyToken = 0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2;
+    address cerUsdToken = 0x04D7000CC826349A872757D82b3E0F68a713B3c5;
+    address testUsdcToken = 0xde402E9D305bAd483d47bc858cC373c5a040A62D;
 
     address nativeToken;
 
@@ -114,6 +114,15 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         _;
     }
 
+    function testSetupTokens(address _lpErc1155V1, address _testCerbyToken, address _cerUsdToken, address _testUsdcToken)
+        public
+    {
+        lpErc1155V1 = _lpErc1155V1;
+        testCerbyToken= _testCerbyToken;
+        cerUsdToken = _cerUsdToken;
+        testUsdcToken = _testUsdcToken;
+    }
+
     function adminInitialize() 
         public
         onlyRole(ROLE_ADMIN)
@@ -150,6 +159,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             msg.sender
         );
     }
+    
 
     function adminUpdateFeeToBeneficiary(address newFeeToBeneficiary)
         public
