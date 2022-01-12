@@ -640,7 +640,7 @@ contract("Cerby", accounts => {
   });
 
 
-  it.only("swapExactTokensForTokens: swap 1008 USDC --> CERBY; received CERBY is correct", async () => {
+  it("swapExactTokensForTokens: swap 1008 USDC --> CERBY; received CERBY is correct", async () => {
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 

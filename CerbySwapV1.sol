@@ -619,7 +619,8 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             );
 
             // actually transferring the tokens to the pool
-            IERC20(tokenIn).safeTransferFrom(fromAddress, address(this), amountTokensIn);
+            // for cerUsd don't need to use SafeERC20
+            IERC20(tokenIn).transferFrom(fromAddress, address(this), amountTokensIn);
 
             // swapping cerUSD ---> YYY
             swap(
@@ -633,7 +634,9 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             // getting amountTokensOut
             uint poolInPos = tokenToPoolPosition[tokenIn];
             uint amountCerUsdOut = getOutputExactTokensForCerUsd(poolInPos, amountTokensIn);
-            amountTokensOut = getOutputExactCerUsdForTokens(poolInPos, amountCerUsdOut);
+
+            uint poolOutPos = tokenToPoolPosition[tokenOut];
+            amountTokensOut = getOutputExactCerUsdForTokens(poolOutPos, amountCerUsdOut);
             require(
                 amountTokensOut >= minAmountTokensOut,
                 OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_i
@@ -743,7 +746,9 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             // getting amountTokensOut
             uint poolInPos = tokenToPoolPosition[tokenIn];
             uint amountCerUsdOut = getInputCerUsdForExactTokens(poolInPos, amountTokensOut);
-            amountTokensIn = getInputTokensForExactCerUsd(poolInPos, amountCerUsdOut);
+
+            uint poolOutPos = tokenToPoolPosition[tokenOut];
+            amountTokensIn = getInputTokensForExactCerUsd(poolOutPos, amountCerUsdOut);
             require(
                 amountTokensIn <= maxAmountTokensIn,
                 OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_K
