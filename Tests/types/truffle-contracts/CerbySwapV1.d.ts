@@ -221,6 +221,11 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  getTokenToPoolPosition(
+    token: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   getUtilsContractAtPos(
     pos: number | BN | string,
     txDetails?: Truffle.TransactionDetails
@@ -832,6 +837,11 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
 
     getRoleMemberCount(
       role: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    getTokenToPoolPosition(
+      token: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 

@@ -115,6 +115,14 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         _;
     }
 
+    function getTokenToPoolPosition(address token) 
+        public
+        view
+        returns (uint)
+    {
+        return tokenToPoolPosition[token];
+    }
+
     function testSetupTokens(address _lpErc1155V1, address _testCerbyToken, address _cerUsdToken, address _testUsdcToken, address _nativeToken)
         public
     {
