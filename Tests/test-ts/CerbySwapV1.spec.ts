@@ -508,4 +508,44 @@ contract("Cerby", accounts => {
     }
   });
 
+
+  it("swapExactTokensForTokens: swap 1007 cerUSD --> cerUSD; should revert", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
+      TestCerbyToken.address,
+    );
+
+    const beforeCerbyPool = await cerbySwap.getPoolByToken(
+      TestCerbyToken.address,
+    );
+
+    const SWAP_CERUSD_FOR_CERUSD_IS_FORBIDDEN_L = "L";
+
+    {
+      // cerUSD --> cerUSD      
+      const tokenIn1 = TestCerUsdToken.address;
+      const tokenOut1 = TestCerUsdToken.address;
+      const amountTokensIn1 = new BN(1007).mul(bn1e18);
+      const minAmountTokensOut1 = 0;
+      const expireTimestamp1 = now() + 86400;
+
+      const transferTo1 = firstAccount;
+
+      await truffleAssert.reverts(
+        cerbySwap.swapExactTokensForTokens(
+          tokenIn1,
+          tokenOut1,
+          amountTokensIn1,
+          minAmountTokensOut1,
+          expireTimestamp1,
+          transferTo1,
+        ),
+        SWAP_CERUSD_FOR_CERUSD_IS_FORBIDDEN_L
+      );
+    }
+  });
+
 });

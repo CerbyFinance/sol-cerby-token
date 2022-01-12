@@ -769,6 +769,8 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
                 0,
                 transferTo
             );
+        } else {
+            revert(SWAP_CERUSD_FOR_CERUSD_IS_FORBIDDEN_L);
         }
         return (amountTokensIn, amountTokensOut);
     }
