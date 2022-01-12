@@ -28,6 +28,9 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     string constant OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_K = "K";
     string constant SWAP_CERUSD_FOR_CERUSD_IS_FORBIDDEN_L = "L";
     string constant ONE_OF_TOKENIN_OR_TOKEN_OUT_IS_WRONG_M = "M";
+    string constant POOL_POS_DOES_NOT_EXIST_N = "N";
+    string constant AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O = "O";
+    string constant INVARIANT_K_VALUE_MUST_BE_INCREASED_ON_ANY_TRADE_P = "P";
 
     Pool[] pools;
     mapping(address => uint) tokenToPoolPosition;
@@ -448,7 +451,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         payable
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
         transactionIsNotExpired(expireTimestamp)
-        returns (uint)
+        returns (uint, uint)
     {
         uint amountTokensIn = msg.value;
         IWeth(nativeToken).deposit{value: amountTokensIn}();
@@ -473,12 +476,12 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         payable
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
         transactionIsNotExpired(expireTimestamp)
-        returns (uint)
+        returns (uint, uint)
     {
         uint maxAmountTokensIn = msg.value;
         IWeth(nativeToken).deposit{value: maxAmountTokensIn}();
         
-        _swapTokensForExactTokens(
+        (uint amountTokensIn, ) = _swapTokensForExactTokens(
             address(this),
             nativeToken,
             tokenOut,
@@ -491,7 +494,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         IWeth(nativeToken).withdraw(remainingNative);
 
         payable(transferTo).transfer(remainingNative);
-        return amountTokensOut;
+        return (amountTokensIn, amountTokensOut);
     }
 
     function swapTokensForExactNative(
@@ -505,9 +508,9 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         payable
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
         transactionIsNotExpired(expireTimestamp)
-        returns (uint)
+        returns (uint, uint)
     {
-        _swapTokensForExactTokens(
+        (uint amountTokensIn, ) = _swapTokensForExactTokens(
             msg.sender,
             tokenIn,
             nativeToken,
@@ -519,7 +522,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         IWeth(nativeToken).withdraw(amountTokensOut);
 
         payable(transferTo).transfer(amountTokensOut);
-        return amountTokensOut;
+        return (amountTokensIn, amountTokensOut);
     }
 
     function swapExactTokensForNative(
@@ -533,9 +536,9 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         payable
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
         transactionIsNotExpired(expireTimestamp)
-        returns (uint)
+        returns (uint, uint)
     {
-        uint amountTokensOut = _swapExactTokensForTokens(
+        (, uint amountTokensOut) = _swapExactTokensForTokens(
             address(this),
             tokenIn,
             nativeToken,
@@ -547,7 +550,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         IWeth(nativeToken).withdraw(amountTokensOut);
 
         payable(transferTo).transfer(amountTokensOut);
-        return amountTokensOut;
+        return (amountTokensIn, amountTokensOut);
     }
 
     function swapExactTokensForTokens(
@@ -561,7 +564,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         public
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
         transactionIsNotExpired(expireTimestamp)
-        returns (uint)
+        returns (uint, uint)
     {
         return _swapExactTokensForTokens(
             msg.sender,
@@ -582,46 +585,84 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         address transferTo    
     )
         private
-        returns (uint)
+        returns (uint, uint)
     {
-        if (fromAddress != address(this))
-        {
-            IERC20(tokenIn).safeTransferFrom(fromAddress, address(this), amountTokensIn);
-        }
-
-        uint outputTokensOut;
+        uint amountTokensOut;
         if (tokenIn != cerUsdToken && tokenOut == cerUsdToken) {
+
+            // getting amountTokensOut
+            uint poolInPos = tokenToPoolPosition[tokenIn];
+            uint amountCerUsdOut = getOutputExactTokensForCerUsd(poolInPos, amountTokensIn);
+            require(
+                amountCerUsdOut >= minAmountTokensOut,
+                OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_H
+            );
+
+            // actually transferring the tokens to the pool
+            IERC20(tokenIn).safeTransferFrom(fromAddress, address(this), amountTokensIn);
+
             // swapping XXX ---> cerUSD
-            outputTokensOut = _swapExactTokensForCerUsd(
+            swap(
                 tokenIn,
-                minAmountTokensOut,
+                0,
+                amountCerUsdOut,
                 transferTo
             );
+
+            amountTokensOut = amountCerUsdOut;
         } else if (tokenIn == cerUsdToken && tokenOut != cerUsdToken) {
+
+            // getting amountTokensOut
+            uint poolInPos = tokenToPoolPosition[tokenOut];
+            amountTokensOut = getOutputExactCerUsdForTokens(poolInPos, amountTokensIn);
+            require(
+                amountTokensOut >= minAmountTokensOut,
+                OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_i
+            );
+
+            // actually transferring the tokens to the pool
+            IERC20(tokenIn).safeTransferFrom(fromAddress, address(this), amountTokensIn);
+
             // swapping cerUSD ---> YYY
-            outputTokensOut = _swapExactCerUsdForTokens(
+            swap(
                 tokenOut,
-                minAmountTokensOut,
+                amountTokensOut,
+                0,
                 transferTo
             );
         } else if (tokenIn != cerUsdToken && tokenIn != cerUsdToken) {
+
+            // getting amountTokensOut
+            uint poolInPos = tokenToPoolPosition[tokenIn];
+            uint amountCerUsdOut = getOutputExactTokensForCerUsd(poolInPos, amountTokensIn);
+            amountTokensOut = getOutputExactCerUsdForTokens(poolInPos, amountCerUsdOut);
+            require(
+                amountTokensOut >= minAmountTokensOut,
+                OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_i
+            );
+
+            // actually transferring the tokens to the pool
+            IERC20(tokenIn).safeTransferFrom(fromAddress, address(this), amountTokensIn);
+
             // swapping XXX ---> cerUSD
-            _swapExactTokensForCerUsd(
+            swap(
                 tokenIn,
                 0,
+                amountCerUsdOut,
                 address(this)
             );
 
             // swapping cerUSD ---> YYY
-            outputTokensOut = _swapExactCerUsdForTokens(
+            swap(
                 tokenOut,
-                minAmountTokensOut,
+                amountTokensOut,
+                0,
                 transferTo
             );
         } else {
             revert(SWAP_CERUSD_FOR_CERUSD_IS_FORBIDDEN_L);
         }
-        return outputTokensOut;
+        return (amountTokensIn, amountTokensOut);
     }
 
     function swapTokensForExactTokens(
@@ -635,7 +676,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         public
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
         transactionIsNotExpired(expireTimestamp)
-        returns (uint)
+        returns (uint, uint)
     {
         return _swapTokensForExactTokens(
             msg.sender,
@@ -656,124 +697,133 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         address transferTo
     )
         private
-        returns (uint)
+        returns (uint, uint)
     {
         uint amountTokensIn;
-        uint outputTokensOut;
-        if (tokenIn == cerUsdToken && tokenOut != cerUsdToken) {
-            // getting amountTokensIn based on exact amountTokensOut on cerUsd/TokenOut pool
-            amountTokensIn = 
-                getInputCerUsdForExactTokens(tokenToPoolPosition[tokenOut], amountTokensOut);
-            require(
-                amountTokensIn <= maxAmountTokensIn,
-                OUTPUT_CERUSD_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_J
-            );
+        if (tokenIn != cerUsdToken && tokenOut == cerUsdToken) {
 
-            if (fromAddress != address(this))
-            {
-                IERC20(tokenIn).safeTransferFrom(fromAddress, address(this), amountTokensIn);
-            }
-
-            // swapping cerUSD ---> YYY
-            outputTokensOut = _swapExactCerUsdForTokens(
-                tokenOut,
-                0,
-                transferTo
-            );
-        } else if (tokenIn != cerUsdToken && tokenOut == cerUsdToken) {
-            // getting amountTokensIn based on exact amountTokensOut on TokenIn/CerUsd pool
-            amountTokensIn = 
-                getInputTokensForExactCerUsd(tokenToPoolPosition[tokenIn], amountTokensOut);
+            // getting amountTokensOut
+            uint poolInPos = tokenToPoolPosition[tokenIn];
+            amountTokensIn = getInputTokensForExactCerUsd(poolInPos, amountTokensOut);
             require(
                 amountTokensIn <= maxAmountTokensIn,
                 OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_K
             );
 
-            if (fromAddress != address(this))
-            {
-                IERC20(tokenIn).safeTransferFrom(fromAddress, address(this), amountTokensIn);
-            }            
+            // actually transferring the tokens to the pool
+            IERC20(tokenIn).safeTransferFrom(fromAddress, address(this), amountTokensIn);
 
             // swapping XXX ---> cerUSD
-            outputTokensOut = _swapExactTokensForCerUsd(
+            swap(
                 tokenIn,
+                0,
+                amountTokensOut,
+                transferTo
+            );
+        } else if (tokenIn == cerUsdToken && tokenOut != cerUsdToken) {
+
+            // getting amountTokensOut
+            uint poolInPos = tokenToPoolPosition[tokenOut];
+            uint amountCerUsdIn = getInputCerUsdForExactTokens(poolInPos, amountTokensOut);
+            require(
+                amountCerUsdIn <= maxAmountTokensIn,
+                OUTPUT_CERUSD_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_J
+            );
+
+            // actually transferring the tokens to the pool
+            IERC20(tokenIn).safeTransferFrom(fromAddress, address(this), amountTokensIn);
+
+            // swapping cerUSD ---> YYY
+            swap(
+                tokenOut,
+                amountTokensOut,
                 0,
                 transferTo
             );
         } else if (tokenIn != cerUsdToken && tokenOut != cerUsdToken) {
-            // getting amountCerUsdIn based on exact amountTokensOut on cerUSD/TokenOut pool
-            uint amountCerUsdIn = 
-                getInputCerUsdForExactTokens(tokenToPoolPosition[tokenOut], amountTokensOut);
 
-            // getting amountTokensIn based on exact amountCerUsdIn on TokenIn/CerUsd pool
-            amountTokensIn = 
-                getInputTokensForExactCerUsd(tokenToPoolPosition[tokenIn], amountCerUsdIn);
+            // getting amountTokensOut
+            uint poolInPos = tokenToPoolPosition[tokenIn];
+            uint amountCerUsdIn = getInputCerUsdForExactTokens(poolInPos, amountTokensOut);
+            amountTokensIn = getInputTokensForExactCerUsd(poolInPos, amountCerUsdIn);
             require(
                 amountTokensIn <= maxAmountTokensIn,
                 OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_K
             );
 
-            if (fromAddress != address(this))
-            {
-                IERC20(tokenIn).safeTransferFrom(fromAddress, address(this), amountTokensIn);
-            }
+            // actually transferring the tokens to the pool
+            IERC20(tokenIn).safeTransferFrom(fromAddress, address(this), amountTokensIn);
 
             // swapping XXX ---> cerUSD
-            _swapExactTokensForCerUsd(
+            swap(
                 tokenIn,
                 0,
+                amountCerUsdIn,
                 address(this)
             );
 
             // swapping cerUSD ---> YYY
-            outputTokensOut = _swapExactCerUsdForTokens(
+            swap(
                 tokenOut,
+                amountTokensOut,
                 0,
                 transferTo
             );
         }
-        return outputTokensOut;
+        return (amountTokensIn, amountTokensOut);
     }
 
-    function _swapExactTokensForCerUsd(
-        address tokenIn,
-        uint minAmountCerUsdOut,
+    // low level swap
+    function swap(
+        address token,
+        uint amountTokensOut,
+        uint amountCerUsdOut,
         address transferTo
     )
-        private
-        tokenMustExistInPool(tokenIn)
-        returns (uint)
+        public
+        tokenMustExistInPool(token)
     {
-        uint poolPos = tokenToPoolPosition[tokenIn];
+        uint poolPos = tokenToPoolPosition[token];
 
-        // finding out how many tokens router have sent to us
-        uint newTokenBalance = IERC20(tokenIn).balanceOf(address(this));
-        uint amountTokensIn = newTokenBalance - pools[poolPos].balanceToken;
-        require(
-            amountTokensIn > 0,
-            AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_F
-        );
-
-        // finding out if for some reason we've received cerUSD tokens as well
+        // finding out how many amountCerUsdIn we received
         uint newTotalCerUsdBalance = IERC20(cerUsdToken).balanceOf(address(this));
         uint amountCerUsdIn = newTotalCerUsdBalance - totalCerUsdBalance;
 
-        // calculating the amount we have to send to user
-        uint amountCerUsdOut = getOutputExactTokensForCerUsd(poolPos, amountTokensIn);
+        // finding out how many amountTokensIn we received
+        uint oldTokenBalance = IERC20(token).balanceOf(address(this));
+        uint amountTokensIn = oldTokenBalance - pools[poolPos].balanceToken;
         require(
-            amountCerUsdOut >= minAmountCerUsdOut,
-            OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_H
+            amountTokensIn + amountCerUsdIn > 0,
+            AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O
         );
 
-        // updating pool values
-        totalCerUsdBalance = totalCerUsdBalance + amountCerUsdIn - amountCerUsdOut;
-        pools[poolPos].balanceCerUsd = 
-            pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn) - uint112(amountCerUsdOut);
-        pools[poolPos].balanceToken = uint112(newTokenBalance);
+        { // scope to avoid stack too deep error
+            // calculating old K value including trade fees (multiplied by FEE_DENORM^2)
+            uint fee = getCurrentFeeBasedOnTrades(poolPos);
+            uint beforeKValueDenormed = 
+                uint(pools[poolPos].balanceCerUsd) * FEE_DENORM *
+                uint(pools[poolPos].balanceToken) * FEE_DENORM;
+
+            // updating pool values
+            totalCerUsdBalance = totalCerUsdBalance + amountCerUsdIn - amountCerUsdOut;
+            pools[poolPos].balanceCerUsd = 
+                pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn) - uint112(amountCerUsdOut);
+            pools[poolPos].balanceToken = 
+                pools[poolPos].balanceToken + uint112(amountTokensIn) - uint112(amountTokensOut);
+
+            // calculating new K value including trade fees (multiplied by FEE_DENORM^2)
+            uint afterKValueDenormed = 
+                (uint(pools[poolPos].balanceCerUsd) * FEE_DENORM - amountCerUsdIn * (FEE_DENORM - fee)) * 
+                (uint(pools[poolPos].balanceToken) * FEE_DENORM - amountTokensIn * (FEE_DENORM - fee));
+            require(
+                afterKValueDenormed >= beforeKValueDenormed,
+                INVARIANT_K_VALUE_MUST_BE_INCREASED_ON_ANY_TRADE_P
+            );
+        }
 
         // updating 4hour trade pool values
         uint current4Hour = getCurrent4Hour();
-        uint next4Hour = (current4Hour + 1) % NUMBER_OF_4HOUR_INTERVALS;
+        uint next4Hour = (getCurrent4Hour() + 1) % pools[poolPos].hourlyTradeVolumeInCerUsd.length;
         unchecked {
             // wrapping any uint32 overflows
             // stores in USD value
@@ -787,77 +837,23 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] = 0;
         }
 
-        // transferring cerUSD tokens
-        if (transferTo != address(this)) {
-            IERC20(cerUsdToken).safeTransfer(transferTo, amountCerUsdOut);
-        }
-
-        return amountCerUsdOut;
-    }
-
-    function _swapExactCerUsdForTokens(
-        address tokenOut,
-        uint minAmountTokenOut,
-        address transferTo
-    )
-        private
-        tokenMustExistInPool(tokenOut)
-        returns (uint)
-    {
-        uint poolPos = tokenToPoolPosition[tokenOut];
-
-        // finding out how many cerUSD tokens router have sent to us
-        uint newTotalCerUsdBalance = IERC20(cerUsdToken).balanceOf(address(this));
-        uint amountCerUsdIn = newTotalCerUsdBalance - totalCerUsdBalance;
-        require(
-            amountCerUsdIn > 0,
-            AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_G
-        );
-
-        // finding out if for some reason we've received tokens as well
-        uint oldTokenBalance = IERC20(tokenOut).balanceOf(address(this));
-        uint amountTokensIn = oldTokenBalance - pools[poolPos].balanceToken;
-
-        // calculating amount of tokens to be sent to user
-        uint amountTokensOut = getOutputExactCerUsdForTokens(poolPos, amountCerUsdIn);
-        require(
-            amountTokensOut >= minAmountTokenOut,
-            OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_i
-        );
-
-        // updating pool values
-        totalCerUsdBalance = newTotalCerUsdBalance;
-        pools[poolPos].balanceCerUsd = pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn);
-        pools[poolPos].balanceToken = 
-            pools[poolPos].balanceToken + uint112(amountTokensIn) - uint112(amountTokensOut);
-
-        // updating 4hour trade pool values
-        uint current4Hour = getCurrent4Hour();
-        uint next4Hour = (getCurrent4Hour() + 1) % pools[poolPos].hourlyTradeVolumeInCerUsd.length;
-        unchecked {
-            // wrapping any uint32 overflows
-            // stores in USD value
-            pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += 
-                uint32(amountCerUsdIn / 1e18);
-        }
-
-        // clearing next 4hour trade value
-        if (pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] > 0)
-        {
-            pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] = 0;
-        }
-
         // transferring tokens from contract to user
         if (transferTo != address(this)) {
-            IERC20(tokenOut).safeTransfer(transferTo, amountTokensOut);
-        }
-        uint newTokenBalance = IERC20(tokenOut).balanceOf(address(this));
-        require(
-            newTokenBalance == pools[poolPos].balanceToken,
-            FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_E
-        );
+            if (amountTokensOut > 0) {
+                IERC20(token).safeTransfer(transferTo, amountTokensOut);
 
-        return amountTokensOut;
+                // making sure exactly amountTokensOut tokens were sent out
+                uint newTokenBalance = IERC20(token).balanceOf(address(this));
+                require(
+                    newTokenBalance == pools[poolPos].balanceToken,
+                    FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_E
+                );
+            }
+            if (amountCerUsdOut > 0) {
+                // since cerUSD is our token, we don't need to use safeTransfer function
+                IERC20(cerUsdToken).transfer(transferTo, amountCerUsdOut);
+            }
+        }
     }
 
     function syncTokenBalanceInPool(address token)

@@ -444,7 +444,7 @@ contract("Cerby", accounts => {
       // CERBY --> cerUSD
       const tokenIn1 = TestCerbyToken.address;
       const tokenOut1 = TestCerUsdToken.address;
-      const amountTokensIn1 = new BN(1005).mul(bn1e18);
+      const amountTokensIn1 = new BN(1004).mul(bn1e18);
       const amountTokensOut1 = await cerbySwap.getOutputExactTokensForCerUsd(
         CERBY_TOKEN_POS,
         amountTokensIn1,
