@@ -592,9 +592,9 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
             // getting amountTokensOut
             uint poolInPos = tokenToPoolPosition[tokenIn];
-            uint amountCerUsdOut = getOutputExactTokensForCerUsd(poolInPos, amountTokensIn);
+            amountTokensOut = getOutputExactTokensForCerUsd(poolInPos, amountTokensIn);
             require(
-                amountCerUsdOut >= minAmountTokensOut,
+                amountTokensOut >= minAmountTokensOut,
                 OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_H
             );
 
@@ -605,11 +605,9 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             swap(
                 tokenIn,
                 0,
-                amountCerUsdOut,
+                amountTokensOut,
                 transferTo
             );
-
-            amountTokensOut = amountCerUsdOut;
         } else if (tokenIn == cerUsdToken && tokenOut != cerUsdToken) {
 
             // getting amountTokensOut
@@ -724,9 +722,9 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
             // getting amountTokensOut
             uint poolInPos = tokenToPoolPosition[tokenOut];
-            uint amountCerUsdIn = getInputCerUsdForExactTokens(poolInPos, amountTokensOut);
+            amountTokensIn = getInputCerUsdForExactTokens(poolInPos, amountTokensOut);
             require(
-                amountCerUsdIn <= maxAmountTokensIn,
+                amountTokensIn <= maxAmountTokensIn,
                 OUTPUT_CERUSD_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_J
             );
 
@@ -744,8 +742,8 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 
             // getting amountTokensOut
             uint poolInPos = tokenToPoolPosition[tokenIn];
-            uint amountCerUsdIn = getInputCerUsdForExactTokens(poolInPos, amountTokensOut);
-            amountTokensIn = getInputTokensForExactCerUsd(poolInPos, amountCerUsdIn);
+            uint amountCerUsdOut = getInputCerUsdForExactTokens(poolInPos, amountTokensOut);
+            amountTokensIn = getInputTokensForExactCerUsd(poolInPos, amountCerUsdOut);
             require(
                 amountTokensIn <= maxAmountTokensIn,
                 OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_K
@@ -758,7 +756,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             swap(
                 tokenIn,
                 0,
-                amountCerUsdIn,
+                amountCerUsdOut,
                 address(this)
             );
 
@@ -865,7 +863,14 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     {
         uint poolPos = tokenToPoolPosition[token];
         pools[poolPos].balanceToken = uint112(IERC20(token).balanceOf(address(this)));
-        totalCerUsdBalance = IERC20(cerUsdToken).balanceOf(address(this));
+        
+        uint newTotalCerUsdBalance = IERC20(cerUsdToken).balanceOf(address(this));
+        pools[poolPos].balanceCerUsd = 
+            newTotalCerUsdBalance > totalCerUsdBalance?
+                pools[poolPos].balanceCerUsd + uint112(newTotalCerUsdBalance - totalCerUsdBalance):
+                pools[poolPos].balanceCerUsd - uint112(totalCerUsdBalance - newTotalCerUsdBalance);
+
+        totalCerUsdBalance = newTotalCerUsdBalance;
     }
 
     function getCurrent4Hour()
