@@ -16,25 +16,32 @@ const now = () => Math.floor(+new Date() / 1000);
 
 const bn1e18 = new BN((1e18).toString());
 
+const setup = async () => {
+  const cerbySwap = await CerbySwapV1.deployed();
+
+  await cerbySwap.testSetupTokens(
+    CerbySwapLP1155V1.address,
+    TestCerbyToken.address,
+
+    TestCerUsdToken.address,
+    TestUsdcToken.address,
+    Weth.address,
+  );
+
+  await cerbySwap.adminInitialize();
+};
+
 contract("Cerby", accounts => {
   it("test everything", async () => {
+    await setup();
+
     // Available Accounts
     // ganache accounts
+
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-
-    await cerbySwap.testSetupTokens(
-      CerbySwapLP1155V1.address,
-      TestCerbyToken.address,
-
-      TestCerUsdToken.address,
-      TestUsdcToken.address,
-      Weth.address,
-    );
-
-    await cerbySwap.adminInitialize();
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
