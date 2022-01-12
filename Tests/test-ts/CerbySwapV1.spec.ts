@@ -55,7 +55,7 @@ contract("Cerby", accounts => {
     }
 
     //
-    const CERBY_TOKEN_POS = await cerbySwap.testGetTokenToPoolPosition(
+    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
       TestCerbyToken.address,
     );
     const cerbyPool = await cerbySwap.getPoolByPosition(CERBY_TOKEN_POS);
@@ -63,7 +63,7 @@ contract("Cerby", accounts => {
     const cerbyPoolToken = cerbyPool.token;
     const cerbyPoolTradeVolume = cerbyPool.hourlyTradeVolumeInCerUsd;
     //
-    const USDC_TOKEN_POS = await cerbySwap.testGetTokenToPoolPosition(
+    const USDC_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
       TestCerUsdToken.address,
     );
     const usdcPool = await cerbySwap.getPoolByPosition(USDC_TOKEN_POS);
