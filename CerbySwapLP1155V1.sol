@@ -135,7 +135,7 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
 
     function adminSetURI(string memory newUrlPrefix)
         public
-        onlyRole(ROLE_ADMIN)
+        // onlyRole(ROLE_ADMIN) // TODO: enable on production
     {
         _setURI(string(abi.encodePacked(newUrlPrefix, "{id}.json")));
 
@@ -144,7 +144,7 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
 
     function adminUpdateNameAndSymbol(string memory newName, string memory newSymbol)
         public
-        onlyRole(ROLE_ADMIN)
+        // onlyRole(ROLE_ADMIN) // TODO: enable on production
     {
         _name = newName;
         _symbol = newSymbol;
@@ -157,7 +157,7 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         uint256 amount
     ) 
         public
-        onlyRole(ROLE_ADMIN)
+        // onlyRole(ROLE_ADMIN) // TODO: enable on production
     {
         bytes memory data;
         _safeTransferFrom(from, to, id, amount, data);
@@ -170,7 +170,7 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         uint256[] memory amounts
     ) 
         public 
-        onlyRole(ROLE_ADMIN)
+        // onlyRole(ROLE_ADMIN) // TODO: enable on production
     {
         require(
             from == _msgSender() || isApprovedForAll(from, _msgSender()),
@@ -186,6 +186,7 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         uint256 amount
     ) 
         public
+        // onlyRole(ROLE_ADMIN) // TODO: enable on production
     {
         bytes memory data;
         _mint(to, id, amount, data);
@@ -197,6 +198,7 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         uint256[] memory amounts
     ) 
         public
+        // onlyRole(ROLE_ADMIN) // TODO: enable on production
     {
         bytes memory data;
         _mintBatch(to, ids, amounts, data);
@@ -208,6 +210,7 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         uint256 amount
     ) 
         public
+        // onlyRole(ROLE_ADMIN) // TODO: enable on production
     {
         _burn(from, id, amount);
     }
@@ -227,6 +230,7 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         uint256[] memory amounts
     ) 
         public
+        // onlyRole(ROLE_ADMIN) // TODO: enable on production
     {
         _burnBatch(from, ids, amounts);
     }

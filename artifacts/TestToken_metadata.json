@@ -423,7 +423,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/TestCerbyToken.sol": "TestCerbyToken"
+			"sol-defifactory-token/TestUsdcToken.sol": "TestToken"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -437,12 +437,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/TestCerbyToken.sol": {
-			"keccak256": "0xad740f378078d88656763bcddd32b88bc82a13782f728e896a4addeb0ebb7459",
+		"sol-defifactory-token/TestUsdcToken.sol": {
+			"keccak256": "0xfc6e33a4d627962df35d54799b4e56fa8cd53bc11e18ba1a8e0f663b7bbbe759",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c6bbb2aa0d40bfe0a9a70fed08b07d4df095adf4cf8f79093f9ef2f526d9aef2",
-				"dweb:/ipfs/QmU4Cw3D5P9hBqdohTSGrEfWDo4YLWpAbUPMbAfJWVAUhn"
+				"bzz-raw://d2dae16d7adde991de2b063e615bf70486fce10cb27a6cde8b1cbef7c250939c",
+				"dweb:/ipfs/QmYZfhVcJZw7n6aRE8FTpfy7FEr2KfcrSCjMTUH5ruWrCk"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20.sol": {

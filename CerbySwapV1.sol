@@ -10,7 +10,6 @@ import "./interfaces/ICerbyBotDetection.sol";
 import "./interfaces/ICerbySwapLP1155V1.sol";
 import "./interfaces/IWeth.sol";
 import "./CerbyCronJobsExecution.sol";
-import "./CerbySwapLP1155V1.sol";
 
 
 contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
@@ -47,12 +46,12 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     // "0xde402E9D305bAd483d47bc858cC373c5a040A62D", "997503992263724670916", 0, "2041564156"
     // "0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2", "1000000000000000000000", 0, "2041564156"
     // "0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2","0xde402E9D305bAd483d47bc858cC373c5a040A62D","10000000000000000000000","0","2041564156"
-    // "0xde402E9D305bAd483d47bc858cC373c5a040A62D","0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2","1000000000000000000000","0","20415641
+    // "0x2c4fE51d1Ad5B88cD2cc2F45ad1c0C857f06225e","0xF3B07F8167b665BA3E2DD29c661DeE3a1da2380a","1000000000000000000000","0","20415641000","0x539FaA851D86781009EC30dF437D794bCd090c8F"
     */
-    address lpErc1155V1 = 0xE94EFBCaA00665C8faA47E18741DA9f212a15c20;
-    address testCerbyToken = 0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2;
-    address cerUsdToken = 0x04D7000CC826349A872757D82b3E0F68a713B3c5;
-    address testUsdcToken = 0xde402E9D305bAd483d47bc858cC373c5a040A62D;
+    address lpErc1155V1 = 0x370a4BA20191804aeEAb8eB39e3ea83D77fEB68d;
+    address testCerbyToken = 0x2c4fE51d1Ad5B88cD2cc2F45ad1c0C857f06225e;
+    address cerUsdToken = 0xF3B07F8167b665BA3E2DD29c661DeE3a1da2380a;
+    address testUsdcToken = 0x2a5E269bF364E347942c464a999D8c8ac2E6CE94;
 
     address nativeToken;
 
@@ -191,7 +190,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint poolPos = pools.length;
 
         IERC20(token).safeTransferFrom(msg.sender, address(this), amountTokensIn);
-        ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), amountTokensIn);
+        ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), amountCerUsdIn);
 
         // finding out how many tokens router have sent to us
         amountTokensIn = IERC20(token).balanceOf(address(this));
@@ -212,6 +211,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         );
         pools.push(pool);
         tokenToPoolPosition[token] = poolPos;   
+        totalCerUsdBalance += amountCerUsdIn;
 
         // minting 1000 lp tokens to prevent attack
         ICerbySwapLP1155V1(lpErc1155V1).adminMint(
