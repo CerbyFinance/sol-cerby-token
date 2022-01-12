@@ -32,9 +32,6 @@ contract("Cerby", accounts => {
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
     );
-    const beforeUsdcPool = await cerbySwap.getPoolByToken(
-      TestUsdcToken.address,
-    );
 
     {
       const tokenIn = TestCerbyToken.address;
@@ -90,9 +87,6 @@ contract("Cerby", accounts => {
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
-    );
-    const beforeUsdcPool = await cerbySwap.getPoolByToken(
-      TestUsdcToken.address,
     );
 
     {
