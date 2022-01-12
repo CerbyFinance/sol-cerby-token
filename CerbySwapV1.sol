@@ -611,8 +611,8 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         } else if (tokenIn == cerUsdToken && tokenOut != cerUsdToken) {
 
             // getting amountTokensOut
-            uint poolInPos = tokenToPoolPosition[tokenOut];
-            amountTokensOut = getOutputExactCerUsdForTokens(poolInPos, amountTokensIn);
+            uint poolOutPos = tokenToPoolPosition[tokenOut];
+            amountTokensOut = getOutputExactCerUsdForTokens(poolOutPos, amountTokensIn);
             require(
                 amountTokensOut >= minAmountTokensOut,
                 OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_i
@@ -721,8 +721,8 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         } else if (tokenIn == cerUsdToken && tokenOut != cerUsdToken) {
 
             // getting amountTokensOut
-            uint poolInPos = tokenToPoolPosition[tokenOut];
-            amountTokensIn = getInputCerUsdForExactTokens(poolInPos, amountTokensOut);
+            uint poolOutPos = tokenToPoolPosition[tokenOut];
+            amountTokensIn = getInputCerUsdForExactTokens(poolOutPos, amountTokensOut);
             require(
                 amountTokensIn <= maxAmountTokensIn,
                 OUTPUT_CERUSD_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_J
