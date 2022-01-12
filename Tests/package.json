@@ -4,7 +4,7 @@
   "main": "",
   "scripts": {
     "generate-types": "typechain --target=truffle-v5 abis/*.abi",
-    "strip-n-pretty": "ts-node-dev --respawn --no-deps --transpile-only --ignore-watch node_modules shared/strip-n-pretty.ts",
+    "compile-contracts": "ts-node-dev --no-deps --transpile-only --ignore-watch node_modules shared/compile.ts",
     "migrate": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
     "test": "tsc -p ./tsconfig.test.json --outDir test && truffle test"
   },
