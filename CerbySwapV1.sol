@@ -16,16 +16,17 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     using SafeERC20 for IERC20;
 
     string constant ALREADY_INITIALIZED_A = "A";
-    string constant TOKEN_ALREAD_EXISTS_E = "E";
-    string constant TOKEN_DOES_NOT_EXIST_N = "N";
-    string constant TRANSACTION_IS_EXPIRED_T = "T";
-    string constant FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_F = "F";
-    string constant AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_Z = "Z";
-    string constant AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_U = "U";
-    string constant OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_M = "M";
-    string constant OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_N = "N";
-    string constant OUTPUT_CERUSD_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_X = "X";
-    string constant OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_Y = "Y";
+    string constant TOKEN_ALREAD_EXISTS_B = "B";
+    string constant TOKEN_DOES_NOT_EXIST_C = "C";
+    string constant TRANSACTION_IS_EXPIRED_D = "D";
+    string constant FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_E = "E";
+    string constant AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_F = "F";
+    string constant AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_G = "G";
+    string constant OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_H = "H";
+    string constant OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_i = "i";
+    string constant OUTPUT_CERUSD_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_J = "J";
+    string constant OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_K = "K";
+    string constant ONE_OF_TOKENIN_OR_TOKEN_OUT_IS_WRONG_W = "W";
 
     Pool[] pools;
     mapping(address => uint) tokenToPoolPosition;
@@ -45,7 +46,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     /* Localhost
     // "0xde402E9D305bAd483d47bc858cC373c5a040A62D", "997503992263724670916", 0, "2041564156"
     // "0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2", "1000000000000000000000", 0, "2041564156"
-    // "0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2","0xde402E9D305bAd483d47bc858cC373c5a040A62D","10000000000000000000000","0","2041564156"
+    // "0xF3B07F8167b665BA3E2DD29c661DeE3a1da2380a","0x2c4fE51d1Ad5B88cD2cc2F45ad1c0C857f06225e","1000000000000000000000","0","20415641000","0x539FaA851D86781009EC30dF437D794bCd090c8F"
     // "0x2c4fE51d1Ad5B88cD2cc2F45ad1c0C857f06225e","0xF3B07F8167b665BA3E2DD29c661DeE3a1da2380a","1000000000000000000000","0","20415641000","0x539FaA851D86781009EC30dF437D794bCd090c8F"
     */
     address lpErc1155V1 = 0x370a4BA20191804aeEAb8eB39e3ea83D77fEB68d;
@@ -91,7 +92,23 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     {
         require(
             tokenToPoolPosition[token] > 0 && token != cerUsdToken,
-            TOKEN_DOES_NOT_EXIST_N
+            TOKEN_DOES_NOT_EXIST_C
+        );
+        _;
+    }
+
+    modifier oneOfTokensMustExistInPool(address tokenIn, address tokenOut)
+    {
+        require(
+            tokenToPoolPosition[tokenIn] > 0 && (
+                tokenOut == cerUsdToken ||
+                tokenToPoolPosition[tokenOut] > 0
+            ) ||
+            tokenToPoolPosition[tokenOut] > 0 && (
+                tokenIn == cerUsdToken ||
+                tokenToPoolPosition[tokenIn] > 0
+            ),
+            ONE_OF_TOKENIN_OR_TOKEN_OUT_IS_WRONG_W
         );
         _;
     }
@@ -100,7 +117,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     {
         require(
             tokenToPoolPosition[token] == 0 && token != cerUsdToken,
-            TOKEN_ALREAD_EXISTS_E
+            TOKEN_ALREAD_EXISTS_B
         );
         _;
     }
@@ -109,7 +126,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     {
         require(
             block.timestamp <= expireTimestamp,
-            TRANSACTION_IS_EXPIRED_T
+            TRANSACTION_IS_EXPIRED_D
         );
         _;
     }
@@ -196,7 +213,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         amountTokensIn = IERC20(token).balanceOf(address(this));
         require(
             amountTokensIn > 0,
-            AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_Z
+            AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_F
         );
 
         // create new pool record
@@ -286,7 +303,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         amountTokensIn = newTokenBalance - pools[poolPos].balanceToken;
         require(
             amountTokensIn > 0,
-            AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_Z
+            AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_F
         );
 
         // finding out if for some reason we've received cerUSD tokens as well
@@ -331,7 +348,6 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     function removeTokenLiquidity(address token, uint amountLpTokensBalanceToBurn, address transferTo)
         public
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
-        tokenMustExistInPool(token)
         returns (uint)
     {
         return _removeTokenLiquidity(msg.sender, token, amountLpTokensBalanceToBurn, transferTo);
@@ -402,7 +418,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint newTokenBalance = IERC20(token).balanceOf(address(this));
         require(
             newTokenBalance + amountTokensOut == oldTokenBalance,
-            FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_F
+            FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_E
         );
 
         return amountTokensOut;
@@ -430,7 +446,6 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         public
         payable
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
-        tokenMustExistInPool(nativeToken)
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
     {
@@ -456,7 +471,6 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         public
         payable
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
-        tokenMustExistInPool(nativeToken)
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
     {
@@ -489,7 +503,6 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         public
         payable
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
-        tokenMustExistInPool(nativeToken)
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
     {
@@ -518,7 +531,6 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         public
         payable
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
-        tokenMustExistInPool(nativeToken)
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
     {
@@ -547,7 +559,6 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     )
         public
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
-        tokenMustExistInPool(tokenIn)
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
     {
@@ -620,7 +631,6 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     )
         public
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
-        tokenMustExistInPool(tokenIn)
         transactionIsNotExpired(expireTimestamp)
         returns (uint)
     {
@@ -653,7 +663,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
                 getInputCerUsdForExactTokens(tokenToPoolPosition[tokenOut], amountTokensOut);
             require(
                 amountTokensIn <= maxAmountTokensIn,
-                OUTPUT_CERUSD_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_X
+                OUTPUT_CERUSD_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_J
             );
 
             if (fromAddress != address(this))
@@ -673,7 +683,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
                 getInputTokensForExactCerUsd(tokenToPoolPosition[tokenIn], amountTokensOut);
             require(
                 amountTokensIn <= maxAmountTokensIn,
-                OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_Y
+                OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_K
             );
 
             if (fromAddress != address(this))
@@ -697,7 +707,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
                 getInputTokensForExactCerUsd(tokenToPoolPosition[tokenIn], amountCerUsdIn);
             require(
                 amountTokensIn <= maxAmountTokensIn,
-                OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_Y
+                OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_K
             );
 
             if (fromAddress != address(this))
@@ -728,6 +738,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         address transferTo
     )
         private
+        tokenMustExistInPool(tokenIn)
         returns (uint)
     {
         uint poolPos = tokenToPoolPosition[tokenIn];
@@ -737,7 +748,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountTokensIn = newTokenBalance - pools[poolPos].balanceToken;
         require(
             amountTokensIn > 0,
-            AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_Z
+            AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_F
         );
 
         // finding out if for some reason we've received cerUSD tokens as well
@@ -748,7 +759,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountCerUsdOut = getOutputExactTokensForCerUsd(poolPos, amountTokensIn);
         require(
             amountCerUsdOut >= minAmountCerUsdOut,
-            OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_M
+            OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_H
         );
 
         // updating pool values
@@ -786,6 +797,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         address transferTo
     )
         private
+        tokenMustExistInPool(tokenOut)
         returns (uint)
     {
         uint poolPos = tokenToPoolPosition[tokenOut];
@@ -795,7 +807,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountCerUsdIn = newTotalCerUsdBalance - totalCerUsdBalance;
         require(
             amountCerUsdIn > 0,
-            AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_U
+            AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_G
         );
 
         // finding out if for some reason we've received tokens as well
@@ -806,7 +818,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountTokensOut = getOutputExactCerUsdForTokens(poolPos, amountCerUsdIn);
         require(
             amountTokensOut >= minAmountTokenOut,
-            OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_N
+            OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_i
         );
 
         // updating pool values
@@ -837,7 +849,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint newTokenBalance = IERC20(tokenOut).balanceOf(address(this));
         require(
             newTokenBalance == pools[poolPos].balanceToken,
-            FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_F
+            FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_E
         );
 
         return amountTokensOut;

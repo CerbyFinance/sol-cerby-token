@@ -17,8 +17,7 @@ const now = () => Math.floor(+new Date() / 1000);
 const bn1e18 = new BN((1e18).toString());
 
 contract("Cerby", accounts => {
-  it("swapExactCerbyForCerUsd: swap 1000 CERBY for cerUSD", async () => {
-
+  it("swapExactTokensForTokens: swap 1000 CERBY for cerUSD", async () => {
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
@@ -69,10 +68,68 @@ contract("Cerby", accounts => {
         beforeCerbyPool.balanceToken.add(amountTokensIn).toString(),
       );
 
-      // fails for some reason
       assert.deepEqual(
         afterCerbyPool.balanceCerUsd.toString(),
         beforeCerbyPool.balanceCerUsd.sub(amountTokensOut).toString(),
+      );
+    }
+  });
+
+
+  it("swapExactTokensForTokens: swap 2000 cerUSD for CERBY", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
+      TestCerbyToken.address,
+    );
+    const USDC_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
+      TestCerUsdToken.address,
+    );
+
+    const beforeCerbyPool = await cerbySwap.getPoolByToken(
+      TestCerbyToken.address,
+    );
+    const beforeUsdcPool = await cerbySwap.getPoolByToken(
+      TestUsdcToken.address,
+    );
+
+    {
+      const tokenIn = TestCerUsdToken.address;
+      const tokenOut = TestCerbyToken.address;
+      const amountTokensIn = new BN(2000).mul(bn1e18);
+      const amountTokensOut = await cerbySwap.getOutputExactCerUsdForTokens(
+        CERBY_TOKEN_POS,
+        amountTokensIn,
+      );
+
+      const minAmountTokensOut = 0;
+      const expireTimestamp = now() + 86400;
+
+      const transferTo = firstAccount;
+
+      await cerbySwap.swapExactTokensForTokens(
+        tokenIn,
+        tokenOut,
+        amountTokensIn,
+        minAmountTokensOut,
+        expireTimestamp,
+        transferTo,
+      );
+
+      const afterCerbyPool = await cerbySwap.getPoolByToken(
+        TestCerbyToken.address,
+      );
+
+      assert.deepEqual(
+        afterCerbyPool.balanceCerUsd.toString(),
+        beforeCerbyPool.balanceCerUsd.add(amountTokensIn).toString(),
+      );
+
+      assert.deepEqual(
+        afterCerbyPool.balanceToken.toString(),
+        beforeCerbyPool.balanceToken.sub(amountTokensOut).toString(),
       );
     }
   });
