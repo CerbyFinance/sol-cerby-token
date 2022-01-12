@@ -259,7 +259,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "getInputCerUsdForExactToken",
+				"name": "getInputCerUsdForExactTokens",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -283,7 +283,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "getInputTokenForExactCerUsd",
+				"name": "getInputTokensForExactCerUsd",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -307,7 +307,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "getOutputExactCerUsdForToken",
+				"name": "getOutputExactCerUsdForTokens",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -1124,8 +1124,8 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
-			"runs": 10
+			"enabled": false,
+			"runs": 200
 		},
 		"remappings": []
 	},
@@ -1147,11 +1147,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x9b457fdfc243005d4cdcdbc8f6028d36a5496d72ba9fb510fe164179b68807aa",
+			"keccak256": "0x4fc6f3227a50d6a063795898b1eb5875d470a088cd02889f431eb63f64df39c2",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://11580a0d470554d758dd68209c496272a41a48607ef60a991d9afd51e2602021",
-				"dweb:/ipfs/QmeQdM11rw8jCr5Yk84Uom7HWQPME9XDxrnaXr3Ni5CVxg"
+				"bzz-raw://ea045538839d2ff2d9cf809aead712dbcb021e96207d20476f09b11d7c40c221",
+				"dweb:/ipfs/QmbgmZQGn8JjTbTFj8e1BkRUVSTWYDfVuouYAPGmUoWFds"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

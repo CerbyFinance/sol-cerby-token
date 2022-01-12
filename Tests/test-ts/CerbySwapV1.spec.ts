@@ -75,21 +75,21 @@ contract("Cerby", accounts => {
     {
       const output1 = await cerbySwap.getOutputExactTokensForCerUsd(
         CERBY_TOKEN_POS,
-        new BN(150),
+        new BN(1000).mul(bn1e18),
       );
-      const output2 = await cerbySwap.getOutputExactCerUsdForToken(
+      const output2 = await cerbySwap.getOutputExactCerUsdForTokens( // TODO: rename "Token" --> "Tokens" in function name (updated contract too)
         CERBY_TOKEN_POS,
-        new BN(150),
+        new BN(1000).mul(bn1e18),
       );
 
       // idk why this reverts
       await truffleAssert.reverts(
-        cerbySwap.getInputTokenForExactCerUsd(CERBY_TOKEN_POS, 150),
+        cerbySwap.getInputTokensForExactCerUsd(CERBY_TOKEN_POS, new BN(1000).mul(bn1e18)), // TODO: rename "Token" --> "Tokens" in function name (updated contract too)
       );
 
       // idk why this reverts
       await truffleAssert.reverts(
-        cerbySwap.getInputCerUsdForExactToken(CERBY_TOKEN_POS, 150),
+        cerbySwap.getInputCerUsdForExactTokens(CERBY_TOKEN_POS, new BN(1000).mul(bn1e18)), // TODO: rename "Token" --> "Tokens" in function name (updated contract too)
       );
 
       const result = output1.mul(output2).muln(1).muln(2).toNumber();
@@ -101,6 +101,7 @@ contract("Cerby", accounts => {
       const tokenIn = TestCerbyToken.address;
       const tokenOut = TestCerUsdToken.address;
       const amountTokensIn = new BN(1000).mul(bn1e18);
+      const amountTokensOut = cerbySwap.getOutputExactTokensForCerUsd(CERBY_TOKEN_POS, amountTokensIn);
 
       const minAmountTokensOut = 0;
       const expireTimestamp = now() + 86400;
@@ -128,7 +129,7 @@ contract("Cerby", accounts => {
       // fails for some reason
       assert.deepEqual(
         afterCerbyPool.balanceCerUsd,
-        beforeCerbyPool.balanceCerUsd.subn(minAmountTokensOut),
+        beforeCerbyPool.balanceCerUsd.subn(amountTokensOut),
       );
     }
   });
