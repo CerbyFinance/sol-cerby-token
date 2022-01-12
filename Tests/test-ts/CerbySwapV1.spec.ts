@@ -17,14 +17,18 @@ const now = () => Math.floor(+new Date() / 1000);
 const bn1e18 = new BN((1e18).toString());
 
 contract("Cerby", accounts => {
-  it("test everything", async () => {
-    // Available Accounts
-    // ganache accounts
+  it("swapExactCerbyForCerUsd: swap 1000 CERBY for cerUSD", async () => {
 
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
+    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
+      TestCerbyToken.address,
+    );
+    const USDC_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
+      TestCerUsdToken.address,
+    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -32,58 +36,6 @@ contract("Cerby", accounts => {
     const beforeUsdcPool = await cerbySwap.getPoolByToken(
       TestUsdcToken.address,
     );
-
-    {
-      const cerbyTokenFee = await getCurrentFeeBasedOnTrades(
-        cerbySwap,
-        TestCerbyToken.address,
-      );
-
-      assert.equal(cerbyTokenFee.toNumber(), 9900, "should be 9900");
-    }
-
-    //
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
-    const cerbyPool = await cerbySwap.getPoolByPosition(CERBY_TOKEN_POS);
-
-    const cerbyPoolToken = cerbyPool.token;
-    const cerbyPoolTradeVolume = cerbyPool.hourlyTradeVolumeInCerUsd;
-    //
-    const USDC_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerUsdToken.address,
-    );
-    const usdcPool = await cerbySwap.getPoolByPosition(USDC_TOKEN_POS);
-    const usdcPoolToken = usdcPool.token;
-    const usdcPoolTradeVolume = usdcPool.hourlyTradeVolumeInCerUsd;
-    //
-
-    //  some 1
-    {
-      const output1 = await cerbySwap.getOutputExactTokensForCerUsd(
-        CERBY_TOKEN_POS,
-        new BN(1000).mul(bn1e18),
-      );
-      const output2 = await cerbySwap.getOutputExactCerUsdForTokens(
-        CERBY_TOKEN_POS,
-        new BN(1000).mul(bn1e18),
-      );
-
-      const input1 = await cerbySwap.getInputTokensForExactCerUsd(
-        CERBY_TOKEN_POS,
-        new BN(1000).mul(bn1e18),
-      );
-
-      const input2 = await cerbySwap.getInputCerUsdForExactTokens(
-        CERBY_TOKEN_POS,
-        new BN(1000).mul(bn1e18),
-      );
-
-      const result = output1.mul(output2).add(input1).add(input2).toString();
-    }
-
-    // some swap
 
     {
       const tokenIn = TestCerbyToken.address;
