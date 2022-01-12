@@ -14,9 +14,7 @@ const FEE_DENORM = 10000;
 
 const now = () => Math.floor(+new Date() / 1000);
 
-const _1e18 = "1".padEnd(18, "0");
-
-const bn1e18 = new BN(_1e18);
+const bn1e18 = new BN((1e18).toString());
 
 contract("Cerby", accounts => {
   it("test everything", async () => {
@@ -131,8 +129,8 @@ contract("Cerby", accounts => {
 
       // fails for some reason
       assert.deepEqual(
-        afterCerbyPool.balanceCerUsd,
-        beforeCerbyPool.balanceCerUsd.sub(amountTokensOut),
+        afterCerbyPool.balanceCerUsd.toString(),
+        beforeCerbyPool.balanceCerUsd.sub(amountTokensOut).toString(),
       );
     }
   });
