@@ -159,19 +159,19 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
 
   getCurrent4Hour(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
-  getInputCerUsdForExactToken(
+  getInputCerUsdForExactTokens(
     poolPos: number | BN | string,
     amountTokensOut: number | BN | string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
-  getInputTokenForExactCerUsd(
+  getInputTokensForExactCerUsd(
     poolPos: number | BN | string,
     amountCerUsdOut: number | BN | string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
-  getOutputExactCerUsdForToken(
+  getOutputExactCerUsdForTokens(
     poolPos: number | BN | string,
     amountCerUsdIn: number | BN | string,
     txDetails?: Truffle.TransactionDetails
@@ -773,19 +773,19 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
 
     getCurrent4Hour(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
-    getInputCerUsdForExactToken(
+    getInputCerUsdForExactTokens(
       poolPos: number | BN | string,
       amountTokensOut: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
-    getInputTokenForExactCerUsd(
+    getInputTokensForExactCerUsd(
       poolPos: number | BN | string,
       amountCerUsdOut: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
-    getOutputExactCerUsdForToken(
+    getOutputExactCerUsdForTokens(
       poolPos: number | BN | string,
       amountCerUsdIn: number | BN | string,
       txDetails?: Truffle.TransactionDetails
