@@ -6,7 +6,7 @@ const TestCerUsdToken = artifacts.require("TestCerUsdToken");
 const TestUsdcToken = artifacts.require("TestUsdcToken");
 const CerbySwapLP1155V1 = artifacts.require("CerbySwapLP1155V1");
 
-module.exports = function (deployer) {
+module.exports = async function (deployer) {
   const setup = async () => {
     const cerbySwap = await CerbySwapV1.deployed();
 
@@ -22,7 +22,7 @@ module.exports = function (deployer) {
     await cerbySwap.adminInitialize();
   };
 
-  setup();
+  await setup();
 } as Truffle.Migration;
 
 export {};
