@@ -57,14 +57,20 @@ contract("Cerby", accounts => {
         TestCerbyToken.address,
       );
 
+      // check pool increased by amountTokensIn
       assert.deepEqual(
-        afterCerbyPool.balanceToken.toString(),
         beforeCerbyPool.balanceToken.add(amountTokensIn).toString(),
+        afterCerbyPool.balanceToken.toString(),
       );
 
       assert.deepEqual(
-        afterCerbyPool.balanceCerUsd.toString(),
         beforeCerbyPool.balanceCerUsd.sub(amountTokensOut).toString(),
+        afterCerbyPool.balanceCerUsd.toString(),
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeCerbyPool.balanceCerUsd.mul(beforeCerbyPool.balanceToken).lte(afterCerbyPool.balanceCerUsd.mul(afterCerbyPool.balanceToken))
       );
     }
   });
@@ -110,14 +116,20 @@ contract("Cerby", accounts => {
         TestCerbyToken.address,
       );
 
+      // check pool increased by amountTokensIn
       assert.deepEqual(
-        afterCerbyPool.balanceCerUsd.toString(),
         beforeCerbyPool.balanceCerUsd.add(amountTokensIn).toString(),
+        afterCerbyPool.balanceCerUsd.toString(),
       );
 
       assert.deepEqual(
-        afterCerbyPool.balanceToken.toString(),
         beforeCerbyPool.balanceToken.sub(amountTokensOut).toString(),
+        afterCerbyPool.balanceToken.toString(),
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeCerbyPool.balanceCerUsd.mul(beforeCerbyPool.balanceToken).lte(afterCerbyPool.balanceCerUsd.mul(afterCerbyPool.balanceToken))
       );
     }
   });
@@ -188,13 +200,20 @@ contract("Cerby", accounts => {
         TestCerbyToken.address,
       );
 
+      // check sent amount must be larger than received
       assert.isTrue(
         amountTokensIn1.gte(amountTokensOut2)
       );
 
+      // check intermediate token balance must not change
       assert.deepEqual(
         beforeCerbyPool.balanceToken.toString(),
         afterCerbyPool.balanceToken.toString(),
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeCerbyPool.balanceCerUsd.mul(beforeCerbyPool.balanceToken).lte(afterCerbyPool.balanceCerUsd.mul(afterCerbyPool.balanceToken))
       );
     }
   });
@@ -263,19 +282,27 @@ contract("Cerby", accounts => {
       const afterCerbyPool = await cerbySwap.getPoolByToken(
         TestCerbyToken.address,
       );
-
+      
+      // check sent amount larger than received
       assert.isTrue(
         amountTokensIn1.gte(amountTokensOut2)
       );
 
+      // check intermediate token balance must not change
       assert.deepEqual(
         beforeCerbyPool.balanceCerUsd.toString(),
         afterCerbyPool.balanceCerUsd.toString(),
       );
 
+      // check token balance increased and decreased correctly
       assert.deepEqual(
         beforeCerbyPool.balanceToken.add(amountTokensIn1).sub(amountTokensOut2).toString(),
         afterCerbyPool.balanceToken.toString(),
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeCerbyPool.balanceCerUsd.mul(beforeCerbyPool.balanceToken).lte(afterCerbyPool.balanceCerUsd.mul(afterCerbyPool.balanceToken))
       );
     }
   });
@@ -357,30 +384,44 @@ contract("Cerby", accounts => {
         TestUsdcToken.address,
       );
       
-      // sum cerUsd balances in USDC and Cerby pools must be equal
+      // check sum cerUsd balances in USDC and Cerby pools must be equal
       assert.deepEqual(
         beforeCerbyPool.balanceCerUsd.add(beforeUSDCPool.balanceCerUsd).toString(),
         afterCerbyPool.balanceCerUsd.add(afterUSDCPool.balanceCerUsd).toString(),
       );
       
+      // check pool increased by amountTokensIn1
       assert.deepEqual(
         beforeCerbyPool.balanceToken.add(amountTokensIn1).toString(),
         afterCerbyPool.balanceToken.toString(),
       );      
       
+      // check pool decreased by amountTokensOut1
       assert.deepEqual(
         beforeCerbyPool.balanceCerUsd.sub(amountTokensOut1).toString(),
         afterCerbyPool.balanceCerUsd.toString(),
       );
       
+      // check pool increased by amountTokensIn2
       assert.deepEqual(
         beforeUSDCPool.balanceCerUsd.add(amountTokensIn2).toString(),
         afterUSDCPool.balanceCerUsd.toString(),
       );      
       
+      // check pool decreased by amountTokensOut2
       assert.deepEqual(
         beforeUSDCPool.balanceToken.sub(amountTokensOut2).toString(),
         afterUSDCPool.balanceToken.toString(),
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeCerbyPool.balanceCerUsd.mul(beforeCerbyPool.balanceToken).lte(afterCerbyPool.balanceCerUsd.mul(afterCerbyPool.balanceToken))
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeUSDCPool.balanceCerUsd.mul(beforeUSDCPool.balanceToken).lte(afterUSDCPool.balanceCerUsd.mul(afterUSDCPool.balanceToken))
       );
     }
   });
@@ -442,19 +483,27 @@ contract("Cerby", accounts => {
         TestCerbyToken.address,
       );
 
+      // check sent is larger than received
       assert.isTrue(
         amountTokensIn1.gte(amountTokensOut2)
       );
 
+      // intermediate balance must not change
       assert.deepEqual(
         beforeCerbyPool.balanceCerUsd.toString(),
         afterCerbyPool.balanceCerUsd.toString(),
       );
 
-      // TODO: failing!
+
+      // check pool increased and decreased balance correctly
       assert.deepEqual(
         beforeCerbyPool.balanceToken.add(amountTokensIn1).sub(amountTokensOut2).toString(),
         afterCerbyPool.balanceToken.toString(),
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeCerbyPool.balanceCerUsd.mul(beforeCerbyPool.balanceToken).lte(afterCerbyPool.balanceCerUsd.mul(afterCerbyPool.balanceToken))
       );
     }
   });
