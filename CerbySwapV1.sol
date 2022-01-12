@@ -26,7 +26,8 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     string constant OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_i = "i";
     string constant OUTPUT_CERUSD_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_J = "J";
     string constant OUTPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_K = "K";
-    string constant ONE_OF_TOKENIN_OR_TOKEN_OUT_IS_WRONG_W = "W";
+    string constant SWAP_CERUSD_FOR_CERUSD_IS_FORBIDDEN_L = "L";
+    string constant ONE_OF_TOKENIN_OR_TOKEN_OUT_IS_WRONG_M = "M";
 
     Pool[] pools;
     mapping(address => uint) tokenToPoolPosition;
@@ -108,7 +109,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
                 tokenIn == cerUsdToken ||
                 tokenToPoolPosition[tokenIn] > 0
             ),
-            ONE_OF_TOKENIN_OR_TOKEN_OUT_IS_WRONG_W
+            ONE_OF_TOKENIN_OR_TOKEN_OUT_IS_WRONG_M
         );
         _;
     }
@@ -589,21 +590,21 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         }
 
         uint outputTokensOut;
-        if (tokenIn == cerUsdToken && tokenOut != cerUsdToken) {
-            // swapping cerUSD ---> YYY
-            outputTokensOut = _swapExactCerUsdForTokens(
-                tokenOut,
-                minAmountTokensOut,
-                transferTo
-            );
-        } else if (tokenIn != cerUsdToken && tokenOut == cerUsdToken) {
+        if (tokenIn != cerUsdToken && tokenOut == cerUsdToken) {
             // swapping XXX ---> cerUSD
             outputTokensOut = _swapExactTokensForCerUsd(
                 tokenIn,
                 minAmountTokensOut,
                 transferTo
             );
-        } else {
+        } else if (tokenIn == cerUsdToken && tokenOut != cerUsdToken) {
+            // swapping cerUSD ---> YYY
+            outputTokensOut = _swapExactCerUsdForTokens(
+                tokenOut,
+                minAmountTokensOut,
+                transferTo
+            );
+        } else if (tokenIn != cerUsdToken && tokenIn != cerUsdToken) {
             // swapping XXX ---> cerUSD
             _swapExactTokensForCerUsd(
                 tokenIn,
@@ -617,6 +618,8 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
                 minAmountTokensOut,
                 transferTo
             );
+        } else {
+            revert(SWAP_CERUSD_FOR_CERUSD_IS_FORBIDDEN_L);
         }
         return outputTokensOut;
     }
@@ -763,7 +766,7 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         );
 
         // updating pool values
-        totalCerUsdBalance = newTotalCerUsdBalance;
+        totalCerUsdBalance = totalCerUsdBalance + amountCerUsdIn - amountCerUsdOut;
         pools[poolPos].balanceCerUsd = 
             pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn) - uint112(amountCerUsdOut);
         pools[poolPos].balanceToken = uint112(newTokenBalance);
@@ -774,7 +777,8 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         unchecked {
             // wrapping any uint32 overflows
             // stores in USD value
-            pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += uint32(amountCerUsdOut / 1e18);
+            pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += 
+                uint32( (amountCerUsdIn + amountCerUsdOut) / 1e18);
         }
 
         // clearing next 4hour trade value
@@ -833,7 +837,8 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         unchecked {
             // wrapping any uint32 overflows
             // stores in USD value
-            pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += uint32(amountCerUsdIn / 1e18);
+            pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += 
+                uint32(amountCerUsdIn / 1e18);
         }
 
         // clearing next 4hour trade value
