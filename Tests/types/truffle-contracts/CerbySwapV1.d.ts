@@ -627,6 +627,11 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<{ 0: BN; 1: BN }>;
 
+  testGetTokenToPoolPosition(
+    token: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   testSetupTokens: {
     (
       _lpErc1155V1: string,
@@ -1243,6 +1248,11 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     testGetPrices(
       txDetails?: Truffle.TransactionDetails
     ): Promise<{ 0: BN; 1: BN }>;
+
+    testGetTokenToPoolPosition(
+      token: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
 
     testSetupTokens: {
       (

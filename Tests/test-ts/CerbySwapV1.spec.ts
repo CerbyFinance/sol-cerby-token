@@ -51,21 +51,21 @@ contract("Cerby", accounts => {
         TestCerbyToken.address,
       );
 
-      console.log({
-        cerbyTokenFee,
-      });
-
       assert.equal(cerbyTokenFee.toNumber(), 9900, "should be 9900");
     }
 
     //
-    const CERBY_TOKEN_POS = 0;
+    const CERBY_TOKEN_POS = await cerbySwap.testGetTokenToPoolPosition(
+      TestCerbyToken.address,
+    );
     const cerbyPool = await cerbySwap.getPoolByPosition(CERBY_TOKEN_POS);
 
     const cerbyPoolToken = cerbyPool.token;
     const cerbyPoolTradeVolume = cerbyPool.hourlyTradeVolumeInCerUsd;
     //
-    const USDC_TOKEN_POS = 0;
+    const USDC_TOKEN_POS = await cerbySwap.testGetTokenToPoolPosition(
+      TestCerUsdToken.address,
+    );
     const usdcPool = await cerbySwap.getPoolByPosition(USDC_TOKEN_POS);
     const usdcPoolToken = usdcPool.token;
     const usdcPoolTradeVolume = usdcPool.hourlyTradeVolumeInCerUsd;
@@ -82,23 +82,17 @@ contract("Cerby", accounts => {
         new BN(1000).mul(bn1e18),
       );
 
-      // still reverts
-      await truffleAssert.reverts(
-        cerbySwap.getInputTokensForExactCerUsd(
-          CERBY_TOKEN_POS,
-          new BN(1000).mul(bn1e18),
-        ),
+      const input1 = await cerbySwap.getInputTokensForExactCerUsd(
+        CERBY_TOKEN_POS,
+        new BN(1000).mul(bn1e18),
       );
 
-      // still reverts
-      await truffleAssert.reverts(
-        cerbySwap.getInputCerUsdForExactTokens(
-          CERBY_TOKEN_POS,
-          new BN(1000).mul(bn1e18),
-        ),
+      const input2 = await cerbySwap.getInputCerUsdForExactTokens(
+        CERBY_TOKEN_POS,
+        new BN(1000).mul(bn1e18),
       );
 
-      const result = output1.mul(output2).muln(1).muln(2).toNumber();
+      const result = output1.mul(output2).add(input1).add(input2).toString();
     }
 
     // some swap

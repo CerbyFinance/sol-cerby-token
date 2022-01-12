@@ -1034,4 +1034,13 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
             pools[poolPos2]
         );
     }
+
+
+    function testGetTokenToPoolPosition(address token) 
+        public
+        view
+        returns (uint)
+    {
+        return tokenToPoolPosition[token];
+    }
 }
