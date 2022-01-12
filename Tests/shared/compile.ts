@@ -29,7 +29,9 @@ const ignite = async () => {
     const abiFileName = values.find(item => item.includes("abi"))!;
     const binFileName = values.find(item => item.includes("bin"))!;
 
-    const abi = fs.readFileSync(binPath + "/" + abiFileName, "utf8");
+    const abi = JSON.parse(
+      fs.readFileSync(binPath + "/" + abiFileName, "utf8"),
+    );
     const bytecode = fs.readFileSync(binPath + "/" + binFileName, "utf8");
 
     const toSave = {

@@ -6,6 +6,7 @@
     "generate-types": "typechain --target=truffle-v5 abis/*.abi",
     "compile-contracts": "ts-node-dev --no-deps --transpile-only --ignore-watch node_modules shared/compile.ts",
     "migrate": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
+    "migrate-reset": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate --reset",
     "test": "tsc -p ./tsconfig.test.json --outDir test && truffle test"
   },
   "keywords": [],
