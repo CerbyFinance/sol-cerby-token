@@ -4,6 +4,7 @@
   "main": "",
   "scripts": {
     "generate-types": "typechain --target=truffle-v5 abis/*.abi",
+    "patch-truffle": "patch node_modules/truffle/build/459.bundled.js  < truffle.patch",
     "compile-contracts": "ts-node-dev --no-deps --transpile-only --ignore-watch node_modules shared/compile.ts",
     "migrate": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
     "migrate-reset": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate --reset",
