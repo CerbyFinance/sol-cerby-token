@@ -112,33 +112,6 @@ type AllEvents =
 export interface CerbySwapLP1155V1Instance extends Truffle.ContractInstance {
   ROLE_ADMIN(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-  adminBurnBatch: {
-    (
-      from: string,
-      ids: (number | BN | string)[],
-      amounts: (number | BN | string)[],
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      from: string,
-      ids: (number | BN | string)[],
-      amounts: (number | BN | string)[],
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
-    sendTransaction(
-      from: string,
-      ids: (number | BN | string)[],
-      amounts: (number | BN | string)[],
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      from: string,
-      ids: (number | BN | string)[],
-      amounts: (number | BN | string)[],
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
   adminSetURI: {
     (newUrlPrefix: string, txDetails?: Truffle.TransactionDetails): Promise<
       Truffle.TransactionResponse<AllEvents>
@@ -299,8 +272,6 @@ export interface CerbySwapLP1155V1Instance extends Truffle.ContractInstance {
 
   name(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-  owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
   renounceRole: {
     (
       role: string,
@@ -454,33 +425,6 @@ export interface CerbySwapLP1155V1Instance extends Truffle.ContractInstance {
 
   methods: {
     ROLE_ADMIN(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
-    adminBurnBatch: {
-      (
-        from: string,
-        ids: (number | BN | string)[],
-        amounts: (number | BN | string)[],
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        from: string,
-        ids: (number | BN | string)[],
-        amounts: (number | BN | string)[],
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
-      sendTransaction(
-        from: string,
-        ids: (number | BN | string)[],
-        amounts: (number | BN | string)[],
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        from: string,
-        ids: (number | BN | string)[],
-        amounts: (number | BN | string)[],
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
 
     adminSetURI: {
       (newUrlPrefix: string, txDetails?: Truffle.TransactionDetails): Promise<
@@ -641,8 +585,6 @@ export interface CerbySwapLP1155V1Instance extends Truffle.ContractInstance {
     ): Promise<boolean>;
 
     name(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
-    owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
     renounceRole: {
       (

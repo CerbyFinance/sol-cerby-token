@@ -143,33 +143,6 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
-  adminBurnBatch: {
-    (
-      from: string,
-      ids: (number | BN | string)[],
-      amounts: (number | BN | string)[],
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      from: string,
-      ids: (number | BN | string)[],
-      amounts: (number | BN | string)[],
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
-    sendTransaction(
-      from: string,
-      ids: (number | BN | string)[],
-      amounts: (number | BN | string)[],
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      from: string,
-      ids: (number | BN | string)[],
-      amounts: (number | BN | string)[],
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
   adminCreatePool: {
     (
       token: string,
@@ -438,8 +411,6 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
   ): Promise<boolean>;
 
   name(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
-  owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
   removeTokenLiquidity: {
     (
@@ -816,33 +787,6 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
-    adminBurnBatch: {
-      (
-        from: string,
-        ids: (number | BN | string)[],
-        amounts: (number | BN | string)[],
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        from: string,
-        ids: (number | BN | string)[],
-        amounts: (number | BN | string)[],
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
-      sendTransaction(
-        from: string,
-        ids: (number | BN | string)[],
-        amounts: (number | BN | string)[],
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        from: string,
-        ids: (number | BN | string)[],
-        amounts: (number | BN | string)[],
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
-
     adminCreatePool: {
       (
         token: string,
@@ -1111,8 +1055,6 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     ): Promise<boolean>;
 
     name(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
-    owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
     removeTokenLiquidity: {
       (

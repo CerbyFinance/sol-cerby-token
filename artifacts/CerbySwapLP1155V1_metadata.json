@@ -6,11 +6,6 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"stateMutability": "nonpayable",
-				"type": "constructor"
-			},
-			{
 				"anonymous": false,
 				"inputs": [
 					{
@@ -819,11 +814,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapLP1155V1.sol": {
-			"keccak256": "0xc7d9eaa5c4fb54ba526300ad5bb4056fbdda445461c37873ddde72833ea07a7f",
+			"keccak256": "0x13c944c39267d2544562fb584eb3777daa4c5ec6b65949128aad95aab50f17b6",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://a0d4d817867b7cf8a92c514ac0be8abc2e663b846e882f5b3ea6e4d174d8e162",
-				"dweb:/ipfs/QmaiJxb89MNiFxPmKcdxwqtuC7vqDYVRNDWmtxYTboWUdh"
+				"bzz-raw://e15721e19ff013f3d2ad917d529a187240697d081f2c3579419ccd9d27644330",
+				"dweb:/ipfs/QmUu5MxESTH3GpCrB9S9qXFYaFDhLc2FShsqxiqUgJcUTx"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

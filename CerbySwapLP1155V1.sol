@@ -7,7 +7,7 @@ import "./openzeppelin/token/ERC1155/extensions/ERC1155Supply.sol";
 import "./CerbyCronJobsExecution.sol";
 
 
-contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessControlEnumerable {
+abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessControlEnumerable {
 
     string _name = "Cerby Swap V1";
     string _symbol = "CERBY_SWAP_V1";
@@ -16,7 +16,6 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
     constructor()
         ERC1155(string(abi.encodePacked(_urlPrefix, "{id}.json")))
     {
-        _setupRole(ROLE_ADMIN, msg.sender);
     }
 
     function supportsInterface(bytes4 interfaceId) 
