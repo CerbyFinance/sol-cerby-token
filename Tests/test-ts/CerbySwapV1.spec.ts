@@ -1106,9 +1106,6 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -1181,7 +1178,7 @@ contract("Cerby", accounts => {
   });
 
 
-  it("swapTokensForExactTokens: swap CERBY --> cerUSD --> 1014 CERBY; sent CERBY >= received CERBY", async () => {
+  it.only("swapTokensForExactTokens: swap CERBY --> cerUSD --> 1014 CERBY; sent CERBY >= received CERBY", async () => {
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
@@ -1194,8 +1191,7 @@ contract("Cerby", accounts => {
       TestCerbyToken.address,
     );
 
-    {
-      
+    {      
       const tokenIn1 = TestCerbyToken.address;
       const tokenOut1 = TestCerUsdToken.address;
       const tokenIn2 = TestCerUsdToken.address;
