@@ -928,6 +928,24 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         return fee;
     }
 
+    function getOutputExactTokensForCerUsd(address token, uint amountTokensIn)
+        public
+        view
+        returns (uint)
+    {
+        uint poolPos = tokenToPoolPosition[token];
+        return getOutputExactTokensForCerUsd(poolPos, amountTokensIn);
+    }
+
+    function getOutputExactCerUsdForTokens(address token, uint amountCerUsdIn)
+        public
+        view
+        returns (uint)
+    {
+        uint poolPos = tokenToPoolPosition[token];
+        return getOutputExactTokensForCerUsd(poolPos, amountCerUsdIn);
+    }
+
     function getOutputExactTokensForCerUsd(uint poolPos, uint amountTokensIn)
         public
         view
@@ -963,6 +981,24 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountOut = 
             (reservesOut * amountInWithFee) / (reservesIn * FEE_DENORM + amountInWithFee);
         return amountOut;
+    }
+
+    function getInputTokensForExactCerUsd(address token, uint amountCerUsdOut)
+        public
+        view
+        returns (uint)
+    {
+        uint poolPos = tokenToPoolPosition[token];
+        return getInputTokensForExactCerUsd(poolPos, amountCerUsdOut);
+    }
+
+    function getInputCerUsdForExactTokens(address token, uint amountTokensOut)
+        public
+        view
+        returns (uint)
+    {
+        uint poolPos = tokenToPoolPosition[token];
+        return getInputCerUsdForExactTokens(token, amountTokensOut);
     }
 
     function getInputTokensForExactCerUsd(uint poolPos, uint amountCerUsdOut)
@@ -1015,6 +1051,14 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
         returns (Pool memory)
     {
         return pools[tokenToPoolPosition[token]];
+    }
+
+    function getTotalCerUsdBalance()
+        public
+        view
+        returns (uint)
+    {
+        return totalCerUsdBalance;
     }
 
     function sqrt(uint x)
