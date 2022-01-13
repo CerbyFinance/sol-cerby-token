@@ -10,7 +10,6 @@ import "./CerbyCronJobsExecution.sol";
 import "./CerbySwapLP1155V1.sol";
 
 
-//contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
 contract CerbySwapV1 is CerbySwapLP1155V1 {
 
     string constant ALREADY_INITIALIZED_A = "A";
@@ -54,9 +53,9 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     1000000000000000000011 494510434669677019755 489223177884861877370
     2047670051318999350473 1000000000000000000011
     */
-    address testCerbyToken = 0x2c4fE51d1Ad5B88cD2cc2F45ad1c0C857f06225e;
-    address cerUsdToken = 0xF3B07F8167b665BA3E2DD29c661DeE3a1da2380a;
-    address testUsdcToken = 0x2a5E269bF364E347942c464a999D8c8ac2E6CE94;
+    address testCerbyToken = 0x2c4fE51d1Ad5B88cD2cc2F45ad1c0C857f06225e; // TODO: remove on production
+    address cerUsdToken = 0xF3B07F8167b665BA3E2DD29c661DeE3a1da2380a; // TODO: make constant
+    address testUsdcToken = 0x2a5E269bF364E347942c464a999D8c8ac2E6CE94; // TODO: remove on production
 
     address nativeToken;
 
@@ -70,10 +69,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
     struct Pool {
         address token;
+        uint32[NUMBER_OF_4HOUR_INTERVALS] hourlyTradeVolumeInCerUsd;
         uint112 balanceToken;
         uint112 balanceCerUsd;
         uint112 lastSqrtKValue;
-        uint32[NUMBER_OF_4HOUR_INTERVALS] hourlyTradeVolumeInCerUsd;
     }
 
     constructor() {
@@ -85,10 +84,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint32[NUMBER_OF_4HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
         pools.push(Pool(
             address(0),
+            hourlyTradeVolumeInCerUsd,
             0,
             0,
-            0,
-            hourlyTradeVolumeInCerUsd
+            0
         ));
 
         // TODO: fill weth, wbnb, wmatic etc
@@ -218,14 +217,14 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         );
 
         // create new pool record
-        uint112 newSqrtKValue = uint112(sqrt(uint(amountTokensIn) * uint(amountCerUsdIn)));
+        uint newSqrtKValue = sqrt(uint(amountTokensIn) * uint(amountCerUsdIn));
         uint32[NUMBER_OF_4HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
         Pool memory pool = Pool(
             token,
+            hourlyTradeVolumeInCerUsd,
             uint112(amountTokensIn),
             uint112(amountCerUsdIn),
-            newSqrtKValue,
-            hourlyTradeVolumeInCerUsd
+            uint112(newSqrtKValue)
         );
         pools.push(pool);
         tokenToPoolPosition[token] = poolPos;   

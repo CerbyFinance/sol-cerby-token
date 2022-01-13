@@ -552,6 +552,11 @@
 								"type": "address"
 							},
 							{
+								"internalType": "uint32[8]",
+								"name": "hourlyTradeVolumeInCerUsd",
+								"type": "uint32[8]"
+							},
+							{
 								"internalType": "uint112",
 								"name": "balanceToken",
 								"type": "uint112"
@@ -565,11 +570,6 @@
 								"internalType": "uint112",
 								"name": "lastSqrtKValue",
 								"type": "uint112"
-							},
-							{
-								"internalType": "uint32[8]",
-								"name": "hourlyTradeVolumeInCerUsd",
-								"type": "uint32[8]"
 							}
 						],
 						"internalType": "struct CerbySwapV1.Pool",
@@ -598,6 +598,11 @@
 								"type": "address"
 							},
 							{
+								"internalType": "uint32[8]",
+								"name": "hourlyTradeVolumeInCerUsd",
+								"type": "uint32[8]"
+							},
+							{
 								"internalType": "uint112",
 								"name": "balanceToken",
 								"type": "uint112"
@@ -611,11 +616,6 @@
 								"internalType": "uint112",
 								"name": "lastSqrtKValue",
 								"type": "uint112"
-							},
-							{
-								"internalType": "uint32[8]",
-								"name": "hourlyTradeVolumeInCerUsd",
-								"type": "uint32[8]"
 							}
 						],
 						"internalType": "struct CerbySwapV1.Pool",
@@ -1363,11 +1363,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x82dff3260ec98f80e4cdc801cd5c491339a5e15a39999c6db8c450c0df8987e1",
+			"keccak256": "0x41c1303f5f270b379a71b6eb39c36afdbabf8e56ccfc9c3469ce56a63b4e1a52",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://b30841d96285de6b0a5cb2b0775f66a9af23e9bd6e8f0f9c3c95c3f75f9e7120",
-				"dweb:/ipfs/QmRbjR4SGijmuDRvgAqpe83cc9REqenJCPY2RJemwHiYuK"
+				"bzz-raw://573e364e894b6bf2a26ffd7bb06a525a1a27169c85a19931a0b1f345f5f5592d",
+				"dweb:/ipfs/Qmc75c9KKcTDNnk9kdSHXZXGefok5Wt4BLCpuWB4A1Q9HT"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

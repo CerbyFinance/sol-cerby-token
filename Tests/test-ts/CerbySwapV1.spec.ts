@@ -18,7 +18,7 @@ const randomAddress = () => '0x' + crypto.randomBytes(20).toString('hex')
 const bn1e18 = new BN((1e18).toString());
 
 contract("Cerby", accounts => {
-  it.only('additional token', async () => {
+  it.skip('additional token', async () => {
     const address = (await TestCerbyToken2()).address
   })
 
