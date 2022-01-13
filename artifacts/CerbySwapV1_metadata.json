@@ -15,6 +15,31 @@
 				"inputs": [
 					{
 						"indexed": true,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "operator",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "approved",
+						"type": "bool"
+					}
+				],
+				"name": "ApprovalForAll",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -86,6 +111,99 @@
 				"type": "event"
 			},
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "operator",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256[]",
+						"name": "ids",
+						"type": "uint256[]"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256[]",
+						"name": "values",
+						"type": "uint256[]"
+					}
+				],
+				"name": "TransferBatch",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "operator",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "TransferSingle",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "value",
+						"type": "string"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					}
+				],
+				"name": "URI",
+				"type": "event"
+			},
+			{
 				"inputs": [],
 				"name": "ROLE_ADMIN",
 				"outputs": [
@@ -102,17 +220,9 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "transferTo",
+						"name": "fromAddress",
 						"type": "address"
-					}
-				],
-				"name": "addNativeLiquidity",
-				"outputs": [],
-				"stateMutability": "payable",
-				"type": "function"
-			},
-			{
-				"inputs": [
+					},
 					{
 						"internalType": "address",
 						"name": "token",
@@ -130,6 +240,29 @@
 					}
 				],
 				"name": "addTokenLiquidity",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "ids",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "amounts",
+						"type": "uint256[]"
+					}
+				],
+				"name": "adminBurnBatch",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -172,6 +305,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "string",
+						"name": "newUrlPrefix",
+						"type": "string"
+					}
+				],
+				"name": "adminSetURI",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "newFeeToBeneficiary",
 						"type": "address"
@@ -183,21 +329,37 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "feeToBeneficiary",
-				"outputs": [
+				"inputs": [
 					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
+						"internalType": "string",
+						"name": "newName",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "newSymbol",
+						"type": "string"
 					}
 				],
-				"stateMutability": "view",
+				"name": "adminUpdateNameAndSymbol",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "getCurrent4Hour",
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					}
+				],
+				"name": "balanceOf",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -211,17 +373,85 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address[]",
+						"name": "accounts",
+						"type": "address[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "ids",
+						"type": "uint256[]"
+					}
+				],
+				"name": "balanceOfBatch",
+				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
-						"name": "poolPos",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
 						"type": "uint256"
 					}
 				],
-				"name": "getCurrentFeeBasedOnTrades",
+				"name": "burn",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "decimals",
 				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "fee",
+						"name": "",
 						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					}
+				],
+				"name": "exists",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "feeToBeneficiary",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -579,23 +809,60 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "amountLpTokensBalanceToBurn",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
 					},
 					{
 						"internalType": "address",
-						"name": "transferTo",
+						"name": "operator",
 						"type": "address"
 					}
 				],
-				"name": "removeNativeLiquidity",
-				"outputs": [],
-				"stateMutability": "nonpayable",
+				"name": "isApprovedForAll",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "name",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
 				"inputs": [
+					{
+						"internalType": "address",
+						"name": "fromAddress",
+						"type": "address"
+					},
 					{
 						"internalType": "address",
 						"name": "token",
@@ -620,7 +887,7 @@
 						"type": "uint256"
 					}
 				],
-				"stateMutability": "nonpayable",
+				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
@@ -655,6 +922,90 @@
 					}
 				],
 				"name": "revokeRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "ids",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "amounts",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "safeBatchTransferFrom",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "safeTransferFrom",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "operator",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "approved",
+						"type": "bool"
+					}
+				],
+				"name": "setApprovalForAll",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -703,89 +1054,6 @@
 				],
 				"name": "swap",
 				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenOut",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "minAmountTokensOut",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "expireTimestamp",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "transferTo",
-						"type": "address"
-					}
-				],
-				"name": "swapExactNativeForTokens",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "payable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenIn",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountTokensIn",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "minAmountTokensOut",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "expireTimestamp",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "transferTo",
-						"type": "address"
-					}
-				],
-				"name": "swapExactTokensForNative",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
 				"stateMutability": "payable",
 				"type": "function"
 			},
@@ -823,89 +1091,6 @@
 					}
 				],
 				"name": "swapExactTokensForTokens",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenOut",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountTokensOut",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "expireTimestamp",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "transferTo",
-						"type": "address"
-					}
-				],
-				"name": "swapNativeForExactTokens",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "payable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenIn",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "maxAmountTokensIn",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountTokensOut",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "expireTimestamp",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "transferTo",
-						"type": "address"
-					}
-				],
-				"name": "swapTokensForExactNative",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -967,7 +1152,20 @@
 						"type": "uint256"
 					}
 				],
-				"stateMutability": "nonpayable",
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "symbol",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -984,142 +1182,10 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "testGetBalances",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "testGetPools",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "token",
-								"type": "address"
-							},
-							{
-								"internalType": "uint112",
-								"name": "balanceToken",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint112",
-								"name": "balanceCerUsd",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint112",
-								"name": "lastSqrtKValue",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint32[8]",
-								"name": "hourlyTradeVolumeInCerUsd",
-								"type": "uint32[8]"
-							}
-						],
-						"internalType": "struct CerbySwapV1.Pool",
-						"name": "",
-						"type": "tuple"
-					},
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "token",
-								"type": "address"
-							},
-							{
-								"internalType": "uint112",
-								"name": "balanceToken",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint112",
-								"name": "balanceCerUsd",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint112",
-								"name": "lastSqrtKValue",
-								"type": "uint112"
-							},
-							{
-								"internalType": "uint32[8]",
-								"name": "hourlyTradeVolumeInCerUsd",
-								"type": "uint32[8]"
-							}
-						],
-						"internalType": "struct CerbySwapV1.Pool",
-						"name": "",
-						"type": "tuple"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "testGetPrices",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					}
-				],
-				"name": "testGetTokenToPoolPosition",
-				"outputs": [
-					{
-						"internalType": "uint256",
 						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_lpErc1155V1",
 						"type": "address"
 					},
 					{
@@ -1147,11 +1213,75 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					}
+				],
+				"name": "totalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					}
+				],
+				"name": "uri",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
 			}
 		],
 		"devdoc": {
 			"kind": "dev",
 			"methods": {
+				"balanceOf(address,uint256)": {
+					"details": "See {IERC1155-balanceOf}. Requirements: - `account` cannot be the zero address."
+				},
+				"balanceOfBatch(address[],uint256[])": {
+					"details": "See {IERC1155-balanceOfBatch}. Requirements: - `accounts` and `ids` must have the same length."
+				},
+				"exists(uint256)": {
+					"details": "Indicates whether any token exist with a given id, or not."
+				},
 				"getRoleAdmin(bytes32)": {
 					"details": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}."
 				},
@@ -1167,14 +1297,29 @@
 				"hasRole(bytes32,address)": {
 					"details": "Returns `true` if `account` has been granted `role`."
 				},
+				"isApprovedForAll(address,address)": {
+					"details": "See {IERC1155-isApprovedForAll}."
+				},
 				"renounceRole(bytes32,address)": {
 					"details": "Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been revoked `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`."
 				},
 				"revokeRole(bytes32,address)": {
 					"details": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role."
 				},
+				"safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": {
+					"details": "See {IERC1155-safeBatchTransferFrom}."
+				},
+				"safeTransferFrom(address,address,uint256,uint256,bytes)": {
+					"details": "See {IERC1155-safeTransferFrom}."
+				},
+				"setApprovalForAll(address,bool)": {
+					"details": "See {IERC1155-setApprovalForAll}."
+				},
 				"supportsInterface(bytes4)": {
 					"details": "See {IERC165-supportsInterface}."
+				},
+				"totalSupply(uint256)": {
+					"details": "Total amount of tokens in with a given id."
 				}
 			},
 			"version": 1
@@ -1209,12 +1354,20 @@
 				"dweb:/ipfs/QmQDr5UENtMMk2dsakRZ8p9RcuRx4tqMUYxHXES8wF4cnX"
 			]
 		},
+		"sol-defifactory-token/CerbySwapLP1155V1.sol": {
+			"keccak256": "0xeb07fb785937889ec9d07511d9cfb23364de01630df3f4dec97c92192b1a3179",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://076b9c7776c75b3d199d63be8ba50cadd4d1b202459f45f35214611302ceb5ac",
+				"dweb:/ipfs/Qmeq58Ahda4zcANy1DjrbgPphoJbvkni13rQuN6MKzZx7U"
+			]
+		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x44d01634b9e439c3149c7d9df19302f0d549ac97c510a452cf266fb12a8970fc",
+			"keccak256": "0x82dff3260ec98f80e4cdc801cd5c491339a5e15a39999c6db8c450c0df8987e1",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://dd9968b1d7cf5a7ee590de68d40a9304afcab004a074ed1761622c00d627bd5e",
-				"dweb:/ipfs/QmSa8iD46QtYwoQEdRBEYJiY7ZziCKGQNDRXjAf1gxkf6u"
+				"bzz-raw://b30841d96285de6b0a5cb2b0775f66a9af23e9bd6e8f0f9c3c95c3f75f9e7120",
+				"dweb:/ipfs/QmRbjR4SGijmuDRvgAqpe83cc9REqenJCPY2RJemwHiYuK"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
@@ -1223,14 +1376,6 @@
 			"urls": [
 				"bzz-raw://51de5e7294d47d594ed80f368b8cffa09d67af65d9f3f3699f3e5b7bb96f33ce",
 				"dweb:/ipfs/QmRKwyPpezfDG6s4Y1BimYvvjzZ3amPxhEMACjMv2U3fFw"
-			]
-		},
-		"sol-defifactory-token/interfaces/ICerbyCronJobs.sol": {
-			"keccak256": "0x9548d0f358b80d5721839abb25aa5e42bdd6b7c436bf222dedddb66223305d88",
-			"license": "BUSL-1.1",
-			"urls": [
-				"bzz-raw://7b58f862c79af6250975b7c558cec4e930e9a0a807cfc5ecc256ee566fa7defb",
-				"dweb:/ipfs/QmVW391ejnmEQVeUCpcAnkp9VpzjJhiqqkvyuSh3sEyaNQ"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapLP1155V1.sol": {
@@ -1257,12 +1402,12 @@
 				"dweb:/ipfs/QmR1f6cNhWzmDt5qJ9gjuFJL21FwmnNnBhH3beJ2JbPqnz"
 			]
 		},
-		"sol-defifactory-token/interfaces/IWeth.sol": {
-			"keccak256": "0xaebf064916d07f10ca2ca496bff1160dc28ad0a0ae92bbb52fd0f21ff964d9e8",
+		"sol-defifactory-token/interfaces/IERC20.sol": {
+			"keccak256": "0xa019774b5fa41b9bb839ad7bc75bd3ded2ae58bce9f2d83e7dd307fa943e5bab",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6e85dbc5e9dd412cc18ca50e53160765f510e2e6b5c5be6de3a25f3dc8eb39b1",
-				"dweb:/ipfs/QmYmKKacDwTZz4vUQud2us8qXP7GqUzEGS3b9AAriKjYMr"
+				"bzz-raw://37b1999e95af73767b49405c9c669b97f952c227197dfd17836326f11654c66d",
+				"dweb:/ipfs/QmaHk8vnZY9ZaWAVWCufr8UN4Fw1Kr2MX44czPyxCGFPWh"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
@@ -1297,20 +1442,44 @@
 				"dweb:/ipfs/QmT8oSAcesdctR15HMLhr2a1HRpXymxdjTfdtfTYJcj2N2"
 			]
 		},
-		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {
-			"keccak256": "0x61437cb513a887a1bbad006e7b1c8b414478427d33de47c5600af3c748f108da",
+		"sol-defifactory-token/openzeppelin/token/ERC1155/ERC1155.sol": {
+			"keccak256": "0x093e45116e5a9cdddd6df8b2de611029f64e5bcb0f1ce53781fd8119b5f777f1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2c3d0973630ed74f2b5ce3944677a885dc70ec32fc83b35f55045a10224da32b",
-				"dweb:/ipfs/QmbefZ5RoEZKNHXCALfh683PnaNYzKPcKMFjyY1DVAgq8A"
+				"bzz-raw://bff457b9cf396d1c4e109900c9443a3fdfaf54a9cc56192ca511394e515959f0",
+				"dweb:/ipfs/QmV7Vb4GtE7QP7UhXHKyq4TZGy2AiGhVDLwAUMS9RbsHtx"
 			]
 		},
-		"sol-defifactory-token/openzeppelin/token/ERC20/utils/SafeERC20.sol": {
-			"keccak256": "0xc3d946432c0ddbb1f846a0d3985be71299df331b91d06732152117f62f0be2b5",
+		"sol-defifactory-token/openzeppelin/token/ERC1155/IERC1155.sol": {
+			"keccak256": "0x8e93de94c9062ebc94fb7e2e3929b0781ac6a2b7772e2f7a59045861c93e5be9",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://4632c341a06ba5c079b51ca5a915efab4e6ab57735b37839b3e8365ff806a43e",
-				"dweb:/ipfs/QmTHT3xHYed2wajEoA5qu7ii2BxLpPhQZHwAhtLK5Z7ANK"
+				"bzz-raw://f920a631bf986c610fe573d3c70a2bb6f224f86f4a8550016470c7ee476c9ab5",
+				"dweb:/ipfs/QmYzsyVMfnaREKHcHv5RPS8Xg5r1Q38E2SDsGBTnXeFWzb"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/token/ERC1155/IERC1155Receiver.sol": {
+			"keccak256": "0xc743d2235b8854045c308d2f8f1ed88efed6c2bebf2b7a4a51ea42480c82e566",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://05e54e397a053f319187999ef4d65446a7f15f693ddd66dfaed4d856f67dac4e",
+				"dweb:/ipfs/QmbGTFVdZxShg76UPcuLAXm6HBjZx3Vn6CL1eaBhV9rST1"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/token/ERC1155/extensions/ERC1155Supply.sol": {
+			"keccak256": "0x4e4ed8092997a334a0eb5294840cde3f3507f33e9dd62e634c7d7e00be69005a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://994244f42bb643a2050a7d506b6a9cbd71c14a8d425b63ee7dc197d5e2c83d6e",
+				"dweb:/ipfs/QmU5yhczp7AMqsoH46hfpadKhaw8Cfe41orRJe7QAxxR6f"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/token/ERC1155/extensions/IERC1155MetadataURI.sol": {
+			"keccak256": "0xa66d18b9a85458d28fc3304717964502ae36f7f8a2ff35bc83f6f85d74b03574",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e46c80ea068989111d6103e5521223f9ef337e93de76deed8b03f75c6f7b2797",
+				"dweb:/ipfs/QmNoSE6knNfFncdDDLTb3fGR6oSQty1srG96Vsx3E9wQdw"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/utils/Address.sol": {

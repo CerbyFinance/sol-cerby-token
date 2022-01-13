@@ -224,29 +224,6 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
-						"name": "id",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "adminBurn",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
 						"internalType": "uint256[]",
 						"name": "ids",
 						"type": "uint256[]"
@@ -258,108 +235,6 @@
 					}
 				],
 				"name": "adminBurnBatch",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "to",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "id",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "adminMint",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "to",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256[]",
-						"name": "ids",
-						"type": "uint256[]"
-					},
-					{
-						"internalType": "uint256[]",
-						"name": "amounts",
-						"type": "uint256[]"
-					}
-				],
-				"name": "adminMintBatch",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "to",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256[]",
-						"name": "ids",
-						"type": "uint256[]"
-					},
-					{
-						"internalType": "uint256[]",
-						"name": "amounts",
-						"type": "uint256[]"
-					}
-				],
-				"name": "adminSafeBatchTransferFrom",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "to",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "id",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "adminSafeTransferFrom",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -966,7 +841,7 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 200
+			"runs": 50
 		},
 		"remappings": []
 	},
@@ -980,11 +855,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapLP1155V1.sol": {
-			"keccak256": "0xc1f958a29ceb549337a68fb1e922b57ced01af7f9c6efd59951cd9a510434072",
+			"keccak256": "0xeb07fb785937889ec9d07511d9cfb23364de01630df3f4dec97c92192b1a3179",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://4dd6b064985143f12cc0ef40323dcf9028dc2e63ec6e85bcdc6feef086b4fd61",
-				"dweb:/ipfs/QmRhzKunH3Rh5jrFhR7BL9xWz4a4tdfDneRG9A9Uz2Mwjy"
+				"bzz-raw://076b9c7776c75b3d199d63be8ba50cadd4d1b202459f45f35214611302ceb5ac",
+				"dweb:/ipfs/Qmeq58Ahda4zcANy1DjrbgPphoJbvkni13rQuN6MKzZx7U"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

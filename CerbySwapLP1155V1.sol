@@ -135,7 +135,7 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
 
     function adminSetURI(string memory newUrlPrefix)
         public
-        // onlyRole(ROLE_ADMIN) // TODO: enable on production
+        onlyRole(ROLE_ADMIN)
     {
         _setURI(string(abi.encodePacked(newUrlPrefix, "{id}.json")));
 
@@ -144,75 +144,10 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
 
     function adminUpdateNameAndSymbol(string memory newName, string memory newSymbol)
         public
-        // onlyRole(ROLE_ADMIN) // TODO: enable on production
+        onlyRole(ROLE_ADMIN)
     {
         _name = newName;
         _symbol = newSymbol;
-    }
-
-    function adminSafeTransferFrom(
-        address from,
-        address to,
-        uint256 id,
-        uint256 amount
-    ) 
-        public
-        // onlyRole(ROLE_ADMIN) // TODO: enable on production
-    {
-        bytes memory data;
-        _safeTransferFrom(from, to, id, amount, data);
-    }
-    
-    function adminSafeBatchTransferFrom(
-        address from,
-        address to,
-        uint256[] memory ids,
-        uint256[] memory amounts
-    ) 
-        public 
-        // onlyRole(ROLE_ADMIN) // TODO: enable on production
-    {
-        require(
-            from == _msgSender() || isApprovedForAll(from, _msgSender()),
-            "ERC1155: transfer caller is not owner nor approved"
-        );
-        bytes memory data;
-        _safeBatchTransferFrom(from, to, ids, amounts, data);
-    }
-
-    function adminMint(
-        address to,
-        uint256 id,
-        uint256 amount
-    ) 
-        public
-        // onlyRole(ROLE_ADMIN) // TODO: enable on production
-    {
-        bytes memory data;
-        _mint(to, id, amount, data);
-    }
-
-    function adminMintBatch(
-        address to,
-        uint256[] memory ids,
-        uint256[] memory amounts
-    ) 
-        public
-        // onlyRole(ROLE_ADMIN) // TODO: enable on production
-    {
-        bytes memory data;
-        _mintBatch(to, ids, amounts, data);
-    }
-
-    function adminBurn(
-        address from,
-        uint256 id,
-        uint256 amount
-    ) 
-        public
-        // onlyRole(ROLE_ADMIN) // TODO: enable on production
-    {
-        _burn(from, id, amount);
     }
 
     function burn(
