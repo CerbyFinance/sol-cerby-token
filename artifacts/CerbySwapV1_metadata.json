@@ -249,32 +249,13 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "poolPos",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "tokenIn",
+						"type": "address"
 					},
 					{
-						"internalType": "uint256",
-						"name": "amountTokensOut",
-						"type": "uint256"
-					}
-				],
-				"name": "getInputCerUsdForExactTokens",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "address",
-						"name": "token",
+						"name": "tokenOut",
 						"type": "address"
 					},
 					{
@@ -283,35 +264,11 @@
 						"type": "uint256"
 					}
 				],
-				"name": "getInputCerUsdForExactTokens",
+				"name": "getInputTokensForExactTokens",
 				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "poolPos",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountCerUsdOut",
-						"type": "uint256"
-					}
-				],
-				"name": "getInputTokensForExactCerUsd",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
+						"name": "amountTokensIn",
 						"type": "uint256"
 					}
 				],
@@ -322,79 +279,12 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "token",
+						"name": "tokenIn",
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
-						"name": "amountCerUsdOut",
-						"type": "uint256"
-					}
-				],
-				"name": "getInputTokensForExactCerUsd",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountCerUsdIn",
-						"type": "uint256"
-					}
-				],
-				"name": "getOutputExactCerUsdForTokens",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "poolPos",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountCerUsdIn",
-						"type": "uint256"
-					}
-				],
-				"name": "getOutputExactCerUsdForTokens",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
+						"name": "tokenOut",
 						"type": "address"
 					},
 					{
@@ -403,35 +293,11 @@
 						"type": "uint256"
 					}
 				],
-				"name": "getOutputExactTokensForCerUsd",
+				"name": "getOutputExactTokensForTokens",
 				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "poolPos",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountTokensIn",
-						"type": "uint256"
-					}
-				],
-				"name": "getOutputExactTokensForCerUsd",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
+						"name": "amountTokensOut",
 						"type": "uint256"
 					}
 				],
@@ -1069,12 +935,12 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "maxAmountTokensIn",
+						"name": "amountTokensOut",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "amountTokensOut",
+						"name": "maxAmountTokensIn",
 						"type": "uint256"
 					},
 					{
@@ -1329,7 +1195,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -1344,11 +1210,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x2822950024adf05a7b3496abf152b24da14fa2f1a6f7c060865ac81a801efe77",
+			"keccak256": "0xd046c8d3df7a07d75bcb9dcc37cc930614e7b7abad8e48e46bf6d23129361ce3",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://0050404be34398e6f9d5c4e32f5e4daf5b42ba778b7e7bd15b374aae0164ec22",
-				"dweb:/ipfs/Qmc681EUxxJYjFvUKDZ9bbH8wNVr9R2QM2kCcFsuAQ9BRe"
+				"bzz-raw://0711365205bf7287ba0395275d8d85ea95b72d84f61469376f2f69d9fa52c9fa",
+				"dweb:/ipfs/QmV8Ld4YucaWuV9mPHspFChWRVrPMJGP7Bqb8Qgcx7XNDT"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
