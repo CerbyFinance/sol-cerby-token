@@ -52,6 +52,8 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
     // "0xCd300dd54345F48Ba108Df3D792B6c2Dbb17edD2", "1000000000000000000000", 0, "2041564156"
     // "0xF3B07F8167b665BA3E2DD29c661DeE3a1da2380a","0x2c4fE51d1Ad5B88cD2cc2F45ad1c0C857f06225e","1000000000000000000000","0","20415641000","0x539FaA851D86781009EC30dF437D794bCd090c8F"
     // "0x2c4fE51d1Ad5B88cD2cc2F45ad1c0C857f06225e","0xF3B07F8167b665BA3E2DD29c661DeE3a1da2380a","1000000000000000000000","0","20415641000","0x539FaA851D86781009EC30dF437D794bCd090c8F"
+    1000000000000000000011 494510434669677019755 489223177884861877370
+    2047670051318999350473 1000000000000000000011
     */
     address lpErc1155V1 = 0x370a4BA20191804aeEAb8eB39e3ea83D77fEB68d;
     address testCerbyToken = 0x2c4fE51d1Ad5B88cD2cc2F45ad1c0C857f06225e;
@@ -822,26 +824,31 @@ contract CerbySwapV1 is AccessControlEnumerable, CerbyCronJobsExecution {
                 uint(pools[poolPos].balanceCerUsd) * FEE_DENORM *
                 uint(pools[poolPos].balanceToken) * FEE_DENORM;
 
-            // updating pool values
-            totalCerUsdBalance = totalCerUsdBalance + amountCerUsdIn - amountCerUsdOut;
-            pools[poolPos].balanceCerUsd = 
-                pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn) - uint112(amountCerUsdOut);
-            pools[poolPos].balanceToken = 
-                pools[poolPos].balanceToken + uint112(amountTokensIn) - uint112(amountTokensOut);
+            // calculating new pool values
+            uint _totalCerUsdBalance = totalCerUsdBalance + amountCerUsdIn - amountCerUsdOut;
+            uint _balanceCerUsd = 
+                uint(pools[poolPos].balanceCerUsd) + amountCerUsdIn - amountCerUsdOut;
+            uint _balanceToken =
+                uint(pools[poolPos].balanceToken) + amountTokensIn - amountTokensOut;
 
             // calculating new K value including trade fees (multiplied by FEE_DENORM^2)
             uint afterKValueDenormed = 
-                (uint(pools[poolPos].balanceCerUsd) * FEE_DENORM - amountCerUsdIn * (FEE_DENORM - fee)) * 
-                (uint(pools[poolPos].balanceToken) * FEE_DENORM - amountTokensIn * (FEE_DENORM - fee));
+                (_balanceCerUsd * FEE_DENORM - amountCerUsdIn * (FEE_DENORM - fee)) * 
+                (_balanceToken * FEE_DENORM - amountTokensIn * (FEE_DENORM - fee));
             require(
                 afterKValueDenormed >= beforeKValueDenormed,
                 INVARIANT_K_VALUE_MUST_BE_INCREASED_ON_ANY_TRADE_P
             );
+
+            // updating pool values
+            totalCerUsdBalance = _totalCerUsdBalance;
+            pools[poolPos].balanceCerUsd = uint112(_balanceCerUsd);
+            pools[poolPos].balanceToken = uint112(_balanceToken);
         }
 
         // updating 4hour trade pool values
         uint current4Hour = getCurrent4Hour();
-        uint next4Hour = (getCurrent4Hour() + 1) % pools[poolPos].hourlyTradeVolumeInCerUsd.length;
+        uint next4Hour = (getCurrent4Hour() + 1) % NUMBER_OF_4HOUR_INTERVALS;
         unchecked {
             // wrapping any uint32 overflows
             // stores in USD value
