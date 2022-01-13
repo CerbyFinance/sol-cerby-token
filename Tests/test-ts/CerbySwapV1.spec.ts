@@ -18,18 +18,11 @@ const randomAddress = () => '0x' + crypto.randomBytes(20).toString('hex')
 const bn1e18 = new BN((1e18).toString());
 
 contract("Cerby", accounts => {
-  it.skip('additional token', async () => {
-    const address = (await TestCerbyToken2()).address
-  })
-
   it("swapExactTokensForTokens: swap 1001 CERBY --> cerUSD; received cerUSD is correct", async () => {
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -85,9 +78,6 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -143,9 +133,6 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -227,9 +214,6 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -314,12 +298,6 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
-    const USDC_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestUsdcToken.address,
-    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -431,12 +409,6 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
-    const USDC_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestUsdcToken.address,
-    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -548,12 +520,6 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
-    const USDC_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestUsdcToken.address,
-    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -664,12 +630,6 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
-    const USDC_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestUsdcToken.address,
-    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -771,9 +731,6 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -913,7 +870,7 @@ contract("Cerby", accounts => {
 
       const TOKEN_DOES_NOT_EXIST_C = "C";
       tokenIn1 = TestCerUsdToken.address;
-      tokenOut1 = randomAddress();
+      tokenOut1 = (await TestCerbyToken2()).address;
       amountTokensIn1 = new BN(1010).mul(bn1e18);
       minAmountTokensOut1 = new BN(0);
       expireTimestamp1 = now() + 86400;
@@ -1018,9 +975,6 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -1076,9 +1030,6 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -1215,9 +1166,6 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -1304,12 +1252,6 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
-    const USDC_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestUsdcToken.address,
-    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -1520,12 +1462,6 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
-    const USDC_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestUsdcToken.address,
-    );
 
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
@@ -1734,10 +1670,6 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-    const CERBY_TOKEN_POS = await cerbySwap.getTokenToPoolPosition(
-      TestCerbyToken.address,
-    );
-
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address,
     );
@@ -1873,7 +1805,7 @@ contract("Cerby", accounts => {
 
       const TOKEN_DOES_NOT_EXIST_C = "C";
       tokenIn1 = TestCerUsdToken.address;
-      tokenOut1 = randomAddress();
+      tokenOut1 = (await TestCerbyToken2()).address;
       amountTokensOut1 = new BN(1020).mul(bn1e18);
       maxAmountTokensIn1 = new BN(1000000).mul(bn1e18);
       expireTimestamp1 = now() + 86400;

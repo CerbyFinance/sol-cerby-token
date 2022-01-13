@@ -338,10 +338,10 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<{
     token: string;
+    hourlyTradeVolumeInCerUsd: BN[];
     balanceToken: BN;
     balanceCerUsd: BN;
     lastSqrtKValue: BN;
-    hourlyTradeVolumeInCerUsd: BN[];
   }>;
 
   getPoolByToken(
@@ -349,10 +349,10 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<{
     token: string;
+    hourlyTradeVolumeInCerUsd: BN[];
     balanceToken: BN;
     balanceCerUsd: BN;
     lastSqrtKValue: BN;
-    hourlyTradeVolumeInCerUsd: BN[];
   }>;
 
   getRoleAdmin(
@@ -1011,10 +1011,10 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<{
       token: string;
+      hourlyTradeVolumeInCerUsd: BN[];
       balanceToken: BN;
       balanceCerUsd: BN;
       lastSqrtKValue: BN;
-      hourlyTradeVolumeInCerUsd: BN[];
     }>;
 
     getPoolByToken(
@@ -1022,10 +1022,10 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<{
       token: string;
+      hourlyTradeVolumeInCerUsd: BN[];
       balanceToken: BN;
       balanceCerUsd: BN;
       lastSqrtKValue: BN;
-      hourlyTradeVolumeInCerUsd: BN[];
     }>;
 
     getRoleAdmin(
