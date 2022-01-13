@@ -9,7 +9,7 @@ import "./CerbyCronJobsExecution.sol";
 
 contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessControlEnumerable {
 
-    string _name = "CerbySwap LP1155 Tokens V1";
+    string _name = "Cerby Swap V1";
     string _symbol = "CERBY_SWAP_V1";
     string _urlPrefix = "https://data.cerby.fi/CerbySwap/v1/";
 
@@ -54,14 +54,6 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         returns(uint)
     {
         return 18;
-    }
-
-    function owner()
-        public
-        view
-        returns(address)
-    {
-        return getRoleMember(ROLE_ADMIN, 0);
     }
 
     function totalSupply()
@@ -157,16 +149,5 @@ contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessContr
         public
     {
         _burn(msg.sender, id, amount);
-    }
-
-    function adminBurnBatch(
-        address from,
-        uint256[] memory ids,
-        uint256[] memory amounts
-    ) 
-        public
-        // onlyRole(ROLE_ADMIN) // TODO: enable on production
-    {
-        _burnBatch(from, ids, amounts);
     }
 }
