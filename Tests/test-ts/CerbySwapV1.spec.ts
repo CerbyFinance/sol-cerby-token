@@ -1,22 +1,27 @@
+import crypto from "crypto"
 import BN from "bn.js";
-import { getCurrentFeeBasedOnTrades } from "./utils";
+import { TestCerbyToken2 } from "./utils";
 
 const truffleAssert = require("truffle-assertions");
 
-const Weth = artifacts.require("WETH9");
 const TestCerbyToken = artifacts.require("TestCerbyToken");
 const TestCerUsdToken = artifacts.require("TestCerUsdToken");
 const TestUsdcToken = artifacts.require("TestUsdcToken");
-const CerbySwapLP1155V1 = artifacts.require("CerbySwapLP1155V1");
 const CerbySwapV1 = artifacts.require("CerbySwapV1");
 
 const FEE_DENORM = 10000;
 
 const now = () => Math.floor(+new Date() / 1000);
 
+const randomAddress = () => '0x' + crypto.randomBytes(20).toString('hex')
+
 const bn1e18 = new BN((1e18).toString());
 
 contract("Cerby", accounts => {
+  it.only('additional token', async () => {
+    const address = (await TestCerbyToken2()).address
+  })
+
   it("swapExactTokensForTokens: swap 1001 CERBY --> cerUSD; received cerUSD is correct", async () => {
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
@@ -908,7 +913,7 @@ contract("Cerby", accounts => {
 
       const TOKEN_DOES_NOT_EXIST_C = "C";
       tokenIn1 = TestCerUsdToken.address;
-      tokenOut1 = Weth.address;
+      tokenOut1 = randomAddress();
       amountTokensIn1 = new BN(1010).mul(bn1e18);
       minAmountTokensOut1 = new BN(0);
       expireTimestamp1 = now() + 86400;
@@ -1868,7 +1873,7 @@ contract("Cerby", accounts => {
 
       const TOKEN_DOES_NOT_EXIST_C = "C";
       tokenIn1 = TestCerUsdToken.address;
-      tokenOut1 = Weth.address;
+      tokenOut1 = randomAddress();
       amountTokensOut1 = new BN(1020).mul(bn1e18);
       maxAmountTokensIn1 = new BN(1000000).mul(bn1e18);
       expireTimestamp1 = now() + 86400;

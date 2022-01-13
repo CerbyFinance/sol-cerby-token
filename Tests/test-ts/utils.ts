@@ -1,11 +1,15 @@
-import { CerbySwapV1Instance } from "../types/truffle-contracts";
+import { TestCerbyTokenInstance } from "../types/truffle-contracts";
 
-type CS = CerbySwapV1Instance;
+const TestCerbyToken = artifacts.require("TestCerbyToken");
 
-export function getCurrentFeeBasedOnTrades(cs: CS, input: string | number) {
-  if (typeof input === "string") {
-    return cs.methods["getCurrentFeeBasedOnTrades(address)"](input);
+let token: TestCerbyTokenInstance | null;
+
+export const TestCerbyToken2 = async () => {
+  if (!token) {
+    token = await TestCerbyToken.new();
+
+    return token;
   }
 
-  return cs.methods["getCurrentFeeBasedOnTrades(uint256)"](input);
-}
+  return token;
+};
