@@ -3583,7 +3583,7 @@ contract("Cerby", accounts => {
       const expireTimestamp = now() + 86400;
       const transferTo = firstAccount;
       
-      const lpTokens = await cerbySwap.addTokenLiquidity(
+      const lpTokens = await cerbySwap.addTokenLiquidity.call(
         tokenIn,
         amountTokensIn,
         expireTimestamp,
@@ -3637,7 +3637,7 @@ contract("Cerby", accounts => {
       const transferTo = firstAccount;
       
       
-      const lpTokens = await cerbySwap.addTokenLiquidity(
+      const lpTokens = await cerbySwap.addTokenLiquidity.call(
         tokenIn,
         amountTokensIn,
         expireTimestamp,
@@ -3683,7 +3683,7 @@ contract("Cerby", accounts => {
     {
       const tokenOut = TestCerbyToken.address;
       const amountLPTokensBurn = await cerbySwap.balanceOf(firstAccount, CERBY_POOL_POS);
-      const totalLPSupply = await cerbySwap.totalSupply(CERBY_POOL_POS);
+      const totalLPSupply = await cerbySwap.methods['totalSupply(uint256)'](CERBY_POOL_POS);
       const amountTokensOut = beforeCerbyPool.balanceToken.mul(amountLPTokensBurn).div(totalLPSupply);
       const amountCerUsdOut = beforeCerbyPool.balanceCerUsd.mul(amountLPTokensBurn).div(totalLPSupply);
       const expireTimestamp = now() + 86400;
