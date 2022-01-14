@@ -719,7 +719,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       _testCerbyToken: string,
       _cerUsdToken: string,
       _testUsdcToken: string,
-      _nativeToken: string,
+      arg4: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
@@ -727,7 +727,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       _testCerbyToken: string,
       _cerUsdToken: string,
       _testUsdcToken: string,
-      _nativeToken: string,
+      arg4: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
@@ -735,7 +735,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       _testCerbyToken: string,
       _cerUsdToken: string,
       _testUsdcToken: string,
-      _nativeToken: string,
+      arg4: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
@@ -743,7 +743,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       _testCerbyToken: string,
       _cerUsdToken: string,
       _testUsdcToken: string,
-      _nativeToken: string,
+      arg4: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -1366,7 +1366,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         _testCerbyToken: string,
         _cerUsdToken: string,
         _testUsdcToken: string,
-        _nativeToken: string,
+        arg4: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
@@ -1374,7 +1374,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         _testCerbyToken: string,
         _cerUsdToken: string,
         _testUsdcToken: string,
-        _nativeToken: string,
+        arg4: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
@@ -1382,7 +1382,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         _testCerbyToken: string,
         _cerUsdToken: string,
         _testUsdcToken: string,
-        _nativeToken: string,
+        arg4: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
@@ -1390,7 +1390,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         _testCerbyToken: string,
         _cerUsdToken: string,
         _testUsdcToken: string,
-        _nativeToken: string,
+        arg4: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

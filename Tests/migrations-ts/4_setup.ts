@@ -1,3 +1,5 @@
+import BN from "bn.js";
+
 const CerbySwapV1 = artifacts.require("CerbySwapV1");
 
 // const Weth = artifacts.require("WETH9");
@@ -22,7 +24,7 @@ module.exports = async function (deployer) {
       // Weth.address,
     );
 
-    await cerbySwap.adminInitialize();
+    await cerbySwap.adminInitialize({ value: new BN((1e16).toString()) });
   };
 
   await setup();
