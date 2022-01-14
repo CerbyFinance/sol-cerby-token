@@ -126,7 +126,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       expireTimestamp: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
+    ): Promise<BN>;
     sendTransaction(
       token: string,
       amountTokensIn: number | BN | string,
@@ -426,7 +426,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       expireTimestamp: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
+    ): Promise<{ 0: BN; 1: BN }>;
     sendTransaction(
       token: string,
       amountLpTokensBalanceToBurn: number | BN | string,
@@ -779,7 +779,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         expireTimestamp: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
+      ): Promise<BN>;
       sendTransaction(
         token: string,
         amountTokensIn: number | BN | string,
@@ -1079,7 +1079,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         expireTimestamp: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
-      ): Promise<BN>;
+      ): Promise<{ 0: BN; 1: BN }>;
       sendTransaction(
         token: string,
         amountLpTokensBalanceToBurn: number | BN | string,
