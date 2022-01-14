@@ -4,11 +4,10 @@ pragma solidity ^0.8.11;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./openzeppelin/token/ERC1155/extensions/ERC1155Supply.sol";
-import "./openzeppelin/token/ERC1155/utils/ERC1155Holder.sol";
 import "./CerbyCronJobsExecution.sol";
 
 
-abstract contract CerbySwapLP1155V1 is ERC1155Holder, ERC1155Supply, CerbyCronJobsExecution, AccessControlEnumerable {
+abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessControlEnumerable {
 
     string _name = "Cerby Swap V1";
     string _symbol = "CERBY_SWAP_V1";
@@ -23,7 +22,7 @@ abstract contract CerbySwapLP1155V1 is ERC1155Holder, ERC1155Supply, CerbyCronJo
         public 
         view 
         virtual 
-        override(ERC1155Receiver, ERC165, AccessControlEnumerable) 
+        override(ERC165, AccessControlEnumerable) 
         returns (bool) 
     {
         return
