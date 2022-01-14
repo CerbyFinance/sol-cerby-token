@@ -911,7 +911,7 @@ contract("Cerby", accounts => {
         TRANSACTION_IS_EXPIRED_D
       );
 
-      const AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O = "O";
+      const AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F = "F";
       tokenIn1 = TestCerbyToken.address;
       tokenOut1 = TestCerUsdToken.address;
       amountTokensIn1 = new BN(0).mul(bn1e18);
@@ -927,9 +927,9 @@ contract("Cerby", accounts => {
           expireTimestamp1,
           transferTo1,
         ),
-        AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O
+        AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F
       );
-
+      
       tokenIn1 = TestCerUsdToken.address;
       tokenOut1 = TestCerbyToken.address;
       amountTokensIn1 = new BN(0).mul(bn1e18);
@@ -946,7 +946,7 @@ contract("Cerby", accounts => {
           expireTimestamp1,
           transferTo1,
         ),
-        AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O
+        AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F
       );
 
       tokenIn1 = TestUsdcToken.address;
@@ -965,7 +965,7 @@ contract("Cerby", accounts => {
           expireTimestamp1,
           transferTo1,
         ),
-        AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O
+        AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F
       );
     }
   });
@@ -1845,7 +1845,7 @@ contract("Cerby", accounts => {
         TRANSACTION_IS_EXPIRED_D
       );
 
-      const AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O = "O";
+      const AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F = "F";
       tokenIn1 = TestCerbyToken.address;
       tokenOut1 = TestCerUsdToken.address;
       amountTokensOut1 = new BN(0);
@@ -1861,9 +1861,10 @@ contract("Cerby", accounts => {
           expireTimestamp1,
           transferTo1,
         ),
-        AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O
+        AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F
       );
 
+      const AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_U = "U";
       tokenIn1 = TestCerUsdToken.address;
       tokenOut1 = TestCerbyToken.address;
       amountTokensOut1 = new BN(0);
@@ -1879,7 +1880,7 @@ contract("Cerby", accounts => {
           expireTimestamp1,
           transferTo1,
         ),
-        AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O
+        AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_U
       );
 
       tokenIn1 = TestUsdcToken.address;
@@ -1897,7 +1898,7 @@ contract("Cerby", accounts => {
           expireTimestamp1,
           transferTo1,
         ),
-        AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O
+        AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_U
       );
 
     }
