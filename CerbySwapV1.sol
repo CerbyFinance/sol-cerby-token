@@ -19,7 +19,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         string TRANSACTION_IS_EXPIRED_D;
         string FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_E;
         string AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_F;
-        string MSG_VALUE_PROVIDED_MUST_BE_ZERO_G;
+        string MSG_VALUE_PROVIDED_MUST_BE_LARGER_THAN_AMOUNT_IN_G;
         string OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_H;
         string OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_i;
         string INPUT_CERUSD_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_J;
@@ -29,10 +29,9 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         string POOL_POS_DOES_NOT_EXIST_N;
         string AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O;
         string INVARIANT_K_VALUE_MUST_BE_INCREASED_ON_ANY_TRADE_P;
-        string SAFE_TRANSFER_ETH_FAILED_Q;
+        string SAFE_TRANSFER_NATIVE_FAILED_Q;
         string SAFE_TRANSFER_FAILED_R;
         string SAFE_TRANSFER_FROM_FAILED_S;
-        string MSG_VALUE_PROVIDED_MUST_BE_LARGER_THAN_AMOUNT_IN_T;
     }
 
     ErrorsList errorsList;
@@ -86,7 +85,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         errorsList = 
             ErrorsList(
                 "A", "B", "C", "D", "E", "F", "G", "H", "i", "J", "K", "L", "M", "N", 
-                "O", "P", "Q", "R", "S", "T"
+                "O", "P", "Q", "R", "S"
             );
 
         feeToBeneficiary = msg.sender;
@@ -747,10 +746,15 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     {
         if (token != nativeToken) {
             // caller must not send any native tokens
-            require(
-                msg.value == 0,
-                errorsList.MSG_VALUE_PROVIDED_MUST_BE_ZERO_G
-            );
+            // refunding all native tokens
+            // to make sure msg.value == 0
+            if (msg.value > 0) {
+                _safeTransferHelper(
+                    nativeToken, 
+                    msg.sender,
+                    msg.value
+                );
+            }
 
             if (from != address(this)) {
                 _safeTransferFrom(token, from, address(this), amount);
@@ -759,7 +763,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             // caller must sent some native tokens
             require(
                 msg.value >= amount,
-                errorsList.MSG_VALUE_PROVIDED_MUST_BE_LARGER_THAN_AMOUNT_IN_T
+                errorsList.MSG_VALUE_PROVIDED_MUST_BE_LARGER_THAN_AMOUNT_IN_G
             );
 
             // refunding extra native tokens
@@ -815,7 +819,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
     function _safeTransferNative(address to, uint value) private {
         (bool success, ) = to.call{value: value}(new bytes(0));
-        require(success, errorsList.SAFE_TRANSFER_ETH_FAILED_Q);
+        require(success, errorsList.SAFE_TRANSFER_NATIVE_FAILED_Q);
     }
 
     function syncTokenBalanceInPool(address token)
