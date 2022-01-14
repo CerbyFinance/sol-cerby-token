@@ -46,10 +46,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     // "0x14769F96e57B80c66837701DE0B43686Fb4632De", "1000000000000000000000", 0, "2041564156"
     // "0x37E140032ac3a8428ed43761a9881d4741Eb3a73","0x14769F96e57B80c66837701DE0B43686Fb4632De","10000000000000000000000","0","2041564156"
     // "0x14769F96e57B80c66837701DE0B43686Fb4632De","0x37E140032ac3a8428ed43761a9881d4741Eb3a73","1000000000000000000000","0","2041564156"
-    
-    address constant testCerbyToken = 0x3d982cB3BC8D1248B17f22b567524bF7BFFD3b11;
-    address constant cerUsdToken = 0x37E140032ac3a8428ed43761a9881d4741Eb3a73;
-    address constant testUsdcToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De;*/
+    */
+    address testCerbyToken = 0x3d982cB3BC8D1248B17f22b567524bF7BFFD3b11;
+    address cerUsdToken = 0x37E140032ac3a8428ed43761a9881d4741Eb3a73;
+    address testUsdcToken = 0xD575ef966cfE21a5a5602dFaDAd3d1cAe8C60fDB;
 
     /* Localhost
     // "0xde402E9D305bAd483d47bc858cC373c5a040A62D", "997503992263724670916", 0, "2041564156"
@@ -58,11 +58,11 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     // "0x2c4fE51d1Ad5B88cD2cc2F45ad1c0C857f06225e","0xF3B07F8167b665BA3E2DD29c661DeE3a1da2380a","1000000000000000000000","0","20415641000","0x539FaA851D86781009EC30dF437D794bCd090c8F"
     1000000000000000000011 494510434669677019755 489223177884861877370
     2047670051318999350473 1000000000000000000011
-    */
+    
     address testCerbyToken = 0x2c4fE51d1Ad5B88cD2cc2F45ad1c0C857f06225e; // TODO: remove on production
     address cerUsdToken = 0xF3B07F8167b665BA3E2DD29c661DeE3a1da2380a; // TODO: make constant
     address testUsdcToken = 0x2a5E269bF364E347942c464a999D8c8ac2E6CE94; // TODO: remove on production
-
+    */  
     address nativeToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De;
 
     uint constant FEE_DENORM = 10000;
@@ -169,10 +169,17 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         public
     {
         //lpErc1155V1 = _lpErc1155V1;
-        testCerbyToken= _testCerbyToken;
+        testCerbyToken = _testCerbyToken;
         cerUsdToken = _cerUsdToken;
         testUsdcToken = _testUsdcToken;
         
+        testInit();
+    }
+
+    // TODO: remove on production
+    function testInit()
+        public
+    {
         // TODO: remove on production
         adminCreatePool(
             testCerbyToken,
@@ -200,7 +207,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         // TODO: remove on production
         adminCreatePool(
             nativeToken,
-            1e16,
+            1e15,
             1e18 * 1e6,
             msg.sender
         );
@@ -269,15 +276,21 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         );
     }
 
-    function addTokenLiquidity(address fromAddress, address token, uint amountTokensIn, address transferTo)
+    function addTokenLiquidity(
+        address token, 
+        uint amountTokensIn, 
+        uint expireTimestamp,
+        address transferTo
+    )
         public
         payable
         tokenMustExistInPool(token)
+        transactionIsNotExpired(expireTimestamp)
         // checkForBots(msg.sender) // TODO: enable on production
     {
         uint poolPos = tokenToPoolPosition[token];
 
-        _safeTransferFromHelper(token, fromAddress, amountTokensIn);
+        _safeTransferFromHelper(token, msg.sender, amountTokensIn);
 
         // finding out how many tokens we've actually received
         uint newTokenBalance = _getTokenBalance(token);
@@ -291,64 +304,98 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint newTotalCerUsdBalance = _getTokenBalance(cerUsdToken);
         uint amountCerUsdIn = newTotalCerUsdBalance - totalCerUsdBalance;
 
-        // calculating amount of cerUSD to mint
-        uint mintCerUsdAmount = 
-            (amountTokensIn * uint(pools[poolPos].balanceCerUsd)) / uint(pools[poolPos].balanceToken) - 
-                amountCerUsdIn;
-
         // storing sqrt(k) value before updating pool
-        uint112 lastSqrtKValue = pools[poolPos].lastSqrtKValue;
-        uint112 newSqrtKValue = uint112(sqrt(uint(pools[poolPos].balanceToken) * uint(pools[poolPos].balanceCerUsd)));
+        uint lastSqrtKValue = pools[poolPos].lastSqrtKValue;
 
-        // updating pool
-        totalCerUsdBalance = newTotalCerUsdBalance;
-        pools[poolPos].lastSqrtKValue = newSqrtKValue;
-        pools[poolPos].balanceToken = uint112(newTokenBalance);
-        pools[poolPos].balanceCerUsd = 
-            pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn + mintCerUsdAmount);
+        { // scope to avoid stack to deep error
+            // calculating amount of cerUSD to mint
+            uint mintCerUsdAmount = 
+                (amountTokensIn * uint(pools[poolPos].balanceCerUsd)) / 
+                    uint(pools[poolPos].balanceToken);
+            require(
+                mintCerUsdAmount > 0,
+                errorsList.AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O
+            );
 
-        // minting cerUSD according to current pool
-        ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
+            // updating pool
+            totalCerUsdBalance = totalCerUsdBalance + amountCerUsdIn;
+            pools[poolPos].balanceToken = 
+                pools[poolPos].balanceToken + uint112(amountTokensIn);
+            pools[poolPos].balanceCerUsd = 
+                pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn + mintCerUsdAmount);
+            pools[poolPos].lastSqrtKValue = 
+                uint112(sqrt(uint(pools[poolPos].balanceToken) * 
+                    uint(pools[poolPos].balanceCerUsd)));
 
-        // minting LP tokens
-        uint totalLPSupply = _totalSupply[poolPos];
-        uint lpAmount = (amountTokensIn * totalLPSupply) / pools[poolPos].balanceToken;
-        _mint(
-            transferTo,
-            poolPos,
-            lpAmount,
-            ""
-        );
-
-        // minting trade fees
-        uint amountLpTokensToMintAsFee = _getMintFeeLiquidityAmount(lastSqrtKValue, newSqrtKValue, totalLPSupply);
-        if (amountLpTokensToMintAsFee > 0) {
+            // minting cerUSD according to current pool
+            ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), mintCerUsdAmount);
+        }        
+        
+        {
+            // minting LP tokens
+            uint totalLPSupply = _totalSupply[poolPos];
+            uint lpAmount = (amountTokensIn * totalLPSupply) / pools[poolPos].balanceToken;
             _mint(
-                feeToBeneficiary, 
-                poolPos, 
-                amountLpTokensToMintAsFee,
+                transferTo,
+                poolPos,
+                lpAmount,
                 ""
             );
+
+            // minting trade fees
+            uint amountLpTokensToMintAsFee = 
+                _getMintFeeLiquidityAmount(
+                    lastSqrtKValue, 
+                    pools[poolPos].lastSqrtKValue, 
+                    totalLPSupply
+                );
+            if (amountLpTokensToMintAsFee > 0) {
+                _mint(
+                    feeToBeneficiary, 
+                    poolPos, 
+                    amountLpTokensToMintAsFee,
+                    ""
+                );
+            }
         }
     }
 
-    function removeTokenLiquidity(address fromAddress, address token, uint amountLpTokensBalanceToBurn, address transferTo)
+    function removeTokenLiquidity(
+        address token, 
+        uint amountLpTokensBalanceToBurn, 
+        uint expireTimestamp,
+        address transferTo
+    )
         public
         tokenMustExistInPool(token)
+        transactionIsNotExpired(expireTimestamp)
         // checkForBots(msg.sender) // TODO: enable on production
+        returns (uint)
+    {
+        return _removeTokenLiquidity(
+            token,
+            amountLpTokensBalanceToBurn,
+            transferTo
+        );
+    }
+
+    function _removeTokenLiquidity(
+        address token, 
+        uint amountLpTokensBalanceToBurn, 
+        address transferTo
+    )
+        private
         returns (uint)
     {
         uint poolPos = tokenToPoolPosition[token];
 
-        if (fromAddress != address(this)) {
-            safeTransferFrom(
-                fromAddress, 
-                address(this), 
-                poolPos, 
-                amountLpTokensBalanceToBurn, 
-                ""
-            );
-        }
+        safeTransferFrom(
+            msg.sender, 
+            address(this), 
+            poolPos, 
+            amountLpTokensBalanceToBurn, 
+            ""
+        );
 
         // finding out if for some reason we've received tokens
         uint oldTokenBalance = _getTokenBalance(token);
@@ -419,8 +466,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             newSqrtKValue > lastSqrtKValue && 
             lastSqrtKValue > 0
         ) {
-            amountLpTokensToMintAsFee = (totalLPSupply * (newSqrtKValue - lastSqrtKValue)) / (newSqrtKValue * 5 + lastSqrtKValue);
+            amountLpTokensToMintAsFee = 
+                (totalLPSupply * (newSqrtKValue - lastSqrtKValue)) / 
+                    (newSqrtKValue * 5 + lastSqrtKValue);
         }
+
+        amountLpTokensToMintAsFee = 0; // TODO: remove
     }
 
     function swapExactTokensForTokens(
@@ -781,12 +832,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (token == nativeToken) {
                 _safeTransferNative(to, amount);
             } else {
-                _safeTransfer(token, to, amount);
+                _safeTransferToken(token, to, amount);
             }
         }
     }
     
-    function _safeTransfer(
+    function _safeTransferToken(
         address token,
         address to,
         uint value

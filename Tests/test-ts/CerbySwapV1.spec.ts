@@ -3560,5 +3560,79 @@ contract("Cerby", accounts => {
     }
   });
 
+  // ---------------------------------------------------------- //
+  // addTokenLiquidity / removeTokenLiquidity tests //
+  // ---------------------------------------------------------- //
+
+  it.only("addTokenLiquidity: add 1041e10 ETH; pool must be updated correctly", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+    );
+    
+    {
+      const tokenIn = '0x14769F96e57B80c66837701DE0B43686Fb4632De';
+      const amountTokensIn = new BN((1041e10).toString());
+      const expireTimestamp = now() + 86400;
+      const transferTo = firstAccount;
+      
+      cerbySwap.addTokenLiquidity(
+        tokenIn,
+        amountTokensIn,
+        expireTimestamp,
+        transferTo,
+        { value: amountTokensIn.mul(new BN(2)) }
+      );
+
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+      );
+
+      // check pool must have increased balance
+      assert.deepEqual(
+        beforeEthPool.balanceToken.add(amountTokensIn).toString(),
+        afterEthPool.balanceToken.toString(),
+      );
+    }
+  });
+
+  it.only("addTokenLiquidity: add 1042 CERBY; pool must be updated correctly", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+
+    const beforeCerbyPool = await cerbySwap.getPoolByToken(
+      TestCerbyToken.address
+    );
+    
+    {
+      const tokenIn = TestCerbyToken.address;
+      const amountTokensIn = new BN(1042).mul(bn1e18);
+      const expireTimestamp = now() + 86400;
+      const transferTo = firstAccount;
+      
+      cerbySwap.addTokenLiquidity(
+        tokenIn,
+        amountTokensIn,
+        expireTimestamp,
+        transferTo,
+      );
+
+      const afterCerbyPool = await cerbySwap.getPoolByToken(
+        TestCerbyToken.address
+      );
+
+      // check pool must have increased balance
+      assert.deepEqual(
+        beforeCerbyPool.balanceToken.add(amountTokensIn).toString(),
+        afterCerbyPool.balanceToken.toString(),
+      );
+    }
+  });
 
 });

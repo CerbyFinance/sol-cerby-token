@@ -114,30 +114,30 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
 
   addTokenLiquidity: {
     (
-      fromAddress: string,
       token: string,
       amountTokensIn: number | BN | string,
+      expireTimestamp: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
-      fromAddress: string,
       token: string,
       amountTokensIn: number | BN | string,
+      expireTimestamp: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
-      fromAddress: string,
       token: string,
       amountTokensIn: number | BN | string,
+      expireTimestamp: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
-      fromAddress: string,
       token: string,
       amountTokensIn: number | BN | string,
+      expireTimestamp: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
@@ -414,30 +414,30 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
 
   removeTokenLiquidity: {
     (
-      fromAddress: string,
       token: string,
       amountLpTokensBalanceToBurn: number | BN | string,
+      expireTimestamp: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
-      fromAddress: string,
       token: string,
       amountLpTokensBalanceToBurn: number | BN | string,
+      expireTimestamp: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
     sendTransaction(
-      fromAddress: string,
       token: string,
       amountLpTokensBalanceToBurn: number | BN | string,
+      expireTimestamp: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
-      fromAddress: string,
       token: string,
       amountLpTokensBalanceToBurn: number | BN | string,
+      expireTimestamp: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
@@ -713,6 +713,15 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  testInit: {
+    (txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(txDetails?: Truffle.TransactionDetails): Promise<void>;
+    sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
+    estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
+  };
+
   testSetupTokens: {
     (
       arg0: string,
@@ -758,30 +767,30 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
 
     addTokenLiquidity: {
       (
-        fromAddress: string,
         token: string,
         amountTokensIn: number | BN | string,
+        expireTimestamp: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
-        fromAddress: string,
         token: string,
         amountTokensIn: number | BN | string,
+        expireTimestamp: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
-        fromAddress: string,
         token: string,
         amountTokensIn: number | BN | string,
+        expireTimestamp: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
-        fromAddress: string,
         token: string,
         amountTokensIn: number | BN | string,
+        expireTimestamp: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
@@ -1058,30 +1067,30 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
 
     removeTokenLiquidity: {
       (
-        fromAddress: string,
         token: string,
         amountLpTokensBalanceToBurn: number | BN | string,
+        expireTimestamp: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
-        fromAddress: string,
         token: string,
         amountLpTokensBalanceToBurn: number | BN | string,
+        expireTimestamp: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<BN>;
       sendTransaction(
-        fromAddress: string,
         token: string,
         amountLpTokensBalanceToBurn: number | BN | string,
+        expireTimestamp: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
-        fromAddress: string,
         token: string,
         amountLpTokensBalanceToBurn: number | BN | string,
+        expireTimestamp: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
@@ -1358,6 +1367,15 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         token: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
+    };
+
+    testInit: {
+      (txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(txDetails?: Truffle.TransactionDetails): Promise<void>;
+      sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
+      estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
     };
 
     testSetupTokens: {
