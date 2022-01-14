@@ -3564,7 +3564,7 @@ contract("Cerby", accounts => {
   // addTokenLiquidity / removeTokenLiquidity tests //
   // ---------------------------------------------------------- //
 
-  it.only("addTokenLiquidity: add 1041e10 ETH; pool must be updated correctly", async () => {
+  it("addTokenLiquidity: add 1041e10 ETH; pool must be updated correctly", async () => {
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
@@ -3582,8 +3582,10 @@ contract("Cerby", accounts => {
       const amountCerUsdIn = amountTokensIn.mul(beforeEthPool.balanceCerUsd).div(beforeEthPool.balanceToken);
       const expireTimestamp = now() + 86400;
       const transferTo = firstAccount;
+      const totalLPSupply = await cerbySwap.methods['totalSupply(uint256)'](ETH_POOL_POS);
+      const lpTokens = amountTokensIn.mul(totalLPSupply).div(beforeEthPool.balanceToken);
       
-      const lpTokens = await cerbySwap.addTokenLiquidity.call(
+      await cerbySwap.addTokenLiquidity(
         tokenIn,
         amountTokensIn,
         expireTimestamp,
@@ -3596,6 +3598,12 @@ contract("Cerby", accounts => {
       );
       const afterLpTokens = await cerbySwap.balanceOf(firstAccount, ETH_POOL_POS);
 
+      // check lp tokens increased
+      assert.deepEqual(
+        beforeLpTokens.add(lpTokens).toString(),
+        afterLpTokens.toString(),
+      );
+
       // check pool increased balance
       assert.deepEqual(
         beforeEthPool.balanceToken.add(amountTokensIn).toString(),
@@ -3607,16 +3615,10 @@ contract("Cerby", accounts => {
         beforeEthPool.balanceCerUsd.add(amountCerUsdIn).toString(),
         afterEthPool.balanceCerUsd.toString(),
       );
-
-      // check lp tokens increased
-      assert.deepEqual(
-        beforeLpTokens.add(lpTokens).toString(),
-        afterLpTokens.toString(),
-      );
     }
   });
 
-  it.only("addTokenLiquidity: add 1042 CERBY; pool must be updated correctly", async () => {
+  it("addTokenLiquidity: add 1042 CERBY; pool must be updated correctly", async () => {
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
@@ -3635,9 +3637,11 @@ contract("Cerby", accounts => {
       const amountCerUsdIn = amountTokensIn.mul(beforeCerbyPool.balanceCerUsd).div(beforeCerbyPool.balanceToken);
       const expireTimestamp = now() + 86400;
       const transferTo = firstAccount;
+      const totalLPSupply = await cerbySwap.methods['totalSupply(uint256)'](CERBY_POOL_POS);
+      const lpTokens = amountTokensIn.mul(totalLPSupply).div(beforeCerbyPool.balanceToken);
       
       
-      const lpTokens = await cerbySwap.addTokenLiquidity.call(
+      await cerbySwap.addTokenLiquidity(
         tokenIn,
         amountTokensIn,
         expireTimestamp,
@@ -3648,6 +3652,12 @@ contract("Cerby", accounts => {
         TestCerbyToken.address
       );
       const afterLpTokens = await cerbySwap.balanceOf(firstAccount, CERBY_POOL_POS);
+
+      // check lp tokens increased
+      assert.deepEqual(
+        beforeLpTokens.add(lpTokens).toString(),
+        afterLpTokens.toString(),
+      );
 
       // check pool increased balance
       assert.deepEqual(
@@ -3660,16 +3670,63 @@ contract("Cerby", accounts => {
         beforeCerbyPool.balanceCerUsd.add(amountCerUsdIn).toString(),
         afterCerbyPool.balanceCerUsd.toString(),
       );
+    }
+  });
 
-      // check lp tokens increased
+  it("removeTokenLiquidity: remove 10% ETH; pool must be updated correctly", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+    const ETH_POOL_POS = await cerbySwap.getTokenToPoolPosition('0x14769F96e57B80c66837701DE0B43686Fb4632De');
+
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De'
+    );
+    const beforeLpTokens = await cerbySwap.balanceOf(firstAccount, ETH_POOL_POS);
+    
+    {
+      const tokenOut = '0x14769F96e57B80c66837701DE0B43686Fb4632De';
+      const amountLPTokensBurn = await (await cerbySwap.balanceOf(firstAccount, ETH_POOL_POS)).div(new BN(10));
+      const totalLPSupply = await cerbySwap.methods['totalSupply(uint256)'](ETH_POOL_POS);
+      const amountTokensOut = beforeEthPool.balanceToken.mul(amountLPTokensBurn).div(totalLPSupply);
+      const amountCerUsdOut = beforeEthPool.balanceCerUsd.mul(amountLPTokensBurn).div(totalLPSupply);
+      const expireTimestamp = now() + 86400;
+      const transferTo = firstAccount;
+      
+      await cerbySwap.removeTokenLiquidity(
+        tokenOut,
+        amountLPTokensBurn,
+        expireTimestamp,
+        transferTo,
+      );
+
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De'
+      );
+      const afterLpTokens = await cerbySwap.balanceOf(firstAccount, ETH_POOL_POS);
+
+      // check lp tokens decreased
       assert.deepEqual(
-        beforeLpTokens.add(lpTokens).toString(),
+        beforeLpTokens.sub(amountLPTokensBurn).toString(),
         afterLpTokens.toString(),
+      );
+
+      // check pool decreased balance
+      assert.deepEqual(
+        beforeEthPool.balanceToken.sub(amountTokensOut).toString(),
+        afterEthPool.balanceToken.toString(),
+      );
+
+      // check pool decreased balance
+      assert.deepEqual(
+        beforeEthPool.balanceCerUsd.sub(amountCerUsdOut).toString(),
+        afterEthPool.balanceCerUsd.toString(),
       );
     }
   });
 
-  it.only("removeTokenLiquidity: remove 104.3 CERBY; pool must be updated correctly", async () => {
+  it("removeTokenLiquidity: remove 10% CERBY; pool must be updated correctly", async () => {
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
@@ -3679,6 +3736,113 @@ contract("Cerby", accounts => {
     const beforeCerbyPool = await cerbySwap.getPoolByToken(
       TestCerbyToken.address
     );
+    const beforeLpTokens = await cerbySwap.balanceOf(firstAccount, CERBY_POOL_POS);
+    
+    {
+      const tokenOut = TestCerbyToken.address;
+      const amountLPTokensBurn = await (await cerbySwap.balanceOf(firstAccount, CERBY_POOL_POS)).div(new BN(10));
+      const totalLPSupply = await cerbySwap.methods['totalSupply(uint256)'](CERBY_POOL_POS);
+      const amountTokensOut = beforeCerbyPool.balanceToken.mul(amountLPTokensBurn).div(totalLPSupply);
+      const amountCerUsdOut = beforeCerbyPool.balanceCerUsd.mul(amountLPTokensBurn).div(totalLPSupply);
+      const expireTimestamp = now() + 86400;
+      const transferTo = firstAccount;
+      
+      await cerbySwap.removeTokenLiquidity(
+        tokenOut,
+        amountLPTokensBurn,
+        expireTimestamp,
+        transferTo,
+      );
+
+      const afterCerbyPool = await cerbySwap.getPoolByToken(
+        TestCerbyToken.address
+      );
+      const afterLpTokens = await cerbySwap.balanceOf(firstAccount, CERBY_POOL_POS);
+
+      // check lp tokens decreased
+      assert.deepEqual(
+        beforeLpTokens.sub(amountLPTokensBurn).toString(),
+        afterLpTokens.toString(),
+      );
+
+      // check pool decreased balance
+      assert.deepEqual(
+        beforeCerbyPool.balanceToken.sub(amountTokensOut).toString(),
+        afterCerbyPool.balanceToken.toString(),
+      );
+
+      // check pool decreased balance
+      assert.deepEqual(
+        beforeCerbyPool.balanceCerUsd.sub(amountCerUsdOut).toString(),
+        afterCerbyPool.balanceCerUsd.toString(),
+      );
+    }
+  });
+
+  it("removeTokenLiquidity: remove all ETH; pool must be updated correctly", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+    const ETH_POOL_POS = await cerbySwap.getTokenToPoolPosition('0x14769F96e57B80c66837701DE0B43686Fb4632De');
+
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De'
+    );
+    const beforeLpTokens = await cerbySwap.balanceOf(firstAccount, ETH_POOL_POS);
+    
+    {
+      const tokenOut = '0x14769F96e57B80c66837701DE0B43686Fb4632De';
+      const amountLPTokensBurn = await cerbySwap.balanceOf(firstAccount, ETH_POOL_POS);
+      const totalLPSupply = await cerbySwap.methods['totalSupply(uint256)'](ETH_POOL_POS);
+      const amountTokensOut = beforeEthPool.balanceToken.mul(amountLPTokensBurn).div(totalLPSupply);
+      const amountCerUsdOut = beforeEthPool.balanceCerUsd.mul(amountLPTokensBurn).div(totalLPSupply);
+      const expireTimestamp = now() + 86400;
+      const transferTo = firstAccount;
+      
+      await cerbySwap.removeTokenLiquidity(
+        tokenOut,
+        amountLPTokensBurn,
+        expireTimestamp,
+        transferTo,
+      );
+
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De'
+      );
+      const afterLpTokens = await cerbySwap.balanceOf(firstAccount, ETH_POOL_POS);
+
+      // check lp tokens decreased
+      assert.deepEqual(
+        beforeLpTokens.sub(amountLPTokensBurn).toString(),
+        afterLpTokens.toString(),
+      );
+
+      // check pool decreased balance
+      assert.deepEqual(
+        beforeEthPool.balanceToken.sub(amountTokensOut).toString(),
+        afterEthPool.balanceToken.toString(),
+      );
+
+      // check pool decreased balance
+      assert.deepEqual(
+        beforeEthPool.balanceCerUsd.sub(amountCerUsdOut).toString(),
+        afterEthPool.balanceCerUsd.toString(),
+      );
+    }
+  });
+
+  it("removeTokenLiquidity: remove all CERBY; pool must be updated correctly", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+    const CERBY_POOL_POS = await cerbySwap.getTokenToPoolPosition(TestCerbyToken.address);
+
+    const beforeCerbyPool = await cerbySwap.getPoolByToken(
+      TestCerbyToken.address
+    );
+    const beforeLpTokens = await cerbySwap.balanceOf(firstAccount, CERBY_POOL_POS);
     
     {
       const tokenOut = TestCerbyToken.address;
@@ -3689,7 +3853,7 @@ contract("Cerby", accounts => {
       const expireTimestamp = now() + 86400;
       const transferTo = firstAccount;
       
-      const res = await cerbySwap.removeTokenLiquidity(
+      await cerbySwap.removeTokenLiquidity(
         tokenOut,
         amountLPTokensBurn,
         expireTimestamp,
@@ -3699,13 +3863,21 @@ contract("Cerby", accounts => {
       const afterCerbyPool = await cerbySwap.getPoolByToken(
         TestCerbyToken.address
       );
+      const afterLpTokens = await cerbySwap.balanceOf(firstAccount, CERBY_POOL_POS);
 
-      // check pool must have increased balance
+      // check lp tokens decreased
+      assert.deepEqual(
+        beforeLpTokens.sub(amountLPTokensBurn).toString(),
+        afterLpTokens.toString(),
+      );
+
+      // check pool decreased balance
       assert.deepEqual(
         beforeCerbyPool.balanceToken.sub(amountTokensOut).toString(),
         afterCerbyPool.balanceToken.toString(),
       );
 
+      // check pool decreased balance
       assert.deepEqual(
         beforeCerbyPool.balanceCerUsd.sub(amountCerUsdOut).toString(),
         afterCerbyPool.balanceCerUsd.toString(),

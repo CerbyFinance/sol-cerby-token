@@ -4,10 +4,11 @@ pragma solidity ^0.8.11;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 import "./openzeppelin/token/ERC1155/extensions/ERC1155Supply.sol";
+import "./openzeppelin/token/ERC1155/utils/ERC1155Holder.sol";
 import "./CerbyCronJobsExecution.sol";
 
 
-abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, AccessControlEnumerable {
+abstract contract CerbySwapLP1155V1 is ERC1155Holder, ERC1155Supply, CerbyCronJobsExecution, AccessControlEnumerable {
 
     string _name = "Cerby Swap V1";
     string _symbol = "CERBY_SWAP_V1";
@@ -22,7 +23,7 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         public 
         view 
         virtual 
-        override(ERC165) 
+        override(ERC1155Receiver, ERC165, AccessControlEnumerable) 
         returns (bool) 
     {
         return
@@ -78,6 +79,23 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         return string(abi.encodePacked(_urlPrefix, id, ".json"));
     }
 
+    function adminSetURI(string memory newUrlPrefix)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        _setURI(string(abi.encodePacked(newUrlPrefix, "{id}.json")));
+
+        _urlPrefix = newUrlPrefix;
+    }
+
+    function adminUpdateNameAndSymbol(string memory newName, string memory newSymbol)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        _name = newName;
+        _symbol = newSymbol;
+    }
+
     function setApprovalForAll(address operator, bool approved) 
         public 
         virtual 
@@ -98,7 +116,8 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         virtual 
         override
     {
-        /* TODO: enable on production
+        /* 
+        TODO: enable on production
         require(
             from == _msgSender() || isApprovedForAll(from, _msgSender()),
             "ERC1155: caller is not owner nor approved"
@@ -124,29 +143,31 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         _safeBatchTransferFrom(from, to, ids, amounts, data);
     }
 
-    function adminSetURI(string memory newUrlPrefix)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        _setURI(string(abi.encodePacked(newUrlPrefix, "{id}.json")));
-
-        _urlPrefix = newUrlPrefix;
-    }
-
-    function adminUpdateNameAndSymbol(string memory newName, string memory newSymbol)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        _name = newName;
-        _symbol = newSymbol;
-    }
-
     function burn(
+        address account,
         uint256 id,
-        uint256 amount
-    ) 
-        public
-    {
-        _burn(msg.sender, id, amount);
+        uint256 value
+    ) public virtual {
+        /*
+        TODO: enable in production
+        require(
+            account == _msgSender() || isApprovedForAll(account, _msgSender()),
+            "ERC1155: caller is not owner nor approved"
+        );*/
+
+        _burn(account, id, value);
+    }
+
+    function burnBatch(
+        address account,
+        uint256[] memory ids,
+        uint256[] memory values
+    ) public virtual {
+        require(
+            account == _msgSender() || isApprovedForAll(account, _msgSender()),
+            "ERC1155: caller is not owner nor approved"
+        );
+
+        _burnBatch(account, ids, values);
     }
 }
