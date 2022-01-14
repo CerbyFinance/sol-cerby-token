@@ -62,7 +62,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     address cerUsdToken = 0xF3B07F8167b665BA3E2DD29c661DeE3a1da2380a; // TODO: make constant
     address testUsdcToken = 0x2a5E269bF364E347942c464a999D8c8ac2E6CE94; // TODO: remove on production
 
-    address nativeToken;
+    address nativeToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De;
 
     uint constant FEE_DENORM = 10000;
 
@@ -111,16 +111,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     }
 
     receive() external payable {}
-
-    modifier makeSureMsgValueIsSetCorrectly(address token)
-    {
-        require(
-            msg.value > 0 && token == nativeToken ||
-            msg.value == 0 && token != nativeToken,
-            errorsList.MSG_VALUE_PROVIDED_IS_WRONG_G
-        );
-        _;
-    }
 
     modifier tokenMustExistInPool(address token)
     {
@@ -181,14 +171,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         testCerbyToken= _testCerbyToken;
         cerUsdToken = _cerUsdToken;
         testUsdcToken = _testUsdcToken;
-    }
-
-    // TODO: remove on production
-    function adminInitialize() 
-        public
-        payable
-        // onlyRole(ROLE_ADMIN) // TODO: enable on production
-    {
+        
         // TODO: remove on production
         adminCreatePool(
             testCerbyToken,
@@ -204,6 +187,14 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             1e18 * 7e5,
             msg.sender
         );
+    }
+
+    // TODO: remove on production
+    function adminInitialize() 
+        public
+        payable
+        // onlyRole(ROLE_ADMIN) // TODO: enable on production
+    {        
 
         // TODO: remove on production
         adminCreatePool(
@@ -232,7 +223,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         payable
         // onlyRole(ROLE_ADMIN) // TODO: enable on production
         tokenDoesNotExistInPool(token)
-        makeSureMsgValueIsSetCorrectly(token)
     {
         uint poolPos = pools.length;
 
@@ -343,7 +333,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
     function removeTokenLiquidity(address fromAddress, address token, uint amountLpTokensBalanceToBurn, address transferTo)
         public
-        payable
         tokenMustExistInPool(token)
         // checkForBots(msg.sender) // TODO: enable on production
         returns (uint)
@@ -444,7 +433,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         public
         payable
         transactionIsNotExpired(expireTimestamp)
-        makeSureMsgValueIsSetCorrectly(tokenIn)
         // checkForBots(msg.sender) // TODO: enable on production
         returns (uint, uint)
     {
@@ -541,7 +529,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         public
         payable
         transactionIsNotExpired(expireTimestamp)
-        makeSureMsgValueIsSetCorrectly(tokenIn)
         // checkForBots(msg.sender) // TODO: enable on production
         returns (uint, uint)
     {
@@ -735,6 +722,19 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         }
         if (amountCerUsdOut > 0) {
             _safeTransferHelper(cerUsdToken, transferTo, amountCerUsdOut);
+
+            // if swap direction is ETH --> cerUSD
+            // refunding native token dust left in contract
+            if (token == nativeToken) {
+                uint currentNativeBalance = _getTokenBalance(token);
+                if (currentNativeBalance > pools[poolPos].balanceToken) {
+                    _safeTransferHelper(
+                        nativeToken, 
+                        msg.sender,
+                        currentNativeBalance - pools[poolPos].balanceToken
+                    );
+                }
+            }
         }
     }
 
@@ -756,7 +756,19 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         private
     {
         if (token != nativeToken && from != address(this)) {
+            // caller must not send any native tokens
+            require(
+                msg.value == 0,
+                errorsList.MSG_VALUE_PROVIDED_IS_WRONG_G
+            );
+
             _safeTransferFrom(token, from, address(this), amount);
+        } else if (token == nativeToken)  {
+            // caller must sent some native tokens
+            require(
+                msg.value >= amount,
+                errorsList.MSG_VALUE_PROVIDED_IS_WRONG_G
+            );
         }
     }
 

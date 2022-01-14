@@ -1684,7 +1684,7 @@ contract("Cerby", accounts => {
       const tokenOut1 = TestCerUsdToken.address;
       const tokenIn2 = TestCerUsdToken.address;
       const tokenOut2 = TestCerbyToken.address;
-      const amountTokensOut2 = new BN(101).mul(bn1e18);
+      const amountTokensOut2 = new BN(1019).mul(bn1e18);
       const amountTokensIn2 = await cerbySwap.getInputTokensForExactTokens(
         tokenIn2,
         tokenOut2,
@@ -1910,20 +1910,20 @@ contract("Cerby", accounts => {
   // swapExactTokensForTokens ETH tests //
   // ---------------------------------------------------------- //
 
-  it.only("swapExactTokensForTokens: swap 1021 ETH --> cerUSD; received cerUSD is correct", async () => {
+  it("swapExactTokensForTokens: swap 1021e12 ETH --> cerUSD; received cerUSD is correct", async () => {
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
 
-    const beforeCerbyPool = await cerbySwap.getPoolByToken(
-      TestCerbyToken.address,
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
     );
 
     {
       const tokenIn = '0x14769F96e57B80c66837701DE0B43686Fb4632De';
       const tokenOut = TestCerUsdToken.address;
-      const amountTokensIn = new BN(1021).mul(bn1e18);
+      const amountTokensIn = new BN((1021e12).toString());
       const amountTokensOut = await cerbySwap.getOutputExactTokensForTokens(
         tokenIn,
         tokenOut,
@@ -1940,30 +1940,30 @@ contract("Cerby", accounts => {
         minAmountTokensOut,
         expireTimestamp,
         transferTo,
-        { value: new BN(1e16)}
+        { value: amountTokensIn }
       );
 
-      const afterCerbyPool = await cerbySwap.getPoolByToken(
-        TestCerbyToken.address,
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
       );
 
       // check pool increased by amountTokensIn
       assert.deepEqual(
-        beforeCerbyPool.balanceToken.add(amountTokensIn).toString(),
-        afterCerbyPool.balanceToken.toString(),
+        beforeEthPool.balanceToken.add(amountTokensIn).toString(),
+        afterEthPool.balanceToken.toString(),
       );
 
       assert.deepEqual(
-        beforeCerbyPool.balanceCerUsd.sub(amountTokensOut).toString(),
-        afterCerbyPool.balanceCerUsd.toString(),
+        beforeEthPool.balanceCerUsd.sub(amountTokensOut).toString(),
+        afterEthPool.balanceCerUsd.toString(),
       );
 
       // check K must be increased
       assert.isTrue(
-        beforeCerbyPool.balanceCerUsd.mul(beforeCerbyPool.balanceToken).lte(afterCerbyPool.balanceCerUsd.mul(afterCerbyPool.balanceToken))
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
       );
     }
-  });
+  }); 
 
 
   it("swapExactTokensForTokens: swap 1022 cerUSD --> ETH; received ETH is correct", async () => {
@@ -1972,8 +1972,8 @@ contract("Cerby", accounts => {
 
     const cerbySwap = await CerbySwapV1.deployed();
 
-    const beforeCerbyPool = await cerbySwap.getPoolByToken(
-      TestCerbyToken.address,
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
     );
 
     {
@@ -1998,24 +1998,24 @@ contract("Cerby", accounts => {
         transferTo,
       );
 
-      const afterCerbyPool = await cerbySwap.getPoolByToken(
-        TestCerbyToken.address,
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
       );
 
       // check pool increased by amountTokensIn
       assert.deepEqual(
-        beforeCerbyPool.balanceCerUsd.add(amountTokensIn).toString(),
-        afterCerbyPool.balanceCerUsd.toString(),
+        beforeEthPool.balanceCerUsd.add(amountTokensIn).toString(),
+        afterEthPool.balanceCerUsd.toString(),
       );
 
       assert.deepEqual(
-        beforeCerbyPool.balanceToken.sub(amountTokensOut).toString(),
-        afterCerbyPool.balanceToken.toString(),
+        beforeEthPool.balanceToken.sub(amountTokensOut).toString(),
+        afterEthPool.balanceToken.toString(),
       );
 
       // check K must be increased
       assert.isTrue(
-        beforeCerbyPool.balanceCerUsd.mul(beforeCerbyPool.balanceToken).lte(afterCerbyPool.balanceCerUsd.mul(afterCerbyPool.balanceToken))
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
       );
     }
   });
@@ -2026,9 +2026,9 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
-
-    const beforeCerbyPool = await cerbySwap.getPoolByToken(
-      TestCerbyToken.address,
+    
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
     );
 
     {
@@ -2077,10 +2077,11 @@ contract("Cerby", accounts => {
         minAmountTokensOut2,
         expireTimestamp2,
         transferTo2,
+        { value: amountTokensIn2 }
       );
 
-      const afterCerbyPool = await cerbySwap.getPoolByToken(
-        TestCerbyToken.address,
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
       );
 
       // check sent amount must be larger than received
@@ -2090,33 +2091,33 @@ contract("Cerby", accounts => {
 
       // check intermediate token balance must not change
       assert.deepEqual(
-        beforeCerbyPool.balanceToken.toString(),
-        afterCerbyPool.balanceToken.toString(),
+        beforeEthPool.balanceToken.toString(),
+        afterEthPool.balanceToken.toString(),
       );
 
       // check K must be increased
       assert.isTrue(
-        beforeCerbyPool.balanceCerUsd.mul(beforeCerbyPool.balanceToken).lte(afterCerbyPool.balanceCerUsd.mul(afterCerbyPool.balanceToken))
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
       );
     }
   });
 
 
-  it("swapExactTokensForTokens: swap 1024 ETH --> cerUSD --> ETH; sent ETH >= received ETH", async () => {
+  it("swapExactTokensForTokens: swap 1024e12 ETH --> cerUSD --> ETH; sent ETH >= received ETH", async () => {
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
 
-    const beforeCerbyPool = await cerbySwap.getPoolByToken(
-      TestCerbyToken.address,
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
     );
 
     {
       // ETH --> cerUSD
       const tokenIn1 = '0x14769F96e57B80c66837701DE0B43686Fb4632De';
       const tokenOut1 = TestCerUsdToken.address;
-      const amountTokensIn1 = new BN(1024).mul(bn1e18);
+      const amountTokensIn1 = new BN((1024e12).toString());
       const amountTokensOut1 = await cerbySwap.getOutputExactTokensForTokens(
         tokenIn1,
         tokenOut1,
@@ -2133,6 +2134,7 @@ contract("Cerby", accounts => {
         minAmountTokensOut1,
         expireTimestamp1,
         transferTo1,
+        { value: amountTokensIn1 }
       );
 
       // cerUSD --> ETH
@@ -2157,8 +2159,8 @@ contract("Cerby", accounts => {
         transferTo2,
       );
 
-      const afterCerbyPool = await cerbySwap.getPoolByToken(
-        TestCerbyToken.address,
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
       );
       
       // check sent amount larger than received
@@ -2168,32 +2170,32 @@ contract("Cerby", accounts => {
 
       // check intermediate token balance must not change
       assert.deepEqual(
-        beforeCerbyPool.balanceCerUsd.toString(),
-        afterCerbyPool.balanceCerUsd.toString(),
+        beforeEthPool.balanceCerUsd.toString(),
+        afterEthPool.balanceCerUsd.toString(),
       );
 
       // check token balance increased and decreased correctly
       assert.deepEqual(
-        beforeCerbyPool.balanceToken.add(amountTokensIn1).sub(amountTokensOut2).toString(),
-        afterCerbyPool.balanceToken.toString(),
+        beforeEthPool.balanceToken.add(amountTokensIn1).sub(amountTokensOut2).toString(),
+        afterEthPool.balanceToken.toString(),
       );
 
       // check K must be increased
       assert.isTrue(
-        beforeCerbyPool.balanceCerUsd.mul(beforeCerbyPool.balanceToken).lte(afterCerbyPool.balanceCerUsd.mul(afterCerbyPool.balanceToken))
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
       );
     }
   });
 
 
-  it("swapExactTokensForTokens: swap 1025 ETH --> cerUSD --> USDC; received USDC is correct", async () => {
+  it("swapExactTokensForTokens: swap 1025e12 ETH --> cerUSD --> USDC; received USDC is correct", async () => {
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
 
-    const beforeCerbyPool = await cerbySwap.getPoolByToken(
-      TestCerbyToken.address,
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
     );
 
     const beforeUSDCPool = await cerbySwap.getPoolByToken(
@@ -2204,7 +2206,7 @@ contract("Cerby", accounts => {
       // ETH --> cerUSD
       const tokenIn1 = '0x14769F96e57B80c66837701DE0B43686Fb4632De';
       const tokenOut1 = TestCerUsdToken.address;
-      const amountTokensIn1 = new BN(1025).mul(bn1e18);
+      const amountTokensIn1 = new BN((1025e12).toString());
       const amountTokensOut1 = await cerbySwap.getOutputExactTokensForTokens(
         tokenIn1,
         tokenOut1,
@@ -2221,6 +2223,7 @@ contract("Cerby", accounts => {
         minAmountTokensOut1,
         expireTimestamp1,
         transferTo1,
+        { value: amountTokensIn1 }
       );
 
       // cerUSD --> USDC
@@ -2246,8 +2249,8 @@ contract("Cerby", accounts => {
       );
 
 
-      const afterCerbyPool = await cerbySwap.getPoolByToken(
-        TestCerbyToken.address,
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
       );
 
       const afterUSDCPool = await cerbySwap.getPoolByToken(
@@ -2256,20 +2259,20 @@ contract("Cerby", accounts => {
       
       // check sum cerUsd balances in USDC and Cerby pools must be equal
       assert.deepEqual(
-        beforeCerbyPool.balanceCerUsd.add(beforeUSDCPool.balanceCerUsd).toString(),
-        afterCerbyPool.balanceCerUsd.add(afterUSDCPool.balanceCerUsd).toString(),
+        beforeEthPool.balanceCerUsd.add(beforeUSDCPool.balanceCerUsd).toString(),
+        afterEthPool.balanceCerUsd.add(afterUSDCPool.balanceCerUsd).toString(),
       );
       
       // check pool increased by amountTokensIn1
       assert.deepEqual(
-        beforeCerbyPool.balanceToken.add(amountTokensIn1).toString(),
-        afterCerbyPool.balanceToken.toString(),
+        beforeEthPool.balanceToken.add(amountTokensIn1).toString(),
+        afterEthPool.balanceToken.toString(),
       );      
       
       // check pool decreased by amountTokensOut1
       assert.deepEqual(
-        beforeCerbyPool.balanceCerUsd.sub(amountTokensOut1).toString(),
-        afterCerbyPool.balanceCerUsd.toString(),
+        beforeEthPool.balanceCerUsd.sub(amountTokensOut1).toString(),
+        afterEthPool.balanceCerUsd.toString(),
       );
       
       // check pool increased by amountTokensIn2
@@ -2286,7 +2289,7 @@ contract("Cerby", accounts => {
 
       // check K must be increased
       assert.isTrue(
-        beforeCerbyPool.balanceCerUsd.mul(beforeCerbyPool.balanceToken).lte(afterCerbyPool.balanceCerUsd.mul(afterCerbyPool.balanceToken))
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
       );
 
       // check K must be increased
@@ -2297,14 +2300,14 @@ contract("Cerby", accounts => {
   });
 
 
-  it("swapExactTokensForTokens: swap 1026 ETH --> USDC; received USDC is correct", async () => {
+  it("swapExactTokensForTokens: swap 1026e12 ETH --> USDC; received USDC is correct", async () => {
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
 
-    const beforeCerbyPool = await cerbySwap.getPoolByToken(
-      TestCerbyToken.address,
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
     );
 
     const beforeUSDCPool = await cerbySwap.getPoolByToken(
@@ -2315,7 +2318,7 @@ contract("Cerby", accounts => {
       // ETH --> cerUSD
       const tokenIn1 = '0x14769F96e57B80c66837701DE0B43686Fb4632De';
       const tokenOut1 = TestCerUsdToken.address;
-      const amountTokensIn1 = new BN(1026).mul(bn1e18);
+      const amountTokensIn1 = new BN((1026e12).toString());
       const amountTokensOut1 = await cerbySwap.getOutputExactTokensForTokens(
         tokenIn1,
         tokenOut1,
@@ -2332,6 +2335,7 @@ contract("Cerby", accounts => {
         minAmountTokensOut1,
         expireTimestamp1,
         transferTo1,
+        { value: amountTokensIn1 }
       );
 
       // cerUSD --> USDC
@@ -2357,8 +2361,8 @@ contract("Cerby", accounts => {
       );
 
 
-      const afterCerbyPool = await cerbySwap.getPoolByToken(
-        TestCerbyToken.address,
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
       );
 
       const afterUSDCPool = await cerbySwap.getPoolByToken(
@@ -2367,20 +2371,20 @@ contract("Cerby", accounts => {
       
       // check sum cerUsd balances in USDC and Cerby pools must be equal
       assert.deepEqual(
-        beforeCerbyPool.balanceCerUsd.add(beforeUSDCPool.balanceCerUsd).toString(),
-        afterCerbyPool.balanceCerUsd.add(afterUSDCPool.balanceCerUsd).toString(),
+        beforeEthPool.balanceCerUsd.add(beforeUSDCPool.balanceCerUsd).toString(),
+        afterEthPool.balanceCerUsd.add(afterUSDCPool.balanceCerUsd).toString(),
       );
       
       // check pool increased by amountTokensIn1
       assert.deepEqual(
-        beforeCerbyPool.balanceToken.add(amountTokensIn1).toString(),
-        afterCerbyPool.balanceToken.toString(),
+        beforeEthPool.balanceToken.add(amountTokensIn1).toString(),
+        afterEthPool.balanceToken.toString(),
       );      
       
       // check pool decreased by amountTokensOut1
       assert.deepEqual(
-        beforeCerbyPool.balanceCerUsd.sub(amountTokensOut1).toString(),
-        afterCerbyPool.balanceCerUsd.toString(),
+        beforeEthPool.balanceCerUsd.sub(amountTokensOut1).toString(),
+        afterEthPool.balanceCerUsd.toString(),
       );
       
       // check pool increased by amountTokensIn2
@@ -2397,7 +2401,7 @@ contract("Cerby", accounts => {
 
       // check K must be increased
       assert.isTrue(
-        beforeCerbyPool.balanceCerUsd.mul(beforeCerbyPool.balanceToken).lte(afterCerbyPool.balanceCerUsd.mul(afterCerbyPool.balanceToken))
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
       );
 
       // check K must be increased
@@ -2414,8 +2418,8 @@ contract("Cerby", accounts => {
 
     const cerbySwap = await CerbySwapV1.deployed();
 
-    const beforeCerbyPool = await cerbySwap.getPoolByToken(
-      TestCerbyToken.address,
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
     );
 
     const beforeUSDCPool = await cerbySwap.getPoolByToken(
@@ -2467,8 +2471,8 @@ contract("Cerby", accounts => {
         transferTo2,
       );
 
-      const afterCerbyPool = await cerbySwap.getPoolByToken(
-        TestCerbyToken.address,
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
       );
 
       const afterUSDCPool = await cerbySwap.getPoolByToken(
@@ -2477,8 +2481,8 @@ contract("Cerby", accounts => {
       
       // check sum cerUsd balances in USDC and Cerby pools must be equal
       assert.deepEqual(
-        beforeCerbyPool.balanceCerUsd.add(beforeUSDCPool.balanceCerUsd).toString(),
-        afterCerbyPool.balanceCerUsd.add(afterUSDCPool.balanceCerUsd).toString(),
+        beforeEthPool.balanceCerUsd.add(beforeUSDCPool.balanceCerUsd).toString(),
+        afterEthPool.balanceCerUsd.add(afterUSDCPool.balanceCerUsd).toString(),
       );
       
       // check pool increased by amountTokensIn1
@@ -2495,19 +2499,19 @@ contract("Cerby", accounts => {
       
       // check pool increased by amountTokensIn2
       assert.deepEqual(
-        beforeCerbyPool.balanceCerUsd.add(amountTokensIn2).toString(),
-        afterCerbyPool.balanceCerUsd.toString(),
+        beforeEthPool.balanceCerUsd.add(amountTokensIn2).toString(),
+        afterEthPool.balanceCerUsd.toString(),
       );      
       
       // check pool decreased by amountTokensOut2
       assert.deepEqual(
-        beforeCerbyPool.balanceToken.sub(amountTokensOut2).toString(),
-        afterCerbyPool.balanceToken.toString(),
+        beforeEthPool.balanceToken.sub(amountTokensOut2).toString(),
+        afterEthPool.balanceToken.toString(),
       );
 
       // check K must be increased
       assert.isTrue(
-        beforeCerbyPool.balanceCerUsd.mul(beforeCerbyPool.balanceToken).lte(afterCerbyPool.balanceCerUsd.mul(afterCerbyPool.balanceToken))
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
       );
 
       // check K must be increased
@@ -2524,8 +2528,8 @@ contract("Cerby", accounts => {
 
     const cerbySwap = await CerbySwapV1.deployed();
 
-    const beforeCerbyPool = await cerbySwap.getPoolByToken(
-      TestCerbyToken.address,
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
     );
 
     const beforeUSDCPool = await cerbySwap.getPoolByToken(
@@ -2568,8 +2572,8 @@ contract("Cerby", accounts => {
         transferTo2,
       );
 
-      const afterCerbyPool = await cerbySwap.getPoolByToken(
-        TestCerbyToken.address,
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
       );
 
       const afterUSDCPool = await cerbySwap.getPoolByToken(
@@ -2578,8 +2582,8 @@ contract("Cerby", accounts => {
       
       // check sum cerUsd balances in USDC and Cerby pools must be equal
       assert.deepEqual(
-        beforeCerbyPool.balanceCerUsd.add(beforeUSDCPool.balanceCerUsd).toString(),
-        afterCerbyPool.balanceCerUsd.add(afterUSDCPool.balanceCerUsd).toString(),
+        beforeEthPool.balanceCerUsd.add(beforeUSDCPool.balanceCerUsd).toString(),
+        afterEthPool.balanceCerUsd.add(afterUSDCPool.balanceCerUsd).toString(),
       );
       
       // check pool increased by amountTokensIn1
@@ -2596,19 +2600,19 @@ contract("Cerby", accounts => {
       
       // check pool increased by amountTokensIn2
       assert.deepEqual(
-        beforeCerbyPool.balanceCerUsd.add(amountTokensIn2).toString(),
-        afterCerbyPool.balanceCerUsd.toString(),
+        beforeEthPool.balanceCerUsd.add(amountTokensIn2).toString(),
+        afterEthPool.balanceCerUsd.toString(),
       );      
       
       // check pool decreased by amountTokensOut2
       assert.deepEqual(
-        beforeCerbyPool.balanceToken.sub(amountTokensOut2).toString(),
-        afterCerbyPool.balanceToken.toString(),
+        beforeEthPool.balanceToken.sub(amountTokensOut2).toString(),
+        afterEthPool.balanceToken.toString(),
       );
 
       // check K must be increased
       assert.isTrue(
-        beforeCerbyPool.balanceCerUsd.mul(beforeCerbyPool.balanceToken).lte(afterCerbyPool.balanceCerUsd.mul(afterCerbyPool.balanceToken))
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
       );
 
       // check K must be increased
@@ -2619,21 +2623,21 @@ contract("Cerby", accounts => {
   });
 
 
-  it("swapExactTokensForTokens: swap 1029 ETH --> ETH; sent ETH >= received ETH", async () => {
+  it("swapExactTokensForTokens: swap 1029e12 ETH --> ETH; sent ETH >= received ETH", async () => {
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
 
-    const beforeCerbyPool = await cerbySwap.getPoolByToken(
-      TestCerbyToken.address,
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
     );
 
     {
       // ETH --> cerUSD
       const tokenIn1 = '0x14769F96e57B80c66837701DE0B43686Fb4632De';
-      const tokenOut1 = '0x14769F96e57B80c66837701DE0B43686Fb4632De';
-      const amountTokensIn1 = new BN(1029).mul(bn1e18);
+      const tokenOut1 = TestCerUsdToken.address;
+      const amountTokensIn1 = new BN((1029e12).toString());
       const amountTokensOut1 = await cerbySwap.getOutputExactTokensForTokens(
         tokenIn1,
         tokenOut1,
@@ -2646,7 +2650,7 @@ contract("Cerby", accounts => {
 
       // cerUSD --> ETH
       const tokenIn2 = TestCerUsdToken.address;
-      const tokenOut2 = TestCerbyToken.address;
+      const tokenOut2 = '0x14769F96e57B80c66837701DE0B43686Fb4632De';
       const amountTokensIn2 = amountTokensOut1;
       const amountTokensOut2 = await cerbySwap.getOutputExactTokensForTokens(
         tokenIn2,
@@ -2664,10 +2668,11 @@ contract("Cerby", accounts => {
         minAmountTokensOut2,
         expireTimestamp2,
         transferTo2,
+        { value: amountTokensIn1 }
       );
 
-      const afterCerbyPool = await cerbySwap.getPoolByToken(
-        TestCerbyToken.address,
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
       );
 
       // check sent is larger than received
@@ -2677,19 +2682,795 @@ contract("Cerby", accounts => {
 
       // intermediate balance must not change
       assert.deepEqual(
-        beforeCerbyPool.balanceCerUsd.toString(),
-        afterCerbyPool.balanceCerUsd.toString(),
+        beforeEthPool.balanceCerUsd.toString(),
+        afterEthPool.balanceCerUsd.toString(),
       );
 
       // check pool increased and decreased balance correctly
       assert.deepEqual(
-        beforeCerbyPool.balanceToken.add(amountTokensIn1).sub(amountTokensOut2).toString(),
-        afterCerbyPool.balanceToken.toString(),
+        beforeEthPool.balanceToken.add(amountTokensIn1).sub(amountTokensOut2).toString(),
+        afterEthPool.balanceToken.toString(),
       );
 
       // check K must be increased
       assert.isTrue(
-        beforeCerbyPool.balanceCerUsd.mul(beforeCerbyPool.balanceToken).lte(afterCerbyPool.balanceCerUsd.mul(afterCerbyPool.balanceToken))
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
+      );
+    }
+  });
+
+  // ---------------------------------------------------------- //
+  // swapTokensForExactTokens ETH tests //
+  // ---------------------------------------------------------- //
+
+  it("swapTokensForExactTokens: swap ETH --> 1031 cerUSD; received cerUSD is correct", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+    
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+    );
+
+    {
+      const tokenIn = TestCerbyToken.address;
+      const tokenOut = TestCerUsdToken.address;
+      const amountTokensOut = new BN(1031).mul(bn1e18);
+      const amountTokensIn = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn,
+        tokenOut,
+        amountTokensOut,
+      );
+      const maxAmountTokensIn = new BN(1).mul(bn1e18);
+      const expireTimestamp = now() + 86400;
+      const transferTo = firstAccount;
+
+      await cerbySwap.swapTokensForExactTokens(
+        tokenIn,
+        tokenOut,
+        amountTokensOut,
+        maxAmountTokensIn,
+        expireTimestamp,
+        transferTo,
+        { value: maxAmountTokensIn }
+      );
+
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+      );
+
+      // check pool increased by amountTokensIn
+      assert.deepEqual(
+        beforeEthPool.balanceToken.add(amountTokensIn).toString(),
+        afterEthPool.balanceToken.toString(),
+      );
+
+      assert.deepEqual(
+        beforeEthPool.balanceCerUsd.sub(amountTokensOut).toString(),
+        afterEthPool.balanceCerUsd.toString(),
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
+      );
+    }
+  });
+
+
+  it("swapTokensForExactTokens: swap cerUSD --> 1032e12 ETH; received ETH is correct", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+    );
+
+    {
+      const tokenIn = TestCerUsdToken.address;
+      const tokenOut = TestCerbyToken.address;
+      const amountTokensOut = new BN((1032e12).toString());
+      const amountTokensIn = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn,
+        tokenOut,
+        amountTokensOut,
+      );
+      const maxAmountTokensIn = new BN(1000000).mul(bn1e18);
+      const expireTimestamp = now() + 86400;
+      const transferTo = firstAccount;
+
+      await cerbySwap.swapTokensForExactTokens(
+        tokenIn,
+        tokenOut,
+        amountTokensOut,
+        maxAmountTokensIn,
+        expireTimestamp,
+        transferTo,
+      );
+
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+      );
+
+      // check pool increased by amountTokensIn
+      assert.deepEqual(
+        beforeEthPool.balanceCerUsd.add(amountTokensIn).toString(),
+        afterEthPool.balanceCerUsd.toString(),
+      );
+
+      assert.deepEqual(
+        beforeEthPool.balanceToken.sub(amountTokensOut).toString(),
+        afterEthPool.balanceToken.toString(),
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
+      );
+    }
+  });
+
+
+  it("swapTokensForExactTokens: swap cerUSD --> ETH --> 1033 cerUSD; sent cerUSD >= received cerUSD", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+    );
+
+    {
+      const tokenIn1 = TestCerUsdToken.address;
+      const tokenOut1 = TestCerbyToken.address;
+      const tokenIn2 = TestCerbyToken.address;
+      const tokenOut2 = TestCerUsdToken.address;
+      const amountTokensOut2 = new BN(1033).mul(bn1e18);
+      const amountTokensIn2 = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn2,
+        tokenOut2,
+        amountTokensOut2,
+      );
+      const amountTokensOut1 = amountTokensIn2;
+      const amountTokensIn1 = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn1,
+        tokenOut1,
+        amountTokensOut1,
+      );
+
+      const maxAmountTokensIn1 = new BN(1000000).mul(bn1e18);
+      const expireTimestamp1 = now() + 86400;
+      const transferTo1 = firstAccount;
+      const maxAmountTokensIn2 = new BN(1).mul(bn1e18);
+      const expireTimestamp2 = now() + 86400;
+      const transferTo2 = firstAccount;
+
+      // cerUSD --> CERBY
+      await cerbySwap.swapTokensForExactTokens(
+        tokenIn1,
+        tokenOut1,
+        amountTokensOut1,
+        maxAmountTokensIn1,
+        expireTimestamp1,
+        transferTo1,
+      );
+
+      // CERBY --> cerUSD
+      await cerbySwap.swapTokensForExactTokens(
+        tokenIn2,
+        tokenOut2,
+        amountTokensOut2,
+        maxAmountTokensIn2,
+        expireTimestamp2,
+        transferTo2,
+        { value: maxAmountTokensIn2 }
+      );
+
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+      );
+
+      // check sent amount must be larger than received
+      assert.isTrue(
+        amountTokensIn1.gte(amountTokensOut2)
+      );
+
+      // check intermediate token balance must not change
+      // since pool is changing during swaps
+      // it is not correct to do such test
+      // thats why commenting failing assert below
+      /*assert.deepEqual(
+        beforeEthPool.balanceToken.toString(),
+        afterEthPool.balanceToken.toString(),
+      );*/
+
+      // check K must be increased
+      assert.isTrue(
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
+      );
+    }
+  });
+
+
+  it("swapTokensForExactTokens: swap ETH --> cerUSD --> 1034 CERBY; sent ETH >= received ETH", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+    );
+
+    {      
+      const tokenIn1 = TestCerbyToken.address;
+      const tokenOut1 = TestCerUsdToken.address;
+      const tokenIn2 = TestCerUsdToken.address;
+      const tokenOut2 = TestCerbyToken.address;
+      const amountTokensOut2 = new BN(1034).mul(bn1e18);
+      const amountTokensIn2 = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn2,
+        tokenOut2,
+        amountTokensOut2,
+      );
+      const amountTokensOut1 = amountTokensIn2;
+      const amountTokensIn1 = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn1,
+        tokenOut1,
+        amountTokensOut1,
+      );
+      const maxAmountTokensIn1 = new BN(1).mul(bn1e18);
+      const expireTimestamp1 = now() + 86400;
+      const transferTo1 = firstAccount;
+      const maxAmountTokensIn2 = new BN(1000000).mul(bn1e18);
+      const expireTimestamp2 = now() + 86400;
+      const transferTo2 = firstAccount;
+
+      // CERBY --> cerUSD
+      await cerbySwap.swapTokensForExactTokens(
+        tokenIn1,
+        tokenOut1,
+        amountTokensOut1,
+        maxAmountTokensIn1,
+        expireTimestamp1,
+        transferTo1,
+        { value: maxAmountTokensIn1 }
+      );
+
+      // cerUSD --> CERBY
+      await cerbySwap.swapTokensForExactTokens(
+        tokenIn2,
+        tokenOut2,
+        amountTokensOut2,
+        maxAmountTokensIn2,
+        expireTimestamp2,
+        transferTo2,
+      );
+
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+      );
+      
+      // check sent amount larger than received
+      assert.isTrue(
+        amountTokensIn1.gte(amountTokensOut2)
+      );
+
+      // check intermediate token balance must not change
+      // since pool is changing during swaps
+      // it is not correct to do such test
+      // thats why commenting failing assert below
+      /*assert.deepEqual(
+        beforeEthPool.balanceCerUsd.toString(),
+        afterEthPool.balanceCerUsd.toString(),
+      );*/
+
+      // check token balance increased and decreased correctly
+      assert.deepEqual(
+        beforeEthPool.balanceToken.add(amountTokensIn1).sub(amountTokensOut2).toString(),
+        afterEthPool.balanceToken.toString(),
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
+      );
+    }
+  });
+
+
+  it("swapTokensForExactTokens: swap ETH --> cerUSD --> 1035 USDC; received USDC is correct", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+    );
+
+    const beforeUSDCPool = await cerbySwap.getPoolByToken(
+      TestUsdcToken.address,
+    );
+
+    {
+      const tokenIn1 = TestCerbyToken.address;
+      const tokenOut1 = TestCerUsdToken.address;
+      const tokenIn2 = TestCerUsdToken.address;
+      const tokenOut2 = TestUsdcToken.address;
+      const amountTokensOut2 = new BN(1035).mul(bn1e18);
+      const amountTokensIn2 = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn2,
+        tokenOut2,
+        amountTokensOut2,
+      );
+      const amountTokensOut1 = amountTokensIn2;
+      const amountTokensIn1 = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn1,
+        tokenOut1,
+        amountTokensOut1,
+      );
+      const maxAmountTokensIn1 = new BN(1).mul(bn1e18);
+      const expireTimestamp1 = now() + 86400;
+      const transferTo1 = firstAccount;
+      const maxAmountTokensIn2 = new BN(1000000).mul(bn1e18);
+      const expireTimestamp2 = now() + 86400;
+      const transferTo2 = firstAccount;
+
+      // CERBY --> cerUSD
+      await cerbySwap.swapTokensForExactTokens(
+        tokenIn1,
+        tokenOut1,
+        amountTokensOut1,
+        maxAmountTokensIn1,
+        expireTimestamp1,
+        transferTo1,
+        { value: maxAmountTokensIn1 }
+      );
+
+      // cerUSD --> USDC
+      await cerbySwap.swapTokensForExactTokens(
+        tokenIn2,
+        tokenOut2,
+        amountTokensOut2,
+        maxAmountTokensIn2,
+        expireTimestamp2,
+        transferTo2,
+      );
+
+
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+      );
+
+      const afterUSDCPool = await cerbySwap.getPoolByToken(
+        TestUsdcToken.address,
+      );
+      
+      // check sum cerUsd balances in USDC and Cerby pools must be equal
+      assert.deepEqual(
+        beforeEthPool.balanceCerUsd.add(beforeUSDCPool.balanceCerUsd).toString(),
+        afterEthPool.balanceCerUsd.add(afterUSDCPool.balanceCerUsd).toString(),
+      );
+      
+      // check pool increased by amountTokensIn1
+      assert.deepEqual(
+        beforeEthPool.balanceToken.add(amountTokensIn1).toString(),
+        afterEthPool.balanceToken.toString(),
+      );      
+      
+      // check pool decreased by amountTokensOut1
+      assert.deepEqual(
+        beforeEthPool.balanceCerUsd.sub(amountTokensOut1).toString(),
+        afterEthPool.balanceCerUsd.toString(),
+      );
+      
+      // check pool increased by amountTokensIn2
+      assert.deepEqual(
+        beforeUSDCPool.balanceCerUsd.add(amountTokensIn2).toString(),
+        afterUSDCPool.balanceCerUsd.toString(),
+      );      
+      
+      // check pool decreased by amountTokensOut2
+      assert.deepEqual(
+        beforeUSDCPool.balanceToken.sub(amountTokensOut2).toString(),
+        afterUSDCPool.balanceToken.toString(),
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeUSDCPool.balanceCerUsd.mul(beforeUSDCPool.balanceToken).lte(afterUSDCPool.balanceCerUsd.mul(afterUSDCPool.balanceToken))
+      );
+    }
+  });
+
+
+  it("swapTokensForExactTokens: swap ETH --> 1036 USDC; received USDC is correct", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+    );
+
+    const beforeUSDCPool = await cerbySwap.getPoolByToken(
+      TestUsdcToken.address,
+    );
+
+    {
+      const tokenIn1 = TestCerbyToken.address;
+      const tokenOut1 = TestCerUsdToken.address;
+      const tokenIn2 = TestCerUsdToken.address;
+      const tokenOut2 = TestUsdcToken.address;
+      const amountTokensOut2 = new BN(1036).mul(bn1e18);
+      const amountTokensIn2 = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn2,
+        tokenOut2,
+        amountTokensOut2,
+      );
+      const amountTokensOut1 = amountTokensIn2;
+      const amountTokensIn1 = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn1,
+        tokenOut1,
+        amountTokensOut1,
+      );
+      const maxAmountTokensIn1 = new BN(1).mul(bn1e18);
+      const expireTimestamp1 = now() + 86400;
+      const transferTo1 = firstAccount;
+      const maxAmountTokensIn2 = new BN(1000000).mul(bn1e18);
+      const expireTimestamp2 = now() + 86400;
+      const transferTo2 = firstAccount;
+
+      // CERBY --> USDC
+      await cerbySwap.swapTokensForExactTokens(
+        tokenIn1,
+        tokenOut2,
+        amountTokensOut2,
+        maxAmountTokensIn2,
+        expireTimestamp2,
+        transferTo2,
+        { value: maxAmountTokensIn1 }
+      );
+
+
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+      );
+
+      const afterUSDCPool = await cerbySwap.getPoolByToken(
+        TestUsdcToken.address,
+      );
+      
+      // check sum cerUsd balances in USDC and Cerby pools must be equal
+      assert.deepEqual(
+        beforeEthPool.balanceCerUsd.add(beforeUSDCPool.balanceCerUsd).toString(),
+        afterEthPool.balanceCerUsd.add(afterUSDCPool.balanceCerUsd).toString(),
+      );
+      
+      // check pool increased by amountTokensIn1
+      assert.deepEqual(
+        beforeEthPool.balanceToken.add(amountTokensIn1).toString(),
+        afterEthPool.balanceToken.toString(),
+      );      
+      
+      // check pool decreased by amountTokensOut1
+      assert.deepEqual(
+        beforeEthPool.balanceCerUsd.sub(amountTokensOut1).toString(),
+        afterEthPool.balanceCerUsd.toString(),
+      );
+      
+      // check pool increased by amountTokensIn2
+      assert.deepEqual(
+        beforeUSDCPool.balanceCerUsd.add(amountTokensIn2).toString(),
+        afterUSDCPool.balanceCerUsd.toString(),
+      );      
+      
+      // check pool decreased by amountTokensOut2
+      assert.deepEqual(
+        beforeUSDCPool.balanceToken.sub(amountTokensOut2).toString(),
+        afterUSDCPool.balanceToken.toString(),
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeUSDCPool.balanceCerUsd.mul(beforeUSDCPool.balanceToken).lte(afterUSDCPool.balanceCerUsd.mul(afterUSDCPool.balanceToken))
+      );
+    }
+  });
+
+
+  it("swapTokensForExactTokens: swap USDC --> cerUSD --> 1037e12 ETH; received ETH is correct", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+    );
+
+    const beforeUSDCPool = await cerbySwap.getPoolByToken(
+      TestUsdcToken.address,
+    );
+
+    {
+      const tokenIn1 = TestUsdcToken.address;
+      const tokenOut1 = TestCerUsdToken.address;
+      const tokenIn2 = TestCerUsdToken.address;
+      const tokenOut2 = TestCerbyToken.address;
+      const amountTokensOut2 = new BN((1037e12).toString());
+      const amountTokensIn2 = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn2,
+        tokenOut2,
+        amountTokensOut2,
+      );
+      const amountTokensOut1 = amountTokensIn2;
+      const amountTokensIn1 = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn1,
+        tokenOut1,
+        amountTokensOut1,
+      );
+      const maxAmountTokensIn1 = new BN(1000000).mul(bn1e18);
+      const expireTimestamp1 = now() + 86400;
+      const transferTo1 = firstAccount;
+      const maxAmountTokensIn2 = new BN(1000000).mul(bn1e18);
+      const expireTimestamp2 = now() + 86400;
+      const transferTo2 = firstAccount;
+
+      // USDC --> cerUSD
+      await cerbySwap.swapTokensForExactTokens(
+        tokenIn1,
+        tokenOut1,
+        amountTokensOut1,
+        maxAmountTokensIn1,
+        expireTimestamp1,
+        transferTo1,
+      );
+
+      // cerUSD --> CERBY
+      await cerbySwap.swapTokensForExactTokens(
+        tokenIn2,
+        tokenOut2,
+        amountTokensOut2,
+        maxAmountTokensIn2,
+        expireTimestamp2,
+        transferTo2,
+      );
+
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+      );
+
+      const afterUSDCPool = await cerbySwap.getPoolByToken(
+        TestUsdcToken.address,
+      );
+      
+      // check sum cerUsd balances in USDC and Cerby pools must be equal
+      assert.deepEqual(
+        beforeEthPool.balanceCerUsd.add(beforeUSDCPool.balanceCerUsd).toString(),
+        afterEthPool.balanceCerUsd.add(afterUSDCPool.balanceCerUsd).toString(),
+      );
+      
+      // check pool increased by amountTokensIn1
+      assert.deepEqual(
+        beforeUSDCPool.balanceToken.add(amountTokensIn1).toString(),
+        afterUSDCPool.balanceToken.toString(),
+      );      
+      
+      // check pool decreased by amountTokensOut1
+      assert.deepEqual(
+        beforeUSDCPool.balanceCerUsd.sub(amountTokensOut1).toString(),
+        afterUSDCPool.balanceCerUsd.toString(),
+      );
+      
+      // check pool increased by amountTokensIn2
+      assert.deepEqual(
+        beforeEthPool.balanceCerUsd.add(amountTokensIn2).toString(),
+        afterEthPool.balanceCerUsd.toString(),
+      );      
+      
+      // check pool decreased by amountTokensOut2
+      assert.deepEqual(
+        beforeEthPool.balanceToken.sub(amountTokensOut2).toString(),
+        afterEthPool.balanceToken.toString(),
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeUSDCPool.balanceCerUsd.mul(beforeUSDCPool.balanceToken).lte(afterUSDCPool.balanceCerUsd.mul(afterUSDCPool.balanceToken))
+      );
+    }
+  });
+
+
+  it("swapTokensForExactTokens: swap USDC --> 1038e12 ETH; received ETH is correct", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+    );
+
+    const beforeUSDCPool = await cerbySwap.getPoolByToken(
+      TestUsdcToken.address,
+    );
+
+    {
+      const tokenIn1 = TestUsdcToken.address;
+      const tokenOut1 = TestCerUsdToken.address;
+      const tokenIn2 = TestCerUsdToken.address;
+      const tokenOut2 = TestCerbyToken.address;
+      const amountTokensOut2 = new BN((1038e12).toString());
+      const amountTokensIn2 = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn2,
+        tokenOut2,
+        amountTokensOut2,
+      );
+      const amountTokensOut1 = amountTokensIn2;
+      const amountTokensIn1 = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn1,
+        tokenOut1,
+        amountTokensOut1,
+      );
+      const maxAmountTokensIn1 = new BN(1000000).mul(bn1e18);
+      const expireTimestamp1 = now() + 86400;
+      const transferTo1 = firstAccount;
+      const maxAmountTokensIn2 = new BN(1000000).mul(bn1e18);
+      const expireTimestamp2 = now() + 86400;
+      const transferTo2 = firstAccount;
+
+      // USDC --> CERBY
+      await cerbySwap.swapTokensForExactTokens(
+        tokenIn1,
+        tokenOut2,
+        amountTokensOut2,
+        maxAmountTokensIn2,
+        expireTimestamp2,
+        transferTo2,
+      );
+
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+      );
+
+      const afterUSDCPool = await cerbySwap.getPoolByToken(
+        TestUsdcToken.address,
+      );
+      
+      // check sum cerUsd balances in USDC and Cerby pools must be equal
+      assert.deepEqual(
+        beforeEthPool.balanceCerUsd.add(beforeUSDCPool.balanceCerUsd).toString(),
+        afterEthPool.balanceCerUsd.add(afterUSDCPool.balanceCerUsd).toString(),
+      );
+      
+      // check pool increased by amountTokensIn1
+      assert.deepEqual(
+        beforeUSDCPool.balanceToken.add(amountTokensIn1).toString(),
+        afterUSDCPool.balanceToken.toString(),
+      );      
+      
+      // check pool decreased by amountTokensOut1
+      assert.deepEqual(
+        beforeUSDCPool.balanceCerUsd.sub(amountTokensOut1).toString(),
+        afterUSDCPool.balanceCerUsd.toString(),
+      );
+      
+      // check pool increased by amountTokensIn2
+      assert.deepEqual(
+        beforeEthPool.balanceCerUsd.add(amountTokensIn2).toString(),
+        afterEthPool.balanceCerUsd.toString(),
+      );      
+      
+      // check pool decreased by amountTokensOut2
+      assert.deepEqual(
+        beforeEthPool.balanceToken.sub(amountTokensOut2).toString(),
+        afterEthPool.balanceToken.toString(),
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeUSDCPool.balanceCerUsd.mul(beforeUSDCPool.balanceToken).lte(afterUSDCPool.balanceCerUsd.mul(afterUSDCPool.balanceToken))
+      );
+    }
+  });
+
+
+  it("swapTokensForExactTokens: swap ETH --> 1039e12 ETH; sent ETH >= received ETH", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+    );
+
+    {
+      const tokenIn1 = TestCerbyToken.address;
+      const tokenOut1 = TestCerUsdToken.address;
+      const tokenIn2 = TestCerUsdToken.address;
+      const tokenOut2 = TestCerbyToken.address;
+      const amountTokensOut2 = new BN((1039e12).toString());
+      const amountTokensIn2 = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn2,
+        tokenOut2,
+        amountTokensOut2,
+      );
+      const amountTokensOut1 = amountTokensIn2;
+      const amountTokensIn1 = await cerbySwap.getInputTokensForExactTokens(
+        tokenIn1,
+        tokenOut1,
+        amountTokensOut1,
+      );
+      const maxAmountTokensIn1 = new BN(1).mul(bn1e18);
+      const expireTimestamp1 = now() + 86400;
+      const transferTo1 = firstAccount;
+      const maxAmountTokensIn2 = new BN(1000000).mul(bn1e18);
+      const expireTimestamp2 = now() + 86400;
+      const transferTo2 = firstAccount;
+
+      // CERBY --> CERBY
+      await cerbySwap.swapTokensForExactTokens(
+        tokenIn1,
+        tokenOut2,
+        amountTokensOut2,
+        maxAmountTokensIn2,
+        expireTimestamp2,
+        transferTo2,
+        { value: maxAmountTokensIn1 }
+      );
+
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+      );
+
+      // check sent is larger than received
+      assert.isTrue(
+        amountTokensIn1.gte(amountTokensOut2)
+      );
+
+      // intermediate balance must not change
+      assert.deepEqual(
+        beforeEthPool.balanceCerUsd.toString(),
+        afterEthPool.balanceCerUsd.toString(),
+      );
+
+      // check pool increased and decreased balance correctly
+      assert.deepEqual(
+        beforeEthPool.balanceToken.add(amountTokensIn1).sub(amountTokensOut2).toString(),
+        afterEthPool.balanceToken.toString(),
+      );
+
+      // check K must be increased
+      assert.isTrue(
+        beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
       );
     }
   });
