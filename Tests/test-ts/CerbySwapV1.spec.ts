@@ -1909,45 +1909,6 @@ contract("Cerby", accounts => {
   // swapExactTokensForTokens ETH tests //
   // ---------------------------------------------------------- //
 
-  it("swapExactTokensForTokens: swap 1020 CERBY --> cerUSD; provided msg.value must be refunded", async () => {
-    const accounts = await web3.eth.getAccounts();
-    const firstAccount = accounts[0];
-
-    const cerbySwap = await CerbySwapV1.deployed();
-
-    const beforeEthPool = await cerbySwap.getPoolByToken(
-      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
-    );
-    
-    {
-      const tokenIn1 = TestCerbyToken.address;
-      const tokenOut1 = TestUsdcToken.address;
-      const minAmountTokensOut1 = new BN(1000000000).mul(bn1e18);
-      const amountTokensIn1 = new BN(1020).mul(bn1e18);
-      const expireTimestamp1 = now() + 86400;
-      const transferTo1 = firstAccount;
-      cerbySwap.swapExactTokensForTokens(
-        tokenIn1,
-        tokenOut1,
-        amountTokensIn1,
-        minAmountTokensOut1,
-        expireTimestamp1,
-        transferTo1,
-        { value: new BN((3e18).toString()) }
-      );
-
-      const afterEthPool = await cerbySwap.getPoolByToken(
-        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
-      );
-
-      // check eth pool balances remained the same
-      assert.deepEqual(
-        beforeEthPool.balanceToken.toString(),
-        afterEthPool.balanceToken.toString(),
-      );
-    }
-  });
-
   it("swapExactTokensForTokens: swap 1021e10 ETH --> cerUSD; received cerUSD is correct", async () => {
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
@@ -2737,11 +2698,7 @@ contract("Cerby", accounts => {
     }
   });
 
-  // ---------------------------------------------------------- //
-  // swapTokensForExactTokens ETH tests //
-  // ---------------------------------------------------------- //
-
-  it("swapTokensForExactTokens: swap CERBY --> 1030 cerUSD; provided msg.value must be refunded", async () => {
+  it("swapExactTokensForTokens: swap 1040 CERBY --> cerUSD; if provided msg.value must be reverted", async () => {
     const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
@@ -2752,20 +2709,24 @@ contract("Cerby", accounts => {
     );
     
     {
+      const MSG_VALUE_PROVIDED_MUST_BE_ZERO_G = "G"; 
       const tokenIn1 = TestCerbyToken.address;
       const tokenOut1 = TestUsdcToken.address;
-      const amountTokensOut1 = new BN(1030).mul(bn1e18);
-      const maxAmountTokensIn1 = new BN(1000000).mul(bn1e18);
+      const minAmountTokensOut1 = new BN(0);
+      const amountTokensIn1 = new BN(1040).mul(bn1e18);
       const expireTimestamp1 = now() + 86400;
       const transferTo1 = firstAccount;
-      cerbySwap.swapTokensForExactTokens(
-        tokenIn1,
-        tokenOut1,
-        amountTokensOut1,
-        maxAmountTokensIn1,
-        expireTimestamp1,
-        transferTo1,
-        { value: new BN((3e18).toString()) }
+      await truffleAssert.reverts(
+        cerbySwap.swapExactTokensForTokens(
+          tokenIn1,
+          tokenOut1,
+          amountTokensIn1,
+          minAmountTokensOut1,
+          expireTimestamp1,
+          transferTo1,
+          { value: new BN((3e18).toString()) }
+        ),
+        MSG_VALUE_PROVIDED_MUST_BE_ZERO_G
       );
 
       const afterEthPool = await cerbySwap.getPoolByToken(
@@ -2779,6 +2740,10 @@ contract("Cerby", accounts => {
       );
     }
   });
+
+  // ---------------------------------------------------------- //
+  // swapTokensForExactTokens ETH tests //
+  // ---------------------------------------------------------- //
 
   it("swapTokensForExactTokens: swap ETH --> 1031e10 cerUSD; received cerUSD is correct", async () => {
     const accounts = await web3.eth.getAccounts();
@@ -3548,6 +3513,49 @@ contract("Cerby", accounts => {
       // check K must be increased
       assert.isTrue(
         beforeEthPool.balanceCerUsd.mul(beforeEthPool.balanceToken).lte(afterEthPool.balanceCerUsd.mul(afterEthPool.balanceToken))
+      );
+    }
+  });
+
+  it("swapTokensForExactTokens: swap CERBY --> 1040 cerUSD; if provided msg.value must be reverted", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbySwap = await CerbySwapV1.deployed();
+
+    const beforeEthPool = await cerbySwap.getPoolByToken(
+      '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+    );
+    
+    {
+      const MSG_VALUE_PROVIDED_MUST_BE_ZERO_G = "G"; 
+      const tokenIn1 = TestCerbyToken.address;
+      const tokenOut1 = TestUsdcToken.address;
+      const amountTokensOut1 = new BN(1040).mul(bn1e18);
+      const maxAmountTokensIn1 = new BN(1000000).mul(bn1e18);
+      const expireTimestamp1 = now() + 86400;
+      const transferTo1 = firstAccount;
+      await truffleAssert.reverts(
+        cerbySwap.swapTokensForExactTokens(
+          tokenIn1,
+          tokenOut1,
+          amountTokensOut1,
+          maxAmountTokensIn1,
+          expireTimestamp1,
+          transferTo1,
+          { value: new BN((3e18).toString()) }
+        ),
+        MSG_VALUE_PROVIDED_MUST_BE_ZERO_G
+      );
+
+      const afterEthPool = await cerbySwap.getPoolByToken(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+      );
+
+      // check eth pool balances remained the same
+      assert.deepEqual(
+        beforeEthPool.balanceToken.toString(),
+        afterEthPool.balanceToken.toString(),
       );
     }
   });
