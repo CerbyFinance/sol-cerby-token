@@ -3580,7 +3580,7 @@ contract("Cerby", accounts => {
       const expireTimestamp = now() + 86400;
       const transferTo = firstAccount;
       
-      cerbySwap.addTokenLiquidity(
+      await cerbySwap.addTokenLiquidity(
         tokenIn,
         amountTokensIn,
         expireTimestamp,
@@ -3616,7 +3616,7 @@ contract("Cerby", accounts => {
       const expireTimestamp = now() + 86400;
       const transferTo = firstAccount;
       
-      cerbySwap.addTokenLiquidity(
+      await cerbySwap.addTokenLiquidity(
         tokenIn,
         amountTokensIn,
         expireTimestamp,
