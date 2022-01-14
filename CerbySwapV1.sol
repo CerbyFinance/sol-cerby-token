@@ -18,13 +18,13 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         string TOKEN_DOES_NOT_EXIST_C;
         string TRANSACTION_IS_EXPIRED_D;
         string FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_E;
-        string AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_F;
+        string AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F;
         string MSG_VALUE_PROVIDED_MUST_BE_ZERO_G;
         string OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_H;
         string OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_i;
         string INPUT_CERUSD_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_J;
         string INPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_K;
-        string SWAP_CERUSD_FOR_CERUSD_IS_FORBIDDEN_L;
+        string SWAP_TOKEN_TO_SAME_TOKEN_IS_FORBIDDEN_L;
         string ONE_OF_TOKENIN_OR_TOKEN_OUT_IS_WRONG_M;
         string POOL_POS_DOES_NOT_EXIST_N;
         string AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O;
@@ -33,6 +33,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         string SAFE_TRANSFER_FAILED_R;
         string SAFE_TRANSFER_FROM_FAILED_S;
         string MSG_VALUE_PROVIDED_MUST_BE_LARGER_THAN_AMOUNT_IN_T;
+        string AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_U;
     }
 
     ErrorsList errorsList;
@@ -86,7 +87,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         errorsList = 
             ErrorsList(
                 "A", "B", "C", "D", "E", "F", "G", "H", "i", "J", "K", "L", "M", "N", 
-                "O", "P", "Q", "R", "S", "T"
+                "O", "P", "Q", "R", "S", "T", "U"
             );
 
         feeToBeneficiary = msg.sender;
@@ -242,7 +243,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         amountTokensIn = _getTokenBalance(token);
         require(
             amountTokensIn > 0,
-            errorsList.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_F
+            errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F
         );
 
         // create new pool record
@@ -298,7 +299,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         amountTokensIn = newTokenBalance - pools[poolPos].balanceToken;
         require(
             amountTokensIn > 0,
-            errorsList.AMOUNT_OF_TOKENS_IN_MUST_BE_LARGER_THAN_ZERO_F
+            errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F
         );
 
         // finding out if for some reason we've received cerUSD tokens as well
@@ -346,7 +347,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                     uint(pools[poolPos].balanceToken);
             require(
                 mintCerUsdAmount > 0,
-                errorsList.AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O
+                errorsList.AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_U
             );
 
             // minting cerUSD according to current pool
@@ -488,7 +489,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     {
         require(
             amountTokensIn > 0,
-            errorsList.AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O
+            errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F
         );
     
         address fromAddress = msg.sender;
@@ -532,6 +533,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 0,
                 transferTo
             );
+        // TODO: uncomment below
         } else if (tokenIn != cerUsdToken && tokenIn != cerUsdToken /*&& tokenIn != tokenOut*/) {
 
             // getting amountTokensOut=
@@ -562,7 +564,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 transferTo
             );
         } else {
-            revert(errorsList.SWAP_CERUSD_FOR_CERUSD_IS_FORBIDDEN_L);
+            revert(errorsList.SWAP_TOKEN_TO_SAME_TOKEN_IS_FORBIDDEN_L);
         }
         
 
@@ -596,7 +598,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             );
             require(
                 amountTokensIn > 1,
-                errorsList.AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O
+                errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F
             );
 
             // actually transferring the tokens to the pool
@@ -619,7 +621,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             );
             require(
                 amountTokensIn > 1,
-                errorsList.AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O
+                errorsList.AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_U
             );
 
             // actually transferring the tokens to the pool
@@ -632,13 +634,14 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 0,
                 transferTo
             );
+        // TODO: uncomment below
         } else if (tokenIn != cerUsdToken && tokenOut != cerUsdToken /*&& tokenIn != tokenOut*/) {
 
             // getting amountTokensOut
             uint amountCerUsdOut = getInputCerUsdForExactTokens(tokenOut, amountTokensOut);
             require(
                 amountCerUsdOut > 1,
-                errorsList.AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O
+                errorsList.AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_U
             );
 
             amountTokensIn = getInputTokensForExactCerUsd(tokenIn, amountCerUsdOut);
@@ -648,7 +651,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             );
             require(
                 amountTokensIn > 1,
-                errorsList.AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O
+                errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F
             );
 
             // actually transferring the tokens to the pool
@@ -670,7 +673,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 transferTo
             );
         } else {
-            revert(errorsList.SWAP_CERUSD_FOR_CERUSD_IS_FORBIDDEN_L);
+            revert(errorsList.SWAP_TOKEN_TO_SAME_TOKEN_IS_FORBIDDEN_L);
         }
         return (amountTokensIn, amountTokensOut);
     }
