@@ -23,6 +23,14 @@ abstract contract CerbyCronJobsExecution {
         _;
     }
 
+    modifier executeCronJobs(address addr)
+    {
+        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
+            getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
+        );
+        iCerbyBotDetection.executeCronJobs();
+        _;
+    }
 
     function getUtilsContractAtPos(uint pos)
         public
@@ -45,7 +53,7 @@ abstract contract CerbyCronJobsExecution {
         _;
     }
     
-    modifier checkTransaction(address tokenAddr, address addr)
+    modifier checkTransactionAndExecuteCron(address tokenAddr, address addr)
     {
         ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
             ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
@@ -54,6 +62,7 @@ abstract contract CerbyCronJobsExecution {
             !iCerbyBotDetection.checkTransaction(tokenAddr, addr),
             "CCJE: Transactions are temporarily disabled"
         );
+        iCerbyBotDetection.executeCronJobs();
         _;
     }
 }
