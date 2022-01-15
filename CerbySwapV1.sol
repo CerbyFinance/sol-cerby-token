@@ -18,7 +18,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         string TOKEN_DOES_NOT_EXIST_C;
         string TRANSACTION_IS_EXPIRED_D;
         string FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_E;
-        string AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F;
+        string AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ONE_F;
         string MSG_VALUE_PROVIDED_MUST_BE_ZERO_G;
         string OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_H;
         string OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_i;
@@ -27,13 +27,14 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         string SWAP_TOKEN_TO_SAME_TOKEN_IS_FORBIDDEN_L;
         string ONE_OF_TOKENIN_OR_TOKEN_OUT_IS_WRONG_M;
         string POOL_POS_DOES_NOT_EXIST_N;
-        string AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O;
+        string AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ONE_O;
         string INVARIANT_K_VALUE_MUST_BE_INCREASED_ON_ANY_TRADE_P;
         string SAFE_TRANSFER_NATIVE_FAILED_Q;
         string SAFE_TRANSFER_FAILED_R;
         string SAFE_TRANSFER_FROM_FAILED_S;
         string MSG_VALUE_PROVIDED_MUST_BE_LARGER_THAN_AMOUNT_IN_T;
-        string AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_U;
+        string AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ONE_U;
+        string RESERVES_IN_AND_OUT_MUST_BE_LARGER_THAN_1000_V;
     }
 
     ErrorsList errorsList;
@@ -87,7 +88,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         errorsList = 
             ErrorsList(
                 "A", "B", "C", "D", "E", "F", "G", "H", "i", "J", "K", "L", "M", "N", 
-                "O", "P", "Q", "R", "S", "T", "U"
+                "O", "P", "Q", "R", "S", "T", "U", "V"
             );
 
         feeToBeneficiary = msg.sender;
@@ -243,7 +244,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         amountTokensIn = _getTokenBalance(token);
         require(
             amountTokensIn > 0,
-            errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F
+            errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ONE_F
         );
 
         // create new pool record
@@ -299,7 +300,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         amountTokensIn = newTokenBalance - pools[poolPos].balanceToken;
         require(
             amountTokensIn > 0,
-            errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F
+            errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ONE_F
         );
 
         // finding out if for some reason we've received cerUSD tokens as well
@@ -347,7 +348,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                     uint(pools[poolPos].balanceToken);
             require(
                 mintCerUsdAmount > 0,
-                errorsList.AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_U
+                errorsList.AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ONE_U
             );
 
             // minting cerUSD according to current pool
@@ -487,9 +488,11 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         // checkForBots(msg.sender) // TODO: enable on production
         returns (uint, uint)
     {
+
+        // amountTokensIn must be larger than 1 to avoid rounding errors
         require(
-            amountTokensIn > 0,
-            errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F
+            amountTokensIn > 1,
+            errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ONE_F
         );
     
         address fromAddress = msg.sender;
@@ -498,6 +501,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
             // getting amountTokensOut
             amountTokensOut = getOutputExactTokensForCerUsd(tokenIn, amountTokensIn);
+
+            // checking slippage
             require(
                 amountTokensOut >= minAmountTokensOut,
                 errorsList.OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_H
@@ -517,6 +522,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
             // getting amountTokensOut
             amountTokensOut = getOutputExactCerUsdForTokens(tokenOut, amountTokensIn);
+
+            // checking slippage
             require(
                 amountTokensOut >= minAmountTokensOut,
                 errorsList.OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_i
@@ -540,6 +547,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             uint amountCerUsdOut = getOutputExactTokensForCerUsd(tokenIn, amountTokensIn);
 
             amountTokensOut = getOutputExactCerUsdForTokens(tokenOut, amountCerUsdOut);
+
+            // checking slippage
             require(
                 amountTokensOut >= minAmountTokensOut,
                 errorsList.OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_i
@@ -592,13 +601,17 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
             // getting amountTokensOut
             amountTokensIn = getInputTokensForExactCerUsd(tokenIn, amountTokensOut);
+
+            // checking slippage
             require(
                 amountTokensIn <= maxAmountTokensIn,
                 errorsList.INPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_K
             );
+
+            // amountTokensIn must be larger than 1 to avoid rounding errors
             require(
                 amountTokensIn > 1,
-                errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F
+                errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ONE_F
             );
 
             // actually transferring the tokens to the pool
@@ -615,13 +628,17 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
             // getting amountTokensOut
             amountTokensIn = getInputCerUsdForExactTokens(tokenOut, amountTokensOut);
+
+            // checking slippage
             require(
                 amountTokensIn <= maxAmountTokensIn,
                 errorsList.INPUT_CERUSD_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_J
             );
+
+            // amountTokensIn must be larger than 1 to avoid rounding errors
             require(
                 amountTokensIn > 1,
-                errorsList.AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_U
+                errorsList.AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ONE_U
             );
 
             // actually transferring the tokens to the pool
@@ -641,17 +658,21 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             uint amountCerUsdOut = getInputCerUsdForExactTokens(tokenOut, amountTokensOut);
             require(
                 amountCerUsdOut > 1,
-                errorsList.AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ZERO_U
+                errorsList.AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ONE_U
             );
 
             amountTokensIn = getInputTokensForExactCerUsd(tokenIn, amountCerUsdOut);
+
+            // checking slippage
             require(
                 amountTokensIn <= maxAmountTokensIn,
                 errorsList.INPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_K
             );
+
+            // amountTokensIn must be larger than 1 to avoid rounding errors
             require(
                 amountTokensIn > 1,
-                errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ZERO_F
+                errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ONE_F
             );
 
             // actually transferring the tokens to the pool
@@ -715,8 +736,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint oldTokenBalance = _getTokenBalance(token);
         uint amountTokensIn = oldTokenBalance - pools[poolPos].balanceToken;
         require(
-            amountTokensIn + amountCerUsdIn > 0,
-            errorsList.AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ZERO_O
+            amountTokensIn + amountCerUsdIn > 1,
+            errorsList.AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ONE_O
         );
 
         { // scope to avoid stack too deep error
@@ -1023,9 +1044,14 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
     function _getOutput(uint amountIn, uint reservesIn, uint reservesOut, uint poolFee)
         private
-        pure
+        view
         returns (uint)
     {
+        require(
+            reservesIn > 1000 && reservesOut > 1000,
+            errorsList.RESERVES_IN_AND_OUT_MUST_BE_LARGER_THAN_1000_V
+        );
+
         uint amountInWithFee = amountIn * poolFee;
         uint amountOut = 
             (reservesOut * amountInWithFee) / (reservesIn * FEE_DENORM + amountInWithFee);
@@ -1064,9 +1090,14 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
     function _getInput(uint amountOut, uint reservesIn, uint reservesOut, uint poolFee)
         private
-        pure
+        view
         returns (uint)
     {
+        require(
+            reservesIn > 1000 && reservesOut > 1000,
+            errorsList.RESERVES_IN_AND_OUT_MUST_BE_LARGER_THAN_1000_V
+        );
+
         uint amountIn = (reservesIn * amountOut * FEE_DENORM) /
             (poolFee * (reservesOut - amountOut)) + 1; // adding +1 for any rounding trims
         return amountIn;

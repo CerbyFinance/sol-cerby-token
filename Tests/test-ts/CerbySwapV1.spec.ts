@@ -3562,7 +3562,7 @@ contract("Cerby", accounts => {
   });
 
   // ---------------------------------------------------------- //
-  // addTokenLiquidity / removeTokenLiquidity tests //
+  // addTokenLiquidity tests //
   // ---------------------------------------------------------- //
 
   it("addTokenLiquidity: add 1041e10 ETH; pool must be updated correctly", async () => {
@@ -3673,6 +3673,245 @@ contract("Cerby", accounts => {
       );
     }
   });
+
+
+  // ---------------------------------------------------------- //
+  // hack tests //
+  // ---------------------------------------------------------- //
+
+  it("hacks: buy 1000e12 CERBY, add liquidity, 10 trades CERBY --> cerUSD --> CERBY, remove liquidity; result CERBY <= 1000e12", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbyToken = await TestCerbyToken.deployed();
+    const cerbySwap = await CerbySwapV1.deployed();
+    const CERBY_POOL_POS = await cerbySwap.getTokenToPoolPosition(TestCerbyToken.address);
+
+    
+    {
+      const minAmountTokensIn = new BN(0);
+      const maxAmountTokensIn = new BN(1).mul(bn1e18);
+      const amountTokensOut = new BN(2000e12);
+      const amountTokensIn = amountTokensOut.div(new BN(2));
+      const expireTimestamp = now() + 86400;
+      const transferTo = firstAccount;
+
+      // burnding all CERBY tokens on firstAccount
+      let beforeCerbyBalance = await cerbyToken.balanceOf(firstAccount);
+      await cerbyToken.burnHumanAddress(firstAccount, beforeCerbyBalance);
+
+      // check account balance must be 0 CERBY
+      beforeCerbyBalance = await cerbyToken.balanceOf(firstAccount);
+      assert.deepEqual(
+        beforeCerbyBalance.toString(),
+        '0',
+      );
+      
+      // buying 2000 CERBY
+      await cerbySwap.swapTokensForExactTokens(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+        TestCerbyToken.address,
+        amountTokensOut,
+        maxAmountTokensIn,
+        expireTimestamp,
+        transferTo,
+        { value: maxAmountTokensIn }
+      );
+
+      // check account balance must be 2000 CERBY
+      beforeCerbyBalance = await cerbyToken.balanceOf(firstAccount);
+      assert.deepEqual(
+        beforeCerbyBalance.toString(),
+        amountTokensOut.toString(),
+      );
+
+      const beforeCerbyPool = await cerbySwap.getPoolByToken(
+        TestCerbyToken.address
+      );
+      
+      // adding 1000 CERBY to liquidity
+      const totalLPSupply = await cerbySwap.methods['totalSupply(uint256)'](CERBY_POOL_POS);
+      const lpTokens = amountTokensIn.mul(totalLPSupply).div(beforeCerbyPool.balanceToken);
+      await cerbySwap.addTokenLiquidity(
+        TestCerbyToken.address,
+        amountTokensIn,
+        expireTimestamp,
+        transferTo,
+      );
+
+      // check account balance must be 1000 CERBY
+      let midtimeCerbyBalance = await cerbyToken.balanceOf(firstAccount);
+      assert.deepEqual(
+        midtimeCerbyBalance.toString(),
+        amountTokensIn.toString(),
+      );
+
+      // doing 10 trades CERBY --> cerUSD --> CERBY
+      let amountTokensOut2;
+      let amountTokensIn2 = amountTokensIn;
+      for(let i=0; i<10; i++) {
+        amountTokensOut2 = await cerbySwap.getOutputExactTokensForTokens(
+          TestCerbyToken.address,
+          TestCerbyToken.address,
+          amountTokensIn2,
+        );
+        await cerbySwap.swapExactTokensForTokens(
+          TestCerbyToken.address,
+          TestCerbyToken.address,
+          amountTokensIn2,
+          minAmountTokensIn,
+          expireTimestamp,
+          transferTo
+        );
+
+        amountTokensIn2 = amountTokensOut2;
+      }
+
+      // removing liquidity
+      await cerbySwap.removeTokenLiquidity(
+        TestCerbyToken.address,
+        lpTokens,
+        expireTimestamp,
+        transferTo
+      );
+      
+      const afterCerbyPool = await cerbySwap.getPoolByToken(
+        TestCerbyToken.address
+      );
+
+      // check account balance must be less than 1000 CERBY
+      const afterCerbyBalance = await cerbyToken.balanceOf(firstAccount);
+      assert.isTrue(
+        beforeCerbyBalance.gte(afterCerbyBalance)
+      );
+    }
+  });
+
+  it("hacks: buy 1000e12 CERBY, add liquidity, 10 trades CERBY --> cerUSD --> USDC --> cerUSD --> CERBY, remove liquidity; result CERBY <= 1000e12", async () => {
+    const accounts = await web3.eth.getAccounts();
+    const firstAccount = accounts[0];
+
+    const cerbyToken = await TestCerbyToken.deployed();
+    const cerbySwap = await CerbySwapV1.deployed();
+    const CERBY_POOL_POS = await cerbySwap.getTokenToPoolPosition(TestCerbyToken.address);
+
+    
+    {
+      const minAmountTokensIn = new BN(0);
+      const maxAmountTokensIn = new BN(1).mul(bn1e18);
+      const amountTokensOut = new BN(2000e12);
+      const amountTokensIn = amountTokensOut.div(new BN(2));
+      const expireTimestamp = now() + 86400;
+      const transferTo = firstAccount;
+
+      // burnding all CERBY tokens on firstAccount
+      let beforeCerbyBalance = await cerbyToken.balanceOf(firstAccount);
+      await cerbyToken.burnHumanAddress(firstAccount, beforeCerbyBalance);
+
+      // check account balance must be 0 CERBY
+      beforeCerbyBalance = await cerbyToken.balanceOf(firstAccount);
+      assert.deepEqual(
+        beforeCerbyBalance.toString(),
+        '0',
+      );
+      
+      // buying 2000 CERBY
+      await cerbySwap.swapTokensForExactTokens(
+        '0x14769F96e57B80c66837701DE0B43686Fb4632De',
+        TestCerbyToken.address,
+        amountTokensOut,
+        maxAmountTokensIn,
+        expireTimestamp,
+        transferTo,
+        { value: maxAmountTokensIn }
+      );
+
+      // check account balance must be 2000 CERBY
+      beforeCerbyBalance = await cerbyToken.balanceOf(firstAccount);
+      assert.deepEqual(
+        beforeCerbyBalance.toString(),
+        amountTokensOut.toString(),
+      );
+
+      const beforeCerbyPool = await cerbySwap.getPoolByToken(
+        TestCerbyToken.address
+      );
+      
+      // adding 1000 CERBY to liquidity
+      const totalLPSupply = await cerbySwap.methods['totalSupply(uint256)'](CERBY_POOL_POS);
+      const lpTokens = amountTokensIn.mul(totalLPSupply).div(beforeCerbyPool.balanceToken);
+      await cerbySwap.addTokenLiquidity(
+        TestCerbyToken.address,
+        amountTokensIn,
+        expireTimestamp,
+        transferTo,
+      );
+
+      // check account balance must be 1000 CERBY
+      let midtimeCerbyBalance = await cerbyToken.balanceOf(firstAccount);
+      assert.deepEqual(
+        midtimeCerbyBalance.toString(),
+        amountTokensIn.toString(),
+      );
+
+      // doing 10 trades CERBY --> cerUSD --> USDC --> cerUSD --> CERBY
+      let amountTokensOut2;
+      let amountTokensIn2 = amountTokensIn;
+      for(let i=0; i<10; i++) {
+        amountTokensOut2 = await cerbySwap.getOutputExactTokensForTokens(
+          TestCerbyToken.address,
+          TestUsdcToken.address,
+          amountTokensIn2,
+        );
+        await cerbySwap.swapExactTokensForTokens(
+          TestCerbyToken.address,
+          TestUsdcToken.address,
+          amountTokensIn2,
+          minAmountTokensIn,
+          expireTimestamp,
+          transferTo
+        );
+
+        amountTokensIn2 = amountTokensOut2;
+        amountTokensOut2 = await cerbySwap.getOutputExactTokensForTokens(
+          TestUsdcToken.address,
+          TestCerbyToken.address,
+          amountTokensIn2,
+        );
+        await cerbySwap.swapExactTokensForTokens(
+          TestUsdcToken.address,
+          TestCerbyToken.address,
+          amountTokensIn2,
+          minAmountTokensIn,
+          expireTimestamp,
+          transferTo
+        );
+      }
+
+      // removing liquidity
+      await cerbySwap.removeTokenLiquidity(
+        TestCerbyToken.address,
+        lpTokens,
+        expireTimestamp,
+        transferTo
+      );
+      
+      const afterCerbyPool = await cerbySwap.getPoolByToken(
+        TestCerbyToken.address
+      );
+
+      // check account balance must be less than 1000 CERBY
+      const afterCerbyBalance = await cerbyToken.balanceOf(firstAccount);
+      assert.isTrue(
+        beforeCerbyBalance.gte(afterCerbyBalance)
+      );
+    }
+  });
+
+
+  // ---------------------------------------------------------- //
+  // removeTokenLiquidity tests //
+  // ---------------------------------------------------------- //
 
   it("removeTokenLiquidity: remove 10% ETH; pool must be updated correctly", async () => {
     const accounts = await web3.eth.getAccounts();
