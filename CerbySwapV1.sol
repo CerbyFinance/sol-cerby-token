@@ -35,6 +35,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         string MSG_VALUE_PROVIDED_MUST_BE_LARGER_THAN_AMOUNT_IN_T;
         string AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ONE_U;
         string RESERVES_IN_AND_OUT_MUST_BE_LARGER_THAN_1000_V;
+        string TRANSACTION_IS_TEMPORARILY_BLOCKED_W;
     }
 
     ErrorsList errorsList;
@@ -52,6 +53,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     address testCerbyToken = 0x3d982cB3BC8D1248B17f22b567524bF7BFFD3b11;
     address cerUsdToken = 0x37E140032ac3a8428ed43761a9881d4741Eb3a73;
     address testUsdcToken = 0xD575ef966cfE21a5a5602dFaDAd3d1cAe8C60fDB;
+    address testCerbyBotDetectionContract;
 
     /* Localhost
     // "0xde402E9D305bAd483d47bc858cC373c5a040A62D", "997503992263724670916", 0, "2041564156"
@@ -88,7 +90,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         errorsList = 
             ErrorsList(
                 "A", "B", "C", "D", "E", "F", "G", "H", "i", "J", "K", "L", "M", "N", 
-                "O", "P", "Q", "R", "S", "T", "U", "V"
+                "O", "P", "Q", "R", "S", "T", "U", "V", "W"
             );
 
         feeToBeneficiary = msg.sender;
@@ -168,10 +170,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     }
 
     // TODO: remove on production
-    function testSetupTokens(address , address _testCerbyToken, address _cerUsdToken, address _testUsdcToken, address )
+    function testSetupTokens(address _testCerbyBotDetectionContract, address _testCerbyToken, address _cerUsdToken, address _testUsdcToken, address )
         public
     {
-        //lpErc1155V1 = _lpErc1155V1;
+        testCerbyBotDetectionContract = _testCerbyBotDetectionContract;
         testCerbyToken = _testCerbyToken;
         cerUsdToken = _cerUsdToken;
         testUsdcToken = _testUsdcToken;
@@ -447,6 +449,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             // burning cerUSD
             ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), amountCerUsdToBurn);
         }
+        
 
         // transfering tokens
         _safeTransferHelper(token, transferTo, amountTokensOut);
@@ -850,12 +853,29 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     function _safeTransferHelper(address token, address to, uint amount)
         private
     {
+        // before sending the token to user even if it is internal transfer of cerUSD
+        // we are making sure that sender is not bot by calling checkTransaction
+        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
+            // TODO: update in production
+            //ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
+            testCerbyBotDetectionContract
+        );
+        require(
+            !iCerbyBotDetection.checkTransaction(token, msg.sender),
+            errorsList.TRANSACTION_IS_TEMPORARILY_BLOCKED_W
+        );
+
         if (to != address(this)) {
+            // if it is external transfer to user
+            // we register this transaction as
+            iCerbyBotDetection.registerTransaction(token, to);
+
             if (token == nativeToken) {
                 _safeTransferNative(to, amount);
             } else {
                 _safeTransferToken(token, to, amount);
             }
+
         }
     }
     

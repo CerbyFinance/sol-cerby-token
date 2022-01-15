@@ -174,6 +174,30 @@
 					},
 					{
 						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "checkTransaction",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
 						"name": "sender",
 						"type": "address"
 					},
@@ -649,6 +673,24 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "registerTransaction",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
 						"name": "targetContract",
 						"type": "address"
 					}
@@ -778,26 +820,26 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBotDetection.sol": {
-			"keccak256": "0xc52367b7762fdd5e1a3097791b6d00c444faa84ebe20f59019c34fcd904a051b",
+			"keccak256": "0x4459317cf3f0e86f2a1995cc4ccb02a5238303971a4d36e27aac35a844563591",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://e9c138c70887e4b1240dc9d4bbbd9c9c75c2f592c91f946a08c1c36528127a18",
-				"dweb:/ipfs/QmaLeZP5XoHmfB1j96F8wgurEyrmeRUU8dsR8EwZ5USfxJ"
+				"bzz-raw://297dbdf20060cb6df1f8e9bb7221f027349463c12bd6aef7614ec028186e45cc",
+				"dweb:/ipfs/Qmb5Y7ToKhezPZwhzNDzbejqnPysbYCRueb3WbdpeBAqkj"
 			]
 		},
-		"sol-defifactory-token/interfaces/IWeth.sol": {
-			"keccak256": "0xaebf064916d07f10ca2ca496bff1160dc28ad0a0ae92bbb52fd0f21ff964d9e8",
+		"sol-defifactory-token/interfaces/IERC20.sol": {
+			"keccak256": "0xa019774b5fa41b9bb839ad7bc75bd3ded2ae58bce9f2d83e7dd307fa943e5bab",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6e85dbc5e9dd412cc18ca50e53160765f510e2e6b5c5be6de3a25f3dc8eb39b1",
-				"dweb:/ipfs/QmYmKKacDwTZz4vUQud2us8qXP7GqUzEGS3b9AAriKjYMr"
+				"bzz-raw://37b1999e95af73767b49405c9c669b97f952c227197dfd17836326f11654c66d",
+				"dweb:/ipfs/QmaHk8vnZY9ZaWAVWCufr8UN4Fw1Kr2MX44czPyxCGFPWh"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

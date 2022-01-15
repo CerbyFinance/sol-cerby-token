@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.11;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
-import "./interfaces/IWeth.sol";
+import "./interfaces/IERC20.sol";
 
 struct CronJob {
     address targetContract;
@@ -37,7 +37,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
     address constant EIGHT_LEADING_ZEROS_TO_COMPARE = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
     address constant STAKING_CONTRACT = address(0x8888888AC6aa2482265e5346832CDd963c70A0D1);
     address constant BURN_ADDRESS = address(0x0);
-    uint constant DEFAULT_SELL_COOLDOWN = 5 minutes;
+    uint constant DEFAULT_SELL_COOLDOWN = 30 seconds;
     
     uint constant ETH_MAINNET_CHAIN_ID = 1;
     uint constant BSC_MAINNET_CHAIN_ID = 56;
@@ -170,6 +170,27 @@ contract CerbyBotDetection is AccessControlEnumerable {
     {
         return receiveTimestampStorage[tokenAddr][addr];
     }
+
+    function registerTransaction(address tokenAddr, address addr)
+        public
+    {
+        receiveTimestampStorage[tokenAddr][addr] = block.timestamp;
+    }
+
+    function checkTransaction(address tokenAddr, address addr)
+        public
+        returns (bool)
+    {
+        uint defaultSellCooldown = 
+            cooldownPeriodSellStorage[tokenAddr] > 0? 
+                cooldownPeriodSellStorage[tokenAddr]: 
+                DEFAULT_SELL_COOLDOWN;
+        bool isBot =
+            receiveTimestampStorage[tokenAddr][addr] + defaultSellCooldown >= block.timestamp ||
+            (isContract(addr) || isBotStorage[addr]) && 
+                !isHumanStorage[addr] && !isUniswapPairChecker(addr, tokenAddr);
+        return !isBot;
+    }
     
     function isBotAddress(address addr)
         external
@@ -207,7 +228,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
                 tx.origin != recipient && // isOriginBot
                 !isContract(recipient) && // only checking user wallets
                 !isHumanStorage[recipient] && // skipping whitelisted wallets/contracts
-                IWeth(tokenAddr).balanceOf(recipient) <= 1  // need to make sure balance was zero before the transfer
+                IERC20(tokenAddr).balanceOf(recipient) <= 1  // need to make sure balance was zero before the transfer
                                                             // to avoid blacklisting existing users by malicious actors
             )
         {

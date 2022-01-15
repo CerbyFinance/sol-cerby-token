@@ -49,12 +49,38 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
+			"checkTransaction(address,address)": "322d5fbc",
 			"checkTransactionInfo(address,address,address,uint256,uint256)": "b34ff36e",
 			"executeCronJobs()": "eef84ba1",
-			"isBotAddress(address)": "eaa8f7e3"
+			"isBotAddress(address)": "eaa8f7e3",
+			"registerTransaction(address,address)": "72e64ad6"
 		}
 	},
 	"abi": [
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "tokenAddr",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "addr",
+					"type": "address"
+				}
+			],
+			"name": "checkTransaction",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
 		{
 			"inputs": [
 				{
@@ -130,6 +156,24 @@
 				}
 			],
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "tokenAddr",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "addr",
+					"type": "address"
+				}
+			],
+			"name": "registerTransaction",
+			"outputs": [],
+			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	]

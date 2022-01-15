@@ -44,4 +44,16 @@ abstract contract CerbyCronJobsExecution {
         );
         _;
     }
+    
+    modifier checkTransaction(address tokenAddr, address addr)
+    {
+        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
+            ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
+        );
+        require(
+            !iCerbyBotDetection.checkTransaction(tokenAddr, addr),
+            "CCJE: Transactions are temporary disabled"
+        );
+        _;
+    }
 }

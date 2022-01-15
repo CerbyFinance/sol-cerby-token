@@ -1178,7 +1178,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "",
+						"name": "_testCerbyBotDetectionContract",
 						"type": "address"
 					},
 					{
@@ -1337,11 +1337,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyCronJobsExecution.sol": {
-			"keccak256": "0x2d4781aed97427bfb94f59084c9a1e77824f90bd712da4920dbc38a3947d0647",
+			"keccak256": "0xd637d6ea7961327119c5e230ef679fabf08023134a2fa69db6d596103a2eb108",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://62818bb8bb2d777520cb903a0ec72c6f3f94c05bb367ba8b5db6cc2cff84343f",
-				"dweb:/ipfs/QmQDr5UENtMMk2dsakRZ8p9RcuRx4tqMUYxHXES8wF4cnX"
+				"bzz-raw://c60f04293a3b91abcf8d224b97cb97d0f7a47d8e4e60d35d5f064aefea037c97",
+				"dweb:/ipfs/QmeaN3jdofTKyULHkj6aCxynHtFg3z3XpdNBtpazU9r7oK"
 			]
 		},
 		"sol-defifactory-token/CerbySwapLP1155V1.sol": {
@@ -1353,19 +1353,19 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xb661b7feac1d4e9114c66e935879233f6f16236a3801b48c454193dcf3f8851c",
+			"keccak256": "0x2406b8d0e667b7a70d32cfc217419fa8f5886e730b23fbcc280a49ba396d2bf9",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://d0b5b2e8616883fc998c919dcba58ba789a20f4aa3e3f132894c41a4ab2c7bab",
-				"dweb:/ipfs/QmZ35zP5bDBdVx6y56nqqY7EDinC82VbguBpEKj5rJv6PC"
+				"bzz-raw://a16ff388dedb1f4b27f38a28197b9907f8ec11979512a550accf813fc722a386",
+				"dweb:/ipfs/QmTWvaVtJUdKXSRm1zCSP5dbzaGTC2LKkBkN5ZpaJfXa9Z"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
-			"keccak256": "0x9b905563f93d66ea6f18aaea9c07d545092817e11bae89ae0c8cd59f4f50e505",
+			"keccak256": "0x88ae2b0a36185fd4906dbc9e7bd41a682d05edf05478c27ca5ce9ff0bc5cdef2",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://51de5e7294d47d594ed80f368b8cffa09d67af65d9f3f3699f3e5b7bb96f33ce",
-				"dweb:/ipfs/QmRKwyPpezfDG6s4Y1BimYvvjzZ3amPxhEMACjMv2U3fFw"
+				"bzz-raw://9e13b92a1ddbd96344b9035c2bf91ada49bfad04ee4181929c36791ba224cbe9",
+				"dweb:/ipfs/QmaVVRj9B3F32WpVuYzH6BZZE5751BrAcjWn81rVciAoRa"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapLP1155V1.sol": {
