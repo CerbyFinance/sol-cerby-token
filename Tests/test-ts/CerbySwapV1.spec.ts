@@ -1,5 +1,5 @@
-import crypto from "crypto"
 import BN from "bn.js";
+import crypto from "crypto";
 import { TestCerbyToken2 } from "./utils";
 
 const truffleAssert = require("truffle-assertions");
@@ -857,6 +857,9 @@ contract("Cerby", accounts => {
           minAmountTokensOut1,
           expireTimestamp1,
           transferTo1,
+          {
+            gas: 6700000,
+          }
         ),
         OUTPUT_CERUSD_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_H
       );
@@ -876,6 +879,9 @@ contract("Cerby", accounts => {
           minAmountTokensOut1,
           expireTimestamp1,
           transferTo1,
+          {
+            gas: 6700000,
+          }
         ),
         OUTPUT_TOKENS_AMOUNT_IS_LESS_THAN_MINIMUM_SPECIFIED_i
       );
