@@ -36,6 +36,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         string AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ONE_U;
         string RESERVES_IN_AND_OUT_MUST_BE_LARGER_THAN_1000_V;
         string TRANSACTION_IS_TEMPORARILY_DISABLED_W;
+        string FEE_IS_WRONG_X;
+        string TVL_MULTIPLIER_IS_WRONG_Y;
     }
 
     ErrorsList errorsList;
@@ -69,7 +71,14 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     */  
     address nativeToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De;
 
+    
     uint constant FEE_DENORM = 10000;
+    uint feeMinimum = 1;    // 0.01%
+    uint feeMaximum = 100;  // 1.00%
+
+    uint constant TVL_MULTIPLIER_DENORM = 10000;
+    uint tvlMultiplierMinimum = (TVL_MULTIPLIER_DENORM * 15) / 100;  // x0.15 trade volume gives 1.00% fees
+    uint tvlMultiplierMaximum = TVL_MULTIPLIER_DENORM * 15;          // x15 trade volume gives 0.01% fees
 
     uint constant NUMBER_OF_4HOUR_INTERVALS = 8;
     uint constant MINIMUM_LIQUIDITY = 1000;
@@ -90,7 +99,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         errorsList = 
             ErrorsList(
                 "A", "B", "C", "D", "E", "F", "G", "H", "i", "J", "K", "L", "M", "N", 
-                "O", "P", "Q", "R", "S", "T", "U", "V", "W"
+                "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"
             );
 
         feeToBeneficiary = msg.sender;
@@ -218,12 +227,32 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         );
     }
     
-
-    function adminUpdateFeeToBeneficiary(address newFeeToBeneficiary)
+    function adminUpdateFeesAndTvlMultipliers(
+        uint _feeMinimum, 
+        uint _feeMaximum, 
+        uint _tvlMultiplierMinimum,
+        uint _tvlMultiplierMaximum,
+        address _feeToBeneficiary
+    )
         public
-        // onlyRole(ROLE_ADMIN) // TODO: enable on production
+        onlyRole(ROLE_ADMIN)
     {
-        feeToBeneficiary = newFeeToBeneficiary;
+        require(
+            0 < feeMinimum &&
+            feeMinimum < feeMaximum &&
+            feeMaximum < 500, // 5.00% is hard limit on updating fee
+            errorsList.FEE_IS_WRONG_X
+        );
+        require(
+            tvlMultiplierMinimum < tvlMultiplierMaximum,
+            errorsList.TVL_MULTIPLIER_IS_WRONG_Y
+        );
+
+        feeMinimum = _feeMinimum;
+        feeMaximum = _feeMaximum;
+        tvlMultiplierMinimum = _tvlMultiplierMinimum;
+        tvlMultiplierMaximum = _tvlMultiplierMaximum;
+        feeToBeneficiary = _feeToBeneficiary;
     }
 
     function adminCreatePool(
@@ -942,33 +971,40 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         view
         returns (uint fee)
     {
+        // getting last 24 hours trade volume in USD
         uint current4Hour = getCurrent4Hour();
         uint next4Hour = (current4Hour + 1) % NUMBER_OF_4HOUR_INTERVALS;
-        uint last24HourTradeVolumeInCerUSD;
+        uint volume;
         for(uint i; i<NUMBER_OF_4HOUR_INTERVALS; i++)
         {
+            // skipping current and next hour because those values are currently updating
+            // and are incorrect
             if (i == current4Hour || i == next4Hour) continue;
 
-            last24HourTradeVolumeInCerUSD += pools[poolPos].hourlyTradeVolumeInCerUsd[i];
+            volume += pools[poolPos].hourlyTradeVolumeInCerUsd[i];
         }
 
-        // TODO: replace x0.15 to variable updated by admin!!!!
+        // multiplying it to make wei dimention
+        volume = volume * 1e18;
 
-        // TVL x0.15 ---> 1.00%
-        // TVL x0.15 - x15 ---> 1.00% - 0.01%
-        // TVL x15 ---> 0.01%
-        uint volumeMultiplied = last24HourTradeVolumeInCerUSD * 1e18 * 1000;
-        uint TVLMultiplied = pools[poolPos].balanceCerUsd * 2 * 150; // x2 because two tokens in pair
-        if (volumeMultiplied <= TVLMultiplied) {
-            fee = 9900; // 1.00%
-        } else if (TVLMultiplied < volumeMultiplied && volumeMultiplied < 100 * TVLMultiplied) {
-            fee = 9900 + (volumeMultiplied - TVLMultiplied) / TVLMultiplied;
-        } else if (volumeMultiplied > 100 * TVLMultiplied)
-        {
-            fee = 9999; // 0.01%
+        // trades <= TVL * min              ---> fee = feeMaximum
+        // TVL * min < trades < TVL * max   ---> fee is between feeMaximum and feeMinimum
+        // trades >= TVL * max              ---> fee = feeMinimum
+        uint tvlMin = (pools[poolPos].balanceCerUsd * tvlMultiplierMinimum) / TVL_MULTIPLIER_DENORM;
+        uint tvlMax = (pools[poolPos].balanceCerUsd * tvlMultiplierMaximum) / TVL_MULTIPLIER_DENORM;
+        if (volume <= tvlMin) {
+            fee = feeMaximum; // 1.00%
+        } else if (tvlMin < volume && volume < tvlMax) {
+            fee = 
+                feeMaximum - 
+                    ((volume - tvlMin) * (feeMaximum - feeMinimum))  / 
+                        (tvlMax - tvlMin); // between 1.00% and 0.01%
+        } else if (volume > tvlMax) {
+            fee = feeMinimum; // 0.01%
         }
 
-        return fee;
+        // returning 1 - fee for further calculations
+        return FEE_DENORM - fee;
     }
 
     function getOutputExactTokensForTokens(
