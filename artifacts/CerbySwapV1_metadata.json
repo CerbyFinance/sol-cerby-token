@@ -582,24 +582,24 @@
 								"type": "address"
 							},
 							{
-								"internalType": "uint32[26]",
+								"internalType": "uint32[8]",
 								"name": "tradeVolumePerPeriodInCerUsd",
-								"type": "uint32[26]"
+								"type": "uint32[8]"
 							},
 							{
-								"internalType": "uint112",
+								"internalType": "uint128",
 								"name": "balanceToken",
-								"type": "uint112"
+								"type": "uint128"
 							},
 							{
-								"internalType": "uint112",
+								"internalType": "uint128",
 								"name": "balanceCerUsd",
-								"type": "uint112"
+								"type": "uint128"
 							},
 							{
-								"internalType": "uint112",
+								"internalType": "uint128",
 								"name": "lastSqrtKValue",
-								"type": "uint112"
+								"type": "uint128"
 							}
 						],
 						"internalType": "struct CerbySwapV1.Pool",
@@ -628,24 +628,24 @@
 								"type": "address"
 							},
 							{
-								"internalType": "uint32[26]",
+								"internalType": "uint32[8]",
 								"name": "tradeVolumePerPeriodInCerUsd",
-								"type": "uint32[26]"
+								"type": "uint32[8]"
 							},
 							{
-								"internalType": "uint112",
+								"internalType": "uint128",
 								"name": "balanceToken",
-								"type": "uint112"
+								"type": "uint128"
 							},
 							{
-								"internalType": "uint112",
+								"internalType": "uint128",
 								"name": "balanceCerUsd",
-								"type": "uint112"
+								"type": "uint128"
 							},
 							{
-								"internalType": "uint112",
+								"internalType": "uint128",
 								"name": "lastSqrtKValue",
-								"type": "uint112"
+								"type": "uint128"
 							}
 						],
 						"internalType": "struct CerbySwapV1.Pool",
@@ -1378,11 +1378,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x897e79841b5b592b7a363c25ec6e00cde01ddb7f49dc28f6d58fb8dc236c3b0b",
+			"keccak256": "0x7dbc4e6dbdf1605985e0865d1212f7dceff84a7828ed3b2b4a253f510c8a3fdc",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://c2b774914126ecc15bfbf4cc8ac789f1dfc986a9364207451778a2a095e4f3bc",
-				"dweb:/ipfs/QmQwZbnFsv2nKBddwf2DFxm93PFaTaup8rVSBkJfuy3p3G"
+				"bzz-raw://79bdc5ed4edafdd2151469bcf0ad093dc5241568a83fae28f62a06819bed9388",
+				"dweb:/ipfs/QmQxphkGL1VmRh7RTixMvMmj8KSjUVqkQxQ2gvuyZM3Lhq"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

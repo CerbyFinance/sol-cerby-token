@@ -87,9 +87,9 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     // x15 trade volume gives 0.01% fees
     uint tvlMultiplierMaximum = TVL_MULTIPLIER_DENORM * 15;          
 
-    // 24 hours + 1 current hour + 1 next hour = 26 hours
-    uint constant NUMBER_OF_TRADE_PERIODS = 26; 
-    uint constant ONE_PERIOD_IN_SECONDS = 60 minutes;
+    // 6 4hours + 1 current 4hour + 1 next 4hour = 26 hours
+    uint constant NUMBER_OF_TRADE_PERIODS = 8; 
+    uint constant ONE_PERIOD_IN_SECONDS = 240 minutes;
 
     uint constant MINIMUM_LIQUIDITY = 1000;
     address constant DEAD_ADDRESS = address(0xdead);
@@ -99,9 +99,9 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     struct Pool {
         address token;
         uint32[NUMBER_OF_TRADE_PERIODS] tradeVolumePerPeriodInCerUsd;
-        uint112 balanceToken;
-        uint112 balanceCerUsd;
-        uint112 lastSqrtKValue;
+        uint128 balanceToken;
+        uint128 balanceCerUsd;
+        uint128 lastSqrtKValue;
     }
 
     constructor() {
@@ -292,13 +292,19 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
         // create new pool record
         uint newSqrtKValue = sqrt(uint(amountTokensIn) * uint(amountCerUsdIn));
+
+        // filling with 1 usd per hour in trades to reduce gas later
         uint32[NUMBER_OF_TRADE_PERIODS] memory tradeVolumePerPeriodInCerUsd;
+        for(uint i; i<NUMBER_OF_TRADE_PERIODS; i++) {
+            tradeVolumePerPeriodInCerUsd[i] = 1;
+        }
+
         Pool memory pool = Pool(
             token,
             tradeVolumePerPeriodInCerUsd,
-            uint112(amountTokensIn),
-            uint112(amountCerUsdIn),
-            uint112(newSqrtKValue)
+            uint128(amountTokensIn),
+            uint128(amountCerUsdIn),
+            uint128(newSqrtKValue)
         );
         pools.push(pool);
         tokenToPoolPosition[token] = poolPos;   
@@ -399,11 +405,11 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             // updating pool
             totalCerUsdBalance = totalCerUsdBalance + amountCerUsdIn + mintCerUsdAmount;
             pools[poolPos].balanceToken = 
-                pools[poolPos].balanceToken + uint112(amountTokensIn);
+                pools[poolPos].balanceToken + uint128(amountTokensIn);
             pools[poolPos].balanceCerUsd = 
-                pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn + mintCerUsdAmount);
+                pools[poolPos].balanceCerUsd + uint128(amountCerUsdIn + mintCerUsdAmount);
             pools[poolPos].lastSqrtKValue = 
-                uint112(sqrt(uint(pools[poolPos].balanceToken) * 
+                uint128(sqrt(uint(pools[poolPos].balanceToken) * 
                     uint(pools[poolPos].balanceCerUsd)));
         }
     }
@@ -476,11 +482,11 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             // updating pool        
             totalCerUsdBalance = totalCerUsdBalance + amountCerUsdIn - amountCerUsdToBurn;
             pools[poolPos].balanceToken = 
-                pools[poolPos].balanceToken + uint112(amountTokensIn) - uint112(amountTokensOut);
+                pools[poolPos].balanceToken + uint128(amountTokensIn) - uint128(amountTokensOut);
             pools[poolPos].balanceCerUsd = 
-                pools[poolPos].balanceCerUsd + uint112(amountCerUsdIn) - uint112(amountCerUsdToBurn);
+                pools[poolPos].balanceCerUsd + uint128(amountCerUsdIn) - uint128(amountCerUsdToBurn);
             pools[poolPos].lastSqrtKValue = 
-                uint112(sqrt(uint(pools[poolPos].balanceToken) * 
+                uint128(sqrt(uint(pools[poolPos].balanceToken) * 
                     uint(pools[poolPos].balanceCerUsd)));
 
             // burning LP tokens from sender
@@ -809,8 +815,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
             // updating pool values
             totalCerUsdBalance = _totalCerUsdBalance;
-            pools[poolPos].balanceCerUsd = uint112(_balanceCerUsd);
-            pools[poolPos].balanceToken = uint112(_balanceToken);
+            pools[poolPos].balanceCerUsd = uint128(_balanceCerUsd);
+            pools[poolPos].balanceToken = uint128(_balanceToken);
         }
 
         // updating 1 hour trade pool values
@@ -952,13 +958,13 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
     {
         uint poolPos = tokenToPoolPosition[token];
-        pools[poolPos].balanceToken = uint112(_getTokenBalance(token));
+        pools[poolPos].balanceToken = uint128(_getTokenBalance(token));
         
         uint newTotalCerUsdBalance = _getTokenBalance(cerUsdToken);
         pools[poolPos].balanceCerUsd = 
             newTotalCerUsdBalance > totalCerUsdBalance?
-                pools[poolPos].balanceCerUsd + uint112(newTotalCerUsdBalance - totalCerUsdBalance):
-                pools[poolPos].balanceCerUsd - uint112(totalCerUsdBalance - newTotalCerUsdBalance);
+                pools[poolPos].balanceCerUsd + uint128(newTotalCerUsdBalance - totalCerUsdBalance):
+                pools[poolPos].balanceCerUsd - uint128(totalCerUsdBalance - newTotalCerUsdBalance);
 
         totalCerUsdBalance = newTotalCerUsdBalance;
     }
