@@ -73,8 +73,9 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
     // mint fees = (fees * MINT_FEE_DENORM) / (mintFeeMultiplier + MINT_FEE_DENORM); 
     // or 1/5 or 20% of all fees
+    // mintFeeMultiplier = 0 disables mint fees
     uint constant MINT_FEE_DENORM = 100;
-    uint mintFeeMultiplier = 4 * MINT_FEE_DENORM; 
+    uint mintFeeMultiplier = 0; // 4 * MINT_FEE_DENORM; 
     
     uint constant FEE_DENORM = 10000;
     uint feeMinimum = 1;    // 0.01%
@@ -347,8 +348,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint amountCerUsdIn = newTotalCerUsdBalance - totalCerUsdBalance;
 
         {
-            // storing sqrt(k) value before updating pool
-            uint lastSqrtKValue = pools[poolPos].lastSqrtKValue;
+            // calculating new sqrt(k) value before updating pool
             uint newSqrtKValue = 
                 sqrt(uint(pools[poolPos].balanceToken) * 
                         uint(pools[poolPos].balanceCerUsd));
@@ -356,7 +356,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             // minting trade fees
             uint amountLpTokensToMintAsFee = 
                 _getMintFeeLiquidityAmount(
-                    lastSqrtKValue, 
+                    pools[poolPos].lastSqrtKValue, 
                     newSqrtKValue, 
                     _totalSupply[poolPos]
                 );
@@ -504,14 +504,15 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     {
         if (
             newSqrtKValue > lastSqrtKValue && 
-            lastSqrtKValue > 0
+            lastSqrtKValue > 0 &&
+            mintFeeMultiplier > 0
         ) {
             amountLpTokensToMintAsFee = 
                 (totalLPSupply * MINT_FEE_DENORM * (newSqrtKValue - lastSqrtKValue)) / 
                     (newSqrtKValue * mintFeeMultiplier + lastSqrtKValue * MINT_FEE_DENORM);
         }
 
-        amountLpTokensToMintAsFee = 0; // TODO: remove on production
+        //amountLpTokensToMintAsFee = 0; // TODO: remove on production
     }
 
     function swapExactTokensForTokens(
@@ -809,20 +810,21 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             pools[poolPos].balanceToken = uint112(_balanceToken);
         }
 
-        // updating 4hour trade pool values
-        uint current4Hour = getCurrentHour();
-        uint next4Hour = (getCurrentHour() + 1) % NUMBER_OF_1_HOUR_INTERVALS;
+        // updating 1 hour trade pool values
+        uint currentHour = getCurrentHour();
+        uint nextHour = (getCurrentHour() + 1) % NUMBER_OF_1_HOUR_INTERVALS;
         unchecked {
             // wrapping any uint32 overflows
             // stores in USD value
-            pools[poolPos].hourlyTradeVolumeInCerUsd[current4Hour] += 
+            pools[poolPos].hourlyTradeVolumeInCerUsd[currentHour] += 
                 uint32( (amountCerUsdIn + amountCerUsdOut) / 1e18);
         }
 
-        // clearing next 4hour trade value
-        if (pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] > 0)
+        // clearing next 1 hour trade value
+        if (pools[poolPos].hourlyTradeVolumeInCerUsd[nextHour] > 1)
         {
-            pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] = 0;
+            // gas saving to not zero the field
+            pools[poolPos].hourlyTradeVolumeInCerUsd[nextHour] = 1;
         }
 
         // transferring tokens from contract to user if any
@@ -980,14 +982,14 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         returns (uint fee)
     {
         // getting last 24 hours trade volume in USD
-        uint current4Hour = getCurrentHour();
-        uint next4Hour = (current4Hour + 1) % NUMBER_OF_1_HOUR_INTERVALS;
+        uint currentHour = getCurrentHour();
+        uint nextHour = (currentHour + 1) % NUMBER_OF_1_HOUR_INTERVALS;
         uint volume;
         for(uint i; i<NUMBER_OF_1_HOUR_INTERVALS; i++)
         {
             // skipping current and next hour because those values are currently updating
             // and are incorrect
-            if (i == current4Hour || i == next4Hour) continue;
+            if (i == currentHour || i == nextHour) continue;
 
             volume += pools[poolPos].hourlyTradeVolumeInCerUsd[i];
         }
