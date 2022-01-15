@@ -201,21 +201,41 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
-  adminUpdateFeeToBeneficiary: {
+  adminUpdateFeesAndTvlMultipliers: {
     (
-      newFeeToBeneficiary: string,
+      _feeMinimum: number | BN | string,
+      _feeMaximum: number | BN | string,
+      _tvlMultiplierMinimum: number | BN | string,
+      _tvlMultiplierMaximum: number | BN | string,
+      _mintFeeMultiplier: number | BN | string,
+      _feeToBeneficiary: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
-      newFeeToBeneficiary: string,
+      _feeMinimum: number | BN | string,
+      _feeMaximum: number | BN | string,
+      _tvlMultiplierMinimum: number | BN | string,
+      _tvlMultiplierMaximum: number | BN | string,
+      _mintFeeMultiplier: number | BN | string,
+      _feeToBeneficiary: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
-      newFeeToBeneficiary: string,
+      _feeMinimum: number | BN | string,
+      _feeMaximum: number | BN | string,
+      _tvlMultiplierMinimum: number | BN | string,
+      _tvlMultiplierMaximum: number | BN | string,
+      _mintFeeMultiplier: number | BN | string,
+      _feeToBeneficiary: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
-      newFeeToBeneficiary: string,
+      _feeMinimum: number | BN | string,
+      _feeMaximum: number | BN | string,
+      _tvlMultiplierMinimum: number | BN | string,
+      _tvlMultiplierMaximum: number | BN | string,
+      _mintFeeMultiplier: number | BN | string,
+      _feeToBeneficiary: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -885,21 +905,41 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
-    adminUpdateFeeToBeneficiary: {
+    adminUpdateFeesAndTvlMultipliers: {
       (
-        newFeeToBeneficiary: string,
+        _feeMinimum: number | BN | string,
+        _feeMaximum: number | BN | string,
+        _tvlMultiplierMinimum: number | BN | string,
+        _tvlMultiplierMaximum: number | BN | string,
+        _mintFeeMultiplier: number | BN | string,
+        _feeToBeneficiary: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
-        newFeeToBeneficiary: string,
+        _feeMinimum: number | BN | string,
+        _feeMaximum: number | BN | string,
+        _tvlMultiplierMinimum: number | BN | string,
+        _tvlMultiplierMaximum: number | BN | string,
+        _mintFeeMultiplier: number | BN | string,
+        _feeToBeneficiary: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
-        newFeeToBeneficiary: string,
+        _feeMinimum: number | BN | string,
+        _feeMaximum: number | BN | string,
+        _tvlMultiplierMinimum: number | BN | string,
+        _tvlMultiplierMaximum: number | BN | string,
+        _mintFeeMultiplier: number | BN | string,
+        _feeToBeneficiary: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
-        newFeeToBeneficiary: string,
+        _feeMinimum: number | BN | string,
+        _feeMaximum: number | BN | string,
+        _tvlMultiplierMinimum: number | BN | string,
+        _tvlMultiplierMaximum: number | BN | string,
+        _mintFeeMultiplier: number | BN | string,
+        _feeToBeneficiary: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

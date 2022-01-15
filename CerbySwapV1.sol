@@ -71,6 +71,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     */  
     address nativeToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De;
 
+    // mint fees = (fees * MINT_FEE_DENORM) / (mintFeeMultiplier + MINT_FEE_DENORM); 
+    // or 1/5 or 20% of all fees
+    uint constant MINT_FEE_DENORM = 100;
+    uint mintFeeMultiplier = 4 * MINT_FEE_DENORM; 
     
     uint constant FEE_DENORM = 10000;
     uint feeMinimum = 1;    // 0.01%
@@ -80,7 +84,9 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     uint tvlMultiplierMinimum = (TVL_MULTIPLIER_DENORM * 15) / 100;  // x0.15 trade volume gives 1.00% fees
     uint tvlMultiplierMaximum = TVL_MULTIPLIER_DENORM * 15;          // x15 trade volume gives 0.01% fees
 
-    uint constant NUMBER_OF_4HOUR_INTERVALS = 8;
+    uint constant NUMBER_OF_1_HOUR_INTERVALS = 26; // 24 hours + 1 current hour + 1 next hour = 26 hours
+    uint constant ONE_HOUR_IN_SECONDS = 60 minutes;
+
     uint constant MINIMUM_LIQUIDITY = 1000;
     address constant DEAD_ADDRESS = address(0xdead);
     address public feeToBeneficiary = DEAD_ADDRESS;
@@ -88,7 +94,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
     struct Pool {
         address token;
-        uint32[NUMBER_OF_4HOUR_INTERVALS] hourlyTradeVolumeInCerUsd;
+        uint32[NUMBER_OF_1_HOUR_INTERVALS] hourlyTradeVolumeInCerUsd;
         uint112 balanceToken;
         uint112 balanceCerUsd;
         uint112 lastSqrtKValue;
@@ -106,7 +112,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         feeToBeneficiary = address(0xdead123); // TODO: remove on production
 
         // Filling with empty pool 0th position
-        uint32[NUMBER_OF_4HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
+        uint32[NUMBER_OF_1_HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
         pools.push(Pool(
             address(0),
             hourlyTradeVolumeInCerUsd,
@@ -232,6 +238,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint _feeMaximum, 
         uint _tvlMultiplierMinimum,
         uint _tvlMultiplierMaximum,
+        uint _mintFeeMultiplier,
         address _feeToBeneficiary
     )
         public
@@ -252,6 +259,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         feeMaximum = _feeMaximum;
         tvlMultiplierMinimum = _tvlMultiplierMinimum;
         tvlMultiplierMaximum = _tvlMultiplierMaximum;
+        mintFeeMultiplier = _mintFeeMultiplier;
         feeToBeneficiary = _feeToBeneficiary;
     }
 
@@ -280,7 +288,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
         // create new pool record
         uint newSqrtKValue = sqrt(uint(amountTokensIn) * uint(amountCerUsdIn));
-        uint32[NUMBER_OF_4HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
+        uint32[NUMBER_OF_1_HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
         Pool memory pool = Pool(
             token,
             hourlyTradeVolumeInCerUsd,
@@ -491,7 +499,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
     function _getMintFeeLiquidityAmount(uint lastSqrtKValue, uint newSqrtKValue, uint totalLPSupply)
         private
-        pure
+        view
         returns (uint amountLpTokensToMintAsFee)
     {
         if (
@@ -499,8 +507,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             lastSqrtKValue > 0
         ) {
             amountLpTokensToMintAsFee = 
-                (totalLPSupply * (newSqrtKValue - lastSqrtKValue)) / 
-                    (newSqrtKValue * 5 + lastSqrtKValue);
+                (totalLPSupply * MINT_FEE_DENORM * (newSqrtKValue - lastSqrtKValue)) / 
+                    (newSqrtKValue * mintFeeMultiplier + lastSqrtKValue * MINT_FEE_DENORM);
         }
 
         amountLpTokensToMintAsFee = 0; // TODO: remove on production
@@ -802,8 +810,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         }
 
         // updating 4hour trade pool values
-        uint current4Hour = getCurrent4Hour();
-        uint next4Hour = (getCurrent4Hour() + 1) % NUMBER_OF_4HOUR_INTERVALS;
+        uint current4Hour = getCurrentHour();
+        uint next4Hour = (getCurrentHour() + 1) % NUMBER_OF_1_HOUR_INTERVALS;
         unchecked {
             // wrapping any uint32 overflows
             // stores in USD value
@@ -950,12 +958,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         totalCerUsdBalance = newTotalCerUsdBalance;
     }
 
-    function getCurrent4Hour()
+    function getCurrentHour()
         private
         view
         returns (uint)
     {
-        return (block.timestamp / 14400) % NUMBER_OF_4HOUR_INTERVALS;
+        return (block.timestamp / ONE_HOUR_IN_SECONDS) % NUMBER_OF_1_HOUR_INTERVALS;
     }
 
     function getCurrentFeeBasedOnTrades(address token)
@@ -972,10 +980,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         returns (uint fee)
     {
         // getting last 24 hours trade volume in USD
-        uint current4Hour = getCurrent4Hour();
-        uint next4Hour = (current4Hour + 1) % NUMBER_OF_4HOUR_INTERVALS;
+        uint current4Hour = getCurrentHour();
+        uint next4Hour = (current4Hour + 1) % NUMBER_OF_1_HOUR_INTERVALS;
         uint volume;
-        for(uint i; i<NUMBER_OF_4HOUR_INTERVALS; i++)
+        for(uint i; i<NUMBER_OF_1_HOUR_INTERVALS; i++)
         {
             // skipping current and next hour because those values are currently updating
             // and are incorrect

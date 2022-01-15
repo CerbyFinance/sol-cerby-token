@@ -315,6 +315,11 @@
 						"type": "uint256"
 					},
 					{
+						"internalType": "uint256",
+						"name": "_mintFeeMultiplier",
+						"type": "uint256"
+					},
+					{
 						"internalType": "address",
 						"name": "_feeToBeneficiary",
 						"type": "address"
@@ -577,9 +582,9 @@
 								"type": "address"
 							},
 							{
-								"internalType": "uint32[8]",
+								"internalType": "uint32[26]",
 								"name": "hourlyTradeVolumeInCerUsd",
-								"type": "uint32[8]"
+								"type": "uint32[26]"
 							},
 							{
 								"internalType": "uint112",
@@ -623,9 +628,9 @@
 								"type": "address"
 							},
 							{
-								"internalType": "uint32[8]",
+								"internalType": "uint32[26]",
 								"name": "hourlyTradeVolumeInCerUsd",
-								"type": "uint32[8]"
+								"type": "uint32[26]"
 							},
 							{
 								"internalType": "uint112",
@@ -1373,11 +1378,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x676d70443b2626150f1124b387106e1aa34479a881e53fbf3543a3a7f546ce88",
+			"keccak256": "0xdd085e156d00cc140db980da509b8101071c48c3b63a677d8c0eb579ebb967ec",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://f8ad04d2268157ad55b1af037d4ae80d11475c35bdc79a9052e8358d0b660c33",
-				"dweb:/ipfs/QmfYW8ZXQ5oco3zXzXntSNcjGgbsu5YtUTDVJzPkSoaBRW"
+				"bzz-raw://c6044afa567e27c0716e6b6c8171610e537e4a5d7833559537be640748286021",
+				"dweb:/ipfs/Qmdb9nTzLZJGC7jAVwomAWA6bUda7cwU8tEaZwjpzoZtaL"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
