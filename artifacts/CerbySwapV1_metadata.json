@@ -1345,19 +1345,19 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapLP1155V1.sol": {
-			"keccak256": "0x79720081e7eb426586cb179e28ea84e6aa5f468ad295b87b40043c614185535c",
+			"keccak256": "0xc175b62719ae972401648c0c03d1d47ba6559f8040c7656fdbf1e0731e991ad1",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://8ada787f6e9d48a243b1747617565a341c435917204f2a7e5d16db098a9371b2",
-				"dweb:/ipfs/QmUcAeknKW6xvme9UWfz99JBTQoiJ2RCumytNoFrnEkXqk"
+				"bzz-raw://6b5462319e6d19949b9888b40d101b787c12ec44d4e0890054090789aca05e5a",
+				"dweb:/ipfs/QmedbaLBgxbAERWGUe75aUqJHb3shjeQFYEzcenwwCaERL"
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xfc37924815bf9a1ff3104f7a74bac1fb6302b5ce775dfb7865aa48a05473ac5f",
+			"keccak256": "0xa3a53c712fa600ea279c66a38cfc0d9dabd0cc64950e6e042565cd94d263f5ae",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://659499d7cac286439058aeaaff7d6686e729855ae979108078180be8a368751d",
-				"dweb:/ipfs/QmaZ8Zmi8MGgGNm7PcwpufwUnu434kbwH3w3BNv7Eh3M1c"
+				"bzz-raw://8eb324cdd1287efcc8c5f9cbcdf3c7eb25e03b0d96fac9a60a65b24e5a8b8d56",
+				"dweb:/ipfs/QmTxweMT1r5YKDEdRxQwy1tbbqGKrwSekQnnD9jBAkVmfj"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

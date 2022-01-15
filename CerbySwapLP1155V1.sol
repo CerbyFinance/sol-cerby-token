@@ -95,11 +95,32 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         _symbol = newSymbol;
     }
 
+    function checkTransactionForBots(address token, address from, address to)
+        internal
+    {
+        // before sending the token to user even if it is internal transfer of cerUSD
+        // we are making sure that sender is not bot by calling checkTransaction
+        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
+            // TODO: update in production
+            ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
+        );
+        require(
+            iCerbyBotDetection.checkTransaction(token, from),
+            "!TX"
+        );
+
+        // if it is external transfer to user
+        // we register this transaction as successful
+        if (to != address(this)) {
+            iCerbyBotDetection.registerTransaction(token, to);
+        }
+    }
+
     function setApprovalForAll(address operator, bool approved) 
         public 
         virtual 
         override
-        // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
+        // checkTransaction(address(this), msg.sender) // TODO: enable on production
     {
         _setApprovalForAll(_msgSender(), operator, approved);
     }
@@ -120,7 +141,11 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         require(
             from == _msgSender() || isApprovedForAll(from, _msgSender()),
             "ERC1155: caller is not owner nor approved"
-        );*/
+        );
+
+        checkTransactionForBots(address(this), from, to);
+
+        */
         _safeTransferFrom(from, to, id, amount, data);
     }
     
@@ -139,6 +164,9 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
             from == _msgSender() || isApprovedForAll(from, _msgSender()),
             "ERC1155: transfer caller is not owner nor approved"
         );
+
+        checkTransactionForBots(address(this), from, to);
+
         _safeBatchTransferFrom(from, to, ids, amounts, data);
     }
 
@@ -146,7 +174,10 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         address account,
         uint256 id,
         uint256 value
-    ) public virtual {
+    ) 
+        public 
+        virtual
+    {
         /*
         TODO: enable in production
         require(

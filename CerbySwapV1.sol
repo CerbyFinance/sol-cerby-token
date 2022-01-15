@@ -859,24 +859,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         // some transfer such as refund excess of msg.value
         // we don't check for bots
         if (needToCheck) {
-            // before sending the token to user even if it is internal transfer of cerUSD
-            // we are making sure that sender is not bot by calling checkTransaction
-            ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-                // TODO: update in production
-                //ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
-                testCerbyBotDetectionContract
-            );
-            require(
-                // TODO: enable bot protection on production
-                iCerbyBotDetection.checkTransaction(token, msg.sender) || true,
-                errorsList.TRANSACTION_IS_TEMPORARILY_DISABLED_W
-            );
-
-            // if it is external transfer to user
-            // we register this transaction as successful
-            if (to != address(this)) {
-                iCerbyBotDetection.registerTransaction(token, to);
-            }
+            //checkTransactionForBots(token, msg.sender, to); // TODO: enable on production
         }
 
         if (to != address(this)) {
