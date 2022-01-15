@@ -37,7 +37,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
     address constant EIGHT_LEADING_ZEROS_TO_COMPARE = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
     address constant STAKING_CONTRACT = address(0x8888888AC6aa2482265e5346832CDd963c70A0D1);
     address constant BURN_ADDRESS = address(0x0);
-    uint constant DEFAULT_SELL_COOLDOWN = 30 seconds;
+    uint constant DEFAULT_SELL_COOLDOWN = 0 seconds;
     
     uint constant ETH_MAINNET_CHAIN_ID = 1;
     uint constant BSC_MAINNET_CHAIN_ID = 56;
@@ -173,12 +173,14 @@ contract CerbyBotDetection is AccessControlEnumerable {
 
     function registerTransaction(address tokenAddr, address addr)
         public
+        onlyRole(ROLE_ADMIN)
     {
         receiveTimestampStorage[tokenAddr][addr] = block.timestamp;
     }
 
     function checkTransaction(address tokenAddr, address addr)
         public
+        onlyRole(ROLE_ADMIN)
         returns (bool)
     {
         uint defaultSellCooldown = 
@@ -215,7 +217,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
         if (
                 sender < EIGHT_LEADING_ZEROS_TO_COMPARE // address starts from 8 zeros
         ) {
-           revert("CBD: Transfers are temporary disabled");
+           revert("CBD: Transfers are temporarily disabled");
         }
 
         output.isSell = isUniswapPairChecker(recipient, tokenAddr);
@@ -244,7 +246,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
                 )
             )
         {
-           revert("CBD: Transfers are temporary disabled");
+           revert("CBD: Transfers are temporarily disabled");
         }
         
         if (

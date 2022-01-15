@@ -11,6 +11,7 @@ const CerbySwapV1 = artifacts.require("CerbySwapV1");
 const CerbyBotDetection = artifacts.require("CerbyBotDetection");
 
 const FEE_DENORM = 10000;
+const DELAY_BETWEEN_TESTS = 0;
 
 const now = () => Math.floor(+new Date() / 1000);
 
@@ -18,14 +19,19 @@ const randomAddress = () => '0x' + crypto.randomBytes(20).toString('hex')
 
 const bn1e18 = new BN((1e18).toString());
 
+function delay(ms: number) {
+  return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
 contract("Cerby", accounts => {
+  
 
   // ---------------------------------------------------------- //
   // swapExactTokensForTokens tests //
   // ---------------------------------------------------------- //
 
   it("swapExactTokensForTokens: swap 1001 CERBY --> cerUSD; received cerUSD is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -80,7 +86,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1002 cerUSD --> CERBY; received CERBY is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -135,7 +141,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1003 cerUSD --> CERBY --> cerUSD; sent cerUSD >= received cerUSD", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -216,7 +222,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1004 CERBY --> cerUSD --> CERBY; sent CERBY >= received CERBY", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -300,7 +306,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1005 CERBY --> cerUSD --> USDC; received USDC is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -411,7 +417,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1006 CERBY --> USDC; received USDC is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -522,7 +528,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1007 USDC --> cerUSD --> CERBY; received CERBY is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -632,7 +638,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1008 USDC --> CERBY; received CERBY is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -733,7 +739,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1009 CERBY --> CERBY; sent CERBY >= received CERBY", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -809,7 +815,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: check reverts", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -976,7 +982,7 @@ contract("Cerby", accounts => {
   // ---------------------------------------------------------- //
 
   it("swapTokensForExactTokens: swap CERBY --> 1011 cerUSD; received cerUSD is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -1031,7 +1037,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap cerUSD --> 1012 CERBY; received CERBY is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -1086,7 +1092,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap cerUSD --> CERBY --> 1013 cerUSD; sent cerUSD >= received cerUSD", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -1167,7 +1173,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap CERBY --> cerUSD --> 1014 CERBY; sent CERBY >= received CERBY", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -1253,7 +1259,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap CERBY --> cerUSD --> 1015 USDC; received USDC is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -1363,7 +1369,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap CERBY --> 1016 USDC; received USDC is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -1463,7 +1469,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap USDC --> cerUSD --> 1017 CERBY; received CERBY is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -1572,7 +1578,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap USDC --> 1018 CERBY; received CERBY is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -1671,7 +1677,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap CERBY --> 1019 CERBY; sent CERBY >= received CERBY", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -1743,7 +1749,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: check reverts", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -1912,7 +1918,7 @@ contract("Cerby", accounts => {
   // ---------------------------------------------------------- //
 
   it("swapExactTokensForTokens: swap 1021e10 ETH --> cerUSD; received cerUSD is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -1968,7 +1974,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1022 cerUSD --> ETH; received ETH is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -2023,7 +2029,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1023 cerUSD --> ETH --> cerUSD; sent cerUSD >= received cerUSD", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -2105,7 +2111,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1024e10 ETH --> cerUSD --> ETH; sent ETH >= received ETH", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -2190,7 +2196,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1025e10 ETH --> cerUSD --> USDC; received USDC is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -2302,7 +2308,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1026e10 ETH --> USDC; received USDC is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -2414,7 +2420,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1027 USDC --> cerUSD --> ETH; received ETH is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -2524,7 +2530,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1028 USDC --> ETH; received ETH is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -2625,7 +2631,7 @@ contract("Cerby", accounts => {
 
 
   it("swapExactTokensForTokens: swap 1029e10 ETH --> ETH; sent ETH >= received ETH", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -2701,7 +2707,7 @@ contract("Cerby", accounts => {
   });
 
   it("swapExactTokensForTokens: swap 1040 CERBY --> cerUSD; if provided msg.value must be reverted", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -2748,7 +2754,7 @@ contract("Cerby", accounts => {
   // ---------------------------------------------------------- //
 
   it("swapTokensForExactTokens: swap ETH --> 1031e10 cerUSD; received cerUSD is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -2804,7 +2810,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap cerUSD --> 1032e10 ETH; received ETH is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -2859,7 +2865,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap cerUSD --> ETH --> 1033e10 cerUSD; sent cerUSD >= received cerUSD", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -2941,7 +2947,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap ETH --> cerUSD --> 1034e10 CERBY; sent ETH >= received ETH", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -3028,7 +3034,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap ETH --> cerUSD --> 1035e10 USDC; received USDC is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -3139,7 +3145,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap ETH --> 1036e10 USDC; received USDC is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -3240,7 +3246,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap USDC --> cerUSD --> 1037e10 ETH; received ETH is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -3349,7 +3355,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap USDC --> 1038e10 ETH; received ETH is correct", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -3448,7 +3454,7 @@ contract("Cerby", accounts => {
 
 
   it("swapTokensForExactTokens: swap ETH --> 1039e10 ETH; sent ETH >= received ETH", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -3520,7 +3526,7 @@ contract("Cerby", accounts => {
   });
 
   it("swapTokensForExactTokens: swap CERBY --> 1040 cerUSD; if provided msg.value must be reverted", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -3567,7 +3573,7 @@ contract("Cerby", accounts => {
   // ---------------------------------------------------------- //
 
   it("addTokenLiquidity: add 1041e10 ETH; pool must be updated correctly", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -3621,7 +3627,7 @@ contract("Cerby", accounts => {
   });
 
   it("addTokenLiquidity: add 1042 CERBY; pool must be updated correctly", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -3681,7 +3687,7 @@ contract("Cerby", accounts => {
   // ---------------------------------------------------------- //
 
   it("hacks: buy 1000e12 CERBY, add liquidity, 10 trades CERBY --> cerUSD --> CERBY, remove liquidity; result CERBY <= 1000e12", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbyToken = await TestCerbyToken.deployed();
@@ -3789,7 +3795,7 @@ contract("Cerby", accounts => {
   });
 
   it("hacks: buy 1000e12 CERBY, add liquidity, 10 trades CERBY --> cerUSD --> USDC --> cerUSD --> CERBY, remove liquidity; result CERBY <= 1000e12", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbyToken = await TestCerbyToken.deployed();
@@ -3915,7 +3921,7 @@ contract("Cerby", accounts => {
   // ---------------------------------------------------------- //
 
   it("removeTokenLiquidity: remove 10% ETH; pool must be updated correctly", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -3968,7 +3974,7 @@ contract("Cerby", accounts => {
   });
 
   it("removeTokenLiquidity: remove 10% CERBY; pool must be updated correctly", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -4021,7 +4027,7 @@ contract("Cerby", accounts => {
   });
 
   it("removeTokenLiquidity: remove all ETH; pool must be updated correctly", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
@@ -4074,7 +4080,7 @@ contract("Cerby", accounts => {
   });
 
   it("removeTokenLiquidity: remove all CERBY; pool must be updated correctly", async () => {
-    const accounts = await web3.eth.getAccounts();
+    await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();

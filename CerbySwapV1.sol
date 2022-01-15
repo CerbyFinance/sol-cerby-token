@@ -35,7 +35,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         string MSG_VALUE_PROVIDED_MUST_BE_LARGER_THAN_AMOUNT_IN_T;
         string AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ONE_U;
         string RESERVES_IN_AND_OUT_MUST_BE_LARGER_THAN_1000_V;
-        string TRANSACTION_IS_TEMPORARILY_BLOCKED_W;
+        string TRANSACTION_IS_TEMPORARILY_DISABLED_W;
     }
 
     ErrorsList errorsList;
@@ -452,7 +452,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         
 
         // transfering tokens
-        _safeTransferHelper(token, transferTo, amountTokensOut);
+        _safeTransferHelper(token, transferTo, amountTokensOut, true);
         uint newTokenBalance = _getTokenBalance(token);
         require(
             newTokenBalance + amountTokensOut == oldTokenBalance,
@@ -788,9 +788,9 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             pools[poolPos].hourlyTradeVolumeInCerUsd[next4Hour] = 0;
         }
 
-        // transferring tokens from contract to user
+        // transferring tokens from contract to user if any
         if (amountTokensOut > 0) {
-            _safeTransferHelper(token, transferTo, amountTokensOut);
+            _safeTransferHelper(token, transferTo, amountTokensOut, true);
 
             // making sure exactly amountTokensOut tokens were sent out
             uint newTokenBalance = _getTokenBalance(token);
@@ -799,8 +799,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 errorsList.FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_E
             );
         }
+
+        // transferring cerUsd tokens to user if any
         if (amountCerUsdOut > 0) {
-            _safeTransferHelper(cerUsdToken, transferTo, amountCerUsdOut);
+            _safeTransferHelper(cerUsdToken, transferTo, amountCerUsdOut, true);
         }        
     }
 
@@ -844,32 +846,40 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 _safeTransferHelper(
                     nativeToken, 
                     msg.sender,
-                    msg.value - amount
+                    msg.value - amount,
+                    false
                 );
             }
         }
     }
 
-    function _safeTransferHelper(address token, address to, uint amount)
+    function _safeTransferHelper(address token, address to, uint amount, bool needToCheck)
         private
     {
-        // before sending the token to user even if it is internal transfer of cerUSD
-        // we are making sure that sender is not bot by calling checkTransaction
-        ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            // TODO: update in production
-            //ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
-            testCerbyBotDetectionContract
-        );
-        require(
-            !iCerbyBotDetection.checkTransaction(token, msg.sender),
-            errorsList.TRANSACTION_IS_TEMPORARILY_BLOCKED_W
-        );
+        // some transfer such as refund excess of msg.value
+        // we don't check for bots
+        if (needToCheck) {
+            // before sending the token to user even if it is internal transfer of cerUSD
+            // we are making sure that sender is not bot by calling checkTransaction
+            ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
+                // TODO: update in production
+                //ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
+                testCerbyBotDetectionContract
+            );
+            require(
+                // TODO: enable bot protection on production
+                iCerbyBotDetection.checkTransaction(token, msg.sender) || true,
+                errorsList.TRANSACTION_IS_TEMPORARILY_DISABLED_W
+            );
+
+            // if it is external transfer to user
+            // we register this transaction as successful
+            if (to != address(this)) {
+                iCerbyBotDetection.registerTransaction(token, to);
+            }
+        }
 
         if (to != address(this)) {
-            // if it is external transfer to user
-            // we register this transaction as
-            iCerbyBotDetection.registerTransaction(token, to);
-
             if (token == nativeToken) {
                 _safeTransferNative(to, amount);
             } else {

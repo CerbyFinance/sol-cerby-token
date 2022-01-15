@@ -17,7 +17,7 @@ abstract contract CerbyCronJobsExecution {
         );
         require(
             !iCerbyBotDetection.isBotAddress(addr),
-            "CCJE: Transactions are temporary disabled"
+            "CCJE: Transactions are temporarily disabled"
         );
         iCerbyBotDetection.executeCronJobs();
         _;
@@ -40,7 +40,7 @@ abstract contract CerbyCronJobsExecution {
         );
         require(
             !iCerbyBotDetection.isBotAddress(addr),
-            "CCJE: Transactions are temporary disabled"
+            "CCJE: Transactions are temporarily disabled"
         );
         _;
     }
@@ -52,7 +52,7 @@ abstract contract CerbyCronJobsExecution {
         );
         require(
             !iCerbyBotDetection.checkTransaction(tokenAddr, addr),
-            "CCJE: Transactions are temporary disabled"
+            "CCJE: Transactions are temporarily disabled"
         );
         _;
     }
