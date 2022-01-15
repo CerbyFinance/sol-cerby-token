@@ -8,6 +8,7 @@ const TestCerbyToken = artifacts.require("TestCerbyToken");
 const TestCerUsdToken = artifacts.require("TestCerUsdToken");
 const TestUsdcToken = artifacts.require("TestUsdcToken");
 const CerbySwapV1 = artifacts.require("CerbySwapV1");
+const CerbyBotDetection = artifacts.require("CerbyBotDetection");
 
 const FEE_DENORM = 10000;
 

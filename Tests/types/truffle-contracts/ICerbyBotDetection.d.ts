@@ -13,6 +13,29 @@ export interface ICerbyBotDetectionContract
 type AllEvents = never;
 
 export interface ICerbyBotDetectionInstance extends Truffle.ContractInstance {
+  checkTransaction: {
+    (
+      tokenAddr: string,
+      addr: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      tokenAddr: string,
+      addr: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<boolean>;
+    sendTransaction(
+      tokenAddr: string,
+      addr: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      tokenAddr: string,
+      addr: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
   checkTransactionInfo: {
     (
       tokenAddr: string,
@@ -62,7 +85,53 @@ export interface ICerbyBotDetectionInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<boolean>;
 
+  registerTransaction: {
+    (
+      tokenAddr: string,
+      addr: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      tokenAddr: string,
+      addr: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      tokenAddr: string,
+      addr: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      tokenAddr: string,
+      addr: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
   methods: {
+    checkTransaction: {
+      (
+        tokenAddr: string,
+        addr: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        tokenAddr: string,
+        addr: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<boolean>;
+      sendTransaction(
+        tokenAddr: string,
+        addr: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        tokenAddr: string,
+        addr: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
     checkTransactionInfo: {
       (
         tokenAddr: string,
@@ -111,6 +180,29 @@ export interface ICerbyBotDetectionInstance extends Truffle.ContractInstance {
       addr: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<boolean>;
+
+    registerTransaction: {
+      (
+        tokenAddr: string,
+        addr: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        tokenAddr: string,
+        addr: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        tokenAddr: string,
+        addr: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        tokenAddr: string,
+        addr: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
   };
 
   getPastEvents(event: string): Promise<EventData[]>;
