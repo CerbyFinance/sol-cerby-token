@@ -814,7 +814,7 @@ contract("Cerby", accounts => {
   });
 
 
-  it.only("swapExactTokensForTokens: check reverts", async () => {
+  it("swapExactTokensForTokens: check reverts", async () => {
     await delay(DELAY_BETWEEN_TESTS); const accounts = await web3.eth.getAccounts();
     const firstAccount = accounts[0];
 

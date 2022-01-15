@@ -75,18 +75,21 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     // or 1/5 or 20% of all fees
     // mintFeeMultiplier = 0 disables mint fees
     uint constant MINT_FEE_DENORM = 100;
-    uint mintFeeMultiplier = 0; // 4 * MINT_FEE_DENORM; 
+    uint mintFeeMultiplier = 0; // 4 * MINT_FEE_DENORM;
     
     uint constant FEE_DENORM = 10000;
     uint feeMinimum = 1;    // 0.01%
     uint feeMaximum = 100;  // 1.00%
 
     uint constant TVL_MULTIPLIER_DENORM = 10000;
-    uint tvlMultiplierMinimum = (TVL_MULTIPLIER_DENORM * 15) / 100;  // x0.15 trade volume gives 1.00% fees
-    uint tvlMultiplierMaximum = TVL_MULTIPLIER_DENORM * 15;          // x15 trade volume gives 0.01% fees
+    // x0.15 trade volume gives 1.00% fees
+    uint tvlMultiplierMinimum = (TVL_MULTIPLIER_DENORM * 15) / 100;  
+    // x15 trade volume gives 0.01% fees
+    uint tvlMultiplierMaximum = TVL_MULTIPLIER_DENORM * 15;          
 
-    uint constant NUMBER_OF_1_HOUR_INTERVALS = 26; // 24 hours + 1 current hour + 1 next hour = 26 hours
-    uint constant ONE_HOUR_IN_SECONDS = 60 minutes;
+    // 24 hours + 1 current hour + 1 next hour = 26 hours
+    uint constant NUMBER_OF_TRADE_PERIODS = 26; 
+    uint constant ONE_PERIOD_IN_SECONDS = 60 minutes;
 
     uint constant MINIMUM_LIQUIDITY = 1000;
     address constant DEAD_ADDRESS = address(0xdead);
@@ -95,7 +98,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
     struct Pool {
         address token;
-        uint32[NUMBER_OF_1_HOUR_INTERVALS] hourlyTradeVolumeInCerUsd;
+        uint32[NUMBER_OF_TRADE_PERIODS] tradeVolumePerPeriodInCerUsd;
         uint112 balanceToken;
         uint112 balanceCerUsd;
         uint112 lastSqrtKValue;
@@ -113,10 +116,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         feeToBeneficiary = address(0xdead123); // TODO: remove on production
 
         // Filling with empty pool 0th position
-        uint32[NUMBER_OF_1_HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
+        uint32[NUMBER_OF_TRADE_PERIODS] memory tradeVolumePerPeriodInCerUsd;
         pools.push(Pool(
             address(0),
-            hourlyTradeVolumeInCerUsd,
+            tradeVolumePerPeriodInCerUsd,
             0,
             0,
             0
@@ -289,10 +292,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
         // create new pool record
         uint newSqrtKValue = sqrt(uint(amountTokensIn) * uint(amountCerUsdIn));
-        uint32[NUMBER_OF_1_HOUR_INTERVALS] memory hourlyTradeVolumeInCerUsd;
+        uint32[NUMBER_OF_TRADE_PERIODS] memory tradeVolumePerPeriodInCerUsd;
         Pool memory pool = Pool(
             token,
-            hourlyTradeVolumeInCerUsd,
+            tradeVolumePerPeriodInCerUsd,
             uint112(amountTokensIn),
             uint112(amountCerUsdIn),
             uint112(newSqrtKValue)
@@ -811,20 +814,20 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         }
 
         // updating 1 hour trade pool values
-        uint currentHour = getCurrentHour();
-        uint nextHour = (getCurrentHour() + 1) % NUMBER_OF_1_HOUR_INTERVALS;
+        uint currentPeriod = getCurrentPeriod();
+        uint nextPeriod = (getCurrentPeriod() + 1) % NUMBER_OF_TRADE_PERIODS;
         unchecked {
             // wrapping any uint32 overflows
             // stores in USD value
-            pools[poolPos].hourlyTradeVolumeInCerUsd[currentHour] += 
+            pools[poolPos].tradeVolumePerPeriodInCerUsd[currentPeriod] += 
                 uint32( (amountCerUsdIn + amountCerUsdOut) / 1e18);
         }
 
         // clearing next 1 hour trade value
-        if (pools[poolPos].hourlyTradeVolumeInCerUsd[nextHour] > 1)
+        if (pools[poolPos].tradeVolumePerPeriodInCerUsd[nextPeriod] > 1)
         {
             // gas saving to not zero the field
-            pools[poolPos].hourlyTradeVolumeInCerUsd[nextHour] = 1;
+            pools[poolPos].tradeVolumePerPeriodInCerUsd[nextPeriod] = 1;
         }
 
         // transferring tokens from contract to user if any
@@ -960,12 +963,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         totalCerUsdBalance = newTotalCerUsdBalance;
     }
 
-    function getCurrentHour()
+    function getCurrentPeriod()
         private
         view
         returns (uint)
     {
-        return (block.timestamp / ONE_HOUR_IN_SECONDS) % NUMBER_OF_1_HOUR_INTERVALS;
+        return (block.timestamp / ONE_PERIOD_IN_SECONDS) % NUMBER_OF_TRADE_PERIODS;
     }
 
     function getCurrentFeeBasedOnTrades(address token)
@@ -982,16 +985,16 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         returns (uint fee)
     {
         // getting last 24 hours trade volume in USD
-        uint currentHour = getCurrentHour();
-        uint nextHour = (currentHour + 1) % NUMBER_OF_1_HOUR_INTERVALS;
+        uint currentPeriod = getCurrentPeriod();
+        uint nextPeriod = (currentPeriod + 1) % NUMBER_OF_TRADE_PERIODS;
         uint volume;
-        for(uint i; i<NUMBER_OF_1_HOUR_INTERVALS; i++)
+        for(uint i; i<NUMBER_OF_TRADE_PERIODS; i++)
         {
-            // skipping current and next hour because those values are currently updating
+            // skipping current and next period because those values are currently updating
             // and are incorrect
-            if (i == currentHour || i == nextHour) continue;
+            if (i == currentPeriod || i == nextPeriod) continue;
 
-            volume += pools[poolPos].hourlyTradeVolumeInCerUsd[i];
+            volume += pools[poolPos].tradeVolumePerPeriodInCerUsd[i];
         }
 
         // multiplying it to make wei dimention

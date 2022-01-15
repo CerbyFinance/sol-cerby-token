@@ -362,7 +362,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<{
     token: string;
-    hourlyTradeVolumeInCerUsd: BN[];
+    tradeVolumePerPeriodInCerUsd: BN[];
     balanceToken: BN;
     balanceCerUsd: BN;
     lastSqrtKValue: BN;
@@ -373,7 +373,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<{
     token: string;
-    hourlyTradeVolumeInCerUsd: BN[];
+    tradeVolumePerPeriodInCerUsd: BN[];
     balanceToken: BN;
     balanceCerUsd: BN;
     lastSqrtKValue: BN;
@@ -1066,7 +1066,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<{
       token: string;
-      hourlyTradeVolumeInCerUsd: BN[];
+      tradeVolumePerPeriodInCerUsd: BN[];
       balanceToken: BN;
       balanceCerUsd: BN;
       lastSqrtKValue: BN;
@@ -1077,7 +1077,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<{
       token: string;
-      hourlyTradeVolumeInCerUsd: BN[];
+      tradeVolumePerPeriodInCerUsd: BN[];
       balanceToken: BN;
       balanceCerUsd: BN;
       lastSqrtKValue: BN;
