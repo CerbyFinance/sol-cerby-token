@@ -86,7 +86,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
     uint constant MINIMUM_LIQUIDITY = 1000;
     address constant DEAD_ADDRESS = address(0xdead);
-    address public feeToBeneficiary = DEAD_ADDRESS;
 
     Settings public settings;
 
@@ -152,7 +151,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
         settings = Settings(
             address(0xdead123), // feeToBeneficiary TODO: update on production
-            4 * MINT_FEE_DENORM, // mintFeeMultiplier 1/5 of fees goes to treasury
+            0, // TODO: update on production = 4 * MINT_FEE_DENORM, // mintFeeMultiplier 1/5 of fees goes to treasury
             1, // feeMinimum = 0.01%
             100, // feeMaximum = 1.00%
             (TVL_MULTIPLIER_DENORM * 15) / 100, // tvlMultiplierMinimum = TVL * 0.15
@@ -214,6 +213,55 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         returns (uint)
     {
         return tokenToPoolPosition[token];
+    }
+
+    // TODO: remove on production
+    function testSetupTokens(address _testCerbyBotDetectionContract, address _testCerbyToken, address _cerUsdToken, address _testUsdcToken, address )
+        public
+    {
+        testCerbyBotDetectionContract = _testCerbyBotDetectionContract;
+        testCerbyToken = _testCerbyToken;
+        cerUsdToken = _cerUsdToken;
+        testUsdcToken = _testUsdcToken;
+        
+        testInit();
+    }
+
+    // TODO: remove on production
+    function testInit()
+        public
+    {
+        // TODO: remove on production
+        adminCreatePool(
+            testCerbyToken,
+            1e18 * 1e6,
+            1e18 * 5e5,
+            msg.sender
+        );
+
+        // TODO: remove on production
+        adminCreatePool(
+            testUsdcToken,
+            1e18 * 7e5,
+            1e18 * 7e5,
+            msg.sender
+        );
+    }
+
+    // TODO: remove on production
+    function adminInitialize() 
+        public
+        payable
+        // onlyRole(ROLE_ADMIN) // TODO: enable on production
+    {        
+
+        // TODO: remove on production
+        adminCreatePool(
+            nativeToken,
+            1e15,
+            1e18 * 1e6,
+            msg.sender
+        );
     }
     
     function adminUpdateFeesAndTvlMultipliers(
@@ -349,7 +397,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
             if (amountLpTokensToMintAsFee > 0) {
                 _mint(
-                    feeToBeneficiary, 
+                    settings.feeToBeneficiary, 
                     poolPos, 
                     amountLpTokensToMintAsFee,
                     ""
@@ -456,7 +504,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 );
             if (amountLpTokensToMintAsFee > 0) {
                 _mint(
-                    feeToBeneficiary, 
+                    settings.feeToBeneficiary, 
                     poolPos, 
                     amountLpTokensToMintAsFee,
                     ""

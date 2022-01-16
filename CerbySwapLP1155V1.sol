@@ -128,8 +128,8 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
     function safeTransferFrom(
         address from,
         address to,
-        uint256 id,
-        uint256 amount,
+        uint id,
+        uint amount,
         bytes memory data
     ) 
         public 
@@ -147,11 +147,11 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         _safeTransferFrom(from, to, id, amount, data);
     }
     
-    function safeBatchTransferFrom(
+    /*function safeBatchTransferFrom(
         address from,
         address to,
-        uint256[] memory ids,
-        uint256[] memory amounts,
+        uint[] memory ids,
+        uint[] memory amounts,
         bytes memory data
     ) 
         public 
@@ -166,12 +166,12 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         checkTransactionForBots(address(this), from, to);
 
         _safeBatchTransferFrom(from, to, ids, amounts, data);
-    }
+    }*/
 
     function burn(
         address account,
-        uint256 id,
-        uint256 value
+        uint id,
+        uint value
     ) 
         public 
         virtual
@@ -184,10 +184,10 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         _burn(account, id, value);
     }
 
-    function burnBatch(
+    /*function burnBatch(
         address account,
-        uint256[] memory ids,
-        uint256[] memory values
+        uint[] memory ids,
+        uint[] memory values
     ) public virtual {
         require(
             account == _msgSender() || isApprovedForAll(account, _msgSender()),
@@ -195,5 +195,5 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         );
 
         _burnBatch(account, ids, values);
-    }
+    }*/
 }

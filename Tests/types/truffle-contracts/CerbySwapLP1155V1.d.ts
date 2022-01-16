@@ -192,33 +192,6 @@ export interface CerbySwapLP1155V1Instance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
-  burnBatch: {
-    (
-      account: string,
-      ids: (number | BN | string)[],
-      values: (number | BN | string)[],
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      account: string,
-      ids: (number | BN | string)[],
-      values: (number | BN | string)[],
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
-    sendTransaction(
-      account: string,
-      ids: (number | BN | string)[],
-      values: (number | BN | string)[],
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      account: string,
-      ids: (number | BN | string)[],
-      values: (number | BN | string)[],
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
   decimals(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
   exists(
@@ -533,33 +506,6 @@ export interface CerbySwapLP1155V1Instance extends Truffle.ContractInstance {
         account: string,
         id: number | BN | string,
         value: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
-
-    burnBatch: {
-      (
-        account: string,
-        ids: (number | BN | string)[],
-        values: (number | BN | string)[],
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        account: string,
-        ids: (number | BN | string)[],
-        values: (number | BN | string)[],
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
-      sendTransaction(
-        account: string,
-        ids: (number | BN | string)[],
-        values: (number | BN | string)[],
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        account: string,
-        ids: (number | BN | string)[],
-        values: (number | BN | string)[],
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

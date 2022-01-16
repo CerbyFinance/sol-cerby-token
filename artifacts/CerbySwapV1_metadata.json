@@ -446,6 +446,13 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "adminInitialize",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "string",
@@ -593,29 +600,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "account",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256[]",
-						"name": "ids",
-						"type": "uint256[]"
-					},
-					{
-						"internalType": "uint256[]",
-						"name": "values",
-						"type": "uint256[]"
-					}
-				],
-				"name": "burnBatch",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "decimals",
 				"outputs": [
@@ -642,19 +626,6 @@
 						"internalType": "bool",
 						"name": "",
 						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "feeToBeneficiary",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -1405,6 +1376,46 @@
 			},
 			{
 				"inputs": [],
+				"name": "testInit",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_testCerbyBotDetectionContract",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_testCerbyToken",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_cerUsdToken",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_testUsdcToken",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "testSetupTokens",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "totalSupply",
 				"outputs": [
 					{
@@ -1527,7 +1538,7 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 20
+			"runs": 200
 		},
 		"remappings": []
 	},
@@ -1541,19 +1552,19 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapLP1155V1.sol": {
-			"keccak256": "0x46af785abc3d0c3ba806b1799c6e969d8b68161fdd56b444d2a787dfabe89bfe",
+			"keccak256": "0x94f88380b7902442c23edf49ae34149d056f67404fa17f240522035098b8c083",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://390b74d0ef7d9eff5f628890bebcd7c00c6e487fc22adb6a4947bce74e73acc1",
-				"dweb:/ipfs/QmamUttqridFGfDfYA4TtAUqhLuiDLXGuNTuGtVo1QP2Tg"
+				"bzz-raw://3204335b6d093ea7682a1f24ebeedab75253a774951db72fe07915f0c0382ece",
+				"dweb:/ipfs/QmWExoWL1ziRqBL7cGXdU8j8mNkGDksmCTA1kyH9nLxhVx"
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x9860f17d15580275d7c3aca3bcaafede45de4dbce29f242bffbd3d98585135bc",
+			"keccak256": "0x75a9ec2302cc4258eb831107dd557d475a0d3d876d3618359760bcac5a864bf9",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://b6d06698766ef6cdc4083eb855b9110b26c6eb205b92956e0bc7f3916f3df3cb",
-				"dweb:/ipfs/QmSe9wMwxZkUbgqHqaj3xBLnHabNhA4QFGmYRqrDG27aGU"
+				"bzz-raw://3d97e55852f740749a6fc45eb6fecc5864913d104801ce0412188ea37dc6a3f5",
+				"dweb:/ipfs/QmX3PtJbrrRJ9BRQ916ytYn8m2zeZXa9uceTXek2X6iTSp"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
