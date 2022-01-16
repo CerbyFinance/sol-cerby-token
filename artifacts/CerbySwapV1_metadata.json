@@ -39,6 +39,105 @@
 				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amountTokensIn",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "mintCerUsdAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "lpAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "LiquidityAdded",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amountTokensOut",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amountCerUsdToBurn",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amountLpTokensBalanceToBurn",
+						"type": "uint256"
+					}
+				],
+				"name": "LiquidityRemoved",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amountTokensIn",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amountCerUsdIn",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "lpAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "poolPos",
+						"type": "uint256"
+					}
+				],
+				"name": "PairCreated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
 						"indexed": true,
 						"internalType": "bytes32",
 						"name": "role",
@@ -108,6 +207,80 @@
 					}
 				],
 				"name": "RoleRevoked",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amountTokensIn",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amountCerUsdIn",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amountTokensOut",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amountCerUsdOut",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "transferTo",
+						"type": "address"
+					}
+				],
+				"name": "Swap",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "balanceToken",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "balanceCerUsd",
+						"type": "uint256"
+					}
+				],
+				"name": "Sync",
 				"type": "event"
 			},
 			{
@@ -273,13 +446,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "adminInitialize",
-				"outputs": [],
-				"stateMutability": "payable",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "string",
@@ -295,34 +461,41 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "_feeMinimum",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_feeMaximum",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_tvlMultiplierMinimum",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_tvlMultiplierMaximum",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_mintFeeMultiplier",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "_feeToBeneficiary",
-						"type": "address"
+						"components": [
+							{
+								"internalType": "address",
+								"name": "feeToBeneficiary",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "mintFeeMultiplier",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "feeMinimum",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "feeMaximum",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "tvlMultiplierMinimum",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "tvlMultiplierMaximum",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct CerbySwapV1.Settings",
+						"name": "_settings",
+						"type": "tuple"
 					}
 				],
 				"name": "adminUpdateFeesAndTvlMultipliers",
@@ -738,19 +911,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "getTotalCerUsdBalance",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -1022,6 +1182,57 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "settings",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "feeToBeneficiary",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "mintFeeMultiplier",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "feeMinimum",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "feeMaximum",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tvlMultiplierMinimum",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tvlMultiplierMaximum",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "skimPool",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "bytes4",
@@ -1194,46 +1405,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "testInit",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_testCerbyBotDetectionContract",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "_testCerbyToken",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "_cerUsdToken",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "_testUsdcToken",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "testSetupTokens",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "totalSupply",
 				"outputs": [
 					{
@@ -1356,7 +1527,7 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 200
+			"runs": 20
 		},
 		"remappings": []
 	},
@@ -1370,19 +1541,19 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapLP1155V1.sol": {
-			"keccak256": "0x934016157b28e346052c50e3d25c63290aca12c6af08963166fd8f29764bb9fe",
+			"keccak256": "0x46af785abc3d0c3ba806b1799c6e969d8b68161fdd56b444d2a787dfabe89bfe",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://f48254a67a03189a483475fad683c6e7e9570932cfab36b06d832433d8f9be7c",
-				"dweb:/ipfs/QmQrjrT5gcq1USvjV1f512SoeWr53Gg21FkUyrBdFys5mX"
+				"bzz-raw://390b74d0ef7d9eff5f628890bebcd7c00c6e487fc22adb6a4947bce74e73acc1",
+				"dweb:/ipfs/QmamUttqridFGfDfYA4TtAUqhLuiDLXGuNTuGtVo1QP2Tg"
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x7dbc4e6dbdf1605985e0865d1212f7dceff84a7828ed3b2b4a253f510c8a3fdc",
+			"keccak256": "0x9860f17d15580275d7c3aca3bcaafede45de4dbce29f242bffbd3d98585135bc",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://79bdc5ed4edafdd2151469bcf0ad093dc5241568a83fae28f62a06819bed9388",
-				"dweb:/ipfs/QmQxphkGL1VmRh7RTixMvMmj8KSjUVqkQxQ2gvuyZM3Lhq"
+				"bzz-raw://b6d06698766ef6cdc4083eb855b9110b26c6eb205b92956e0bc7f3916f3df3cb",
+				"dweb:/ipfs/QmSe9wMwxZkUbgqHqaj3xBLnHabNhA4QFGmYRqrDG27aGU"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

@@ -825,7 +825,7 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 200
+			"runs": 20
 		},
 		"remappings": []
 	},
@@ -839,11 +839,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapLP1155V1.sol": {
-			"keccak256": "0x934016157b28e346052c50e3d25c63290aca12c6af08963166fd8f29764bb9fe",
+			"keccak256": "0x46af785abc3d0c3ba806b1799c6e969d8b68161fdd56b444d2a787dfabe89bfe",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://f48254a67a03189a483475fad683c6e7e9570932cfab36b06d832433d8f9be7c",
-				"dweb:/ipfs/QmQrjrT5gcq1USvjV1f512SoeWr53Gg21FkUyrBdFys5mX"
+				"bzz-raw://390b74d0ef7d9eff5f628890bebcd7c00c6e487fc22adb6a4947bce74e73acc1",
+				"dweb:/ipfs/QmamUttqridFGfDfYA4TtAUqhLuiDLXGuNTuGtVo1QP2Tg"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

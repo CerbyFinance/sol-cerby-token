@@ -22,6 +22,50 @@ export interface ApprovalForAll {
   };
 }
 
+export interface LiquidityAdded {
+  name: "LiquidityAdded";
+  args: {
+    token: string;
+    amountTokensIn: BN;
+    mintCerUsdAmount: BN;
+    lpAmount: BN;
+    0: string;
+    1: BN;
+    2: BN;
+    3: BN;
+  };
+}
+
+export interface LiquidityRemoved {
+  name: "LiquidityRemoved";
+  args: {
+    token: string;
+    amountTokensOut: BN;
+    amountCerUsdToBurn: BN;
+    amountLpTokensBalanceToBurn: BN;
+    0: string;
+    1: BN;
+    2: BN;
+    3: BN;
+  };
+}
+
+export interface PairCreated {
+  name: "PairCreated";
+  args: {
+    token: string;
+    amountTokensIn: BN;
+    amountCerUsdIn: BN;
+    lpAmount: BN;
+    poolPos: BN;
+    0: string;
+    1: BN;
+    2: BN;
+    3: BN;
+    4: BN;
+  };
+}
+
 export interface RoleAdminChanged {
   name: "RoleAdminChanged";
   args: {
@@ -55,6 +99,38 @@ export interface RoleRevoked {
     0: string;
     1: string;
     2: string;
+  };
+}
+
+export interface Swap {
+  name: "Swap";
+  args: {
+    token: string;
+    sender: string;
+    amountTokensIn: BN;
+    amountCerUsdIn: BN;
+    amountTokensOut: BN;
+    amountCerUsdOut: BN;
+    transferTo: string;
+    0: string;
+    1: string;
+    2: BN;
+    3: BN;
+    4: BN;
+    5: BN;
+    6: string;
+  };
+}
+
+export interface Sync {
+  name: "Sync";
+  args: {
+    token: string;
+    balanceToken: BN;
+    balanceCerUsd: BN;
+    0: string;
+    1: BN;
+    2: BN;
   };
 }
 
@@ -102,9 +178,14 @@ export interface URI {
 
 type AllEvents =
   | ApprovalForAll
+  | LiquidityAdded
+  | LiquidityRemoved
+  | PairCreated
   | RoleAdminChanged
   | RoleGranted
   | RoleRevoked
+  | Swap
+  | Sync
   | TransferBatch
   | TransferSingle
   | URI;
@@ -629,6 +710,21 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     estimateGas(
       operator: string,
       approved: boolean,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  skimPool: {
+    (token: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(token: string, txDetails?: Truffle.TransactionDetails): Promise<void>;
+    sendTransaction(
+      token: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      token: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -1333,6 +1429,24 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       estimateGas(
         operator: string,
         approved: boolean,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    skimPool: {
+      (token: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        token: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        token: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        token: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

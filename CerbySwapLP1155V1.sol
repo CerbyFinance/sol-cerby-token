@@ -120,7 +120,7 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         public 
         virtual 
         override
-        // checkTransactionAndExecuteCron(address(this), msg.sender) // TODO: enable on production
+        checkTransactionAndExecuteCron(address(this), msg.sender) // TODO: enable on production
     {
         _setApprovalForAll(_msgSender(), operator, approved);
     }
@@ -136,8 +136,6 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         virtual 
         override
     {
-        /* 
-        TODO: enable on production
         require(
             from == _msgSender() || isApprovedForAll(from, _msgSender()),
             "ERC1155: caller is not owner nor approved"
@@ -145,7 +143,7 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
 
         checkTransactionForBots(address(this), from, to);
 
-        */
+        
         _safeTransferFrom(from, to, id, amount, data);
     }
     
@@ -178,12 +176,10 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         public 
         virtual
     {
-        /*
-        TODO: enable in production
         require(
             account == _msgSender() || isApprovedForAll(account, _msgSender()),
             "ERC1155: caller is not owner nor approved"
-        );*/
+        );
 
         _burn(account, id, value);
     }
