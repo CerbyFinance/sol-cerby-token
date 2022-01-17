@@ -109,10 +109,14 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
     event PairCreated(
         address token, 
+<<<<<<< HEAD
         uint amountTokensIn, 
         uint amountCerUsdIn, 
         uint lpAmount, 
         uint poolId
+=======
+        uint poolPos
+>>>>>>> 3a4c7d90bd0fec2e27d75f529e359b7c40751b95
     );
     event LiquidityAdded(
         address token, 
@@ -287,7 +291,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     function adminCreatePool(
         address token, 
         uint amountTokensIn, 
-        uint amountCerUsdIn, 
+        uint amountCerUsdToMint, 
         address transferTo
     )
         public
@@ -298,7 +302,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint poolId = pools.length;
 
         _safeTransferFromHelper(token, msg.sender, amountTokensIn);
-        ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), amountCerUsdIn);
+        ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), amountCerUsdToMint);
 
         // finding out how many tokens router have sent to us
         amountTokensIn = _getTokenBalance(token);
@@ -308,7 +312,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         );
 
         // create new pool record
-        uint newSqrtKValue = sqrt(uint(amountTokensIn) * uint(amountCerUsdIn));
+        uint newSqrtKValue = sqrt(uint(amountTokensIn) * uint(amountCerUsdToMint));
 
         // filling with 1 usd per hour in trades to reduce gas later
         uint32[NUMBER_OF_TRADE_PERIODS] memory tradeVolumePerPeriodInCerUsd;
@@ -320,12 +324,17 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             token,
             tradeVolumePerPeriodInCerUsd,
             uint128(amountTokensIn),
-            uint128(amountCerUsdIn),
+            uint128(amountCerUsdToMint),
             uint128(newSqrtKValue)
         );
         pools.push(pool);
+<<<<<<< HEAD
         tokenToPoolId[token] = poolId;   
         totalCerUsdBalance += amountCerUsdIn;
+=======
+        tokenToPoolPosition[token] = poolPos;   
+        totalCerUsdBalance += amountCerUsdToMint;
+>>>>>>> 3a4c7d90bd0fec2e27d75f529e359b7c40751b95
 
         // minting 1000 lp tokens to prevent attack
         _mint(
@@ -336,7 +345,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         );
 
         // minting initial lp tokens
-        uint lpAmount = sqrt(uint(amountTokensIn) * uint(amountCerUsdIn)) - MINIMUM_LIQUIDITY;
+        uint lpAmount = sqrt(uint(amountTokensIn) * uint(amountCerUsdToMint)) - MINIMUM_LIQUIDITY;
         _mint(
             transferTo,
             poolId,
@@ -345,11 +354,21 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         );
 
         emit PairCreated(
+            token,
+            poolPos
+        );
+
+        emit LiquidityAdded(
             token, 
             amountTokensIn, 
+<<<<<<< HEAD
             amountCerUsdIn, 
             lpAmount, 
             poolId
+=======
+            amountCerUsdToMint, 
+            lpAmount
+>>>>>>> 3a4c7d90bd0fec2e27d75f529e359b7c40751b95
         );
     }
 
