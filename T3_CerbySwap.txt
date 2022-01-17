@@ -2,12 +2,22 @@ https://software.valar-solutions.com/Hosting/screenshots/2022-01-17_14-26-18.png
 
 1) tokenIn.balanceOf(msg.sender)
 2) tokenOut.balanceOf(msg.sender)
-3) price tokenOut per tokenIn = amountTokensOut / amountTokensIn
+3) tokenOut per tokenIn (afterSwapPrice)
+afterSwapPrice = amountTokensOut / amountTokensIn
+считаем currentPrice = getOutputExactTokensForTokens(tokenIn, tokenOut, 1e4) / 1e4
+где 1e4 в wei
+priceImpactPercent = Math.abs(currentPrice - afterSwapPrice) / currentPrice
+path - путь который снизу выводится для юзера для инфы
+- tokenIn --> cerUsd (tokenIn != cerUsd, tokenOut == cerUsd)
+- cerUsd --> tokenOut (tokenIn == cerUsd, tokenOut != cerUsd)
+- tokenIn --> cerUsd --> tokenOut (tokenIn != cerUsd, tokenOut != cerUsd)
+
 
 ---------------------
 
 4) если юзер ввел поле amountTokensIn значит дергаем
 amountTokensOut = CerbySwap.getOutputExactTokensForTokens(tokenIn, tokenOut, amountTokensIn)
+afterSwapPrice = amountTokensOut / amountTokensIn
 5) minAmountTokensOut = amountTokensOut * (1 - slippagePercent)
 6) сначала идет аппрув
 tokenIn.approve(cerbyswap.address, type(uint).max)
@@ -29,6 +39,7 @@ transferTo = msg.sender без возможности выбора юзером
 
 7) если юзер ввел поле amountTokensOut значит дергаем
 amountTokensIn = CerbySwap.getInputTokensForExactTokens(tokenIn, tokenOut, amountTokensOut)
+afterSwapPrice = amountTokensOut / amountTokensIn
 8) maxAmountTokensIn = amountTokensIn * (1 + slippagePercent)
 9) сначала идет аппрув
 tokenIn.approve(cerbyswap, type(uint).max)
