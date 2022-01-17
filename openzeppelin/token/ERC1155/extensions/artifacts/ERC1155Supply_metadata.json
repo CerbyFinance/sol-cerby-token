@@ -320,6 +320,25 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256[]",
+						"name": "ids",
+						"type": "uint256[]"
+					}
+				],
+				"name": "totalBatchSupply",
+				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "id",
 						"type": "uint256"
@@ -384,6 +403,9 @@
 				"supportsInterface(bytes4)": {
 					"details": "See {IERC165-supportsInterface}."
 				},
+				"totalBatchSupply(uint256[])": {
+					"details": "Total amount of tokens in with a given ids."
+				},
 				"totalSupply(uint256)": {
 					"details": "Total amount of tokens in with a given id."
 				},
@@ -440,11 +462,11 @@
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC1155/extensions/ERC1155Supply.sol": {
-			"keccak256": "0x4e4ed8092997a334a0eb5294840cde3f3507f33e9dd62e634c7d7e00be69005a",
+			"keccak256": "0xa7421bc7a656408409ccfac5a56d9ea1a5ba1327b26cb3ce28c98f14d0272bec",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://994244f42bb643a2050a7d506b6a9cbd71c14a8d425b63ee7dc197d5e2c83d6e",
-				"dweb:/ipfs/QmU5yhczp7AMqsoH46hfpadKhaw8Cfe41orRJe7QAxxR6f"
+				"bzz-raw://f2201258e9d0762e2105ae3bcb1fc203138143537caeb91a5d18875014e0476e",
+				"dweb:/ipfs/QmYgGqSV1vYohZhbk7AarY8JBtccbh7TET29xfABmi6hah"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC1155/extensions/IERC1155MetadataURI.sol": {

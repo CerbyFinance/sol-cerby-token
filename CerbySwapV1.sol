@@ -26,7 +26,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         string INPUT_TOKENS_AMOUNT_IS_MORE_THAN_MAXIMUM_SPECIFIED_K;
         string SWAP_TOKEN_TO_SAME_TOKEN_IS_FORBIDDEN_L;
         string ONE_OF_TOKENIN_OR_TOKEN_OUT_IS_WRONG_M;
-        string POOL_POS_DOES_NOT_EXIST_N;
+        string POOL_ID_DOES_NOT_EXIST_N;
         string AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ONE_O;
         string INVARIANT_K_VALUE_MUST_BE_INCREASED_ON_ANY_TRADE_P;
         string SAFE_TRANSFER_NATIVE_FAILED_Q;
@@ -43,7 +43,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     ErrorsList errorsList;
 
     Pool[] pools;
-    mapping(address => uint) tokenToPoolPosition;
+    mapping(address => uint) tokenToPoolId;
     uint totalCerUsdBalance;
 
     /* KOVAN 
@@ -112,7 +112,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint amountTokensIn, 
         uint amountCerUsdIn, 
         uint lpAmount, 
-        uint poolPos
+        uint poolId
     );
     event LiquidityAdded(
         address token, 
@@ -158,7 +158,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             TVL_MULTIPLIER_DENORM * 15 // tvlMultiplierMaximum = TVL * 15
         );
 
-        // Filling with empty pool 0th position
+        // Filling with empty pool 0th id
         uint32[NUMBER_OF_TRADE_PERIODS] memory tradeVolumePerPeriodInCerUsd;
         pools.push(Pool(
             address(0),
@@ -183,7 +183,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     modifier tokenMustExistInPool(address token)
     {
         require(
-            tokenToPoolPosition[token] > 0 && token != cerUsdToken,
+            tokenToPoolId[token] > 0 && token != cerUsdToken,
             errorsList.TOKEN_DOES_NOT_EXIST_C
         );
         _;
@@ -192,7 +192,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     modifier tokenDoesNotExistInPool(address token)
     {
         require(
-            tokenToPoolPosition[token] == 0 && token != cerUsdToken,
+            tokenToPoolId[token] == 0 && token != cerUsdToken,
             errorsList.TOKEN_ALREAD_EXISTS_B
         );
         _;
@@ -207,12 +207,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         _;
     }
 
-    function getTokenToPoolPosition(address token) 
+    function gettokenToPoolId(address token) 
         public
         view
         returns (uint)
     {
-        return tokenToPoolPosition[token];
+        return tokenToPoolId[token];
     }
 
     // TODO: remove on production
@@ -295,7 +295,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         onlyRole(ROLE_ADMIN) // TODO: enable on production
         tokenDoesNotExistInPool(token)
     {
-        uint poolPos = pools.length;
+        uint poolId = pools.length;
 
         _safeTransferFromHelper(token, msg.sender, amountTokensIn);
         ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), amountCerUsdIn);
@@ -324,13 +324,13 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             uint128(newSqrtKValue)
         );
         pools.push(pool);
-        tokenToPoolPosition[token] = poolPos;   
+        tokenToPoolId[token] = poolId;   
         totalCerUsdBalance += amountCerUsdIn;
 
         // minting 1000 lp tokens to prevent attack
         _mint(
             DEAD_ADDRESS,
-            poolPos,
+            poolId,
             MINIMUM_LIQUIDITY,
             ""
         );
@@ -339,7 +339,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint lpAmount = sqrt(uint(amountTokensIn) * uint(amountCerUsdIn)) - MINIMUM_LIQUIDITY;
         _mint(
             transferTo,
-            poolPos,
+            poolId,
             lpAmount,
             ""
         );
@@ -349,7 +349,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountTokensIn, 
             amountCerUsdIn, 
             lpAmount, 
-            poolPos
+            poolId
         );
     }
 
@@ -364,14 +364,15 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         tokenMustExistInPool(token)
         transactionIsNotExpired(expireTimestamp)
         // checkForBots(msg.sender) // TODO: enable on production
+        returns (uint)
     {
-        uint poolPos = tokenToPoolPosition[token];
+        uint poolId = tokenToPoolId[token];
 
         _safeTransferFromHelper(token, msg.sender, amountTokensIn);
 
         // finding out how many tokens we've actually received
         uint newTokenBalance = _getTokenBalance(token);
-        amountTokensIn = newTokenBalance - pools[poolPos].balanceToken;
+        amountTokensIn = newTokenBalance - pools[poolId].balanceToken;
         require(
             amountTokensIn > 0,
             errorsList.AMOUNT_OF_TOKENS_MUST_BE_LARGER_THAN_ONE_F
@@ -384,21 +385,21 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         {
             // calculating new sqrt(k) value before updating pool
             uint newSqrtKValue = 
-                sqrt(uint(pools[poolPos].balanceToken) * 
-                        uint(pools[poolPos].balanceCerUsd));
+                sqrt(uint(pools[poolId].balanceToken) * 
+                        uint(pools[poolId].balanceCerUsd));
             
             // minting trade fees
             uint amountLpTokensToMintAsFee = 
                 _getMintFeeLiquidityAmount(
-                    pools[poolPos].lastSqrtKValue, 
+                    pools[poolId].lastSqrtKValue, 
                     newSqrtKValue, 
-                    _totalSupply[poolPos]
+                    _totalSupply[poolId]
                 );
 
             if (amountLpTokensToMintAsFee > 0) {
                 _mint(
                     settings.feeToBeneficiary, 
-                    poolPos, 
+                    poolId, 
                     amountLpTokensToMintAsFee,
                     ""
                 );
@@ -406,10 +407,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         }
 
         // minting LP tokens
-        uint lpAmount = (amountTokensIn * _totalSupply[poolPos]) / pools[poolPos].balanceToken;
+        uint lpAmount = (amountTokensIn * _totalSupply[poolId]) / pools[poolId].balanceToken;
         _mint(
             transferTo,
-            poolPos,
+            poolId,
             lpAmount,
             ""
         );     
@@ -417,8 +418,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         { // scope to avoid stack to deep error
             // calculating amount of cerUSD to mint according to current price
             uint mintCerUsdAmount = 
-                (amountTokensIn * uint(pools[poolPos].balanceCerUsd)) / 
-                    uint(pools[poolPos].balanceToken);
+                (amountTokensIn * uint(pools[poolId].balanceCerUsd)) / 
+                    uint(pools[poolId].balanceToken);
             require(
                 mintCerUsdAmount > 0,
                 errorsList.AMOUNT_OF_CERUSD_MUST_BE_LARGER_THAN_ONE_U
@@ -429,13 +430,13 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
             // updating pool
             totalCerUsdBalance = totalCerUsdBalance + amountCerUsdIn + mintCerUsdAmount;
-            pools[poolPos].balanceToken = 
-                pools[poolPos].balanceToken + uint128(amountTokensIn);
-            pools[poolPos].balanceCerUsd = 
-                pools[poolPos].balanceCerUsd + uint128(amountCerUsdIn + mintCerUsdAmount);
-            pools[poolPos].lastSqrtKValue = 
-                uint128(sqrt(uint(pools[poolPos].balanceToken) * 
-                    uint(pools[poolPos].balanceCerUsd)));
+            pools[poolId].balanceToken = 
+                pools[poolId].balanceToken + uint128(amountTokensIn);
+            pools[poolId].balanceCerUsd = 
+                pools[poolId].balanceCerUsd + uint128(amountCerUsdIn + mintCerUsdAmount);
+            pools[poolId].lastSqrtKValue = 
+                uint128(sqrt(uint(pools[poolId].balanceToken) * 
+                    uint(pools[poolId].balanceCerUsd)));
 
             emit LiquidityAdded(
                 token, 
@@ -444,6 +445,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 lpAmount
             );
         }
+
+        return lpAmount;
     }
 
     function removeTokenLiquidity(
@@ -456,8 +459,9 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         tokenMustExistInPool(token)
         transactionIsNotExpired(expireTimestamp)
         // checkForBots(msg.sender) // TODO: enable on production
+        returns (uint)
     {
-        _removeTokenLiquidity(
+        return _removeTokenLiquidity(
             token,
             amountLpTokensBalanceToBurn,
             transferTo
@@ -470,42 +474,43 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         address transferTo
     )
         private
+        returns (uint)
     {
-        uint poolPos = tokenToPoolPosition[token];
+        uint poolId = tokenToPoolId[token];
         
         // finding out if for some reason we've received tokens
         uint oldTokenBalance = _getTokenBalance(token);
-        uint amountTokensIn = oldTokenBalance - pools[poolPos].balanceToken;
+        uint amountTokensIn = oldTokenBalance - pools[poolId].balanceToken;
 
         // finding out if for some reason we've received cerUSD tokens as well
         uint amountCerUsdIn = _getTokenBalance(cerUsdToken) - totalCerUsdBalance;
 
         // calculating amount of tokens to transfer
-        uint totalLPSupply = _totalSupply[poolPos];
+        uint totalLPSupply = _totalSupply[poolId];
         uint amountTokensOut = 
-            (uint(pools[poolPos].balanceToken) * amountLpTokensBalanceToBurn) / totalLPSupply;       
+            (uint(pools[poolId].balanceToken) * amountLpTokensBalanceToBurn) / totalLPSupply;       
 
         // calculating amount of cerUSD to burn
         uint amountCerUsdToBurn = 
-            (uint(pools[poolPos].balanceCerUsd) * amountLpTokensBalanceToBurn) / totalLPSupply;
+            (uint(pools[poolId].balanceCerUsd) * amountLpTokensBalanceToBurn) / totalLPSupply;
 
         { // scope to avoid stack too deep error            
             // storing sqrt(k) value before updating pool
             uint newSqrtKValue = 
-                sqrt(uint(pools[poolPos].balanceToken) * 
-                    uint(pools[poolPos].balanceCerUsd));
+                sqrt(uint(pools[poolId].balanceToken) * 
+                    uint(pools[poolId].balanceCerUsd));
 
             // minting trade fees
             uint amountLpTokensToMintAsFee = 
                 _getMintFeeLiquidityAmount(
-                    pools[poolPos].lastSqrtKValue, 
+                    pools[poolId].lastSqrtKValue, 
                     newSqrtKValue, 
                     totalLPSupply
                 );
             if (amountLpTokensToMintAsFee > 0) {
                 _mint(
                     settings.feeToBeneficiary, 
-                    poolPos, 
+                    poolId, 
                     amountLpTokensToMintAsFee,
                     ""
                 );
@@ -513,16 +518,16 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
             // updating pool        
             totalCerUsdBalance = totalCerUsdBalance + amountCerUsdIn - amountCerUsdToBurn;
-            pools[poolPos].balanceToken = 
-                pools[poolPos].balanceToken + uint128(amountTokensIn) - uint128(amountTokensOut);
-            pools[poolPos].balanceCerUsd = 
-                pools[poolPos].balanceCerUsd + uint128(amountCerUsdIn) - uint128(amountCerUsdToBurn);
-            pools[poolPos].lastSqrtKValue = 
-                uint128(sqrt(uint(pools[poolPos].balanceToken) * 
-                    uint(pools[poolPos].balanceCerUsd)));
+            pools[poolId].balanceToken = 
+                pools[poolId].balanceToken + uint128(amountTokensIn) - uint128(amountTokensOut);
+            pools[poolId].balanceCerUsd = 
+                pools[poolId].balanceCerUsd + uint128(amountCerUsdIn) - uint128(amountCerUsdToBurn);
+            pools[poolId].lastSqrtKValue = 
+                uint128(sqrt(uint(pools[poolId].balanceToken) * 
+                    uint(pools[poolId].balanceCerUsd)));
 
             // burning LP tokens from sender
-            burn(msg.sender, poolPos, amountLpTokensBalanceToBurn);
+            burn(msg.sender, poolId, amountLpTokensBalanceToBurn);
 
             // burning cerUSD
             ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), amountCerUsdToBurn);
@@ -543,6 +548,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountCerUsdToBurn, 
             amountLpTokensBalanceToBurn
         );
+
+        return amountTokensOut;
     }
 
     function _getMintFeeLiquidityAmount(uint lastSqrtKValue, uint newSqrtKValue, uint totalLPSupply)
@@ -815,7 +822,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         private
         tokenMustExistInPool(token)
     {
-        uint poolPos = tokenToPoolPosition[token];
+        uint poolId = tokenToPoolId[token];
 
         // finding out how many amountCerUsdIn we received
         uint newTotalCerUsdBalance = _getTokenBalance(cerUsdToken);
@@ -823,7 +830,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
         // finding out how many amountTokensIn we received
         uint oldTokenBalance = _getTokenBalance(token);
-        uint amountTokensIn = oldTokenBalance - pools[poolPos].balanceToken;
+        uint amountTokensIn = oldTokenBalance - pools[poolId].balanceToken;
         require(
             amountTokensIn + amountCerUsdIn > 1,
             errorsList.AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ONE_O
@@ -831,17 +838,17 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
         { // scope to avoid stack too deep error
             // calculating old K value including trade fees (multiplied by FEE_DENORM^2)
-            uint fee = getCurrentFeeBasedOnTrades(poolPos);
+            uint fee = getCurrentFeeBasedOnTrades(poolId);
             uint beforeKValueDenormed = 
-                uint(pools[poolPos].balanceCerUsd) * FEE_DENORM *
-                uint(pools[poolPos].balanceToken) * FEE_DENORM;
+                uint(pools[poolId].balanceCerUsd) * FEE_DENORM *
+                uint(pools[poolId].balanceToken) * FEE_DENORM;
 
             // calculating new pool values
             uint _totalCerUsdBalance = totalCerUsdBalance + amountCerUsdIn - amountCerUsdOut;
             uint _balanceCerUsd = 
-                uint(pools[poolPos].balanceCerUsd) + amountCerUsdIn - amountCerUsdOut;
+                uint(pools[poolId].balanceCerUsd) + amountCerUsdIn - amountCerUsdOut;
             uint _balanceToken =
-                uint(pools[poolPos].balanceToken) + amountTokensIn - amountTokensOut;
+                uint(pools[poolId].balanceToken) + amountTokensIn - amountTokensOut;
 
             // calculating new K value including trade fees (multiplied by FEE_DENORM^2)
             uint afterKValueDenormed = 
@@ -854,8 +861,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
             // updating pool values
             totalCerUsdBalance = _totalCerUsdBalance;
-            pools[poolPos].balanceCerUsd = uint128(_balanceCerUsd);
-            pools[poolPos].balanceToken = uint128(_balanceToken);
+            pools[poolId].balanceCerUsd = uint128(_balanceCerUsd);
+            pools[poolId].balanceToken = uint128(_balanceToken);
         }
 
         // updating 1 hour trade pool values
@@ -864,15 +871,15 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         unchecked {
             // wrapping any uint32 overflows
             // stores in USD value
-            pools[poolPos].tradeVolumePerPeriodInCerUsd[currentPeriod] += 
+            pools[poolId].tradeVolumePerPeriodInCerUsd[currentPeriod] += 
                 uint32( (amountCerUsdIn + amountCerUsdOut) / 1e18);
         }
 
         // clearing next 1 hour trade value
-        if (pools[poolPos].tradeVolumePerPeriodInCerUsd[nextPeriod] > 1)
+        if (pools[poolId].tradeVolumePerPeriodInCerUsd[nextPeriod] > 1)
         {
             // gas saving to not zero the field
-            pools[poolPos].tradeVolumePerPeriodInCerUsd[nextPeriod] = 1;
+            pools[poolId].tradeVolumePerPeriodInCerUsd[nextPeriod] = 1;
         }
 
         // transferring tokens from contract to user if any
@@ -882,7 +889,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             // making sure exactly amountTokensOut tokens were sent out
             uint newTokenBalance = _getTokenBalance(token);
             require(
-                newTokenBalance == pools[poolPos].balanceToken,
+                newTokenBalance == pools[poolId].balanceToken,
                 errorsList.FEE_ON_TRANSFER_TOKENS_ARENT_SUPPORTED_E
             );
         }
@@ -901,7 +908,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountCerUsdOut, 
             transferTo
         ); 
-        emit Sync(token, pools[poolPos].balanceToken, pools[poolPos].balanceCerUsd);
+        emit Sync(token, pools[poolId].balanceToken, pools[poolId].balanceCerUsd);
     }
 
     function _getTokenBalance(address token)
@@ -1009,18 +1016,18 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         tokenMustExistInPool(token)
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
     {
-        uint poolPos = tokenToPoolPosition[token];
-        pools[poolPos].balanceToken = uint128(_getTokenBalance(token));
+        uint poolId = tokenToPoolId[token];
+        pools[poolId].balanceToken = uint128(_getTokenBalance(token));
         
         uint newTotalCerUsdBalance = _getTokenBalance(cerUsdToken);
-        pools[poolPos].balanceCerUsd = 
+        pools[poolId].balanceCerUsd = 
             newTotalCerUsdBalance > totalCerUsdBalance?
-                pools[poolPos].balanceCerUsd + uint128(newTotalCerUsdBalance - totalCerUsdBalance):
-                pools[poolPos].balanceCerUsd - uint128(totalCerUsdBalance - newTotalCerUsdBalance);
+                pools[poolId].balanceCerUsd + uint128(newTotalCerUsdBalance - totalCerUsdBalance):
+                pools[poolId].balanceCerUsd - uint128(totalCerUsdBalance - newTotalCerUsdBalance);
 
         totalCerUsdBalance = newTotalCerUsdBalance;
 
-        emit Sync(token, pools[poolPos].balanceToken, pools[poolPos].balanceCerUsd);
+        emit Sync(token, pools[poolId].balanceToken, pools[poolId].balanceCerUsd);
     }
 
     function skimPool(address token)
@@ -1028,16 +1035,16 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         tokenMustExistInPool(token)
         // checkForBotsAndExecuteCronJobs(msg.sender) // TODO: enable on production
     {
-        uint poolPos = tokenToPoolPosition[token];
+        uint poolId = tokenToPoolId[token];
         uint newBalanceToken = _getTokenBalance(token);
         uint newBalanceCerUsd = _getTokenBalance(cerUsdToken);
 
-        uint diffBalanceToken = newBalanceToken - pools[poolPos].balanceToken;
+        uint diffBalanceToken = newBalanceToken - pools[poolId].balanceToken;
         if (diffBalanceToken > 0) {
             _safeTransferHelper(token, msg.sender, diffBalanceToken, false);
         }
 
-        uint diffBalanceCerUsd = newBalanceCerUsd - pools[poolPos].balanceCerUsd;
+        uint diffBalanceCerUsd = newBalanceCerUsd - pools[poolId].balanceCerUsd;
         if (diffBalanceCerUsd > 0) {
             _safeTransferHelper(cerUsdToken, msg.sender, diffBalanceCerUsd, false);
         }
@@ -1056,10 +1063,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         view
         returns (uint fee)
     {
-        return getCurrentFeeBasedOnTrades(tokenToPoolPosition[token]);
+        return getCurrentFeeBasedOnTrades(tokenToPoolId[token]);
     }
 
-    function getCurrentFeeBasedOnTrades(uint poolPos)
+    function getCurrentFeeBasedOnTrades(uint poolId)
         private
         view
         returns (uint fee)
@@ -1074,7 +1081,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             // and are incorrect
             if (i == currentPeriod || i == nextPeriod) continue;
 
-            volume += pools[poolPos].tradeVolumePerPeriodInCerUsd[i];
+            volume += pools[poolId].tradeVolumePerPeriodInCerUsd[i];
         }
 
         // multiplying it to make wei dimention
@@ -1084,9 +1091,9 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         // TVL * min < trades < TVL * max   ---> fee is between feeMaximum and feeMinimum
         // trades >= TVL * max              ---> fee = feeMinimum
         uint tvlMin = 
-            (pools[poolPos].balanceCerUsd * settings.tvlMultiplierMinimum) / TVL_MULTIPLIER_DENORM;
+            (pools[poolId].balanceCerUsd * settings.tvlMultiplierMinimum) / TVL_MULTIPLIER_DENORM;
         uint tvlMax = 
-            (pools[poolPos].balanceCerUsd * settings.tvlMultiplierMaximum) / TVL_MULTIPLIER_DENORM;
+            (pools[poolId].balanceCerUsd * settings.tvlMultiplierMaximum) / TVL_MULTIPLIER_DENORM;
         if (volume <= tvlMin) {
             fee = settings.feeMaximum; // 1.00%
         } else if (tvlMin < volume && volume < tvlMax) {
@@ -1162,12 +1169,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         tokenMustExistInPool(token)
         returns (uint)
     {
-        uint poolPos = tokenToPoolPosition[token];
+        uint poolId = tokenToPoolId[token];
         return _getOutput(
             amountTokensIn,
-            pools[poolPos].balanceToken,
-            pools[poolPos].balanceCerUsd,
-            getCurrentFeeBasedOnTrades(poolPos)
+            pools[poolId].balanceToken,
+            pools[poolId].balanceCerUsd,
+            getCurrentFeeBasedOnTrades(poolId)
         );
     }
 
@@ -1177,12 +1184,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         tokenMustExistInPool(token)
         returns (uint)
     {
-        uint poolPos = tokenToPoolPosition[token];
+        uint poolId = tokenToPoolId[token];
         return _getOutput(
             amountCerUsdIn,
-            pools[poolPos].balanceCerUsd,
-            pools[poolPos].balanceToken,
-            getCurrentFeeBasedOnTrades(poolPos)
+            pools[poolId].balanceCerUsd,
+            pools[poolId].balanceToken,
+            getCurrentFeeBasedOnTrades(poolId)
         );
     }
 
@@ -1208,12 +1215,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         tokenMustExistInPool(token)
         returns (uint)
     {
-        uint poolPos = tokenToPoolPosition[token];
+        uint poolId = tokenToPoolId[token];
         return _getInput(
             amountCerUsdOut,
-            pools[poolPos].balanceToken,
-            pools[poolPos].balanceCerUsd,
-            getCurrentFeeBasedOnTrades(poolPos)
+            pools[poolId].balanceToken,
+            pools[poolId].balanceCerUsd,
+            getCurrentFeeBasedOnTrades(poolId)
         );
     }
 
@@ -1223,12 +1230,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         tokenMustExistInPool(token)
         returns (uint)
     {
-        uint poolPos = tokenToPoolPosition[token];
+        uint poolId = tokenToPoolId[token];
         return _getInput(
             amountTokensOut,
-            pools[poolPos].balanceCerUsd,
-            pools[poolPos].balanceToken,
-            getCurrentFeeBasedOnTrades(poolPos)
+            pools[poolId].balanceCerUsd,
+            pools[poolId].balanceToken,
+            getCurrentFeeBasedOnTrades(poolId)
         );
     }
 
@@ -1247,20 +1254,28 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         return amountIn;
     }
 
-    function getPoolByPosition(uint pos)
+    function getPoolsByIds(uint[] calldata ids)
         public
         view
-        returns (Pool memory)
+        returns (Pool[] memory)
     {
-        return pools[pos];
+        Pool[] memory outputPools = new Pool[](ids.length);
+        for(uint i; i<ids.length; i++) {
+            outputPools[i] = pools[ids[i]];
+        }
+        return outputPools;
     }
 
-    function getPoolByToken(address token)
+    function getPoolsByTokens(address[] calldata tokens)
         public
         view
-        returns (Pool memory)
+        returns (Pool[] memory)
     {
-        return pools[tokenToPoolPosition[token]];
+        Pool[] memory outputPools = new Pool[](tokens.length);
+        for(uint i; i<tokens.length; i++) {
+            outputPools[i] = pools[tokenToPoolId[tokens[i]]];
+        }
+        return outputPools;
     }
 
     function sqrt(uint x)

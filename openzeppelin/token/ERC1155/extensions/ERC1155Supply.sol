@@ -14,19 +14,30 @@ import "../ERC1155.sol";
  * same id are not going to be minted.
  */
 abstract contract ERC1155Supply is ERC1155 {
-    mapping(uint256 => uint256) internal _totalSupply;
+    mapping(uint => uint) internal _totalSupply;
 
     /**
      * @dev Total amount of tokens in with a given id.
      */
-    function totalSupply(uint256 id) public view virtual returns (uint256) {
+    function totalSupply(uint id) public view virtual returns (uint) {
         return _totalSupply[id];
+    }
+
+    /**
+     * @dev Total amount of tokens in with a given ids.
+     */
+    function totalBatchSupply(uint[] calldata ids) public view virtual returns (uint[] memory) {
+        uint[] memory outputTotalSupply = new uint[](ids.length);
+        for(uint i; i<ids.length; i++) {
+            outputTotalSupply[i] = _totalSupply[ids[i]];
+        }
+        return outputTotalSupply;
     }
 
     /**
      * @dev Indicates whether any token exist with a given id, or not.
      */
-    function exists(uint256 id) public view virtual returns (bool) {
+    function exists(uint id) public view virtual returns (bool) {
         return ERC1155Supply.totalSupply(id) > 0;
     }
 
@@ -37,20 +48,20 @@ abstract contract ERC1155Supply is ERC1155 {
         address operator,
         address from,
         address to,
-        uint256[] memory ids,
-        uint256[] memory amounts,
+        uint[] memory ids,
+        uint[] memory amounts,
         bytes memory data
     ) internal virtual override {
         super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
 
         if (from == address(0)) {
-            for (uint256 i = 0; i < ids.length; ++i) {
+            for (uint i = 0; i < ids.length; ++i) {
                 _totalSupply[ids[i]] += amounts[i];
             }
         }
 
         if (to == address(0)) {
-            for (uint256 i = 0; i < ids.length; ++i) {
+            for (uint i = 0; i < ids.length; ++i) {
                 _totalSupply[ids[i]] -= amounts[i];
             }
         }

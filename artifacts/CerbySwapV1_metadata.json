@@ -127,7 +127,7 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "poolPos",
+						"name": "poolId",
 						"type": "uint256"
 					}
 				],
@@ -413,7 +413,13 @@
 					}
 				],
 				"name": "addTokenLiquidity",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
 				"stateMutability": "payable",
 				"type": "function"
 			},
@@ -711,12 +717,12 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "pos",
-						"type": "uint256"
+						"internalType": "uint256[]",
+						"name": "ids",
+						"type": "uint256[]"
 					}
 				],
-				"name": "getPoolByPosition",
+				"name": "getPoolsByIds",
 				"outputs": [
 					{
 						"components": [
@@ -746,9 +752,9 @@
 								"type": "uint128"
 							}
 						],
-						"internalType": "struct CerbySwapV1.Pool",
+						"internalType": "struct CerbySwapV1.Pool[]",
 						"name": "",
-						"type": "tuple"
+						"type": "tuple[]"
 					}
 				],
 				"stateMutability": "view",
@@ -757,12 +763,12 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
+						"internalType": "address[]",
+						"name": "tokens",
+						"type": "address[]"
 					}
 				],
-				"name": "getPoolByToken",
+				"name": "getPoolsByTokens",
 				"outputs": [
 					{
 						"components": [
@@ -792,9 +798,9 @@
 								"type": "uint128"
 							}
 						],
-						"internalType": "struct CerbySwapV1.Pool",
+						"internalType": "struct CerbySwapV1.Pool[]",
 						"name": "",
-						"type": "tuple"
+						"type": "tuple[]"
 					}
 				],
 				"stateMutability": "view",
@@ -865,25 +871,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					}
-				],
-				"name": "getTokenToPoolPosition",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "uint256",
 						"name": "pos",
 						"type": "uint256"
@@ -895,6 +882,25 @@
 						"internalType": "address",
 						"name": "",
 						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "gettokenToPoolId",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -1028,7 +1034,13 @@
 					}
 				],
 				"name": "removeTokenLiquidity",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -1415,6 +1427,25 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "ids",
+						"type": "uint256[]"
+					}
+				],
+				"name": "totalBatchSupply",
+				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "totalSupply",
 				"outputs": [
@@ -1515,6 +1546,9 @@
 				"setApprovalForAll(address,bool)": {
 					"details": "See {IERC1155-setApprovalForAll}."
 				},
+				"totalBatchSupply(uint256[])": {
+					"details": "Total amount of tokens in with a given ids."
+				},
 				"totalSupply(uint256)": {
 					"details": "Total amount of tokens in with a given id."
 				}
@@ -1560,11 +1594,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x75a9ec2302cc4258eb831107dd557d475a0d3d876d3618359760bcac5a864bf9",
+			"keccak256": "0xe9c0ce80fa87747f623dd11dec15c2c09659cb232a9b9ff06f057c6fca17f3e5",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://3d97e55852f740749a6fc45eb6fecc5864913d104801ce0412188ea37dc6a3f5",
-				"dweb:/ipfs/QmX3PtJbrrRJ9BRQ916ytYn8m2zeZXa9uceTXek2X6iTSp"
+				"bzz-raw://e7ea940076f0ef8ad5c118e9f81fbf2fb7dbc7e840d2900a64c08d8bba197574",
+				"dweb:/ipfs/Qma1NfkXFauhe4kXLrfZHgtjM54GGTaH7A7zZPyHnH8uK9"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
@@ -1664,11 +1698,11 @@
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC1155/extensions/ERC1155Supply.sol": {
-			"keccak256": "0x4e4ed8092997a334a0eb5294840cde3f3507f33e9dd62e634c7d7e00be69005a",
+			"keccak256": "0xa7421bc7a656408409ccfac5a56d9ea1a5ba1327b26cb3ce28c98f14d0272bec",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://994244f42bb643a2050a7d506b6a9cbd71c14a8d425b63ee7dc197d5e2c83d6e",
-				"dweb:/ipfs/QmU5yhczp7AMqsoH46hfpadKhaw8Cfe41orRJe7QAxxR6f"
+				"bzz-raw://f2201258e9d0762e2105ae3bcb1fc203138143537caeb91a5d18875014e0476e",
+				"dweb:/ipfs/QmYgGqSV1vYohZhbk7AarY8JBtccbh7TET29xfABmi6hah"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC1155/extensions/IERC1155MetadataURI.sol": {

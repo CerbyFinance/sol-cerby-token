@@ -1,0 +1,108 @@
+https://software.valar-solutions.com/Hosting/screenshots/2022-01-17_14-26-18.png
+
+1) tokenIn.balanceOf(msg.sender)
+2) tokenOut.balanceOf(msg.sender)
+3) price tokenOut per tokenIn = amountTokensOut / amountTokensIn
+
+---------------------
+
+4) если юзер ввел поле amountTokensIn значит дергаем
+amountTokensOut = CerbySwap.getOutputExactTokensForTokens(tokenIn, tokenOut, amountTokensIn)
+5) minAmountTokensOut = amountTokensOut * (1 - slippagePercent)
+6) сначала идет аппрув
+tokenIn.approve(cerbyswap.address, type(uint).max)
+чекаем аппрув allowance = tokenIn.allowance(msg.sender, cerbySwap.address)
+allowance >= amountTokensIn
+7) потом идет свап
+swapExactTokensForTokens(
+    address tokenIn,
+    address tokenOut,
+    uint amountTokensIn,
+    uint minAmountTokensOut,
+    uint expireTimestamp,
+    address transferTo
+)
+8) expireTimestamp = block.timestamp + 180 minutes in seconds (пусть будет захардкодено без выбора для юзера т.к никто не юзает все равно)
+transferTo = msg.sender без возможности выбора юзером
+
+---------------------
+
+7) если юзер ввел поле amountTokensOut значит дергаем
+amountTokensIn = CerbySwap.getInputTokensForExactTokens(tokenIn, tokenOut, amountTokensOut)
+8) maxAmountTokensIn = amountTokensIn * (1 + slippagePercent)
+9) сначала идет аппрув
+tokenIn.approve(cerbyswap, type(uint).max)
+10) потом идет свап
+function swapTokensForExactTokens(
+    address tokenIn,
+    address tokenOut,
+    uint amountTokensOut,
+    uint maxAmountTokensIn,
+    uint expireTimestamp,
+    address transferTo
+)
+
+---------------------
+
+11) если направление ИЗ ETH --> XXX
+мы передаем msg.value = amountTokensIn в случае (4)
+или msg.value = maxAmountTokensIn в случае (7)
+
+---------------------
+
+12) в обоих случаях свап функция возвращает в таком порядке
+return (amountTokensIn, amountTokensOut);
+
+на основе этого ты можешь в нотификейшен или в истории платежей добавлять
+
+---------------------
+
+13) добавление ликвы
+скриншот https://software.valar-solutions.com/Hosting/screenshots/2022-01-17_14-47-29.png
+14) юзер выбирает токен в верхнем поле tokenIn
+15) по токену дергается pool = getPoolByToken(tokenIn)
+считается текущая цена tokenIn
+priceTokenIn = pool.balanceCerUsd / pool.balanceTokens
+16) считается amountCerUsdToMint = priceTokenIn * amountTokensIn
+(просто для информации для юзера в disabled поле см скриншот)
+17) сначала идет аппрув
+tokenIn.approve(cerbyswap.address, type(uint).max)
+чекаем аппрув allowance = tokenIn.allowance(msg.sender, cerbySwap.address)
+allowance >= amountTokensIn
+18) потом добавление ликвы
+function addTokenLiquidity(
+    address tokenIn, 
+    uint amountTokensIn, 
+    uint expireTimestamp,
+    address transferTo
+)
+19) возвращает число лп токенов которые юзер получил
+
+---------------------
+
+20) удаление ликвы
+вначале находим список всех балансов юзера
+CerbySwap.balanceOfBatch(address[] memory accounts, uint256[] memory ids)
+accounts = [msg.sender, msg.sender, ...]
+ids = [1, 2, ..., 500] пусть будет 500 пар чек
+21) определяем какие айди имеет больше нуля баланс и для каждого из них находим объекты пула
+getPoolsByIds(uint[] calldata ids)
+22) определяем totalSupply для каждого айди пула
+totalBatchSupply(uint[] calldata ids) public view virtual returns (uint[] memory)
+23) далее на основе каждого пула определяем сколько юзеру доступно к снятию
+amountTokensOut[i] = pool[i].balanceTokens * balanceLp[i] / totalSupply[i]
+24) ну и также как на юнисвапе юзер может ползунок двигать от 0 до 100% чтобы снять ликву
+по ползунку считаем amountLpTokensToBurn = balanceLp[i] * percentPolzunok
+25) делаем аппрув лп токенов
+CerbySwap.setApprovalForAll(cerbySwap.address, true) 
+26) чекаем аппрувнуты ли лп токены
+isApprovedForAll(msg.sender, cerbySwap.address)
+27) удаляем ликву
+function removeTokenLiquidity(
+    address tokenIn, 
+    uint amountLpTokensBalanceToBurn, 
+    uint expireTimestamp,
+    address transferTo
+)
+
+возвращает нам число токенов tokenIn которые перевели юзеру
