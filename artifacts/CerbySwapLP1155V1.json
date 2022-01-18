@@ -73,7 +73,6 @@
 			"setApprovalForAll(address,bool)": "a22cb465",
 			"supportsInterface(bytes4)": "01ffc9a7",
 			"symbol()": "95d89b41",
-			"totalBatchSupply(uint256[])": "a5534d7c",
 			"totalSupply()": "18160ddd",
 			"totalSupply(uint256)": "bd85b039",
 			"uri(uint256)": "0e89341c"
@@ -752,25 +751,6 @@
 					"internalType": "string",
 					"name": "",
 					"type": "string"
-				}
-			],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "uint256[]",
-					"name": "ids",
-					"type": "uint256[]"
-				}
-			],
-			"name": "totalBatchSupply",
-			"outputs": [
-				{
-					"internalType": "uint256[]",
-					"name": "",
-					"type": "uint256[]"
 				}
 			],
 			"stateMutability": "view",

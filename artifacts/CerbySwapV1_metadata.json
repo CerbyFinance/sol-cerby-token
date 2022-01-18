@@ -53,7 +53,7 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "mintCerUsdAmount",
+						"name": "amountCerUsdToMint",
 						"type": "uint256"
 					},
 					{
@@ -105,24 +105,6 @@
 						"internalType": "address",
 						"name": "token",
 						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "amountTokensIn",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "amountCerUsdIn",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "lpAmount",
-						"type": "uint256"
 					},
 					{
 						"indexed": false,
@@ -437,7 +419,7 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "amountCerUsdIn",
+						"name": "amountCerUsdToMint",
 						"type": "uint256"
 					},
 					{
@@ -1427,25 +1409,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256[]",
-						"name": "ids",
-						"type": "uint256[]"
-					}
-				],
-				"name": "totalBatchSupply",
-				"outputs": [
-					{
-						"internalType": "uint256[]",
-						"name": "",
-						"type": "uint256[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "totalSupply",
 				"outputs": [
@@ -1546,9 +1509,6 @@
 				"setApprovalForAll(address,bool)": {
 					"details": "See {IERC1155-setApprovalForAll}."
 				},
-				"totalBatchSupply(uint256[])": {
-					"details": "Total amount of tokens in with a given ids."
-				},
 				"totalSupply(uint256)": {
 					"details": "Total amount of tokens in with a given id."
 				}
@@ -1586,19 +1546,19 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapLP1155V1.sol": {
-			"keccak256": "0x94f88380b7902442c23edf49ae34149d056f67404fa17f240522035098b8c083",
+			"keccak256": "0x83fe49da422e8e4ae64202a4113af3b9cc049deb1186bbd2e0f720d708026ea0",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://3204335b6d093ea7682a1f24ebeedab75253a774951db72fe07915f0c0382ece",
-				"dweb:/ipfs/QmWExoWL1ziRqBL7cGXdU8j8mNkGDksmCTA1kyH9nLxhVx"
+				"bzz-raw://5357fcafb493d72d59991c52277393bee670e55cce98299442995780175c1309",
+				"dweb:/ipfs/QmTeCwzDLCKkphsc3ojTHsSaTCVqgXMHkqqcxjf1ncihT2"
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xe9c0ce80fa87747f623dd11dec15c2c09659cb232a9b9ff06f057c6fca17f3e5",
+			"keccak256": "0x6e0fcdb862c138bb25a2c7ce2a08240c71cde594fa3a5c493ed89499dcb0698e",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://e7ea940076f0ef8ad5c118e9f81fbf2fb7dbc7e840d2900a64c08d8bba197574",
-				"dweb:/ipfs/Qma1NfkXFauhe4kXLrfZHgtjM54GGTaH7A7zZPyHnH8uK9"
+				"bzz-raw://ee77518143496a7033a1e796a69d9cda8f7926561d49c5a26156e2f9f12ad2c2",
+				"dweb:/ipfs/QmXhYRPHByKtaHNtU532K4yX84sPYck58afQFyRZjnhHiP"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
@@ -1698,11 +1658,11 @@
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC1155/extensions/ERC1155Supply.sol": {
-			"keccak256": "0xa7421bc7a656408409ccfac5a56d9ea1a5ba1327b26cb3ce28c98f14d0272bec",
+			"keccak256": "0x2108b09ce3511b6e71ae743d85a4b18b21b54eeb1ff6df04f525daec279f410e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f2201258e9d0762e2105ae3bcb1fc203138143537caeb91a5d18875014e0476e",
-				"dweb:/ipfs/QmYgGqSV1vYohZhbk7AarY8JBtccbh7TET29xfABmi6hah"
+				"bzz-raw://925664ad2ae77f86e0ca588381352f3ac81f266e3fd7f20fbfa6feaec045a9fb",
+				"dweb:/ipfs/QmfVGKaxxXWKfL3RKtu3GzdYzWdtivYJUMm1XzFhf3TZDp"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC1155/extensions/IERC1155MetadataURI.sol": {

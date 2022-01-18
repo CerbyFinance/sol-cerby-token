@@ -99,7 +99,7 @@ ids = [1, 2, ..., 500] пусть будет 500 пар чек
 21) определяем какие айди имеет больше нуля баланс и для каждого из них находим объекты пула
 getPoolsByIds(uint[] calldata ids)
 22) определяем totalSupply для каждого айди пула
-totalBatchSupply(uint[] calldata ids) public view virtual returns (uint[] memory)
+totalSupply(uint id)
 23) далее на основе каждого пула определяем сколько юзеру доступно к снятию
 amountTokensOut[i] = pool[i].balanceTokens * balanceLp[i] / totalSupply[i]
 24) ну и также как на юнисвапе юзер может ползунок двигать от 0 до 100% чтобы снять ликву

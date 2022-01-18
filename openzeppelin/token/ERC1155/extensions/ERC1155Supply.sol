@@ -24,17 +24,6 @@ abstract contract ERC1155Supply is ERC1155 {
     }
 
     /**
-     * @dev Total amount of tokens in with a given ids.
-     */
-    function totalBatchSupply(uint[] calldata ids) public view virtual returns (uint[] memory) {
-        uint[] memory outputTotalSupply = new uint[](ids.length);
-        for(uint i; i<ids.length; i++) {
-            outputTotalSupply[i] = _totalSupply[ids[i]];
-        }
-        return outputTotalSupply;
-    }
-
-    /**
      * @dev Indicates whether any token exist with a given id, or not.
      */
     function exists(uint id) public view virtual returns (bool) {
