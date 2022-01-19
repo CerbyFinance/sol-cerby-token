@@ -1,7 +1,97 @@
 Graph node 
 Ивенты индексация
+1) event PairCreated(
+    address token,
+    uint poolId
+);
+в бд пишем
+poolId
+token
+balanceToken = 0
+balanceCerUsd = 0
 
+2) event LiquidityAdded(
+    address token, 
+    uint amountTokensIn, 
+    uint amountCerUsdToMint, 
+    uint lpAmount
+);
+в бд пишем
+balanceToken += amountTokensIn
+balanceCerUsd += amountCerUsdToMint
+
+3) event LiquidityRemoved(
+    address token, 
+    uint amountTokensOut, 
+    uint amountCerUsdToBurn, 
+    uint amountLpTokensBalanceToBurn
+);
+в бд пишем
+balanceToken -= amountTokensOut
+balanceCerUsd -= amountCerUsdToBurn
+
+4) event Swap(
+    address token,
+    address sender, 
+    uint amountTokensIn, 
+    uint amountCerUsdIn, 
+    uint amountTokensOut, 
+    uint amountCerUsdOut,
+    uint currentOneMinusFee,
+    address transferTo
+);
+в бд пишем
+balanceToken = balanceToken + amountTokensIn - amountTokensOut
+balanceCerUsd = balanceCerUsd + amountCerUsdIn - amountCerUsdOut
+
+5) event Sync(
+    address token, 
+    uint newBalanceToken, 
+    uint newBalanceCerUsd
+);
+в бд пишем
+balanceToken = newBalanceToken
+balanceCerUsd = newBalanceCerUsd
 
 
 Запросы
-1) listOfPairs(offset, limit)
+1) listOfPools(offset, limit)
+возвращает массив
+poolId, token, balanceToken, balanceCerUsd
+2) getPoolByToken(token)
+возвращает
+poolId, token, balanceToken, balanceCerUsd,
+price = balanceToken / balanceCerUsd (float)
+3) getTVLByPeriod(token, fromTimestamp, toTimestamp)
+выводит сумму balanceCerUsd (если token не указан то по всем пулам)
+за период времени fromTimestamp --> toTimestamp
+по токену token и ему соответствующего пулу
+4) getVolumeByPeriod(token, fromTimestamp, toTimestamp)
+выводит сумму (amountTokensIn + amountCerUsdOut) по всем swap ивентам
+за период времени fromTimestamp --> toTimestamp
+по токену token и ему соответствующего пулу
+если token не указан то по всем токенам
+5) getAPY(token, fromTimestamp, toTimestamp)
+считаем по всем свап ивентам с fromDay до toDay и token
+const FEE_DENORM = 10000
+amountTokensLPReceived += (swapEvent[i].amountTokensIn * swapEvent[i].currentOneMinusFee) / FEE_DENORM
+возвращаем
+amountTokensLPReceived, amountCerUsdLPReceived,
+APY = (amountTokensLPReceived * period(365 days)) / (pool.balanceTokens * periodInSeconds(fromTimestamp, toTimestamp))
+6) getTopTokens(offset, limit, 
+period = 24Hours/7 days/30 days, 
+sortBy = TVL / volume / priceChangePercent / APR, 
+sortType = ascending/descending)
+выводит топ токенов отсортированных по
+- TVL ascending, descending
+- Volume ascending, descending
+- PriceChangePercent ascending, descending
+- APR ascending, descending
+массив
+poolId, token, balanceToken, balanceCerUsd,
+volume - число (amountTokensIn + amountCerUsdOut) за указанный period,
+TVL - на данный момент balanceCerUsd
+priceChangePercent = (price(period ago) - price(now)) / price(period ago) = +-0.1123456
+это изменение цены в процентах на начало периода по сравнению с текущей ценой
+APR - по (5) формуле
+

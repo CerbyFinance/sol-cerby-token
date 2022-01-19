@@ -129,13 +129,14 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint amountTokensIn, 
         uint amountCerUsdIn, 
         uint amountTokensOut, 
-        uint amountCerUsdOut, 
+        uint amountCerUsdOut,
+        uint currentOneMinusFee,
         address transferTo
     );
     event Sync(
         address token, 
-        uint balanceToken, 
-        uint balanceCerUsd
+        uint newBalanceToken, 
+        uint newBalanceCerUsd
     );
 
     constructor() {
@@ -826,20 +827,21 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint poolId = tokenToPoolId[token];
 
         // finding out how many amountCerUsdIn we received
-        uint newTotalCerUsdBalance = _getTokenBalance(cerUsdToken);
-        uint amountCerUsdIn = newTotalCerUsdBalance - totalCerUsdBalance;
+        uint amountCerUsdIn = _getTokenBalance(cerUsdToken) - totalCerUsdBalance;
 
         // finding out how many amountTokensIn we received
-        uint oldTokenBalance = _getTokenBalance(token);
-        uint amountTokensIn = oldTokenBalance - pools[poolId].balanceToken;
+        uint amountTokensIn = _getTokenBalance(token) - pools[poolId].balanceToken;
         require(
             amountTokensIn + amountCerUsdIn > 1,
             errorsList.AMOUNT_OF_CERUSD_OR_TOKENS_MUST_BE_LARGER_THAN_ONE_O
         );
 
+        // calculating fees
+        uint fee = getCurrentFeeBasedOnTrades(poolId);
+
         { // scope to avoid stack too deep error
+
             // calculating old K value including trade fees (multiplied by FEE_DENORM^2)
-            uint fee = getCurrentFeeBasedOnTrades(poolId);
             uint beforeKValueDenormed = 
                 uint(pools[poolId].balanceCerUsd) * FEE_DENORM *
                 uint(pools[poolId].balanceToken) * FEE_DENORM;
@@ -906,7 +908,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountTokensIn, 
             amountCerUsdIn, 
             amountTokensOut, 
-            amountCerUsdOut, 
+            amountCerUsdOut,
+            FEE_DENORM - fee, // (1 - fee) * FEE_DENORM
             transferTo
         ); 
         emit Sync(token, pools[poolId].balanceToken, pools[poolId].balanceCerUsd);
