@@ -911,8 +911,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountCerUsdOut,
             FEE_DENORM - fee, // (1 - fee) * FEE_DENORM
             transferTo
-        ); 
-        emit Sync(token, pools[poolId].balanceToken, pools[poolId].balanceCerUsd);
+        );
     }
 
     function _getTokenBalance(address token)
