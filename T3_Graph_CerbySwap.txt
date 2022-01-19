@@ -94,7 +94,7 @@ TVL - на данный момент balanceCerUsd
 priceChangePercent = (price(period ago) - price(now)) / price(period ago) = +-0.1123456
 это изменение цены в процентах на начало периода по сравнению с текущей ценой
 APR - по (5) формуле
-7) getFeedTransactions(type = all/buy/sell/add/remove, fromBlock, toBlock)
+7) getFeedTransactions(type = all/buy/sell/add/remove, fromBlock, toBlock, offset, limit)
 buy означает swap ивент c amountTokensOut > amountTokensIn && amountCerUsdOut == 0
 sell означает swap ивент c amountCerUsdOut > amountCerUsdIn && amountTokensOut == 0
 add означает LiquidityAdded ивент
