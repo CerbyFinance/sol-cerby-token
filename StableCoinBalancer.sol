@@ -96,40 +96,80 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
         );
     }
 
+    function getUsdcPool()
+        public
+        view
+        returns (Pool memory)
+    {
+        address[] memory tokens = new address[](1);
+        tokens[0] = usdcToken;
+        return ICerbySwapV1(cerbySwapContract).getPoolsByTokens(tokens)[0];
+    }
+
+    function getUsdcPoolValues()
+        public
+        view
+        returns (uint, uint)
+    {
+        Pool memory pool = getUsdcPool();
+        return (pool.balanceToken, pool.balanceCerUsd);
+    }
+
+    function calculateK1()
+        public
+        view
+        returns(uint)
+    {
+        Pool memory pool = getUsdcPool();
+        return sqrt(pool.balanceToken * pool.balanceCerUsd);
+    }
+
+    function calculateK2()
+        public
+        view
+        returns(uint)
+    {
+        Pool memory pool = getUsdcPool();
+        return sqrt2(pool.balanceToken * pool.balanceCerUsd);
+    }
+
     function balancePrice()
         public
+        view
+        returns(uint,uint)
     {
         if (
             tx.gasprice > 0 && 
             lastBalancedAt + secondsBetweenBalancing > block.timestamp
         ) {
-            return;
+            return (0,0);
         }
 
-        lastBalancedAt = block.timestamp;
+        //lastBalancedAt = block.timestamp;
 
-        uint B;
-        uint C;
+
         uint fee = ICerbySwapV1(cerbySwapContract).getCurrentFeeBasedOnTrades(usdcToken);
-        address[] memory tokens = new address[](1);
-        tokens[0] = usdcToken;
-        Pool memory pool = ICerbySwapV1(cerbySwapContract).getPoolsByTokens(tokens)[0];
+        Pool memory pool = getUsdcPool();
 
-        uint sqrtKValue = sqrt(pool.balanceToken * pool.balanceCerUsd);
-        if (pool.balanceToken > pool.balanceCerusd)
+        if (pool.balanceToken > pool.balanceCerUsd)
         {
+            //return (pool.balanceToken, pool.balanceCerUsd);
+            uint sqrtKValue = sqrt(pool.balanceToken * pool.balanceCerUsd / 1e18) * 1e9;
+            return (sqrtKValue, pool.balanceCerUsd);
             uint sellCerUSD = ((sqrtKValue - pool.balanceCerUsd) * FEE_DENORM) / fee;
-            ICerbyToken(cerUsdToken).mintHumanAddress(address(this), sellCerUSD);
 
-            buyUsdc(sellCerUSD);
-        } else if (pool.balanceToken < pool.balanceCerusd)
+            //buyUsdc(sellCerUSD);
+        } else if (pool.balanceToken < pool.balanceCerUsd)
         {
             //removeLiquidity(PERCENTAGE_DENORM - 1);
             
-            pool = ICerbySwapV1(cerbySwapContract).getPoolsByTokens(tokens)[0];
+            pool = getUsdcPool();
+
+            uint sqrtKValue = sqrt(pool.balanceToken * pool.balanceCerUsd);
+            return (sqrtKValue, pool.balanceToken);
+            uint sellUsdcAmount = ((sqrtKValue - pool.balanceToken) * FEE_DENORM) / fee;    
             
-            uint sellCerUSD = ((sqrtKValue - pool.balanceCerUsd) * FEE_DENORM) / fee;    
-            sellUsdc(sellUsdcAmount);
+            //sellUsdc(sellUsdcAmount);
         }
     }
 /*
@@ -263,11 +303,20 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
         }        
     }
 
-    function sqrt(uint x)
-        private
-        pure
-        returns (uint y) 
-    {
+    function sqrt(uint y) internal pure returns (uint z) {
+        if (y > 3) {
+            z = y;
+            uint x = y / 2 + 1;
+            while (x < z) {
+                z = x;
+                x = (y / x + x) / 2;
+            }
+        } else if (y != 0) {
+            z = 1;
+        }
+    }
+
+    function sqrt2(uint x) internal pure returns (uint y) {
         uint z = (x + 1) / 2;
         y = x;
         while (z < y) {

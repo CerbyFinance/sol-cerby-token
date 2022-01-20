@@ -1283,16 +1283,20 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         return outputPools;
     }
 
-    function sqrt(uint x)
-        private
-        pure
-        returns (uint y) 
+    function sqrt(uint y) 
+        internal 
+        pure 
+        returns (uint z) 
     {
-        uint z = (x + 1) / 2;
-        y = x;
-        while (z < y) {
-            y = z;
-            z = (x / z + z) / 2;
+        if (y > 3) {
+            z = y;
+            uint x = y / 2 + 1;
+            while (x < z) {
+                z = x;
+                x = (y / x + x) / 2;
+            }
+        } else if (y != 0) {
+            z = 1;
         }
     }
 }
