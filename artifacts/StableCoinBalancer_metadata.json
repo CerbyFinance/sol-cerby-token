@@ -545,11 +545,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StableCoinBalancer.sol": {
-			"keccak256": "0x114170b094165fb72c77ed9f2129e91ba8b5100249e1054a2f5f8adfcc2fa532",
+			"keccak256": "0x5aa501e267886d3d52fbc2ec95993cee8ccd24eaf327e881729de05de5c1de69",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://081d517e4b27b890307e986302aaf7ed5f2b298a313f4bb821111d45b436b7f2",
-				"dweb:/ipfs/QmTTzXqAELyeaMreyc9s9HfBK3MHeo53xKHDtDkcpLVFda"
+				"bzz-raw://83d0407f7fa97c8266d982c42ba4d1227ea1392727f6f917ebfbd0405b1ca47c",
+				"dweb:/ipfs/QmViRSRCrzMqapEkPJSyFwn5HLhd7xUDVuZPwfqHGxPhkv"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapLP1155V1.sol": {

@@ -129,7 +129,7 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
         uint fee = ICerbySwapV1(cerbySwapContract).getCurrentFeeBasedOnTrades(usdcToken);
         (uint balanceUsdc, uint balanceCerUsd) = getUsdcPool();
 
-        if (balanceUsdc > balanceCerUsd)
+        if (balanceUsdc * PERCENTAGE_DECREASE > balanceCerUsd * PERCENTAGE_DENORM)
         {
             uint B = (balanceCerUsd * (FEE_DENORM + fee)) / (2 * fee);
             uint C = 
@@ -139,7 +139,7 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
             (, uint amountUsdcOut) = buyUsdc(amountCerUsdIn);
 
             addLiquidity(amountUsdcOut, false);
-        } else if (balanceUsdc < balanceCerUsd)
+        } else if (balanceUsdc * PERCENTAGE_INCREASE < balanceCerUsd * PERCENTAGE_DENORM)
         {
             uint amountUsdcMax = removeLiquidity(PERCENTAGE_DENORM - 1);
             
@@ -150,7 +150,8 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
             uint amountUsdcIn = sqrt(B*B + C) - B; 
             amountUsdcIn = amountUsdcIn < amountUsdcMax? amountUsdcIn: amountUsdcMax;
             
-            sellUsdc(amountUsdcIn, false);
+            (, uint amountCerUsdOut) = sellUsdc(amountUsdcIn, false);
+            ICerbyToken(cerUsdToken).burnHumanAddress(address(this), amountCerUsdOut);
 
             uint amountUsdcDiff = amountUsdcMax - amountUsdcIn;
             if (amountUsdcDiff > 0) {
