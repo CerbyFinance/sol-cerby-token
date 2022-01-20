@@ -1,0 +1,228 @@
+{
+	"compiler": {
+		"version": "0.8.11+commit.d7f03943"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountTokensIn",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expireTimestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "transferTo",
+						"type": "address"
+					}
+				],
+				"name": "addTokenLiquidity",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "getCurrentFeeBasedOnTrades",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "fee",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "tokens",
+						"type": "address[]"
+					}
+				],
+				"name": "getPoolsByTokens",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "token",
+								"type": "address"
+							},
+							{
+								"internalType": "uint32[8]",
+								"name": "tradeVolumePerPeriodInCerUsd",
+								"type": "uint32[8]"
+							},
+							{
+								"internalType": "uint128",
+								"name": "balanceToken",
+								"type": "uint128"
+							},
+							{
+								"internalType": "uint128",
+								"name": "balanceCerUsd",
+								"type": "uint128"
+							},
+							{
+								"internalType": "uint128",
+								"name": "lastSqrtKValue",
+								"type": "uint128"
+							}
+						],
+						"internalType": "struct Pool[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountLpTokensBalanceToBurn",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expireTimestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "transferTo",
+						"type": "address"
+					}
+				],
+				"name": "removeTokenLiquidity",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenIn",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "tokenOut",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountTokensIn",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "minAmountTokensOut",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expireTimestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "transferTo",
+						"type": "address"
+					}
+				],
+				"name": "swapExactTokensForTokens",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"sol-defifactory-token/interfaces/ICerbySwapV1.sol": "ICerbySwapV1"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"sol-defifactory-token/interfaces/ICerbySwapV1.sol": {
+			"keccak256": "0x1a1acefb34dcbf84c54e7d31a3298be6f5d7b76924b94d79e099ab3f8e3bd8b6",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://0e8ff57f1bb5a471abb85c54889fa9af844c28d958f6bc8984cad02d136e7bf9",
+				"dweb:/ipfs/QmWA9WvJr6gSdhx71nwZhK9pvSQ9faT27mmncUJXD21CB3"
+			]
+		}
+	},
+	"version": 1
+}

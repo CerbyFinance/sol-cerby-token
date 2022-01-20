@@ -51,11 +51,11 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     // "0x14769F96e57B80c66837701DE0B43686Fb4632De", "1000000000000000000000", 0, "2041564156"
     // "0x37E140032ac3a8428ed43761a9881d4741Eb3a73","0x14769F96e57B80c66837701DE0B43686Fb4632De","10000000000000000000000","0","2041564156"
     // "0x14769F96e57B80c66837701DE0B43686Fb4632De","0x37E140032ac3a8428ed43761a9881d4741Eb3a73","1000000000000000000000","0","2041564156"
-    */
+    
     address testCerbyToken = 0x3d982cB3BC8D1248B17f22b567524bF7BFFD3b11;
     address cerUsdToken = 0x37E140032ac3a8428ed43761a9881d4741Eb3a73;
     address testUsdcToken = 0xD575ef966cfE21a5a5602dFaDAd3d1cAe8C60fDB;
-    address testCerbyBotDetectionContract;
+    address testCerbyBotDetectionContract;*/
 
     /* Localhost
     // "0xde402E9D305bAd483d47bc858cC373c5a040A62D", "997503992263724670916", 0, "2041564156"
@@ -64,11 +64,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     // "0x2c4fE51d1Ad5B88cD2cc2F45ad1c0C857f06225e","0xF3B07F8167b665BA3E2DD29c661DeE3a1da2380a","1000000000000000000000","0","20415641000","0x539FaA851D86781009EC30dF437D794bCd090c8F"
     1000000000000000000011 494510434669677019755 489223177884861877370
     2047670051318999350473 1000000000000000000011
+    */
+
+    address testCerbyToken = 0xE7126C0Fb4B1f5F79E5Bbec3948139dCF348B49C; // TODO: remove on production
+    address cerUsdToken = 0xF690ea79833E2424b05a1d0B779167f5BE763268; // TODO: make constant
+    address testUsdcToken = 0x7412F2cD820d1E63bd130B0FFEBe44c4E5A47d71; // TODO: remove on production
     
-    address testCerbyToken = 0x2c4fE51d1Ad5B88cD2cc2F45ad1c0C857f06225e; // TODO: remove on production
-    address cerUsdToken = 0xF3B07F8167b665BA3E2DD29c661DeE3a1da2380a; // TODO: make constant
-    address testUsdcToken = 0x2a5E269bF364E347942c464a999D8c8ac2E6CE94; // TODO: remove on production
-    */  
     address nativeToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De;
 
     // mint fees = (fees * MINT_FEE_DENORM) / (mintFeeMultiplier + MINT_FEE_DENORM); 
@@ -77,6 +78,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     uint constant MINT_FEE_DENORM = 100;
     
     uint constant FEE_DENORM = 10000;
+    uint constant TRADE_VOLUME_DENORM = 10 * 1e18;
 
     uint constant TVL_MULTIPLIER_DENORM = 10000;  
 
@@ -205,7 +207,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         _;
     }
 
-    function gettokenToPoolId(address token) 
+    function getTokenToPoolId(address token) 
         public
         view
         returns (uint)
@@ -214,10 +216,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     }
 
     // TODO: remove on production
-    function testSetupTokens(address _testCerbyBotDetectionContract, address _testCerbyToken, address _cerUsdToken, address _testUsdcToken, address )
+    function testSetupTokens(address , address _testCerbyToken, address _cerUsdToken, address _testUsdcToken, address )
         public
     {
-        testCerbyBotDetectionContract = _testCerbyBotDetectionContract;
+        //testCerbyBotDetectionContract = _testCerbyBotDetectionContract;
         testCerbyToken = _testCerbyToken;
         cerUsdToken = _cerUsdToken;
         testUsdcToken = _testUsdcToken;
@@ -528,8 +530,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 uint128(sqrt(uint(pools[poolId].balanceToken) * 
                     uint(pools[poolId].balanceCerUsd)));
 
-            // burning LP tokens from sender
-            burn(msg.sender, poolId, amountLpTokensBalanceToBurn);
+            // burning LP tokens from sender (without approval)
+            _burn(msg.sender, poolId, amountLpTokensBalanceToBurn);
 
             // burning cerUSD
             ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(address(this), amountCerUsdToBurn);
@@ -875,7 +877,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             // wrapping any uint32 overflows
             // stores in USD value
             pools[poolId].tradeVolumePerPeriodInCerUsd[currentPeriod] += 
-                uint32( (amountCerUsdIn + amountCerUsdOut) / 1e18);
+                uint32( (amountCerUsdIn + amountCerUsdOut) / TRADE_VOLUME_DENORM);
         }
 
         // clearing next 1 hour trade value
@@ -1088,7 +1090,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         }
 
         // multiplying it to make wei dimention
-        volume = volume * 1e18;
+        volume = volume * TRADE_VOLUME_DENORM;
 
         // trades <= TVL * min              ---> fee = feeMaximum
         // TVL * min < trades < TVL * max   ---> fee is between feeMaximum and feeMinimum

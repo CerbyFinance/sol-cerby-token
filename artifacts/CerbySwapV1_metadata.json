@@ -859,6 +859,25 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "getTokenToPoolId",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "pos",
 						"type": "uint256"
@@ -870,25 +889,6 @@
 						"internalType": "address",
 						"name": "",
 						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					}
-				],
-				"name": "gettokenToPoolId",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -1385,7 +1385,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_testCerbyBotDetectionContract",
+						"name": "",
 						"type": "address"
 					},
 					{
@@ -1560,11 +1560,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x8f9ca5c1851e0eebee3c4551b4a539933ddc7a9c4973883edb1915580b0ea930",
+			"keccak256": "0x331a7b055875d145d93816a5ffe04cf49cedab70656df1c55b66271843fc166d",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://25c6b3baf47a3db18e160a25b07dca114141a4f6d50c42538183620d2e4fe898",
-				"dweb:/ipfs/QmcwDKtKCQsgcYz54phuNUBiVvXhwxQBi1zQyMawvZrKKy"
+				"bzz-raw://fa30a9397a86957235db9f04b7f72e65ffa0abc6fd299a406ebeac15306256c9",
+				"dweb:/ipfs/QmegQuyMd3YLeSzdHpefqmiLmVz2JLhnpacQzeedNWhrs7"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

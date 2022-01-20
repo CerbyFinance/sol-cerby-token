@@ -104,11 +104,7 @@ totalSupply(uint id)
 amountTokensOut[i] = pool[i].balanceTokens * balanceLp[i] / totalSupply[i]
 24) ну и также как на юнисвапе юзер может ползунок двигать от 0 до 100% чтобы снять ликву
 по ползунку считаем amountLpTokensToBurn = balanceLp[i] * percentPolzunok
-25) делаем аппрув лп токенов
-CerbySwap.setApprovalForAll(cerbySwap.address, true) 
-26) чекаем аппрувнуты ли лп токены
-isApprovedForAll(msg.sender, cerbySwap.address)
-27) удаляем ликву
+25) удаляем ликву без аппрува лп токенов
 function removeTokenLiquidity(
     address tokenIn, 
     uint amountLpTokensBalanceToBurn, 
