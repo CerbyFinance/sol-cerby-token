@@ -1177,8 +1177,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint poolId = tokenToPoolId[token];
         return _getOutput(
             amountTokensIn,
-            pools[poolId].balanceToken,
-            pools[poolId].balanceCerUsd,
+            uint(pools[poolId].balanceToken),
+            uint(pools[poolId].balanceCerUsd),
             getCurrentFeeBasedOnTrades(poolId)
         );
     }
@@ -1192,8 +1192,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint poolId = tokenToPoolId[token];
         return _getOutput(
             amountCerUsdIn,
-            pools[poolId].balanceCerUsd,
-            pools[poolId].balanceToken,
+            uint(pools[poolId].balanceCerUsd),
+            uint(pools[poolId].balanceToken),
             getCurrentFeeBasedOnTrades(poolId)
         );
     }
@@ -1223,8 +1223,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint poolId = tokenToPoolId[token];
         return _getInput(
             amountCerUsdOut,
-            pools[poolId].balanceToken,
-            pools[poolId].balanceCerUsd,
+            uint(pools[poolId].balanceToken),
+            uint(pools[poolId].balanceCerUsd),
             getCurrentFeeBasedOnTrades(poolId)
         );
     }
@@ -1238,8 +1238,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint poolId = tokenToPoolId[token];
         return _getInput(
             amountTokensOut,
-            pools[poolId].balanceCerUsd,
-            pools[poolId].balanceToken,
+            uint(pools[poolId].balanceCerUsd),
+            uint(pools[poolId].balanceToken),
             getCurrentFeeBasedOnTrades(poolId)
         );
     }
@@ -1284,7 +1284,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     }
 
     function sqrt(uint y) 
-        internal 
+        private 
         pure 
         returns (uint z) 
     {

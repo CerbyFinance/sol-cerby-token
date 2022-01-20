@@ -52,4 +52,13 @@ interface ICerbySwapV1 {
         external
         payable
         returns (uint, uint);
+    
+    function getOutputExactTokensForTokens(
+        address tokenIn,
+        address tokenOut,
+        uint amountTokensIn
+    )
+        external
+        view
+        returns (uint amountTokensOut);
 }

@@ -61,6 +61,35 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "tokenIn",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "tokenOut",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountTokensIn",
+						"type": "uint256"
+					}
+				],
+				"name": "getOutputExactTokensForTokens",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "amountTokensOut",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address[]",
 						"name": "tokens",
 						"type": "address[]"
@@ -216,11 +245,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/ICerbySwapV1.sol": {
-			"keccak256": "0x1a1acefb34dcbf84c54e7d31a3298be6f5d7b76924b94d79e099ab3f8e3bd8b6",
+			"keccak256": "0x9522f112fad5e5f1abbbf17dfaab5cf90761737ef8865adbda2fcde21aea42be",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://0e8ff57f1bb5a471abb85c54889fa9af844c28d958f6bc8984cad02d136e7bf9",
-				"dweb:/ipfs/QmWA9WvJr6gSdhx71nwZhK9pvSQ9faT27mmncUJXD21CB3"
+				"bzz-raw://8df0581361a77485b780cd9d476a5662d36134d9bef97c05953b0cfec2cabb58",
+				"dweb:/ipfs/QmeUBMg8CmsJ7MhiP5Bpfy6TXB4U35tncgHeXkp9EXyjon"
 			]
 		}
 	},

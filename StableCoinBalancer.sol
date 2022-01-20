@@ -12,16 +12,16 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
 
     address constant usdcToken = 0x7412F2cD820d1E63bd130B0FFEBe44c4E5A47d71; // TODO: update
     address constant cerUsdToken = 0xF690ea79833E2424b05a1d0B779167f5BE763268; // TODO: update
-    address constant cerbySwapContract = 0x029581a9121998fcBb096ceafA92E3E10057878f;
+    address constant cerbySwapContract = 0xD90AFC36ffE32deb42562A7E829A4a592589E677;
     uint constant poolId = 2;
     
 
     uint constant PRICE_DENORM = 1e18;
     uint constant FEE_DENORM = 10000;
 
-    uint constant PERCENTAGE_INCREASE = 1005;
-    uint constant PERCENTAGE_DECREASE = 995;
-    uint constant PERCENTAGE_DENORM = 1000;
+    uint constant PERCENTAGE_INCREASE = 10050;
+    uint constant PERCENTAGE_DECREASE = 9950;
+    uint constant PERCENTAGE_DENORM = 10000;
 
     uint lastBalancedAt = block.timestamp;
     uint secondsBetweenBalancing = 0;
@@ -39,15 +39,17 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
         return interfaceId == type(IERC1155Receiver).interfaceId || super.supportsInterface(interfaceId);
     }
 
-    function addLiquidity()
+    function addLiquidity(uint amountUsdcIn, bool isMint)
         public
+        returns (uint)
     {
-        uint amountTokensIn = 1e6 * 1e18;
-        ICerbyToken(usdcToken).mintHumanAddress(address(this), amountTokensIn);
+        if (isMint) {
+            ICerbyToken(usdcToken).mintHumanAddress(address(this), amountUsdcIn);
+        }
 
-        ICerbySwapV1(cerbySwapContract).addTokenLiquidity(
+        return ICerbySwapV1(cerbySwapContract).addTokenLiquidity(
             usdcToken, 
-            amountTokensIn, 
+            amountUsdcIn, 
             block.timestamp + 86400,
             address(this)
         );
@@ -55,12 +57,13 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
 
     function removeLiquidity(uint percent)
         public
+        returns (uint)
     {
         uint amountLpTokensToBurn = 
             (ICerbySwapLP1155V1(cerbySwapContract).balanceOf(address(this), poolId) * percent) / 
                 FEE_DENORM;
 
-        ICerbySwapV1(cerbySwapContract).removeTokenLiquidity(
+        return ICerbySwapV1(cerbySwapContract).removeTokenLiquidity(
             usdcToken, 
             amountLpTokensToBurn, 
             block.timestamp + 86400,
@@ -70,28 +73,32 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
 
     function buyUsdc(uint amountCerUsdIn)
         public
+        returns (uint, uint)
     {
         ICerbyToken(cerUsdToken).mintHumanAddress(address(this), amountCerUsdIn);
-        ICerbySwapV1(cerbySwapContract).swapExactTokensForTokens(
+        return ICerbySwapV1(cerbySwapContract).swapExactTokensForTokens(
             cerUsdToken,
             usdcToken,
             amountCerUsdIn,
             0,
-            block.timestamp + 86400,
+            block.timestamp + 8640000,
             address(this)
         );
     }
 
-    function sellUsdc(uint amountUsdcIn)
+    function sellUsdc(uint amountUsdcIn, bool isMint)
         public
+        returns (uint, uint)
     {
-        ICerbyToken(usdcToken).mintHumanAddress(address(this), amountUsdcIn);
-        ICerbySwapV1(cerbySwapContract).swapExactTokensForTokens(
+        if (isMint) {
+            ICerbyToken(usdcToken).mintHumanAddress(address(this), amountUsdcIn);
+        }
+        return ICerbySwapV1(cerbySwapContract).swapExactTokensForTokens(
             usdcToken,
             cerUsdToken,
             amountUsdcIn,
             0,
-            block.timestamp + 86400,
+            block.timestamp + 8640000,
             address(this)
         );
     }
@@ -99,193 +106,58 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
     function getUsdcPool()
         public
         view
-        returns (Pool memory)
+        returns (uint, uint)
     {
         address[] memory tokens = new address[](1);
         tokens[0] = usdcToken;
-        return ICerbySwapV1(cerbySwapContract).getPoolsByTokens(tokens)[0];
-    }
-
-    function getUsdcPoolValues()
-        public
-        view
-        returns (uint, uint)
-    {
-        Pool memory pool = getUsdcPool();
-        return (pool.balanceToken, pool.balanceCerUsd);
-    }
-
-    function calculateK1()
-        public
-        view
-        returns(uint)
-    {
-        Pool memory pool = getUsdcPool();
-        return sqrt(pool.balanceToken * pool.balanceCerUsd);
-    }
-
-    function calculateK2()
-        public
-        view
-        returns(uint)
-    {
-        Pool memory pool = getUsdcPool();
-        return sqrt2(pool.balanceToken * pool.balanceCerUsd);
+        Pool memory pool = ICerbySwapV1(cerbySwapContract).getPoolsByTokens(tokens)[0];
+        return (uint(pool.balanceToken), uint(pool.balanceCerUsd));
     }
 
     function balancePrice()
         public
-        view
-        returns(uint,uint)
     {
         if (
             tx.gasprice > 0 && 
             lastBalancedAt + secondsBetweenBalancing > block.timestamp
         ) {
-            return (0,0);
+            return;
         }
 
-        //lastBalancedAt = block.timestamp;
-
+        lastBalancedAt = block.timestamp;
 
         uint fee = ICerbySwapV1(cerbySwapContract).getCurrentFeeBasedOnTrades(usdcToken);
-        Pool memory pool = getUsdcPool();
+        (uint balanceUsdc, uint balanceCerUsd) = getUsdcPool();
 
-        if (pool.balanceToken > pool.balanceCerUsd)
+        if (balanceUsdc > balanceCerUsd)
         {
-            //return (pool.balanceToken, pool.balanceCerUsd);
-            uint sqrtKValue = sqrt(pool.balanceToken * pool.balanceCerUsd / 1e18) * 1e9;
-            return (sqrtKValue, pool.balanceCerUsd);
-            uint sellCerUSD = ((sqrtKValue - pool.balanceCerUsd) * FEE_DENORM) / fee;
+            uint B = (balanceCerUsd * (FEE_DENORM + fee)) / (2 * fee);
+            uint C = 
+                ((balanceUsdc * balanceCerUsd - balanceCerUsd * balanceCerUsd) * FEE_DENORM) / fee;
+            uint amountCerUsdIn = sqrt(B*B + C) - B;
 
-            //buyUsdc(sellCerUSD);
-        } else if (pool.balanceToken < pool.balanceCerUsd)
+            (, uint amountUsdcOut) = buyUsdc(amountCerUsdIn);
+
+            addLiquidity(amountUsdcOut, false);
+        } else if (balanceUsdc < balanceCerUsd)
         {
-            //removeLiquidity(PERCENTAGE_DENORM - 1);
+            uint amountUsdcMax = removeLiquidity(PERCENTAGE_DENORM - 1);
             
-            pool = getUsdcPool();
-
-            uint sqrtKValue = sqrt(pool.balanceToken * pool.balanceCerUsd);
-            return (sqrtKValue, pool.balanceToken);
-            uint sellUsdcAmount = ((sqrtKValue - pool.balanceToken) * FEE_DENORM) / fee;    
+            (balanceUsdc, balanceCerUsd) = getUsdcPool();
+            uint B = (balanceUsdc * (FEE_DENORM + fee)) / (2 * fee);
+            uint C = 
+                ((balanceUsdc * balanceCerUsd - balanceUsdc * balanceUsdc) * FEE_DENORM) / fee;
+            uint amountUsdcIn = sqrt(B*B + C) - B; 
+            amountUsdcIn = amountUsdcIn < amountUsdcMax? amountUsdcIn: amountUsdcMax;
             
-            //sellUsdc(sellUsdcAmount);
+            sellUsdc(amountUsdcIn, false);
+
+            uint amountUsdcDiff = amountUsdcMax - amountUsdcIn;
+            if (amountUsdcDiff > 0) {
+                addLiquidity(amountUsdcDiff, false);
+            }
         }
     }
-/*
-    function makeCerbyTokensInBothPoolsEqual()
-        public
-    {
-        (, uint balanceCerbyTarget,) = getPriceCerbyUSDC();
-        (uint balanceCerUSD, uint balanceCerby,) = getPriceCerbyCerUSD();
-        if (balanceCerby * PERCENTAGE_DENORM > balanceCerbyTarget * PERCENTAGE_INCREASE) // >100.5%
-        {
-            uint difference = balanceCerby - balanceCerbyTarget;
-            uint lpSupply = ICerbyToken(uniswapPairCerbyCerUSD).totalSupply();
-
-            uint lpToRemove = (difference * lpSupply) / balanceCerby;
-            IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).removeLiquidity(
-                cerUsdToken,
-                cerbyToken,
-                lpToRemove,
-                0,
-                0,
-                address(this),
-                block.timestamp + 86400
-            );
-        } else if (balanceCerby * PERCENTAGE_DENORM < balanceCerbyTarget * PERCENTAGE_DECREASE) // < 99.5%
-        {
-            uint difference = balanceCerbyTarget - balanceCerby;
-            uint currenctCerbyBalanceAvailable = IWeth(cerbyToken).balanceOf(address(this));
-            if (currenctCerbyBalanceAvailable == 0) return;
-
-            difference = difference > currenctCerbyBalanceAvailable? currenctCerbyBalanceAvailable: difference;
-
-            uint cerUsdToMint = (difference * balanceCerUSD) / balanceCerby;
-            ICerbyToken(cerUsdToken).mintHumanAddress(address(this), cerUsdToMint);
-
-            IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).addLiquidity(
-                cerUsdToken,
-                cerbyToken,
-                cerUsdToMint,
-                difference,
-                0,
-                0,
-                address(this),
-                block.timestamp + 86400
-            );
-        }
-    }
-
-    function removeCerUsdDust()
-        public
-    {
-        uint cerUsdDust = ICerbyToken(cerUsdToken).balanceOf(address(this));
-        if (cerUsdDust > 1e16)
-        {
-            ICerbyToken(cerUsdToken).burnHumanAddress(address(this), cerUsdDust);
-        }
-    }
-
-
-    function getPriceCerbyCerUSD()
-        public
-        view
-        returns (uint, uint, uint)
-    {
-        return getPrice(uniswapPairCerbyCerUSD, cerbyToken, cerUsdToken);
-    }    
-
-    function getPriceCerbyUSDC()
-        public
-        view
-        returns (uint, uint, uint)
-    {
-        return getPrice(uniswapPairCerbyUSDC, cerbyToken, USDCToken);
-    }
-
-    function getPrice(address pair, address tokenA, address tokenB)
-        private
-        view
-        returns (uint, uint, uint)
-    {
-        IUniswapV2Pair iPair = IUniswapV2Pair(pair);
-        (uint balanceA, uint balanceB,) = iPair.getReserves();
-        if (tokenA > tokenB)
-        {
-            (balanceA, balanceB) = (balanceB, balanceA);
-        }
-        uint initialPrice = (balanceB * PRICE_DENORM) / balanceA;
-        return (balanceB, balanceA, initialPrice);
-    }
-
-
-    function swapCerbyCerUSD(bool isBuy, uint amountIn)
-        public
-        returns(uint)
-    {
-        address[] memory path = new address[](2);
-        if (isBuy)
-        {
-            path[0] = cerUsdToken;
-            path[1] = cerbyToken;
-        }
-        else {        
-            path[0] = cerbyToken;
-            path[1] = cerUsdToken;
-        }
-        
-        uint[] memory amounts = IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS).
-            swapExactTokensForTokens(
-                amountIn,
-                0,
-                path,
-                address(this),
-                block.timestamp + 86400
-            );        
-        
-        return amounts[amounts.length-1];
-    }*/
 
     function withdrawTokens(address[] calldata tokens)
         onlyRole(ROLE_ADMIN)
@@ -303,7 +175,11 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
         }        
     }
 
-    function sqrt(uint y) internal pure returns (uint z) {
+    function sqrt(uint y) 
+        private 
+        pure 
+        returns (uint z) 
+    {
         if (y > 3) {
             z = y;
             uint x = y / 2 + 1;
@@ -313,15 +189,6 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
             }
         } else if (y != 0) {
             z = 1;
-        }
-    }
-
-    function sqrt2(uint x) internal pure returns (uint y) {
-        uint z = (x + 1) / 2;
-        y = x;
-        while (z < y) {
-            y = z;
-            z = (x / z + z) / 2;
         }
     }
 }

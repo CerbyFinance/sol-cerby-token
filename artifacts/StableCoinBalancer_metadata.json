@@ -99,15 +99,45 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amountUsdcIn",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isMint",
+						"type": "bool"
+					}
+				],
 				"name": "addLiquidity",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [],
 				"name": "balancePrice",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amountCerUsdIn",
+						"type": "uint256"
+					}
+				],
+				"name": "buyUsdc",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -120,46 +150,7 @@
 						"type": "uint256"
 					}
 				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "amountCerUsdIn",
-						"type": "uint256"
-					}
-				],
-				"name": "buyUsdc",
-				"outputs": [],
 				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "calculateK1",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "calculateK2",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -227,46 +218,6 @@
 			{
 				"inputs": [],
 				"name": "getUsdcPool",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "token",
-								"type": "address"
-							},
-							{
-								"internalType": "uint32[8]",
-								"name": "tradeVolumePerPeriodInCerUsd",
-								"type": "uint32[8]"
-							},
-							{
-								"internalType": "uint128",
-								"name": "balanceToken",
-								"type": "uint128"
-							},
-							{
-								"internalType": "uint128",
-								"name": "balanceCerUsd",
-								"type": "uint128"
-							},
-							{
-								"internalType": "uint128",
-								"name": "lastSqrtKValue",
-								"type": "uint128"
-							}
-						],
-						"internalType": "struct Pool",
-						"name": "",
-						"type": "tuple"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getUsdcPoolValues",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -436,7 +387,13 @@
 					}
 				],
 				"name": "removeLiquidity",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -482,10 +439,26 @@
 						"internalType": "uint256",
 						"name": "amountUsdcIn",
 						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isMint",
+						"type": "bool"
 					}
 				],
 				"name": "sellUsdc",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -572,11 +545,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/StableCoinBalancer.sol": {
-			"keccak256": "0xa69d30a48a9b50b2bade1e9171972cd34e23c407cdd230997b636c8b1925ec02",
+			"keccak256": "0x114170b094165fb72c77ed9f2129e91ba8b5100249e1054a2f5f8adfcc2fa532",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://11b716a553a6317592f598f6128798a4d134123b862e828eb6bdfd8c5dd97113",
-				"dweb:/ipfs/QmeL51pLJ34uLdCzDADThyTbgdg1AEKBVXEejVUtHS2WGG"
+				"bzz-raw://081d517e4b27b890307e986302aaf7ed5f2b298a313f4bb821111d45b436b7f2",
+				"dweb:/ipfs/QmTTzXqAELyeaMreyc9s9HfBK3MHeo53xKHDtDkcpLVFda"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapLP1155V1.sol": {
@@ -588,11 +561,11 @@
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapV1.sol": {
-			"keccak256": "0x1a1acefb34dcbf84c54e7d31a3298be6f5d7b76924b94d79e099ab3f8e3bd8b6",
+			"keccak256": "0x9522f112fad5e5f1abbbf17dfaab5cf90761737ef8865adbda2fcde21aea42be",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://0e8ff57f1bb5a471abb85c54889fa9af844c28d958f6bc8984cad02d136e7bf9",
-				"dweb:/ipfs/QmWA9WvJr6gSdhx71nwZhK9pvSQ9faT27mmncUJXD21CB3"
+				"bzz-raw://8df0581361a77485b780cd9d476a5662d36134d9bef97c05953b0cfec2cabb58",
+				"dweb:/ipfs/QmeUBMg8CmsJ7MhiP5Bpfy6TXB4U35tncgHeXkp9EXyjon"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyToken.sol": {
