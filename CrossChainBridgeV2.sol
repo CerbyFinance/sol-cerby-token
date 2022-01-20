@@ -19,6 +19,8 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         bytes     destCaller,
         uint256   srcAmount,
         uint256   srcNonce,
+        ChainType srcChainType,
+        uint32    srcChainId,
         ChainType destChainType,
         uint32    destChainId,
         bytes32   burnProofHash
@@ -30,6 +32,11 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         bytes     srcCaller,
         bytes     destCaller,
         uint256   destAmount,
+        // destNonce ?
+        ChainType srcChainType,
+        uint32    srcChainId,
+        ChainType destChainType,
+        uint32    destChainId,
         bytes32   burnProofHash
     );
 
@@ -46,7 +53,6 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         Undefined, Evm, Casper, Solana, Radix 
     }
 
-    address public _srcToken; // original format (20 bytes, or 32 bytes in case of casper)
     ChainType _srcChainType;
 
     // it's common storage for all chains (evm, casper, solana etc)
@@ -55,7 +61,6 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
     mapping(address => uint256) public srcNonceByToken;
 
     constructor() {
-        _srcToken = address(1);
         _srcChainType = ChainType.Evm;
     }
 
@@ -75,9 +80,9 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         return srcCaller;
     }
 
-    function getSrcToken() private view returns(bytes memory) {
+    function getSrcToken(address _srcToken) private view returns(bytes memory) {
         bytes memory srcToken = new bytes(40);
-        address __srcToken = _srcToken; // **
+        // address __srcToken = _srcToken; // **
         assembly {
             mstore(
                 add(
@@ -124,8 +129,8 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         bytes memory srcToken = getSrcToken();
 
         bytes memory packed = abi.encodePacked(
-            srcCaller, destCaller,
             srcToken, destToken, 
+            srcCaller, destCaller,
             destAmount,
             uint8(_srcChainType), uint32(block.chainid), // srcChainType, srcChainId
             destChainType, destChainId,
@@ -148,11 +153,17 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
             srcCaller,
             destCaller,
             destAmount,
+            // destNonce ?
+            _srcChainType,
+            block.chainid,
+            destChainType,
+            destChainId,
             destBurnProofHash
         );
     }
 
      function burnAndCreateProof(
+        address      _srcToken,
         bytes memory destToken, 
         bytes memory destCaller,
         uint256 srcAmount,
@@ -172,11 +183,11 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         // TODO: require(destChainType is ChainType)
 
         bytes memory srcCaller = getSrcCaller();
-        bytes memory srcToken = getSrcToken();
+        bytes memory srcToken = getSrcToken(_srcToken);
 
         bytes memory packed = abi.encodePacked(
-            srcCaller, destCaller,
             srcToken, destToken, 
+            srcCaller, destCaller,
             srcAmount,
             uint8(_srcChainType), uint32(block.chainid), // srcChainType, srcChainId
             destChainType, destChainId,
