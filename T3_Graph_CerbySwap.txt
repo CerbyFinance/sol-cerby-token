@@ -76,7 +76,7 @@ price = balanceToken / balanceCerUsd (float)
 const FEE_DENORM = 10000
 amountTokensLPReceived += (swapEvent[i].amountTokensIn * swapEvent[i].currentFee) / FEE_DENORM
 возвращаем
-amountTokensLPReceived, amountCerUsdLPReceived,
+amountTokensLPReceived
 APY = (amountTokensLPReceived * period(365 days)) / (pool.balanceTokens * periodInSeconds(fromTimestamp, toTimestamp))
 6) getTopTokens(offset, limit, 
 period = 24Hours/7 days/30 days, 
