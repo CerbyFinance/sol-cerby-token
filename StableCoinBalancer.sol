@@ -126,12 +126,11 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
 
         lastBalancedAt = block.timestamp;
 
-        uint fee = ICerbySwapV1(cerbySwapContract).getCurrentFeeBasedOnTrades(usdcToken);
         (uint balanceUsdc, uint balanceCerUsd) = getUsdcPool();
 
         if (balanceUsdc * PERCENTAGE_DECREASE > balanceCerUsd * PERCENTAGE_DENORM)
         {
-            fee = 0; // fee is zero for swaps cerUsd --> Any
+            uint fee = 0; // fee is zero for swaps cerUsd --> Any
 
             uint B = (balanceCerUsd * (FEE_DENORM + fee)) / (2 * fee);
             uint C = 
@@ -143,6 +142,7 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
             addLiquidity(amountUsdcOut, false);
         } else if (balanceUsdc * PERCENTAGE_INCREASE < balanceCerUsd * PERCENTAGE_DENORM)
         {
+            uint fee = ICerbySwapV1(cerbySwapContract).getCurrentFeeBasedOnTrades(usdcToken);
             uint amountUsdcMax = removeLiquidity(PERCENTAGE_DENORM - 1);
             
             (balanceUsdc, balanceCerUsd) = getUsdcPool();
