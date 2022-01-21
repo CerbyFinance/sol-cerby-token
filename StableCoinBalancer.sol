@@ -131,6 +131,8 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
 
         if (balanceUsdc * PERCENTAGE_DECREASE > balanceCerUsd * PERCENTAGE_DENORM)
         {
+            fee = 0; // fee is zero for swaps cerUsd --> Any
+
             uint B = (balanceCerUsd * (FEE_DENORM + fee)) / (2 * fee);
             uint C = 
                 ((balanceUsdc * balanceCerUsd - balanceCerUsd * balanceCerUsd) * FEE_DENORM) / fee;

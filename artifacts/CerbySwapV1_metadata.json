@@ -1537,7 +1537,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -1560,11 +1560,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x6dc912484ca7ee40e851eb29cae3846afa25dca5a18a7d445643dbb7c959a533",
+			"keccak256": "0x80da0244ef741859c96447fb8ff9f2b4bf9883354e8f166f219915d35bf141a6",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://f750fdc54d74386603426262323a225c392368e22ec3e588c5feb2ee345982dc",
-				"dweb:/ipfs/Qma7eN2G2L7cRKBSfpaEmfTQCrbvg4247rPJoa5FE591w9"
+				"bzz-raw://c56be56587232e345bb15bebe0c2c6a2f7c3a5adbe08134dd9c4bed061dca371",
+				"dweb:/ipfs/QmaHCbeEcWK3hSGfnF3Dnb39BabwMsw21CYM3BXNanem5W"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

@@ -538,18 +538,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/StableCoinBalancer.sol": {
-			"keccak256": "0x5aa501e267886d3d52fbc2ec95993cee8ccd24eaf327e881729de05de5c1de69",
+			"keccak256": "0xe1214959a128894ceea1216acedc279e9b8f004216c7652365eecd8088e36d78",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://83d0407f7fa97c8266d982c42ba4d1227ea1392727f6f917ebfbd0405b1ca47c",
-				"dweb:/ipfs/QmViRSRCrzMqapEkPJSyFwn5HLhd7xUDVuZPwfqHGxPhkv"
+				"bzz-raw://d2b5cadb94d8c0eeca9630198dfb77e348153318d074c6a886c8036f21bf47eb",
+				"dweb:/ipfs/QmYCtt34Uk1u8PfjdLeLefUzCzwgXwxmpQ1GN1eyQwJpao"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapLP1155V1.sol": {
