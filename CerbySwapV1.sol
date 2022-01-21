@@ -839,7 +839,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         );
 
         // calculating fees
-        uint fee = getCurrentFeeBasedOnTrades(poolId);
+        // if swap is ANY --> cerUSD, fee is calculated
+        // if swap is cerUSD --> ANY, fee is zero
+        uint fee = 
+            amountCerUsdIn > 1 && amountTokensIn <= 1?
+                FEE_DENORM:
+                getCurrentOneMinusFeeBasedOnTrades(poolId);
 
         { // scope to avoid stack too deep error
 
@@ -1063,15 +1068,15 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         return (block.timestamp / ONE_PERIOD_IN_SECONDS) % NUMBER_OF_TRADE_PERIODS;
     }
 
-    function getCurrentFeeBasedOnTrades(address token)
+    function getCurrentOneMinusFeeBasedOnTrades(address token)
         public
         view
         returns (uint fee)
     {
-        return getCurrentFeeBasedOnTrades(tokenToPoolId[token]);
+        return getCurrentOneMinusFeeBasedOnTrades(tokenToPoolId[token]);
     }
 
-    function getCurrentFeeBasedOnTrades(uint poolId)
+    function getCurrentOneMinusFeeBasedOnTrades(uint poolId)
         private
         view
         returns (uint fee)
@@ -1179,7 +1184,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountTokensIn,
             uint(pools[poolId].balanceToken),
             uint(pools[poolId].balanceCerUsd),
-            getCurrentFeeBasedOnTrades(poolId)
+            getCurrentOneMinusFeeBasedOnTrades(poolId)
         );
     }
 
@@ -1194,6 +1199,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountCerUsdIn,
             uint(pools[poolId].balanceCerUsd),
             uint(pools[poolId].balanceToken),
+            //getCurrentOneMinusFeeBasedOnTrades(poolId)
             FEE_DENORM // fee is zero for swaps cerUsd --> Any
         );
     }
@@ -1225,7 +1231,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountCerUsdOut,
             uint(pools[poolId].balanceToken),
             uint(pools[poolId].balanceCerUsd),
-            getCurrentFeeBasedOnTrades(poolId)
+            getCurrentOneMinusFeeBasedOnTrades(poolId)
         );
     }
 
@@ -1240,6 +1246,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountTokensOut,
             uint(pools[poolId].balanceCerUsd),
             uint(pools[poolId].balanceToken),
+            //getCurrentOneMinusFeeBasedOnTrades(poolId)
             FEE_DENORM // fee is zero for swaps cerUsd --> Any
         );
     }

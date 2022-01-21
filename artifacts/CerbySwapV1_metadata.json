@@ -633,7 +633,7 @@
 						"type": "address"
 					}
 				],
-				"name": "getCurrentFeeBasedOnTrades",
+				"name": "getCurrentOneMinusFeeBasedOnTrades",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -1560,11 +1560,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x80da0244ef741859c96447fb8ff9f2b4bf9883354e8f166f219915d35bf141a6",
+			"keccak256": "0x6d8f6ca1de150397ab466eedd386958628abd0267e83e7a5dbd3ff5db1ba70df",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://c56be56587232e345bb15bebe0c2c6a2f7c3a5adbe08134dd9c4bed061dca371",
-				"dweb:/ipfs/QmaHCbeEcWK3hSGfnF3Dnb39BabwMsw21CYM3BXNanem5W"
+				"bzz-raw://824b830d242cc1b633b8be32a17c8139dac41fa697d52708b72cac0861b5c4e9",
+				"dweb:/ipfs/QmbcM29egPjXmiG9U8o836TJ16UqYETdFbj9AWzAwBK9eX"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
