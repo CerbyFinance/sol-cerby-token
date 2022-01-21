@@ -37,7 +37,7 @@ balanceCerUsd -= amountCerUsdToBurn
     uint amountCerUsdIn, 
     uint amountTokensOut, 
     uint amountCerUsdOut,
-    uint currentOneMinusFee,
+    uint currentFee,
     address transferTo
 );
 в бд пишем
@@ -74,7 +74,7 @@ price = balanceToken / balanceCerUsd (float)
 5) getAPY(token, fromTimestamp, toTimestamp)
 считаем по всем свап ивентам с fromDay до toDay и token
 const FEE_DENORM = 10000
-amountTokensLPReceived += (swapEvent[i].amountTokensIn * swapEvent[i].currentOneMinusFee) / FEE_DENORM
+amountTokensLPReceived += (swapEvent[i].amountTokensIn * swapEvent[i].currentFee) / FEE_DENORM
 возвращаем
 amountTokensLPReceived, amountCerUsdLPReceived,
 APY = (amountTokensLPReceived * period(365 days)) / (pool.balanceTokens * periodInSeconds(fromTimestamp, toTimestamp))
