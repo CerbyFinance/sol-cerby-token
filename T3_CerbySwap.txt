@@ -71,7 +71,7 @@ return (amountTokensIn, amountTokensOut);
 13) добавление ликвы
 скриншот https://software.valar-solutions.com/Hosting/screenshots/2022-01-17_14-47-29.png
 14) юзер выбирает токен в верхнем поле tokenIn
-15) по токену дергается pool = getPoolByToken(tokenIn)
+15) по токену дергается pool = getPoolsByTokens([tokenIn])[0]
 считается текущая цена tokenIn
 priceTokenIn = pool.balanceCerUsd / pool.balanceTokens
 16) считается amountCerUsdToMint = priceTokenIn * amountTokensIn
