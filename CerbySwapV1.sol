@@ -876,13 +876,16 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         }
 
         // updating 1 hour trade pool values
+        // only for direction ANY --> cerUSD
         uint currentPeriod = getCurrentPeriod();
         uint nextPeriod = (getCurrentPeriod() + 1) % NUMBER_OF_TRADE_PERIODS;
-        unchecked {
-            // wrapping any uint32 overflows
-            // stores in USD value
-            pools[poolId].tradeVolumePerPeriodInCerUsd[currentPeriod] += 
-                uint32( (amountCerUsdIn + amountCerUsdOut) / TRADE_VOLUME_DENORM);
+        if (amountCerUsdIn <= 1 && amountTokensIn > 1) {
+            unchecked {
+                // wrapping any uint32 overflows
+                // stores in 10xUSD value
+                pools[poolId].tradeVolumePerPeriodInCerUsd[currentPeriod] += 
+                    uint32( amountCerUsdOut / TRADE_VOLUME_DENORM); // if ANY --> cerUSD, then output is cerUSD only
+            }
         }
 
         // clearing next 1 hour trade value
