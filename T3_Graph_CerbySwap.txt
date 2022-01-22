@@ -57,7 +57,7 @@ balanceCerUsd = newBalanceCerUsd
 Запросы
 1) listOfPools(offset, limit)
 возвращает массив
-poolId, token, balanceToken, balanceCerUsd
+poolId, token, balanceToken, balanceCerUsd, decimals (у token.decimals() дергаем и кешируем)
 2) getPoolByToken(token)
 возвращает
 poolId, token, balanceToken, balanceCerUsd,
