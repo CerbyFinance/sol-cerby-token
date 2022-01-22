@@ -882,7 +882,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         if (amountCerUsdIn <= 1 && amountTokensIn > 1) {
             unchecked {
                 // wrapping any uint32 overflows
-                // stores in 10xUSD value
+                // stores in 10xUSD value, up-to $40B per 4 hours per pair will be stored correctly
                 pools[poolId].tradeVolumePerPeriodInCerUsd[currentPeriod] += 
                     uint32( amountCerUsdOut / TRADE_VOLUME_DENORM); // if ANY --> cerUSD, then output is cerUSD only
             }
