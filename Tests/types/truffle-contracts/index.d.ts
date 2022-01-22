@@ -9,8 +9,6 @@ import { CerbyCronJobsExecutionContract } from "./CerbyCronJobsExecution";
 import { CerbySwapLP1155V1Contract } from "./CerbySwapLP1155V1";
 import { CerbySwapV1Contract } from "./CerbySwapV1";
 import { ERC1155Contract } from "./ERC1155";
-import { ERC1155HolderContract } from "./ERC1155Holder";
-import { ERC1155ReceiverContract } from "./ERC1155Receiver";
 import { ERC1155SupplyContract } from "./ERC1155Supply";
 import { ERC165Contract } from "./ERC165";
 import { ERC20Contract } from "./ERC20";
@@ -44,8 +42,6 @@ declare global {
       require(name: "CerbySwapLP1155V1"): CerbySwapLP1155V1Contract;
       require(name: "CerbySwapV1"): CerbySwapV1Contract;
       require(name: "ERC1155"): ERC1155Contract;
-      require(name: "ERC1155Holder"): ERC1155HolderContract;
-      require(name: "ERC1155Receiver"): ERC1155ReceiverContract;
       require(name: "ERC1155Supply"): ERC1155SupplyContract;
       require(name: "ERC165"): ERC165Contract;
       require(name: "ERC20"): ERC20Contract;
@@ -93,11 +89,6 @@ export {
 } from "./CerbySwapLP1155V1";
 export { CerbySwapV1Contract, CerbySwapV1Instance } from "./CerbySwapV1";
 export { ERC1155Contract, ERC1155Instance } from "./ERC1155";
-export { ERC1155HolderContract, ERC1155HolderInstance } from "./ERC1155Holder";
-export {
-  ERC1155ReceiverContract,
-  ERC1155ReceiverInstance,
-} from "./ERC1155Receiver";
 export { ERC1155SupplyContract, ERC1155SupplyInstance } from "./ERC1155Supply";
 export { ERC165Contract, ERC165Instance } from "./ERC165";
 export { ERC20Contract, ERC20Instance } from "./ERC20";

@@ -35,6 +35,7 @@ contract("Cerby", accounts => {
     const firstAccount = accounts[0];
 
     const cerbySwap = await CerbySwapV1.deployed();
+    console.log("CerbySwap Address: " + cerbySwap.address);
 
     const beforeCerbyPool = (await cerbySwap.getPoolsByTokens([
       TestCerbyToken.address],
