@@ -105,7 +105,7 @@ export interface Swap {
     amountCerUsdIn: BN;
     amountTokensOut: BN;
     amountCerUsdOut: BN;
-    currentOneMinusFee: BN;
+    currentFee: BN;
     transferTo: string;
     0: string;
     1: string;
@@ -394,7 +394,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<boolean>;
 
-  getCurrentFeeBasedOnTrades(
+  getCurrentOneMinusFeeBasedOnTrades(
     token: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
@@ -1098,7 +1098,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<boolean>;
 
-    getCurrentFeeBasedOnTrades(
+    getCurrentOneMinusFeeBasedOnTrades(
       token: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;

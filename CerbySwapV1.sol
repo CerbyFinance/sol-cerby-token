@@ -80,7 +80,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     uint constant FEE_DENORM = 10000;
     uint constant TRADE_VOLUME_DENORM = 10 * 1e18;
 
-    uint constant TVL_MULTIPLIER_DENORM = 10000;  
+    uint constant TVL_MULTIPLIER_DENORM = 1e10;  
 
     // 6 4hours + 1 current 4hour + 1 next 4hour = 26 hours
     uint constant NUMBER_OF_TRADE_PERIODS = 8; 
@@ -92,7 +92,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     Settings public settings;
 
     struct Settings {
-        address feeToBeneficiary;
+        address mintFeeBeneficiary;
         uint mintFeeMultiplier;
         uint feeMinimum;
         uint feeMaximum;
@@ -132,7 +132,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint amountCerUsdIn, 
         uint amountTokensOut, 
         uint amountCerUsdOut,
-        uint currentOneMinusFee,
+        uint currentFee,
         address transferTo
     );
     event Sync(
@@ -149,13 +149,21 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"
             );
 
+        address mintFeeBeneficiary = address(0xdead123); // TODO: update
+        uint mintFeeMultiplier = 0; // TODO: update on production = 4 * MINT_FEE_DENORM, // mintFeeMultiplier 1/5 of fees goes to treasury        
+
+        uint tvlMultiplier = 1369863014; // 0.1369863014
+        uint feeMinimum = 1; // 0.01%
+        uint feeMaximum = 200; // 2.00%
+        uint tvlMultiplierMinimum = tvlMultiplier; // TVL * 0.1369863014
+        uint tvlMultiplierMaximum = (tvlMultiplier * feeMaximum) / feeMinimum; // TVL * 27.397260274
         settings = Settings(
-            address(0xdead123), // feeToBeneficiary TODO: update on production
-            0, // TODO: update on production = 4 * MINT_FEE_DENORM, // mintFeeMultiplier 1/5 of fees goes to treasury
-            1, // feeMinimum = 0.01%
-            100, // feeMaximum = 1.00%
-            (TVL_MULTIPLIER_DENORM * 15) / 100, // tvlMultiplierMinimum = TVL * 0.15
-            TVL_MULTIPLIER_DENORM * 15 // tvlMultiplierMaximum = TVL * 15
+            mintFeeBeneficiary,
+            mintFeeMultiplier,
+            feeMinimum,
+            feeMaximum,
+            tvlMultiplierMinimum,
+            tvlMultiplierMaximum
         );
 
         // Filling with empty pool 0th id
@@ -402,7 +410,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
             if (amountLpTokensToMintAsFee > 0) {
                 _mint(
-                    settings.feeToBeneficiary, 
+                    settings.mintFeeBeneficiary, 
                     poolId, 
                     amountLpTokensToMintAsFee,
                     ""
@@ -513,7 +521,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 );
             if (amountLpTokensToMintAsFee > 0) {
                 _mint(
-                    settings.feeToBeneficiary, 
+                    settings.mintFeeBeneficiary, 
                     poolId, 
                     amountLpTokensToMintAsFee,
                     ""
@@ -839,7 +847,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         );
 
         // calculating fees
-        uint fee = getCurrentFeeBasedOnTrades(poolId);
+        // if swap is ANY --> cerUSD, fee is calculated
+        // if swap is cerUSD --> ANY, fee is zero
+        uint oneMinusFee = 
+            amountCerUsdIn > 1 && amountTokensIn <= 1?
+                FEE_DENORM:
+                getCurrentOneMinusFeeBasedOnTrades(poolId);
 
         { // scope to avoid stack too deep error
 
@@ -857,8 +870,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
             // calculating new K value including trade fees (multiplied by FEE_DENORM^2)
             uint afterKValueDenormed = 
-                (_balanceCerUsd * FEE_DENORM - amountCerUsdIn * (FEE_DENORM - fee)) * 
-                (_balanceToken * FEE_DENORM - amountTokensIn * (FEE_DENORM - fee));
+                (_balanceCerUsd * FEE_DENORM - amountCerUsdIn * (FEE_DENORM - oneMinusFee)) * 
+                (_balanceToken * FEE_DENORM - amountTokensIn * (FEE_DENORM - oneMinusFee));
             require(
                 afterKValueDenormed >= beforeKValueDenormed,
                 errorsList.INVARIANT_K_VALUE_MUST_BE_INCREASED_ON_ANY_TRADE_P
@@ -871,13 +884,20 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         }
 
         // updating 1 hour trade pool values
+        // only for direction ANY --> cerUSD
         uint currentPeriod = getCurrentPeriod();
         uint nextPeriod = (getCurrentPeriod() + 1) % NUMBER_OF_TRADE_PERIODS;
-        unchecked {
-            // wrapping any uint32 overflows
-            // stores in USD value
-            pools[poolId].tradeVolumePerPeriodInCerUsd[currentPeriod] += 
-                uint32( (amountCerUsdIn + amountCerUsdOut) / TRADE_VOLUME_DENORM);
+        if (amountCerUsdIn <= 1 && amountTokensIn > 1) {
+            // stores in 10xUSD value, up-to $40B per 4 hours per pair will be stored correctly
+            uint updatedTradeVolume = 
+                uint(pools[poolId].tradeVolumePerPeriodInCerUsd[currentPeriod]) + 
+                    amountCerUsdOut / TRADE_VOLUME_DENORM; // if ANY --> cerUSD, then output is cerUSD only
+            
+            // handling overflow just in case
+            pools[poolId].tradeVolumePerPeriodInCerUsd[currentPeriod] = 
+                updatedTradeVolume < type(uint32).max?
+                    uint32(updatedTradeVolume):
+                    type(uint32).max;
         }
 
         // clearing next 1 hour trade value
@@ -911,7 +931,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountCerUsdIn, 
             amountTokensOut, 
             amountCerUsdOut,
-            FEE_DENORM - fee, // (1 - fee) * FEE_DENORM
+            FEE_DENORM - oneMinusFee, // = fee * FEE_DENORM
             transferTo
         );
     }
@@ -1063,18 +1083,18 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         return (block.timestamp / ONE_PERIOD_IN_SECONDS) % NUMBER_OF_TRADE_PERIODS;
     }
 
-    function getCurrentFeeBasedOnTrades(address token)
+    function getCurrentOneMinusFeeBasedOnTrades(address token)
         public
         view
         returns (uint fee)
     {
-        return getCurrentFeeBasedOnTrades(tokenToPoolId[token]);
+        return getCurrentOneMinusFeeBasedOnTrades(tokenToPoolId[token]);
     }
 
-    function getCurrentFeeBasedOnTrades(uint poolId)
+    function getCurrentOneMinusFeeBasedOnTrades(uint poolId)
         private
         view
-        returns (uint fee)
+        returns (uint)
     {
         // getting last 24 hours trade volume in USD
         uint currentPeriod = getCurrentPeriod();
@@ -1099,6 +1119,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             (pools[poolId].balanceCerUsd * settings.tvlMultiplierMinimum) / TVL_MULTIPLIER_DENORM;
         uint tvlMax = 
             (pools[poolId].balanceCerUsd * settings.tvlMultiplierMaximum) / TVL_MULTIPLIER_DENORM;
+        uint fee;
         if (volume <= tvlMin) {
             fee = settings.feeMaximum; // 1.00%
         } else if (tvlMin < volume && volume < tvlMax) {
@@ -1110,7 +1131,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             fee = settings.feeMinimum; // 0.01%
         }
 
-        // returning 1 - fee for further calculations
+        // returning oneMinusFee = 1 - fee for further calculations
         return FEE_DENORM - fee;
     }
 
@@ -1179,7 +1200,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountTokensIn,
             uint(pools[poolId].balanceToken),
             uint(pools[poolId].balanceCerUsd),
-            getCurrentFeeBasedOnTrades(poolId)
+            getCurrentOneMinusFeeBasedOnTrades(poolId)
         );
     }
 
@@ -1194,11 +1215,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountCerUsdIn,
             uint(pools[poolId].balanceCerUsd),
             uint(pools[poolId].balanceToken),
-            getCurrentFeeBasedOnTrades(poolId)
+            //getCurrentOneMinusFeeBasedOnTrades(poolId)
+            FEE_DENORM // fee is zero for swaps cerUsd --> Any (oneMinusFee = FEE_DENORM)
         );
     }
 
-    function _getOutput(uint amountIn, uint reservesIn, uint reservesOut, uint poolFee)
+    function _getOutput(uint amountIn, uint reservesIn, uint reservesOut, uint oneMinusFee)
         private
         view
         returns (uint)
@@ -1208,7 +1230,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             errorsList.RESERVES_IN_AND_OUT_MUST_BE_LARGER_THAN_1000_V
         );
 
-        uint amountInWithFee = amountIn * poolFee;
+        uint amountInWithFee = amountIn * oneMinusFee;
         uint amountOut = 
             (reservesOut * amountInWithFee) / (reservesIn * FEE_DENORM + amountInWithFee);
         return amountOut;
@@ -1225,7 +1247,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountCerUsdOut,
             uint(pools[poolId].balanceToken),
             uint(pools[poolId].balanceCerUsd),
-            getCurrentFeeBasedOnTrades(poolId)
+            getCurrentOneMinusFeeBasedOnTrades(poolId)
         );
     }
 
@@ -1240,11 +1262,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountTokensOut,
             uint(pools[poolId].balanceCerUsd),
             uint(pools[poolId].balanceToken),
-            getCurrentFeeBasedOnTrades(poolId)
+            //getCurrentOneMinusFeeBasedOnTrades(poolId)
+            FEE_DENORM // fee is zero for swaps cerUsd --> Any (oneMinusFee = FEE_DENORM)
         );
     }
 
-    function _getInput(uint amountOut, uint reservesIn, uint reservesOut, uint poolFee)
+    function _getInput(uint amountOut, uint reservesIn, uint reservesOut, uint oneMinusFee)
         private
         view
         returns (uint)
@@ -1255,7 +1278,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         );
 
         uint amountIn = (reservesIn * amountOut * FEE_DENORM) /
-            (poolFee * (reservesOut - amountOut)) + 1; // adding +1 for any rounding trims
+            (oneMinusFee * (reservesOut - amountOut)) + 1; // adding +1 for any rounding trims
         return amountIn;
     }
 

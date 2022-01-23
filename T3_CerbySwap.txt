@@ -12,6 +12,11 @@ path - путь который снизу выводится для юзера �
 - cerUsd --> tokenOut (tokenIn == cerUsd, tokenOut != cerUsd)
 - tokenIn --> cerUsd --> tokenOut (tokenIn != cerUsd, tokenOut != cerUsd)
 Скриншот интерфейса https://software.valar-solutions.com/Hosting/screenshots/photo_2022-01-17_19.47.39.jpeg
+Также выводится сколько ЛП получит и какой текущий фи
+- tradeFee = (1 - getCurrentOneMinusFeeBasedOnTrades(tokenIn)) / FEE_DENORM
+- amountTokensLPReceive = tokenIn != cerUSD? 
+    amountTokensIn * tradeFee:
+    0;
 
 ---------------------
 
