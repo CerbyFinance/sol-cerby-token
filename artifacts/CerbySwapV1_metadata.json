@@ -465,7 +465,7 @@
 						"components": [
 							{
 								"internalType": "address",
-								"name": "feeToBeneficiary",
+								"name": "mintFeeBeneficiary",
 								"type": "address"
 							},
 							{
@@ -1158,7 +1158,7 @@
 				"outputs": [
 					{
 						"internalType": "address",
-						"name": "feeToBeneficiary",
+						"name": "mintFeeBeneficiary",
 						"type": "address"
 					},
 					{
@@ -1537,7 +1537,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
@@ -1560,11 +1560,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x1c524183ed94b1cc1c64bf86b5e8642c011d5a48dba86fd07fae606346a0abfd",
+			"keccak256": "0x36d24d13e9fdba9d76fea030d3dab8abfb4f3cf630526b3e42a1517a88310ea4",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://4e47fa768f0958d3e826572b136b0cb10d9714ed1179a62f7d9870617757a527",
-				"dweb:/ipfs/QmfA85mdTYpi4sgqhwDDnify1WYKbtHcCCHuFQxWDn8efn"
+				"bzz-raw://5f49e4b36cd48800c69a5498b36f029f87b81448d7db99d4da3512a2b2fe1522",
+				"dweb:/ipfs/Qmepr1GfKmtdq1naF7TNrd2hsY4pCmuurJgFpx4wZTF8Kr"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

@@ -80,7 +80,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     uint constant FEE_DENORM = 10000;
     uint constant TRADE_VOLUME_DENORM = 10 * 1e18;
 
-    uint constant TVL_MULTIPLIER_DENORM = 10000;  
+    uint constant TVL_MULTIPLIER_DENORM = 1e10;  
 
     // 6 4hours + 1 current 4hour + 1 next 4hour = 26 hours
     uint constant NUMBER_OF_TRADE_PERIODS = 8; 
@@ -92,7 +92,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     Settings public settings;
 
     struct Settings {
-        address feeToBeneficiary;
+        address mintFeeBeneficiary;
         uint mintFeeMultiplier;
         uint feeMinimum;
         uint feeMaximum;
@@ -149,13 +149,21 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"
             );
 
+        address mintFeeBeneficiary = address(0xdead123); // TODO: update
+        uint mintFeeMultiplier = 0; // TODO: update on production = 4 * MINT_FEE_DENORM, // mintFeeMultiplier 1/5 of fees goes to treasury        
+
+        uint tvlMultiplier = 1369863014; // 0.1369863014
+        uint feeMinimum = 1; // 0.01%
+        uint feeMaximum = 200; // 2.00%
+        uint tvlMultiplierMinimum = tvlMultiplier; // TVL * 0.1369863014
+        uint tvlMultiplierMaximum = (tvlMultiplier * feeMaximum) / feeMinimum; // TVL * 27.397260274
         settings = Settings(
-            address(0xdead123), // feeToBeneficiary TODO: update on production
-            0, // TODO: update on production = 4 * MINT_FEE_DENORM, // mintFeeMultiplier 1/5 of fees goes to treasury
-            1, // feeMinimum = 0.01%
-            100, // feeMaximum = 1.00%
-            (TVL_MULTIPLIER_DENORM * 15) / 100, // tvlMultiplierMinimum = TVL * 0.15
-            TVL_MULTIPLIER_DENORM * 15 // tvlMultiplierMaximum = TVL * 15
+            mintFeeBeneficiary,
+            mintFeeMultiplier,
+            feeMinimum,
+            feeMaximum,
+            tvlMultiplierMinimum,
+            tvlMultiplierMaximum
         );
 
         // Filling with empty pool 0th id
@@ -402,7 +410,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
             if (amountLpTokensToMintAsFee > 0) {
                 _mint(
-                    settings.feeToBeneficiary, 
+                    settings.mintFeeBeneficiary, 
                     poolId, 
                     amountLpTokensToMintAsFee,
                     ""
@@ -513,7 +521,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 );
             if (amountLpTokensToMintAsFee > 0) {
                 _mint(
-                    settings.feeToBeneficiary, 
+                    settings.mintFeeBeneficiary, 
                     poolId, 
                     amountLpTokensToMintAsFee,
                     ""
