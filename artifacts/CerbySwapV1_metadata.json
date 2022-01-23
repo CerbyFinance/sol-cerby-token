@@ -986,6 +986,34 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountTokensOut",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountCerUsdOut",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "transferTo",
+						"type": "address"
+					}
+				],
+				"name": "lowLevelSwap",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "name",
 				"outputs": [
@@ -1220,34 +1248,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountTokensOut",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountCerUsdOut",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "transferTo",
-						"type": "address"
-					}
-				],
-				"name": "swap",
-				"outputs": [],
-				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
@@ -1537,7 +1537,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
@@ -1560,11 +1560,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x0a3e13d95499cf8215d2ff38633efa853aae8b506b3a80b1bff5d980deeeffc2",
+			"keccak256": "0xcfe21c8623f3a5e325f23e99fca44da0a819bf722ff75060aca3503544450f5f",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://0ad36096302b8e77733f3a028e08b5ed982171040c4aef498e86f9bbb72c3ec7",
-				"dweb:/ipfs/QmNjP5w3Z7hJqWkn6t2XJ6SjuL3FHCVy462LW7RWDqvVCu"
+				"bzz-raw://8f798e747a5ea076b2f9f6b4ad52d758450ff7b8ca240248a11306ee096937d6",
+				"dweb:/ipfs/QmbJHkxABrx88qK6NeDQFswgEgi9d6AkeyyUbZaQ8F2xHR"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

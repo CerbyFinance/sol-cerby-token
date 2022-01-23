@@ -807,8 +807,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         return (amountTokensIn, amountTokensOut);
     }
 
-    // low level swap
-    function swap(
+    function lowLevelSwap(
         address token,
         uint amountTokensOut,
         uint amountCerUsdOut,
@@ -816,7 +815,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     )
         public
         payable
-        // checkForBots(msg.sender)
     {
         _swap(
             token,
@@ -887,7 +885,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         // only for direction ANY --> cerUSD
         uint currentPeriod = getCurrentPeriod();
         uint nextPeriod = (getCurrentPeriod() + 1) % NUMBER_OF_TRADE_PERIODS;
-        if (amountCerUsdIn <= 1 && amountTokensIn > 1) {
+        if (amountCerUsdOut > TRADE_VOLUME_DENORM) { // or else amountCerUsdOut / TRADE_VOLUME_DENORM == 0
             // stores in 10xUSD value, up-to $40B per 4 hours per pair will be stored correctly
             uint updatedTradeVolume = 
                 uint(pools[poolId].tradeVolumePerPeriodInCerUsd[currentPeriod]) + 
