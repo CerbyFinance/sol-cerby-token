@@ -148,9 +148,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"
             );
 
-        address mintFeeBeneficiary = address(0xdead123); // TODO: update
-        uint mintFeeMultiplier = 0; // TODO: update on production = 4 * MINT_FEE_DENORM, // mintFeeMultiplier 1/5 of fees goes to treasury        
-
+        address mintFeeBeneficiary = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8; // CerbyBridge fees wallet
+        uint mintFeeMultiplier = 4 * MINT_FEE_DENORM; // mintFeeMultiplier 1/5 of fees goes to buyback Cerby
         uint tvlMultiplier = 1369863014; // 0.1369863014
         uint feeMinimum = 1; // 0.01%
         uint feeMaximum = 200; // 2.00%
@@ -296,6 +295,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         settings = _settings;
     }
 
+    // only admins are allowed to create new pools
     function adminCreatePool(
         address token, 
         uint amountTokensIn, 
