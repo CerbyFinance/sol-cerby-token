@@ -715,11 +715,6 @@
 					{
 						"components": [
 							{
-								"internalType": "address",
-								"name": "token",
-								"type": "address"
-							},
-							{
 								"internalType": "uint32[8]",
 								"name": "tradeVolumePerPeriodInCerUsd",
 								"type": "uint32[8]"
@@ -760,11 +755,6 @@
 				"outputs": [
 					{
 						"components": [
-							{
-								"internalType": "address",
-								"name": "token",
-								"type": "address"
-							},
 							{
 								"internalType": "uint32[8]",
 								"name": "tradeVolumePerPeriodInCerUsd",
@@ -1560,11 +1550,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xcfe21c8623f3a5e325f23e99fca44da0a819bf722ff75060aca3503544450f5f",
+			"keccak256": "0x9426f8e7d7b79c5c3f0f238ebc5c56e0d4d00ffe4f117a2eb88662d94eb382c2",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://8f798e747a5ea076b2f9f6b4ad52d758450ff7b8ca240248a11306ee096937d6",
-				"dweb:/ipfs/QmbJHkxABrx88qK6NeDQFswgEgi9d6AkeyyUbZaQ8F2xHR"
+				"bzz-raw://2ff59d1b24f2f5918ac9604e73167c77a73d64fa3af5161e8daccd740c4b0604",
+				"dweb:/ipfs/QmT3aqNL8A5cdBPi7jedAdaStHiPRjJjDsRtvjBNV4ddHU"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

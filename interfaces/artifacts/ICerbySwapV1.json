@@ -153,11 +153,6 @@
 				{
 					"components": [
 						{
-							"internalType": "address",
-							"name": "token",
-							"type": "address"
-						},
-						{
 							"internalType": "uint32[8]",
 							"name": "tradeVolumePerPeriodInCerUsd",
 							"type": "uint32[8]"

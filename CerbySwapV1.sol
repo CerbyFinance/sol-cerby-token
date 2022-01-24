@@ -101,7 +101,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     }
 
     struct Pool {
-        address token;
         uint32[NUMBER_OF_TRADE_PERIODS] tradeVolumePerPeriodInCerUsd;
         uint128 balanceToken;
         uint128 balanceCerUsd;
@@ -169,7 +168,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         // Filling with empty pool 0th id
         uint32[NUMBER_OF_TRADE_PERIODS] memory tradeVolumePerPeriodInCerUsd;
         pools.push(Pool(
-            address(0),
             tradeVolumePerPeriodInCerUsd,
             0,
             0,
@@ -325,7 +323,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         }
 
         Pool memory pool = Pool(
-            token,
             tradeVolumePerPeriodInCerUsd,
             uint128(amountTokensIn),
             uint128(amountCerUsdToMint),

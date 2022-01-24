@@ -3,7 +3,6 @@ pragma solidity ^0.8.11;
 
 
 struct Pool {
-    address token;
     uint32[8] tradeVolumePerPeriodInCerUsd;
     uint128 balanceToken;
     uint128 balanceCerUsd;
