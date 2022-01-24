@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.11;
 
 import "./interfaces/IWeth.sol";
 import "./interfaces/ICerbyToken.sol";
@@ -19,23 +19,27 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
     uint constant PRICE_DENORM = 1e18;
     uint constant FEE_DENORM = 10000;
 
-    uint constant PERCENTAGE_INCREASE = 10050;
-    uint constant PERCENTAGE_DECREASE = 9950;
+    uint constant PERCENTAGE_INCREASE = 10100;
+    uint constant PERCENTAGE_DECREASE = 9900;
     uint constant PERCENTAGE_DENORM = 10000;
 
     uint lastBalancedAt = block.timestamp;
     uint secondsBetweenBalancing = 0;
 
-    uint constant NUMBER_OF_TRADE_PERIODS = 8; 
-
+    uint constant NUMBER_OF_TRADE_PERIODS = 8;
 
     constructor() {
-
         IWeth(usdcToken).approve(cerbySwapContract, type(uint).max);
         IWeth(cerUsdToken).approve(cerbySwapContract, type(uint).max);
     }
 
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC1155Receiver, AccessControlEnumerable) returns (bool) {
+    function supportsInterface(bytes4 interfaceId) 
+        public 
+        view 
+        virtual 
+        override(ERC1155Receiver, AccessControlEnumerable) 
+        returns (bool) 
+    {
         return interfaceId == type(IERC1155Receiver).interfaceId || super.supportsInterface(interfaceId);
     }
 
@@ -176,6 +180,22 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
                 IWeth(tokens[i]).transfer(msg.sender, tokenBalance);
             }
         }        
+    }
+
+    function withdrawLP(uint _poolId)
+        onlyRole(ROLE_ADMIN)
+        public
+    {
+        uint lpBalance = 
+            ICerbySwapLP1155V1(cerbySwapContract).balanceOf(address(this), _poolId);
+        
+        ICerbySwapLP1155V1(cerbySwapContract).safeTransferFrom(
+            address(this),
+            msg.sender,
+            _poolId,
+            lpBalance,
+            ""
+        );
     }
 
     function sqrt(uint y) 

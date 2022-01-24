@@ -484,6 +484,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "_poolId",
+						"type": "uint256"
+					}
+				],
+				"name": "withdrawLP",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address[]",
 						"name": "tokens",
 						"type": "address[]"
@@ -538,18 +551,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/StableCoinBalancer.sol": {
-			"keccak256": "0xc7951f9b1a748c615581e19343816e8f075493145dbcd9732f6f0643b44898cc",
+			"keccak256": "0x6738941e65aa62ffbf2f3348f0c72ae6ce69767df719a4080ed853129a6881e7",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://4e70520dc7f8caec378f9b5706cb18a7e928c96db8090330617faeab7eb7bce7",
-				"dweb:/ipfs/QmRUo79K2Bg9iCQ5Yw24LncD1EVBjr3jSmkgFdXddKn24T"
+				"bzz-raw://64006abacf429d3fa946da557c4b986277ae4508bb73ff70ce140d42b6b735ff",
+				"dweb:/ipfs/QmfMCcqt7ovjcwe1vAH4qG1bxei7t7KSxzcvWYEKMbJyB4"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapLP1155V1.sol": {
