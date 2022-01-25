@@ -26,7 +26,7 @@ module.exports = async function (deployer) {
       // Weth.address,
     );
 
-    //await cerbySwap.adminInitialize({ value: new BN((1e16).toString()) });
+    await cerbySwap.adminInitialize({ value: new BN((1e16).toString()) });
   };
 
   await setup();

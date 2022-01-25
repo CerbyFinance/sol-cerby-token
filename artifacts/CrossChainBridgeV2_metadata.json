@@ -6,6 +6,11 @@
 	"output": {
 		"abi": [
 			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -25,6 +30,159 @@
 				"inputs": [],
 				"name": "CanOnlyRenounceRoleForSelf",
 				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "bytes32",
+						"name": "burnProofHash",
+						"type": "bytes32"
+					}
+				],
+				"name": "ApprovedBurnProof",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "srcToken",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "destToken",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "srcCaller",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "destCaller",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "srcAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "srcNonce",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "enum CrossChainBridgeV2.ChainType",
+						"name": "srcChainType",
+						"type": "uint8"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint32",
+						"name": "srcChainId",
+						"type": "uint32"
+					},
+					{
+						"indexed": false,
+						"internalType": "enum CrossChainBridgeV2.ChainType",
+						"name": "destChainType",
+						"type": "uint8"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint32",
+						"name": "destChainId",
+						"type": "uint32"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes32",
+						"name": "burnProofHash",
+						"type": "bytes32"
+					}
+				],
+				"name": "ProofOfBurn",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "srcToken",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "destToken",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "srcCaller",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "destCaller",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "destAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "enum CrossChainBridgeV2.ChainType",
+						"name": "srcChainType",
+						"type": "uint8"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint32",
+						"name": "srcChainId",
+						"type": "uint32"
+					},
+					{
+						"indexed": false,
+						"internalType": "enum CrossChainBridgeV2.ChainType",
+						"name": "destChainType",
+						"type": "uint8"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint32",
+						"name": "destChainId",
+						"type": "uint32"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes32",
+						"name": "burnProofHash",
+						"type": "bytes32"
+					}
+				],
+				"name": "ProofOfMint",
+				"type": "event"
 			},
 			{
 				"anonymous": false,
@@ -109,6 +267,95 @@
 						"internalType": "bytes32",
 						"name": "",
 						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"name": "allowances",
+				"outputs": [
+					{
+						"internalType": "enum CrossChainBridgeV2.Allowance",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "proofHash",
+						"type": "bytes32"
+					}
+				],
+				"name": "approveBurnProof",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_srcToken",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes",
+						"name": "destToken",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "destCaller",
+						"type": "bytes"
+					},
+					{
+						"internalType": "uint256",
+						"name": "srcAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint8",
+						"name": "destChainType",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint32",
+						"name": "destChainId",
+						"type": "uint32"
+					}
+				],
+				"name": "burnAndCreateProof",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"name": "burnProofStorage",
+				"outputs": [
+					{
+						"internalType": "enum CrossChainBridgeV2.States",
+						"name": "",
+						"type": "uint8"
 					}
 				],
 				"stateMutability": "view",
@@ -246,6 +493,54 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "_srcToken",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes",
+						"name": "destToken",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "destCaller",
+						"type": "bytes"
+					},
+					{
+						"internalType": "uint8",
+						"name": "destChainType",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint32",
+						"name": "destChainId",
+						"type": "uint32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "destBurnProofHash",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "destAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "destNonce",
+						"type": "uint256"
+					}
+				],
+				"name": "mintWithBurnProof",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -282,6 +577,53 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "srcToken",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes",
+						"name": "destToken",
+						"type": "bytes"
+					},
+					{
+						"internalType": "enum CrossChainBridgeV2.ChainType",
+						"name": "destChainType",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint32",
+						"name": "destChainId",
+						"type": "uint32"
+					}
+				],
+				"name": "setAllowance",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "srcNonceByToken",
+				"outputs": [
+					{
+						"internalType": "uint32",
+						"name": "",
+						"type": "uint32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes4",
 						"name": "interfaceId",
 						"type": "bytes4"
@@ -300,7 +642,6 @@
 			}
 		],
 		"devdoc": {
-			"details": "Extension of {AccessControl} that allows enumerating the members of each role.",
 			"kind": "dev",
 			"methods": {
 				"getRoleAdmin(bytes32)": {
@@ -338,7 +679,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": "AccessControlEnumerable"
+			"sol-defifactory-token/CrossChainBridgeV2.sol": "CrossChainBridgeV2"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -346,12 +687,20 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
-			"runs": 20
+			"enabled": false,
+			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
+		"sol-defifactory-token/CrossChainBridgeV2.sol": {
+			"keccak256": "0x0378616bd8c2d0467b2171a5af3b4814e6d9ece7dcc13274e021b9606869590e",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://64b925b034bfc6a57eb374f93bc40561d07756f48c9893b4d2b8c29f11fff57b",
+				"dweb:/ipfs/QmRts7JWG7GZWJVQZbocG7GW8JfYck7LKPqEEHMSpzPXJn"
+			]
+		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
 			"keccak256": "0x3793fd2148a8ba3d983b8bfde834a061e27558b04383cc2fe44a5937965323a3",
 			"license": "MIT",

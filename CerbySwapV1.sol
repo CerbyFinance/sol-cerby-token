@@ -37,7 +37,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     */
 
     address testCerbyToken = 0xE7126C0Fb4B1f5F79E5Bbec3948139dCF348B49C; // TODO: remove on production
-    address cerUsdToken = 0xF690ea79833E2424b05a1d0B779167f5BE763268; // TODO: make constant
+    address cerUsdToken = 0x0fC5025C764cE34df352757e82f7B5c4Df39A836; // TODO: make constant
     address testUsdcToken = 0x7412F2cD820d1E63bd130B0FFEBe44c4E5A47d71; // TODO: remove on production
     
     address nativeToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De;
@@ -171,10 +171,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             nativeToken = 0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7;
         } else if (block.chainid == 250) { // Fantom
             nativeToken = 0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83;
-        } else {
-            // testnet native token
-            nativeToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De; // TODO: update
         }
+
+        // testnet native token
+        nativeToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De; // TODO: update
     }
 
     receive() external payable {}
@@ -1027,8 +1027,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         (bool success, bytes memory data) = 
             token.call(abi.encodeWithSelector(0xa9059cbb, to, value));
         if (
-            !success ||
-            (data.length > 0 && abi.decode(data, (bool)))
+            ! (success && (data.length == 0 || abi.decode(data, (bool))))
         ) {
             revert CerbySwapV1_SafeTransferTokensFailed();
         }
@@ -1044,8 +1043,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         (bool success, bytes memory data) = 
             token.call(abi.encodeWithSelector(0x23b872dd, from, to, value));
         if (
-            !success ||
-            (data.length > 0 && abi.decode(data, (bool)))
+            ! (success && (data.length == 0 || abi.decode(data, (bool))))
         ) {
             revert CerbySwapV1_SafeTransferFromFailed();
         }
