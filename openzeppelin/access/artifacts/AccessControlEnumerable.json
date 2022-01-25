@@ -63,6 +63,27 @@
 	},
 	"abi": [
 		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "role",
+					"type": "bytes32"
+				}
+			],
+			"name": "AccountIsMissingRole",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "CanOnlyRenounceRoleForSelf",
+			"type": "error"
+		},
+		{
 			"anonymous": false,
 			"inputs": [
 				{

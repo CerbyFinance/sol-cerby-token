@@ -13,6 +13,9 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
     string _symbol = "CERBY_SWAP_V1";
     string _urlPrefix = "https://data.cerby.fi/CerbySwap/v1/";
 
+    error TransactionsAreTemporarilyDisabled();
+    error CallerIsNotOwnerNorApproved();
+
     constructor()
         ERC1155(string(abi.encodePacked(_urlPrefix, "{id}.json")))
     {
@@ -101,13 +104,13 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         // before sending the token to user even if it is internal transfer of cerUSD
         // we are making sure that sender is not bot by calling checkTransaction
         ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            // TODO: update in production
             ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
         );
-        require(
-            iCerbyBotDetection.checkTransaction(token, from),
-            "!TX"
-        );
+        if (
+            !iCerbyBotDetection.checkTransaction(token, from)
+        ) {
+            revert TransactionsAreTemporarilyDisabled();
+        }
 
         // if it is external transfer to user
         // we register this transaction as successful
@@ -120,7 +123,7 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         public 
         virtual 
         override
-        checkTransactionAndExecuteCron(address(this), msg.sender) // TODO: enable on production
+        checkTransactionAndExecuteCron(address(this), msg.sender)
     {
         _setApprovalForAll(_msgSender(), operator, approved);
     }
@@ -136,37 +139,18 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         virtual 
         override
     {
-        require(
-            from == _msgSender() || isApprovedForAll(from, _msgSender()),
-            "ERC1155: caller is not owner nor approved"
-        );
+        if (
+            from != _msgSender() &&
+            !isApprovedForAll(from, _msgSender())
+        ) {
+            revert CallerIsNotOwnerNorApproved();
+        }
 
         checkTransactionForBots(address(this), from, to);
 
         
         _safeTransferFrom(from, to, id, amount, data);
     }
-    
-    /*function safeBatchTransferFrom(
-        address from,
-        address to,
-        uint[] memory ids,
-        uint[] memory amounts,
-        bytes memory data
-    ) 
-        public 
-        virtual 
-        override
-    {
-        require(
-            from == _msgSender() || isApprovedForAll(from, _msgSender()),
-            "ERC1155: transfer caller is not owner nor approved"
-        );
-
-        checkTransactionForBots(address(this), from, to);
-
-        _safeBatchTransferFrom(from, to, ids, amounts, data);
-    }*/
 
     function burn(
         address account,
@@ -176,24 +160,13 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         public 
         virtual
     {
-        require(
-            account == _msgSender() || isApprovedForAll(account, _msgSender()),
-            "ERC1155: caller is not owner nor approved"
-        );
+        if (
+            account != _msgSender() &&
+            !isApprovedForAll(account, _msgSender())
+        ) {
+            revert CallerIsNotOwnerNorApproved();
+        }
 
         _burn(account, id, value);
     }
-
-    /*function burnBatch(
-        address account,
-        uint[] memory ids,
-        uint[] memory values
-    ) public virtual {
-        require(
-            account == _msgSender() || isApprovedForAll(account, _msgSender()),
-            "ERC1155: caller is not owner nor approved"
-        );
-
-        _burnBatch(account, ids, values);
-    }*/
 }

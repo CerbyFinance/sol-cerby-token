@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (access/AccessControl.sol)
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.11;
 
 import "./IAccessControl.sol";
 import "../utils/Context.sol";
@@ -61,6 +61,9 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
 
     bytes32 public constant ROLE_ADMIN = 0x00;
 
+    error AccountIsMissingRole(address account, bytes32 role);
+    error CanOnlyRenounceRoleForSelf();
+
     /**
      * @dev Modifier that checks that an account has a specific role. Reverts
      * with a standardized message including the required role.
@@ -93,16 +96,7 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      */
     function _checkRole(bytes32 role, address account) internal view {
         if (!hasRole(role, account)) {
-            revert(
-                string(
-                    abi.encodePacked(
-                        "AccessControl: account ",
-                        Strings.toHexString(uint160(account), 20),
-                        " is missing role ",
-                        Strings.toHexString(uint256(role), 32)
-                    )
-                )
-            );
+            revert AccountIsMissingRole(account, role);
         }
     }
 
@@ -169,7 +163,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      * - the caller must be `account`.
      */
     function renounceRole(bytes32 role, address account) public virtual override {
-        require(account == _msgSender(), "AccessControl: can only renounce roles for self");
+        if (
+            account != _msgSender()
+        ) {
+            revert CanOnlyRenounceRoleForSelf();
+        }
 
         _revokeRole(role, account);
     }

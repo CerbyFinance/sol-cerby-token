@@ -6,6 +6,27 @@
 	"output": {
 		"abi": [
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					}
+				],
+				"name": "AccountIsMissingRole",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CanOnlyRenounceRoleForSelf",
+				"type": "error"
+			},
+			{
 				"anonymous": false,
 				"inputs": [
 					{
@@ -325,18 +346,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
-			"keccak256": "0xf4674285401d40342cec42473ac2c38e5cf38497d19549b1e87a7644e8e82d67",
+			"keccak256": "0x6490119926fd504db3b6f58e9888079996fdff1be3f67b4f7791aa7cdc3ea81d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b32180cc5ae77c0fe09aecf42b3b6a1a16c83640a63f97ba0182d6b4a2d92014",
-				"dweb:/ipfs/QmWjnnCwhTuveCMsHdHf1HVhUw7spZt4eGCG1M7zVAc9x9"
+				"bzz-raw://55c969b46c24573c2d2fe666ecafa31953a1e7fa24f857bbe5c697199bef4885",
+				"dweb:/ipfs/QmYYiXs1GTC66bqkxqaKqsfSCjDbuMJoWdTA7AEWRTEaqN"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {

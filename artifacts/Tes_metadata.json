@@ -303,7 +303,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/WETH.sol": "WETH9"
+			"sol-defifactory-token/WETH.sol": "Tes"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -318,11 +318,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/WETH.sol": {
-			"keccak256": "0xad180c41d2906a53cec011b12a04c7ec29ac07d810e831c985ef6e3d0c393eb8",
+			"keccak256": "0xf667be1e1ac2a0a5069ee782839bc9e3127a02db0bc284fb5d372bfdaddb3d7d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://9e3148012121a4908210117de3c3ef8bc3c00912f9d95c6a561dc005bd0202e9",
-				"dweb:/ipfs/QmWiX4eGjMS8yizbD1hdgS6LQk3agpKQsCgKihY7uKiEzR"
+				"bzz-raw://375cd71fe06f972dbaf5f85fc706b425b9ee3ce24ca84f9e15babcdf0799a6b4",
+				"dweb:/ipfs/QmSsFrH8s6LoFhDWfdZ2XGkFiCVdtgMZqwF3cRAkFWLRHA"
 			]
 		}
 	},

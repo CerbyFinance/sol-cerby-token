@@ -59,7 +59,12 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
      * - `account` cannot be the zero address.
      */
     function balanceOf(address account, uint256 id) public view virtual override returns (uint256) {
-        require(account != address(0), "ERC1155: balance query for the zero address");
+        if (
+            account == address(0)
+        ) {
+            revert ERC1155_BalanceQueryForTheZeroAddress();
+        }
+
         return _balances[id][account];
     }
 
@@ -77,7 +82,11 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         override
         returns (uint256[] memory)
     {
-        require(accounts.length == ids.length, "ERC1155: accounts and ids length mismatch");
+        if (
+            accounts.length != ids.length
+        ) {
+            
+        }, "ERC1155: accounts and ids length mismatch");
 
         uint256[] memory batchBalances = new uint256[](accounts.length);
 

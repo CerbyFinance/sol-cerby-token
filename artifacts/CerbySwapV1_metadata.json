@@ -11,6 +11,127 @@
 				"type": "constructor"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					}
+				],
+				"name": "AccountIsMissingRole",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "AmountOfCerUsdMustBeLargerThanOne",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "AmountOfCerUsdOrTokensInMustBeLargerThanOne",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "AmountOfTokensMustBeLargerThanOne",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CanOnlyRenounceRoleForSelf",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "FeeIsWrong",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "FeeOnTransferTokensArentSupported",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InputCerUsdAmountIsLargerThanMaximumSpecified",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InputTokensAmountIsLargerThanMaximumSpecified",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvariantKValueMustBeSameOrIncreasedOnAnySwaps",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "MsgValueProvidedMustBeLargerThanAmountIn",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "MsgValueProvidedMustBeZero",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "OutputCerUsdAmountIsLowerThanMinimumSpecified",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "OutputTokensAmountIsLowerThanMinimumSpecified",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "SafeTransferFromFailed",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "SafeTransferNativeFailed",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "SafeTransferTokensFailed",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "SwappingTokenToSameTokenIsForbidden",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "TokenAlreadyExists",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "TokenDoesNotExist",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "TransactionIsExpired",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "TvlMultiplierIsWrong",
+				"type": "error"
+			},
+			{
 				"anonymous": false,
 				"inputs": [
 					{
@@ -1527,7 +1648,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
@@ -1550,11 +1671,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x17e06c7007321d20cdf7422eda6203814af0bb5b5e8ff888ba1d7eed2d72d84f",
+			"keccak256": "0x0e5df78cad445b0a5cbba17536fda5f1899ca0204a0f4f478d8b14c6f248abe9",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://80b0990143f252ec2b69c4d2f81c0f61667a7272f593c72a7be305786eddf01a",
-				"dweb:/ipfs/QmTu92SoR5PWvVHhbv9uhEjiGdtWd836FJuEizrVBFXRm8"
+				"bzz-raw://b573ab382fd19cb6930cedf258f5ba921e0c42fdb3d37aae350ca5f7dd56cec8",
+				"dweb:/ipfs/QmaSfsPQkRXV4WuaFDXZFkhseJFwAYbXccTeSQ2yH21yCd"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
@@ -1598,11 +1719,11 @@
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
-			"keccak256": "0xf4674285401d40342cec42473ac2c38e5cf38497d19549b1e87a7644e8e82d67",
+			"keccak256": "0x6490119926fd504db3b6f58e9888079996fdff1be3f67b4f7791aa7cdc3ea81d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b32180cc5ae77c0fe09aecf42b3b6a1a16c83640a63f97ba0182d6b4a2d92014",
-				"dweb:/ipfs/QmWjnnCwhTuveCMsHdHf1HVhUw7spZt4eGCG1M7zVAc9x9"
+				"bzz-raw://55c969b46c24573c2d2fe666ecafa31953a1e7fa24f857bbe5c697199bef4885",
+				"dweb:/ipfs/QmYYiXs1GTC66bqkxqaKqsfSCjDbuMJoWdTA7AEWRTEaqN"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {
