@@ -100,6 +100,18 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
         uint amountToBurn, 
         uint currentDay
     );
+
+    error CerbyStakingSystem_StakingIsAvailableOnlyWhileStakeIsInProgressStatus();
+    error CerbyStakingSystem_ScrapingIsAvailableOnceInADay();
+    error CerbyStakingSystem_StakeMustBeLockedForLessThanMaximumDays();
+    error CerbyStakingSystem_StakeMustBeLockedForMoreThanMinimumDays();
+    error CerbyStakingSystem_StakedAmountExceedsBalance();
+    error CerbyStakingSystem_StakedAmountMustBeLargerThanZero();
+    error CerbyStakingSystem_ExceededCurrentDay();
+    error CerbyStakingSystem_NewOwnerMustBeDifferentFromTheOldOwner();
+    error CerbyStakingSystem_StakeOwnerDoesNotMatch();
+    error CerbyStakingSystem_StakeHaveBeenAlreadyEnded();
+    error CerbyStakingSystem_StakeDoesNotExist();
     
     constructor() 
     {
@@ -347,10 +359,6 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
-        require(
-            stakes[stakeId].owner != newOwner,
-            "SS: New owner must be different from old owner"
-        );
         if (
             stakes[stakeId].owner == newOwner
         ) {
@@ -377,8 +385,7 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
         public
     {
         if (
-            givenDay > getCurrentDaySinceLaunch(),
-            "SS: Exceeded current day"
+            givenDay > getCurrentDaySinceLaunch()
         ) {
             revert CerbyStakingSystem_ExceededCurrentDay();
         }
@@ -472,23 +479,25 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
         returns(uint stakeId)
     {
         if (
-            _startStake.stakedAmount == 0,
-            "SS: StakedAmount has to be larger than zero"
+            _startStake.stakedAmount == 0
         ) {
-            revert CerbyStakingSystem_StakedAmountMustBe
-        };
-        require(
-            _startStake.stakedAmount <= ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).balanceOf(msg.sender),
-            "SS: StakedAmount exceeds balance"
-        );
-        require(
-            _startStake.lockedForXDays >= settings.MINIMUM_STAKE_DAYS,
-            "SS: Stake must be locked for more than min days"
-        );
-        require(
-            _startStake.lockedForXDays <= settings.MAXIMUM_STAKE_DAYS,
-            "SS: Stake must be locked for less than max years"
-        );
+            revert CerbyStakingSystem_StakedAmountMustBeLargerThanZero();
+        }
+        if (
+            _startStake.stakedAmount > ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).balanceOf(msg.sender)
+        ) {
+            revert CerbyStakingSystem_StakedAmountExceedsBalance();
+        }
+        if (
+            _startStake.lockedForXDays < settings.MINIMUM_STAKE_DAYS
+        ) {
+            revert CerbyStakingSystem_StakeMustBeLockedForMoreThanMinimumDays();
+        }
+        if (
+            _startStake.lockedForXDays > settings.MAXIMUM_STAKE_DAYS
+        ) {
+            revert CerbyStakingSystem_StakeMustBeLockedForLessThanMaximumDays();
+        }
         
         ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).transferCustom(msg.sender, address(this), _startStake.stakedAmount);
         
@@ -601,14 +610,16 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
         onlyActiveStake(stakeId)
     {
         uint today = getCurrentDaySinceLaunch();
-        require(
-            today > stakes[stakeId].startDay,
-            "SS: Scraping is available once in 1 day"
-        );
-        require(
-            today < stakes[stakeId].startDay + stakes[stakeId].lockedForXDays,
-            "SS: Scraping is available once while stake is In Progress status"
-        );
+        if (
+            today <= stakes[stakeId].startDay
+        ) {
+            revert CerbyStakingSystem_ScrapingIsAvailableOnceInADay();
+        }
+        if (
+            today > stakes[stakeId].startDay + stakes[stakeId].lockedForXDays
+        ) {
+            revert CerbyStakingSystem_StakingIsAvailableOnlyWhileStakeIsInProgressStatus();
+        }
         
         uint oldLockedForXDays = stakes[stakeId].lockedForXDays;
         uint oldSharesCount = stakes[stakeId].maxSharesCountOnStartStake;

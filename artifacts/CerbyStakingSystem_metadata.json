@@ -37,6 +37,61 @@
 				"type": "error"
 			},
 			{
+				"inputs": [],
+				"name": "CerbyStakingSystem_ExceededCurrentDay",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbyStakingSystem_NewOwnerMustBeDifferentFromTheOldOwner",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbyStakingSystem_ScrapingIsAvailableOnceInADay",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbyStakingSystem_StakeDoesNotExist",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbyStakingSystem_StakeHaveBeenAlreadyEnded",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbyStakingSystem_StakeMustBeLockedForLessThanMaximumDays",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbyStakingSystem_StakeMustBeLockedForMoreThanMinimumDays",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbyStakingSystem_StakeOwnerDoesNotMatch",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbyStakingSystem_StakedAmountExceedsBalance",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbyStakingSystem_StakedAmountMustBeLargerThanZero",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbyStakingSystem_StakingIsAvailableOnlyWhileStakeIsInProgressStatus",
+				"type": "error"
+			},
+			{
 				"anonymous": false,
 				"inputs": [
 					{
@@ -1406,7 +1461,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -1421,11 +1476,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbyStakingSystem.sol": {
-			"keccak256": "0xad8ce2aa5040d634bb32e617e5d197434ffe5f7fee5922baafff877bfab22ee8",
+			"keccak256": "0x06411e0ac0b7d877411e1f6cba77590cd3ea5902269b39dfa4b6c760de175ba8",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://a93b55b9838b5b2458aaaed1eb1880cf9180914f8ec68050cddddb521bf85c00",
-				"dweb:/ipfs/QmREfXfGepvwNXoRGtkDLv475oGVZbKpK4XzaP5KahdPLk"
+				"bzz-raw://e6c666d849a8f0a1768f08ca5b88ae08a55ff458381ba70a95c0761bf6837367",
+				"dweb:/ipfs/QmXmzURwGiJXcNE8zF2xWfWKDvGqAwLqvsU29zsLyWUXyS"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
