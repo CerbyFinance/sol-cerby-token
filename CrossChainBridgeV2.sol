@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.7;
 
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/AccessControlEnumerable.sol";
+import "./openzeppelin/access/AccessControlEnumerable.sol";
 
 
 interface IMintableBurnableToken {
@@ -69,36 +69,25 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
 
     constructor() {
         _srcChainType = ChainType.Evm;
-        uint32[5] memory evmChainIds = [uint32(1), 56, 137, 43114, 250];
-        bytes memory evmToken = genericAddress(address(0));
-        bytes32 allowanceHash;
-
-        for (uint i = 0; i < evmChainIds.length; i++) {
-            if (evmChainIds[i] == block.chainid) continue;
-
-            allowanceHash = getAllowanceHash(
-                ChainType.Evm,
-                evmChainIds[i],
-                evmToken,
-                evmToken
-            );
-            allowances[allowanceHash] = Allowance.Allowed;
-        }
-
-        uint32 casperChainId = 1;
-        bytes memory casperToken = genericAddress(address(uint160(
-            uint256(sha256(abi.encodePacked(uint8(1))))
-        )));
-        allowanceHash = getAllowanceHash(
-            ChainType.Casper,
-            casperChainId,
-            evmToken,
-            casperToken
-        );
-        allowances[allowanceHash] = Allowance.Allowed;
-
-        // etc
+        
     }
+
+    function setAllowance(
+        address       srcToken,
+        bytes memory  destToken,
+        ChainType     destChainType,
+        uint32        destChainId
+    ) external {
+        bytes32 allowanceHash = getAllowanceHash(
+            destChainType,
+            destChainId,
+            genericAddress(srcToken),
+            destToken
+        );
+
+        allowances[allowanceHash] = Allowance.Allowed;
+    }
+
 
     function getAllowanceHash(
         ChainType     destChainType,
