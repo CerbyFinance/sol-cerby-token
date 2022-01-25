@@ -17,6 +17,61 @@
 				"type": "constructor"
 			},
 			{
+				"inputs": [],
+				"name": "ERC1155_AccountsAndIdsLengthMismatch",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_BalanceQueryForTheZeroAddress",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_BurnAmountExceedsBalance",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_BurnFromZeroAddress",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_ERC1155ReceiverRejectsTokens",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_IdsAndAmountsLengthMismatch",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_InsufficientBalanceForTransfer",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_MintToZeroAddress",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_SettingApprovalStatusForSelf",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_TransferToNonERC1155ReceiverImplementer",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_TransferToZeroAddress",
+				"type": "error"
+			},
+			{
 				"anonymous": false,
 				"inputs": [
 					{
@@ -379,18 +434,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/openzeppelin/token/ERC1155/ERC1155.sol": {
-			"keccak256": "0x093e45116e5a9cdddd6df8b2de611029f64e5bcb0f1ce53781fd8119b5f777f1",
+			"keccak256": "0xef43a311c72201e893577cae6f1a8ecf9fd825cac3c20162d821d02488b56c6e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://bff457b9cf396d1c4e109900c9443a3fdfaf54a9cc56192ca511394e515959f0",
-				"dweb:/ipfs/QmV7Vb4GtE7QP7UhXHKyq4TZGy2AiGhVDLwAUMS9RbsHtx"
+				"bzz-raw://0a37d25d99ca787546bafb80e34176c81547f2f352d2a5a49ee566205ee52f3d",
+				"dweb:/ipfs/QmSGnZjvCbE8ARLWFK6z8R9vw1ExNaBfXxGWMEJPvPwKGB"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC1155/IERC1155.sol": {
@@ -415,14 +470,6 @@
 			"urls": [
 				"bzz-raw://e46c80ea068989111d6103e5521223f9ef337e93de76deed8b03f75c6f7b2797",
 				"dweb:/ipfs/QmNoSE6knNfFncdDDLTb3fGR6oSQty1srG96Vsx3E9wQdw"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/utils/Address.sol": {
-			"keccak256": "0x51b758a8815ecc9596c66c37d56b1d33883a444631a3f916b9fe65cb863ef7c4",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://997ca03557985b3c6f9143a18b6c3a710b3bc1c7f189ee956d305a966ecfb922",
-				"dweb:/ipfs/QmQaD3Wb62F88SHqmpLttvF6wKuPDQep2LLUcKPekeRzvz"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/utils/Context.sol": {

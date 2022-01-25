@@ -10,15 +10,18 @@ abstract contract CerbyCronJobsExecution {
     uint internal constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
     address internal constant CERBY_TOKEN_CONTRACT_ADDRESS = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
     
+    error CerbyCronJobsExecution_TransactionsAreTemporarilyDisabled();
+
     modifier checkForBotsAndExecuteCronJobs(address addr)
     {
         ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
             getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
         );
-        require(
-            !iCerbyBotDetection.isBotAddress(addr),
-            "CCJE: Transactions are temporarily disabled"
-        );
+        if (
+            iCerbyBotDetection.isBotAddress(addr)
+        ) {
+            revert CerbyCronJobsExecution_TransactionsAreTemporarilyDisabled();
+        }
         iCerbyBotDetection.executeCronJobs();
         _;
     }
@@ -46,10 +49,11 @@ abstract contract CerbyCronJobsExecution {
         ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
             ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
         );
-        require(
-            !iCerbyBotDetection.isBotAddress(addr),
-            "CCJE: Transactions are temporarily disabled"
-        );
+        if (
+            iCerbyBotDetection.isBotAddress(addr)
+        ) {
+            revert CerbyCronJobsExecution_TransactionsAreTemporarilyDisabled();
+        }
         _;
     }
     
@@ -58,10 +62,11 @@ abstract contract CerbyCronJobsExecution {
         ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
             ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
         );
-        require(
-            !iCerbyBotDetection.checkTransaction(tokenAddr, addr),
-            "CCJE: Transactions are temporarily disabled"
-        );
+        if (
+            iCerbyBotDetection.checkTransaction(tokenAddr, addr)
+        ) {
+            revert CerbyCronJobsExecution_TransactionsAreTemporarilyDisabled();
+        }
         iCerbyBotDetection.executeCronJobs();
         _;
     }

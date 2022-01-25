@@ -13,8 +13,8 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
     string _symbol = "CERBY_SWAP_V1";
     string _urlPrefix = "https://data.cerby.fi/CerbySwap/v1/";
 
-    error TransactionsAreTemporarilyDisabled();
-    error CallerIsNotOwnerNorApproved();
+    error CerbySwapLP1155V1_TransactionsAreTemporarilyDisabled();
+    error CerbySwapLP1155V1_CallerIsNotOwnerNorApproved();
 
     constructor()
         ERC1155(string(abi.encodePacked(_urlPrefix, "{id}.json")))
@@ -109,7 +109,7 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
         if (
             !iCerbyBotDetection.checkTransaction(token, from)
         ) {
-            revert TransactionsAreTemporarilyDisabled();
+            revert CerbySwapLP1155V1_TransactionsAreTemporarilyDisabled();
         }
 
         // if it is external transfer to user
@@ -143,7 +143,7 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
             from != _msgSender() &&
             !isApprovedForAll(from, _msgSender())
         ) {
-            revert CallerIsNotOwnerNorApproved();
+            revert CerbySwapLP1155V1_CallerIsNotOwnerNorApproved();
         }
 
         checkTransactionForBots(address(this), from, to);
@@ -164,7 +164,7 @@ abstract contract CerbySwapLP1155V1 is ERC1155Supply, CerbyCronJobsExecution, Ac
             account != _msgSender() &&
             !isApprovedForAll(account, _msgSender())
         ) {
-            revert CallerIsNotOwnerNorApproved();
+            revert CerbySwapLP1155V1_CallerIsNotOwnerNorApproved();
         }
 
         _burn(account, id, value);

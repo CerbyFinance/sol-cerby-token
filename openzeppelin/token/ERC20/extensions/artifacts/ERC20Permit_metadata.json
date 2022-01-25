@@ -6,6 +6,16 @@
 	"output": {
 		"abi": [
 			{
+				"inputs": [],
+				"name": "ERC20Permit_ExpiredDeadline",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC20Permit_InvalidSignature",
+				"type": "error"
+			},
+			{
 				"anonymous": false,
 				"inputs": [
 					{
@@ -419,18 +429,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20.sol": {
-			"keccak256": "0x6f661c9a4e23541c735d2f74796def672e3c0f965db31369a72cadc301695b8c",
+			"keccak256": "0xf6d0b52d5cb14cd7e1d0584ccd024b5e17c6389bd904417aca603119607abf47",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7b8de93183fc6656cc5cff10edddc0dde9dfde68773d819cf44bac01380f14b0",
-				"dweb:/ipfs/QmU9XYAtoJekJuq4FDTNA2cWeGJ6M3nx9Qy85PKCe7XSjk"
+				"bzz-raw://b78f6ca620983ab098bd2d49312df971b9dd07a9665cf28f10c57a78f94a8d48",
+				"dweb:/ipfs/QmeEaGs1UourfqUJ8sKk6b9cGoxn5iv3RvPfwVjBfR6t2t"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {
@@ -450,11 +460,11 @@
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol": {
-			"keccak256": "0x8a763ef5625e97f5287c7ddd5ede434129069e15d83bf0a68ad10a5e56ccb439",
+			"keccak256": "0x71472da3e55c26ca33af747660a8ca9d88cc08a0aa1eb3d810121cb73699d596",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6a3f75a7be83ce0fb636d3835e43348243d4ced9df08fb9ab6cf879ccf4d81b7",
-				"dweb:/ipfs/QmauKgQQthadf1DLEbfkDWwNGcJ1doRH21EXSuacSDWGWt"
+				"bzz-raw://47507942ca30f3b7066f5b1fe22c822fc15cb2bc66aee56d66162c69cbdaf837",
+				"dweb:/ipfs/QmeUL1sXMZHzWJW9x8H5QNeaGLAsVG84bqMYVzViZuALo7"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/extensions/draft-IERC20Permit.sol": {

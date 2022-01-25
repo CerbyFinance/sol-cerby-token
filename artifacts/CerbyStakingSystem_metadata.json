@@ -11,6 +11,32 @@
 				"type": "constructor"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					}
+				],
+				"name": "AccountIsMissingRole",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CanOnlyRenounceRoleForSelf",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbyCronJobsExecution_TransactionsAreTemporarilyDisabled",
+				"type": "error"
+			},
+			{
 				"anonymous": false,
 				"inputs": [
 					{
@@ -1380,18 +1406,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyCronJobsExecution.sol": {
-			"keccak256": "0x41929720d9ed6ab4be4d42e800aa4e12ba1a643b06d82912f9d72353e032701e",
+			"keccak256": "0x96b806c9da954e76606cd06a3b81f93ce414f6050ae10658e1b309f8d5b39340",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://b676ee0c1787baf1dbb93ca113a2cc083a196ae163d156b6a7f8d4dad938cce1",
-				"dweb:/ipfs/QmVWVcekXdnQ29zcbk2CW2YstuUwZQGurnCung3kxg2aN1"
+				"bzz-raw://88284cf06ae32dca6d38171fd2d54e7ad2dc622800144301a7920b16e6648ecb",
+				"dweb:/ipfs/Qmbn3FQ14JLPq3e1qRqmVHzw3XniTaXJ9QZwrMJc6kZ1zZ"
 			]
 		},
 		"sol-defifactory-token/CerbyStakingSystem.sol": {
@@ -1427,11 +1453,11 @@
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
-			"keccak256": "0xf4674285401d40342cec42473ac2c38e5cf38497d19549b1e87a7644e8e82d67",
+			"keccak256": "0x3793fd2148a8ba3d983b8bfde834a061e27558b04383cc2fe44a5937965323a3",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b32180cc5ae77c0fe09aecf42b3b6a1a16c83640a63f97ba0182d6b4a2d92014",
-				"dweb:/ipfs/QmWjnnCwhTuveCMsHdHf1HVhUw7spZt4eGCG1M7zVAc9x9"
+				"bzz-raw://2d1ffef4a176abb59234ea8c6d98f165cfa9b3f9dd13cf74151a2b3aa7e63c65",
+				"dweb:/ipfs/QmZiM4bGZXC51JFqWPPAujyHTYKxUFccyQtyZkBahdnrDu"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {

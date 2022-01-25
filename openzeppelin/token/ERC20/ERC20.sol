@@ -42,6 +42,17 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     string internal _name;
     string internal _symbol;
 
+    error ERC20_ApproveToTheZeroAddress();
+    error ERC20_ApproveFromTheZeroAddress();
+    error ERC20_BurnAmountExceedsBalance();
+    error ERC20_BurnFromTheZeroAddress();
+    error ERC20_MintToTheZeroAddress();
+    error ERC20_TransferAmountExceedsBalance();
+    error ERC20_TransferToTheZeroAddress();
+    error ERC20_TransferFromTheZeroAddress();
+    error ERC20_DecreasedAllowanceBelowZero();
+    error ERC20_TransferAmountExceedsAllowance();
+
     /**
      * @dev Sets the values for {name} and {symbol}.
      *
@@ -153,7 +164,11 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         uint256 amount
     ) public virtual override returns (bool) {
         uint256 currentAllowance = _allowances[sender][_msgSender()];
-        require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
+        if (
+            currentAllowance < amount
+        ) {
+            revert ERC20_TransferAmountExceedsAllowance();
+        }
         unchecked {
             _approve(sender, _msgSender(), currentAllowance - amount);
         }
@@ -196,7 +211,11 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      */
     function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
         uint256 currentAllowance = _allowances[_msgSender()][spender];
-        require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
+        if (
+            currentAllowance < subtractedValue
+        ) {
+            revert ERC20_DecreasedAllowanceBelowZero();
+        }
         unchecked {
             _approve(_msgSender(), spender, currentAllowance - subtractedValue);
         }
@@ -223,11 +242,23 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         address recipient,
         uint256 amount
     ) internal virtual {
-        require(sender != address(0), "ERC20: transfer from the zero address");
-        require(recipient != address(0), "ERC20: transfer to the zero address");
+        if (
+            sender == address(0)
+        ) {
+            revert ERC20_TransferFromTheZeroAddress();
+        }
+        if (
+            recipient == address(0)
+        ) {
+            revert ERC20_TransferToTheZeroAddress();
+        }
 
         uint256 senderBalance = _balances[sender];
-        require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
+        if (
+            senderBalance < amount
+        ) {
+            revert ERC20_TransferAmountExceedsBalance();
+        }
         unchecked {
             _balances[sender] = senderBalance - amount;
         }
@@ -246,7 +277,11 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * - `account` cannot be the zero address.
      */
     function _mint(address account, uint256 amount) internal virtual {
-        require(account != address(0), "ERC20: mint to the zero address");
+        if (
+            account == address(0)
+        ) {
+            revert ERC20_MintToTheZeroAddress();
+        }
 
         _totalSupply += amount;
         _balances[account] += amount;
@@ -265,10 +300,19 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * - `account` must have at least `amount` tokens.
      */
     function _burn(address account, uint256 amount) internal virtual {
-        require(account != address(0), "ERC20: burn from the zero address");
+        if (
+            account == address(0)
+        ) {
+            revert ERC20_BurnFromTheZeroAddress();
+        }
 
         uint256 accountBalance = _balances[account];
-        require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
+        if (
+            accountBalance < amount
+        ) {
+            revert ERC20_BurnAmountExceedsBalance();
+        }
+
         unchecked {
             _balances[account] = accountBalance - amount;
         }
@@ -296,8 +340,16 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         address spender,
         uint256 amount
     ) internal virtual {
-        require(owner != address(0), "ERC20: approve from the zero address");
-        require(spender != address(0), "ERC20: approve to the zero address");
+        if (
+            owner == address(0)
+        ) {
+            revert ERC20_ApproveFromTheZeroAddress();
+        }
+        if (
+            spender == address(0)
+        ) {
+            revert ERC20_ApproveToTheZeroAddress();
+        }
 
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);

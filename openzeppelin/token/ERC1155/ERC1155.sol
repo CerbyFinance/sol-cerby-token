@@ -6,7 +6,6 @@ pragma solidity ^0.8.0;
 import "./IERC1155.sol";
 import "./IERC1155Receiver.sol";
 import "./extensions/IERC1155MetadataURI.sol";
-import "../../utils/Address.sol";
 import "../../utils/Context.sol";
 import "../../utils/introspection/ERC165.sol";
 
@@ -18,7 +17,6 @@ import "../../utils/introspection/ERC165.sol";
  * _Available since v3.1._
  */
 contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
-    using Address for address;
 
     // Mapping from token ID to account balances
     mapping(uint256 => mapping(address => uint256)) internal _balances;
@@ -29,6 +27,18 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     // Used as the URI for all token types by relying on ID substitution, e.g. https://token-cdn-domain/{id}.json
     string internal _uri;
 
+    error ERC1155_BalanceQueryForTheZeroAddress();
+    error ERC1155_AccountsAndIdsLengthMismatch();
+    error ERC1155_TransferToZeroAddress();
+    error ERC1155_IdsAndAmountsLengthMismatch();
+    error ERC1155_MintToZeroAddress();
+    error ERC1155_InsufficientBalanceForTransfer();
+    error ERC1155_BurnFromZeroAddress();
+    error ERC1155_BurnAmountExceedsBalance();
+    error ERC1155_SettingApprovalStatusForSelf();
+    error ERC1155_ERC1155ReceiverRejectsTokens();
+    error ERC1155_TransferToNonERC1155ReceiverImplementer();
+
     /**
      * @dev See {_setURI}.
      */
@@ -36,6 +46,18 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         _setURI(uri_);
     }
 
+
+    function isContract(address account) internal view returns (bool) {
+        // This method relies on extcodesize, which returns 0 for contracts in
+        // construction, since the code is only stored at the end of the
+        // constructor execution.
+
+        uint256 size;
+        assembly {
+            size := extcodesize(account)
+        }
+        return size > 0;
+    }
 
     /**
      * @dev See {IERC1155MetadataURI-uri}.
@@ -85,8 +107,8 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         if (
             accounts.length != ids.length
         ) {
-            
-        }, "ERC1155: accounts and ids length mismatch");
+            revert ERC1155_AccountsAndIdsLengthMismatch();
+        }
 
         uint256[] memory batchBalances = new uint256[](accounts.length);
 
@@ -153,14 +175,23 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         uint256 amount,
         bytes memory data
     ) internal virtual {
-        require(to != address(0), "ERC1155: transfer to the zero address");
+        if (
+            to == address(0)
+        ) {
+            revert ERC1155_TransferToZeroAddress();
+        }
 
         address operator = _msgSender();
 
         _beforeTokenTransfer(operator, from, to, _asSingletonArray(id), _asSingletonArray(amount), data);
 
         uint256 fromBalance = _balances[id][from];
-        require(fromBalance >= amount, "ERC1155: insufficient balance for transfer");
+        if (
+            fromBalance < amount
+        ) {
+            revert ERC1155_InsufficientBalanceForTransfer();
+        }
+
         unchecked {
             _balances[id][from] = fromBalance - amount;
         }
@@ -188,8 +219,17 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         uint256[] memory amounts,
         bytes memory data
     ) internal virtual {
-        require(ids.length == amounts.length, "ERC1155: ids and amounts length mismatch");
-        require(to != address(0), "ERC1155: transfer to the zero address");
+        if (
+            ids.length != amounts.length
+        ) {
+            revert ERC1155_IdsAndAmountsLengthMismatch();
+        }
+
+        if (
+            to == address(0)
+        ) {
+            revert ERC1155_TransferToZeroAddress();
+        }
 
         address operator = _msgSender();
 
@@ -200,7 +240,12 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
             uint256 amount = amounts[i];
 
             uint256 fromBalance = _balances[id][from];
-            require(fromBalance >= amount, "ERC1155: insufficient balance for transfer");
+            if (
+                fromBalance < amount
+            ) {
+                revert ERC1155_InsufficientBalanceForTransfer();
+            }
+
             unchecked {
                 _balances[id][from] = fromBalance - amount;
             }
@@ -252,7 +297,11 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         uint256 amount,
         bytes memory data
     ) internal virtual {
-        require(to != address(0), "ERC1155: mint to the zero address");
+        if (
+            to == address(0)
+        ) {
+            revert ERC1155_MintToZeroAddress();
+        }
 
         address operator = _msgSender();
 
@@ -279,8 +328,17 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         uint256[] memory amounts,
         bytes memory data
     ) internal virtual {
-        require(to != address(0), "ERC1155: mint to the zero address");
-        require(ids.length == amounts.length, "ERC1155: ids and amounts length mismatch");
+        if (
+            to == address(0)
+        ) {
+            revert ERC1155_MintToZeroAddress();
+        }
+
+        if (
+            ids.length != amounts.length
+        ) {
+            revert ERC1155_IdsAndAmountsLengthMismatch();
+        }
 
         address operator = _msgSender();
 
@@ -308,14 +366,22 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         uint256 id,
         uint256 amount
     ) internal virtual {
-        require(from != address(0), "ERC1155: burn from the zero address");
+        if (
+            from == address(0)
+        ) {
+            revert ERC1155_BurnFromZeroAddress();
+        }
 
         address operator = _msgSender();
 
         _beforeTokenTransfer(operator, from, address(0), _asSingletonArray(id), _asSingletonArray(amount), "");
 
         uint256 fromBalance = _balances[id][from];
-        require(fromBalance >= amount, "ERC1155: burn amount exceeds balance");
+        if (
+            fromBalance < amount
+        ) {
+            revert ERC1155_BurnAmountExceedsBalance();
+        }
         unchecked {
             _balances[id][from] = fromBalance - amount;
         }
@@ -335,8 +401,16 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         uint256[] memory ids,
         uint256[] memory amounts
     ) internal virtual {
-        require(from != address(0), "ERC1155: burn from the zero address");
-        require(ids.length == amounts.length, "ERC1155: ids and amounts length mismatch");
+        if (
+            from == address(0)
+        ) {
+            revert ERC1155_BurnFromZeroAddress();
+        }
+        if (
+            ids.length != amounts.length
+        ) {
+            revert ERC1155_IdsAndAmountsLengthMismatch();
+        }
 
         address operator = _msgSender();
 
@@ -347,7 +421,12 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
             uint256 amount = amounts[i];
 
             uint256 fromBalance = _balances[id][from];
-            require(fromBalance >= amount, "ERC1155: burn amount exceeds balance");
+            if (
+                fromBalance < amount
+            ) {
+                revert ERC1155_BurnAmountExceedsBalance();
+            }
+
             unchecked {
                 _balances[id][from] = fromBalance - amount;
             }
@@ -366,7 +445,12 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         address operator,
         bool approved
     ) internal virtual {
-        require(owner != operator, "ERC1155: setting approval status for self");
+        if (
+            owner == operator
+        ) {
+            revert ERC1155_SettingApprovalStatusForSelf();
+        }
+
         _operatorApprovals[owner][operator] = approved;
         emit ApprovalForAll(owner, operator, approved);
     }
@@ -408,15 +492,13 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         uint256 amount,
         bytes memory data
     ) private {
-        if (to.isContract()) {
+        if (isContract(to)) {
             try IERC1155Receiver(to).onERC1155Received(operator, from, id, amount, data) returns (bytes4 response) {
                 if (response != IERC1155Receiver.onERC1155Received.selector) {
-                    revert("ERC1155: ERC1155Receiver rejected tokens");
+                    revert ERC1155_ERC1155ReceiverRejectsTokens();
                 }
-            } catch Error(string memory reason) {
-                revert(reason);
             } catch {
-                revert("ERC1155: transfer to non ERC1155Receiver implementer");
+                revert ERC1155_TransferToNonERC1155ReceiverImplementer();
             }
         }
     }
@@ -429,17 +511,15 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         uint256[] memory amounts,
         bytes memory data
     ) private {
-        if (to.isContract()) {
+        if (isContract(to)) {
             try IERC1155Receiver(to).onERC1155BatchReceived(operator, from, ids, amounts, data) returns (
                 bytes4 response
             ) {
                 if (response != IERC1155Receiver.onERC1155BatchReceived.selector) {
-                    revert("ERC1155: ERC1155Receiver rejected tokens");
+                    revert ERC1155_ERC1155ReceiverRejectsTokens();
                 }
-            } catch Error(string memory reason) {
-                revert(reason);
             } catch {
-                revert("ERC1155: transfer to non ERC1155Receiver implementer");
+                revert ERC1155_TransferToNonERC1155ReceiverImplementer();
             }
         }
     }

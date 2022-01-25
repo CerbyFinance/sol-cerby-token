@@ -140,28 +140,31 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
     
     modifier onlyStakeOwners(uint stakeId)
     {
-        require(
-            msg.sender == stakes[stakeId].owner,
-            "SS: Stake owner does not match"
-        );
+        if (
+            msg.sender != stakes[stakeId].owner
+        ) {
+            revert CerbyStakingSystem_StakeOwnerDoesNotMatch();   
+        }
         _;
     }
     
     modifier onlyExistingStake(uint stakeId)
     {
-        require(
-            stakeId < stakes.length,
-            "SS: Stake does not exist"
-        );
+        if (
+            stakeId >= stakes.length
+        ) {
+            revert CerbyStakingSystem_StakeDoesNotExist();   
+        }
         _;
     }
     
     modifier onlyActiveStake(uint stakeId)
     {
-        require(
-            stakes[stakeId].endDay == 0,
-            "SS: Stake was already ended"
-        );
+        if (
+            stakes[stakeId].endDay > 0
+        ) {
+            revert CerbyStakingSystem_StakeHaveBeenAlreadyEnded();   
+        }
         _;
     }
     
@@ -181,14 +184,16 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
     {
         for(uint i = 0; i<stakeIds.length; i++)
         {
-            require(
-                stakes[stakeIds[i]].owner != newOwner,
-                "SS: New owner must be different from old owner"
-            );
-            require(
-                stakes[stakeIds[i]].owner == oldOwner,
-                "SS: Stake owner does not match"
-            );            
+            if (
+                stakes[stakeIds[i]].owner == newOwner
+            ) {
+                revert CerbyStakingSystem_NewOwnerMustBeDifferentFromTheOldOwner();
+            }
+            if (
+                stakes[stakeIds[i]].owner != oldOwner
+            ) {
+                revert CerbyStakingSystem_StakeOwnerDoesNotMatch();
+            }  
 
             _transferOwnership(stakeIds[i], newOwner);
         } 
@@ -202,10 +207,11 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
         uint today = getCurrentDaySinceLaunch();
         for(uint i = 0; i<stakeIds.length; i++)
         {
-            require(
-                stakes[stakeIds[i]].owner == stakeOwner,
-                "SS: Stake owner does not match"
-            );
+            if (
+                stakes[stakeIds[i]].owner != stakeOwner
+            ) {
+                revert CerbyStakingSystem_StakeOwnerDoesNotMatch();
+            }
         
             dailySnapshots[today].totalShares -= stakes[stakeIds[i]].maxSharesCountOnStartStake;
             stakes[stakeIds[i]].endDay = today;
@@ -345,6 +351,11 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
             stakes[stakeId].owner != newOwner,
             "SS: New owner must be different from old owner"
         );
+        if (
+            stakes[stakeId].owner == newOwner
+        ) {
+            revert CerbyStakingSystem_NewOwnerMustBeDifferentFromTheOldOwner();
+        }
 
         _transferOwnership(stakeId, newOwner);        
     }
@@ -365,10 +376,12 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
     function updateSnapshots(uint givenDay)
         public
     {
-        require(
-            givenDay <= getCurrentDaySinceLaunch(),
+        if (
+            givenDay > getCurrentDaySinceLaunch(),
             "SS: Exceeded current day"
-        );
+        ) {
+            revert CerbyStakingSystem_ExceededCurrentDay();
+        }
         
         uint startDay = dailySnapshots.length-1; // last sealed day
         if (startDay == givenDay) return;
@@ -458,10 +471,12 @@ contract CerbyStakingSystem is AccessControlEnumerable, CerbyCronJobsExecution {
         private
         returns(uint stakeId)
     {
-        require(
-            _startStake.stakedAmount > 0,
+        if (
+            _startStake.stakedAmount == 0,
             "SS: StakedAmount has to be larger than zero"
-        );
+        ) {
+            revert CerbyStakingSystem_StakedAmountMustBe
+        };
         require(
             _startStake.stakedAmount <= ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).balanceOf(msg.sender),
             "SS: StakedAmount exceeds balance"

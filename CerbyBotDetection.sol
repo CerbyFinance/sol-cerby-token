@@ -46,6 +46,8 @@ contract CerbyBotDetection is AccessControlEnumerable {
     uint constant BSC_TESTNET_CHAIN_ID = 97;
     uint constant ETH_ROPSTEN_CHAIN_ID = 3;
     uint constant ETH_KOVAN_CHAIN_ID = 42;
+
+    error CerbyBotDetection_TransfersAreTemporarilyDisabled();
     
     constructor() {        
         _setupRole(ROLE_ADMIN, _msgSender());
@@ -217,7 +219,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
         if (
                 sender < EIGHT_LEADING_ZEROS_TO_COMPARE // address starts from 8 zeros
         ) {
-           revert("CBD: Transfers are temporarily disabled");
+           revert CerbyBotDetection_TransfersAreTemporarilyDisabled();
         }
 
         output.isSell = isUniswapPairChecker(recipient, tokenAddr);
@@ -246,7 +248,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
                 )
             )
         {
-           revert("CBD: Transfers are temporarily disabled");
+           revert CerbyBotDetection_TransfersAreTemporarilyDisabled();
         }
         
         if (

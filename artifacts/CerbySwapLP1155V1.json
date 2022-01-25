@@ -97,17 +97,77 @@
 		},
 		{
 			"inputs": [],
-			"name": "CallerIsNotOwnerNorApproved",
-			"type": "error"
-		},
-		{
-			"inputs": [],
 			"name": "CanOnlyRenounceRoleForSelf",
 			"type": "error"
 		},
 		{
 			"inputs": [],
-			"name": "TransactionsAreTemporarilyDisabled",
+			"name": "CerbyCronJobsExecution_TransactionsAreTemporarilyDisabled",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "CerbySwapLP1155V1_CallerIsNotOwnerNorApproved",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "CerbySwapLP1155V1_TransactionsAreTemporarilyDisabled",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ERC1155_AccountsAndIdsLengthMismatch",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ERC1155_BalanceQueryForTheZeroAddress",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ERC1155_BurnAmountExceedsBalance",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ERC1155_BurnFromZeroAddress",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ERC1155_ERC1155ReceiverRejectsTokens",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ERC1155_IdsAndAmountsLengthMismatch",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ERC1155_InsufficientBalanceForTransfer",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ERC1155_MintToZeroAddress",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ERC1155_SettingApprovalStatusForSelf",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ERC1155_TransferToNonERC1155ReceiverImplementer",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ERC1155_TransferToZeroAddress",
 			"type": "error"
 		},
 		{

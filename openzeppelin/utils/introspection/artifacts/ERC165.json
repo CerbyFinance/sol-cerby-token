@@ -49,29 +49,24 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"getUtilsContractAtPos(uint256)": "06fb1a07"
+			"supportsInterface(bytes4)": "01ffc9a7"
 		}
 	},
 	"abi": [
 		{
-			"inputs": [],
-			"name": "CerbyCronJobsExecution_TransactionsAreTemporarilyDisabled",
-			"type": "error"
-		},
-		{
 			"inputs": [
 				{
-					"internalType": "uint256",
-					"name": "pos",
-					"type": "uint256"
+					"internalType": "bytes4",
+					"name": "interfaceId",
+					"type": "bytes4"
 				}
 			],
-			"name": "getUtilsContractAtPos",
+			"name": "supportsInterface",
 			"outputs": [
 				{
-					"internalType": "address",
+					"internalType": "bool",
 					"name": "",
-					"type": "address"
+					"type": "bool"
 				}
 			],
 			"stateMutability": "view",

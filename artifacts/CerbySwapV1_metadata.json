@@ -48,6 +48,76 @@
 			},
 			{
 				"inputs": [],
+				"name": "CerbyCronJobsExecution_TransactionsAreTemporarilyDisabled",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapLP1155V1_CallerIsNotOwnerNorApproved",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapLP1155V1_TransactionsAreTemporarilyDisabled",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_AccountsAndIdsLengthMismatch",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_BalanceQueryForTheZeroAddress",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_BurnAmountExceedsBalance",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_BurnFromZeroAddress",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_ERC1155ReceiverRejectsTokens",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_IdsAndAmountsLengthMismatch",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_InsufficientBalanceForTransfer",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_MintToZeroAddress",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_SettingApprovalStatusForSelf",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_TransferToNonERC1155ReceiverImplementer",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC1155_TransferToZeroAddress",
+				"type": "error"
+			},
+			{
+				"inputs": [],
 				"name": "FeeIsWrong",
 				"type": "error"
 			},
@@ -1655,27 +1725,27 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyCronJobsExecution.sol": {
-			"keccak256": "0x052a2370507550d358c1df00aeaebaa357f2d49c04f2e653a335f1638ac5f3cc",
+			"keccak256": "0x96b806c9da954e76606cd06a3b81f93ce414f6050ae10658e1b309f8d5b39340",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://1fbdcc3768875696eac7bd9932e0bc68644a28bb52715440e1362a5a712c318e",
-				"dweb:/ipfs/QmZ2SUVA75M1bk4vBuSJmstu2fHKxPZQSJnyPCGAJtPNaU"
+				"bzz-raw://88284cf06ae32dca6d38171fd2d54e7ad2dc622800144301a7920b16e6648ecb",
+				"dweb:/ipfs/Qmbn3FQ14JLPq3e1qRqmVHzw3XniTaXJ9QZwrMJc6kZ1zZ"
 			]
 		},
 		"sol-defifactory-token/CerbySwapLP1155V1.sol": {
-			"keccak256": "0x94f88380b7902442c23edf49ae34149d056f67404fa17f240522035098b8c083",
+			"keccak256": "0x682bfb3060d5ba563f0cc83d1dea29b45cae5b589a76cd4d2cea5fead24e4c4c",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://3204335b6d093ea7682a1f24ebeedab75253a774951db72fe07915f0c0382ece",
-				"dweb:/ipfs/QmWExoWL1ziRqBL7cGXdU8j8mNkGDksmCTA1kyH9nLxhVx"
+				"bzz-raw://602ad6f22ecca1ccd53c3905c9d3869c720068767fa30d642f57fe5cd8fb7a80",
+				"dweb:/ipfs/QmQrqWgDrSRVqtkM7WcAEqzMEsoUGYLCHWCpEoTmS9h7LQ"
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x0e5df78cad445b0a5cbba17536fda5f1899ca0204a0f4f478d8b14c6f248abe9",
+			"keccak256": "0x43e15247702e5075d4cd61d3c03b4fdfcfdb3b5f11e4dd578c33f1d0fb727b47",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://b573ab382fd19cb6930cedf258f5ba921e0c42fdb3d37aae350ca5f7dd56cec8",
-				"dweb:/ipfs/QmaSfsPQkRXV4WuaFDXZFkhseJFwAYbXccTeSQ2yH21yCd"
+				"bzz-raw://3ea61f40d756ebcbcca0e02ac3a5df8b7181d02da3a2673648fbe9a816449cdf",
+				"dweb:/ipfs/QmdTu3ivJDHmzGanRLWrVpgtgnamG95tiSpi4Cu5fK2Gfp"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
@@ -1719,11 +1789,11 @@
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
-			"keccak256": "0x6490119926fd504db3b6f58e9888079996fdff1be3f67b4f7791aa7cdc3ea81d",
+			"keccak256": "0x3793fd2148a8ba3d983b8bfde834a061e27558b04383cc2fe44a5937965323a3",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://55c969b46c24573c2d2fe666ecafa31953a1e7fa24f857bbe5c697199bef4885",
-				"dweb:/ipfs/QmYYiXs1GTC66bqkxqaKqsfSCjDbuMJoWdTA7AEWRTEaqN"
+				"bzz-raw://2d1ffef4a176abb59234ea8c6d98f165cfa9b3f9dd13cf74151a2b3aa7e63c65",
+				"dweb:/ipfs/QmZiM4bGZXC51JFqWPPAujyHTYKxUFccyQtyZkBahdnrDu"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {
@@ -1751,11 +1821,11 @@
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC1155/ERC1155.sol": {
-			"keccak256": "0x093e45116e5a9cdddd6df8b2de611029f64e5bcb0f1ce53781fd8119b5f777f1",
+			"keccak256": "0xef43a311c72201e893577cae6f1a8ecf9fd825cac3c20162d821d02488b56c6e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://bff457b9cf396d1c4e109900c9443a3fdfaf54a9cc56192ca511394e515959f0",
-				"dweb:/ipfs/QmV7Vb4GtE7QP7UhXHKyq4TZGy2AiGhVDLwAUMS9RbsHtx"
+				"bzz-raw://0a37d25d99ca787546bafb80e34176c81547f2f352d2a5a49ee566205ee52f3d",
+				"dweb:/ipfs/QmSGnZjvCbE8ARLWFK6z8R9vw1ExNaBfXxGWMEJPvPwKGB"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC1155/IERC1155.sol": {
@@ -1788,14 +1858,6 @@
 			"urls": [
 				"bzz-raw://e46c80ea068989111d6103e5521223f9ef337e93de76deed8b03f75c6f7b2797",
 				"dweb:/ipfs/QmNoSE6knNfFncdDDLTb3fGR6oSQty1srG96Vsx3E9wQdw"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/utils/Address.sol": {
-			"keccak256": "0x51b758a8815ecc9596c66c37d56b1d33883a444631a3f916b9fe65cb863ef7c4",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://997ca03557985b3c6f9143a18b6c3a710b3bc1c7f189ee956d305a966ecfb922",
-				"dweb:/ipfs/QmQaD3Wb62F88SHqmpLttvF6wKuPDQep2LLUcKPekeRzvz"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/utils/Context.sol": {

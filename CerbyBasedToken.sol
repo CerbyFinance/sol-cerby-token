@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.11;
 
 import "./interfaces/ICerbyToken.sol";
 import "./interfaces/ICerbyBotDetection.sol";
@@ -23,6 +23,14 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20, ERC20Permit
     event MintHumanAddress(address recipient, uint amount);
     event BurnHumanAddress(address sender, uint amount);
 
+    error CerbyBasedToken_AlreadyInitialized();
+    error CerbyBasedToken_ContractIsPaused();
+    error CerbyBasedToken_ContractIsNotPaused();
+    error CerbyBasedToken_RecipientIsBurnAddress();
+    error CerbyBasedToken_DecreasedAllowanceBelowZero();
+    error CerbyBasedToken_TransferAmountExceedsAllowance();
+    error CerbyBasedToken_TransferAmountExceedsBalance();
+
     constructor(string memory name, string memory symbol) 
         ERC20(name, symbol) 
         ERC20Permit(name)
@@ -32,10 +40,11 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20, ERC20Permit
     function initializeOwner(address owner)
         internal
     {
-        require(
-            !isInitialized,
-            "T: Already initialized"
-        );
+        if (
+            isInitialized
+        ) {
+            revert CerbyBasedToken_AlreadyInitialized();
+        }
         
         isInitialized = true;
         _setupRole(ROLE_ADMIN, owner);
@@ -62,26 +71,30 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20, ERC20Permit
     
     
     modifier notPausedContract {
-        require(
-            !isPaused,
-            "T: paused"
-        );
+        if (
+            isPaused
+        ) {
+            revert CerbyBasedToken_ContractIsPaused();
+        }
         _;
     }
     
     modifier pausedContract {
-        require(
-            isPaused,
-            "T: !paused"
-        );
+        if (
+            !isPaused
+        ) {
+            revert CerbyBasedToken_ContractIsNotPaused();
+        }
         _;
     }
     
     modifier recipientIsNotBurnAddress(address recipient) {
-        require(
-            recipient != BURN_ADDRESS,
-            "T: !burn"
-        );
+        if (
+            recipient == BURN_ADDRESS
+        ) {
+            revert CerbyBasedToken_RecipientIsBurnAddress();
+        }
+            
         _;
     }
     
@@ -142,7 +155,12 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20, ERC20Permit
         returns (bool) 
     {
         uint256 currentAllowance = _allowances[_msgSender()][spender];
-        require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
+        if (
+            currentAllowance < subtractedValue
+        ) {
+            revert CerbyBasedToken_DecreasedAllowanceBelowZero();
+        }
+
         unchecked {
             _approve(_msgSender(), spender, currentAllowance - subtractedValue);
         }
@@ -172,7 +190,11 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20, ERC20Permit
         _transfer(sender, recipient, amount);
 
         uint256 currentAllowance = _allowances[sender][_msgSender()];
-        require(currentAllowance >= amount, "T: transfer amount exceeds allowance");
+        if (
+            currentAllowance < amount
+        ) {
+            revert CerbyBasedToken_TransferAmountExceedsAllowance();
+        }
         _approve(sender, _msgSender(), currentAllowance - amount);
 
         return true;
@@ -209,7 +231,11 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20, ERC20Permit
         checkTransaction(sender, recipient, transferAmount)
     {
         uint256 senderBalance = _balances[sender];
-        require(senderBalance >= transferAmount, "ERC20: transfer amount exceeds balance");
+        if (
+            senderBalance < transferAmount
+        ) {
+            revert CerbyBasedToken_TransferAmountExceedsBalance();
+        }
         unchecked {
             _balances[sender] = senderBalance - transferAmount;
         }

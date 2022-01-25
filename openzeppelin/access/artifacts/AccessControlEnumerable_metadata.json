@@ -346,18 +346,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
-			"keccak256": "0x6490119926fd504db3b6f58e9888079996fdff1be3f67b4f7791aa7cdc3ea81d",
+			"keccak256": "0x3793fd2148a8ba3d983b8bfde834a061e27558b04383cc2fe44a5937965323a3",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://55c969b46c24573c2d2fe666ecafa31953a1e7fa24f857bbe5c697199bef4885",
-				"dweb:/ipfs/QmYYiXs1GTC66bqkxqaKqsfSCjDbuMJoWdTA7AEWRTEaqN"
+				"bzz-raw://2d1ffef4a176abb59234ea8c6d98f165cfa9b3f9dd13cf74151a2b3aa7e63c65",
+				"dweb:/ipfs/QmZiM4bGZXC51JFqWPPAujyHTYKxUFccyQtyZkBahdnrDu"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {

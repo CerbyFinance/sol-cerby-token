@@ -67,6 +67,16 @@
 	},
 	"abi": [
 		{
+			"inputs": [],
+			"name": "ERC20Permit_ExpiredDeadline",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ERC20Permit_InvalidSignature",
+			"type": "error"
+		},
+		{
 			"anonymous": false,
 			"inputs": [
 				{

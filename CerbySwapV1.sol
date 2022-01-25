@@ -12,9 +12,6 @@ import "./CerbySwapLP1155V1.sol";
 
 contract CerbySwapV1 is CerbySwapLP1155V1 {
 
-
-
-
     Pool[] pools;
     mapping(address => uint) tokenToPoolId;
     uint totalCerUsdBalance;

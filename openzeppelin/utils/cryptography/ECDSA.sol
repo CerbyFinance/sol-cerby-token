@@ -20,17 +20,22 @@ library ECDSA {
         InvalidSignatureV
     }
 
+    error ECDSA_InvalidSignature();
+    error ECDSA_InvalidSignatureLength();
+    error ECDSA_InvalidSignatureSValue();
+    error ECDSA_InvalidSignatureVValue();
+
     function _throwError(RecoverError error) private pure {
         if (error == RecoverError.NoError) {
             return; // no error: do nothing
         } else if (error == RecoverError.InvalidSignature) {
-            revert("ECDSA: invalid signature");
+            revert ECDSA_InvalidSignature();
         } else if (error == RecoverError.InvalidSignatureLength) {
-            revert("ECDSA: invalid signature length");
+            revert ECDSA_InvalidSignatureLength();
         } else if (error == RecoverError.InvalidSignatureS) {
-            revert("ECDSA: invalid signature 's' value");
+            revert ECDSA_InvalidSignatureSValue();
         } else if (error == RecoverError.InvalidSignatureV) {
-            revert("ECDSA: invalid signature 'v' value");
+            revert ECDSA_InvalidSignatureVValue();
         }
     }
 

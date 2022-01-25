@@ -6,6 +6,11 @@
 	"output": {
 		"abi": [
 			{
+				"inputs": [],
+				"name": "CerbyCronJobsExecution_TransactionsAreTemporarilyDisabled",
+				"type": "error"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -46,18 +51,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyCronJobsExecution.sol": {
-			"keccak256": "0x052a2370507550d358c1df00aeaebaa357f2d49c04f2e653a335f1638ac5f3cc",
+			"keccak256": "0x96b806c9da954e76606cd06a3b81f93ce414f6050ae10658e1b309f8d5b39340",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://1fbdcc3768875696eac7bd9932e0bc68644a28bb52715440e1362a5a712c318e",
-				"dweb:/ipfs/QmZ2SUVA75M1bk4vBuSJmstu2fHKxPZQSJnyPCGAJtPNaU"
+				"bzz-raw://88284cf06ae32dca6d38171fd2d54e7ad2dc622800144301a7920b16e6648ecb",
+				"dweb:/ipfs/Qmbn3FQ14JLPq3e1qRqmVHzw3XniTaXJ9QZwrMJc6kZ1zZ"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

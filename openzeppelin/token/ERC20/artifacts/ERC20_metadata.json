@@ -22,6 +22,56 @@
 				"type": "constructor"
 			},
 			{
+				"inputs": [],
+				"name": "ERC20_ApproveFromTheZeroAddress",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC20_ApproveToTheZeroAddress",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC20_BurnAmountExceedsBalance",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC20_BurnFromTheZeroAddress",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC20_DecreasedAllowanceBelowZero",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC20_MintToTheZeroAddress",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC20_TransferAmountExceedsAllowance",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC20_TransferAmountExceedsBalance",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC20_TransferFromTheZeroAddress",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ERC20_TransferToTheZeroAddress",
+				"type": "error"
+			},
+			{
 				"anonymous": false,
 				"inputs": [
 					{
@@ -351,18 +401,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/openzeppelin/token/ERC20/ERC20.sol": {
-			"keccak256": "0xf6d0b52d5cb14cd7e1d0584ccd024b5e17c6389bd904417aca603119607abf47",
+			"keccak256": "0x66687955a9fa0e2e808e81341a0f8d8d432876f6870fb53dab6a2bf6e96ea38f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b78f6ca620983ab098bd2d49312df971b9dd07a9665cf28f10c57a78f94a8d48",
-				"dweb:/ipfs/QmeEaGs1UourfqUJ8sKk6b9cGoxn5iv3RvPfwVjBfR6t2t"
+				"bzz-raw://e01a8e84164c6c080c489f92e7e98fcfd1da05493e49d275ff6b7e6d0c3d2a17",
+				"dweb:/ipfs/QmUUEUHBLff3sseCNFtpwXXUVmVQgF231cgbZ7HgUENcxz"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol": {
