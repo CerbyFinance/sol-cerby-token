@@ -15,13 +15,9 @@ const zeroAddr = "0x0000000000000000000000000000000000000000";
 module.exports = async function (deployer) {
   const setup = async () => {
     const cerbySwap = await CerbySwapV1.deployed();
-    const cerbyBotDetection = await CerbyBotDetection.deployed();
-
-    cerbyBotDetection.markAddressAsHuman(cerbySwap.address, true);
-    cerbyBotDetection.grantRole('0x0000000000000000000000000000000000000000000000000000000000000000', cerbySwap.address);
 
     await cerbySwap.testSetupTokens(
-      cerbyBotDetection.address,
+      zeroAddr,
       TestCerbyToken.address,
 
       TestCerUsdToken.address,
@@ -30,7 +26,7 @@ module.exports = async function (deployer) {
       // Weth.address,
     );
 
-    await cerbySwap.adminInitialize({ value: new BN((1e16).toString()) });
+    //await cerbySwap.adminInitialize({ value: new BN((1e16).toString()) });
   };
 
   await setup();

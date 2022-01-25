@@ -12,7 +12,7 @@ module.exports = function (deployer) {
     TestCerbyToken,
     TestCerUsdToken,
     TestUsdcToken,
-    CerbyBotDetection,
+    // CerbyBotDetection,
     // CerbySwapLP1155V1,
     // CerbySwapV1,
   ].forEach(item => deployer.deploy(item));

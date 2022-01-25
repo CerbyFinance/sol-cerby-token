@@ -111,26 +111,26 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     );
 
         
-    error TokenAlreadyExists();
-    error TokenDoesNotExist();
-    error TransactionIsExpired();
-    error FeeOnTransferTokensArentSupported();
-    error AmountOfTokensMustBeLargerThanOne();
-    error AmountOfCerUsdMustBeLargerThanOne();
-    error MsgValueProvidedMustBeZero();
-    error OutputCerUsdAmountIsLowerThanMinimumSpecified();
-    error OutputTokensAmountIsLowerThanMinimumSpecified();
-    error InputCerUsdAmountIsLargerThanMaximumSpecified();
-    error InputTokensAmountIsLargerThanMaximumSpecified();
-    error SwappingTokenToSameTokenIsForbidden();
-    error InvariantKValueMustBeSameOrIncreasedOnAnySwaps();
-    error SafeTransferNativeFailed();
-    error SafeTransferTokensFailed();
-    error SafeTransferFromFailed();
-    error MsgValueProvidedMustBeLargerThanAmountIn();
-    error AmountOfCerUsdOrTokensInMustBeLargerThanOne();
-    error FeeIsWrong();
-    error TvlMultiplierIsWrong();
+    error CerbySwapV1_TokenAlreadyExists();
+    error CerbySwapV1_TokenDoesNotExist();
+    error CerbySwapV1_TransactionIsExpired();
+    error CerbySwapV1_FeeOnTransferTokensArentSupported();
+    error CerbySwapV1_AmountOfTokensMustBeLargerThanOne();
+    error CerbySwapV1_AmountOfCerUsdMustBeLargerThanOne();
+    error CerbySwapV1_MsgValueProvidedMustBeZero();
+    error CerbySwapV1_OutputCerUsdAmountIsLowerThanMinimumSpecified();
+    error CerbySwapV1_OutputTokensAmountIsLowerThanMinimumSpecified();
+    error CerbySwapV1_InputCerUsdAmountIsLargerThanMaximumSpecified();
+    error CerbySwapV1_InputTokensAmountIsLargerThanMaximumSpecified();
+    error CerbySwapV1_SwappingTokenToSameTokenIsForbidden();
+    error CerbySwapV1_InvariantKValueMustBeSameOrIncreasedOnAnySwaps();
+    error CerbySwapV1_SafeTransferNativeFailed();
+    error CerbySwapV1_SafeTransferTokensFailed();
+    error CerbySwapV1_SafeTransferFromFailed();
+    error CerbySwapV1_MsgValueProvidedMustBeLargerThanAmountIn();
+    error CerbySwapV1_AmountOfCerUsdOrTokensInMustBeLargerThanOne();
+    error CerbySwapV1_FeeIsWrong();
+    error CerbySwapV1_TvlMultiplierIsWrong();
 
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
@@ -185,7 +185,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             tokenToPoolId[token] == 0 ||
             token == cerUsdToken
         ){ 
-            revert TokenDoesNotExist();
+            revert CerbySwapV1_TokenDoesNotExist();
         }
         _;
     }
@@ -195,7 +195,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         if(
             tokenToPoolId[token] > 0            
         ) {
-            revert TokenAlreadyExists();
+            revert CerbySwapV1_TokenAlreadyExists();
         }
         _;
     }
@@ -205,7 +205,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         if (
             block.timestamp > expireTimestamp
         ) {
-            revert TransactionIsExpired();
+            revert CerbySwapV1_TransactionIsExpired();
         }
         _;
     }
@@ -255,7 +255,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     function adminInitialize() 
         public
         payable
-        // onlyRole(ROLE_ADMIN) // TODO: enable on production
+        onlyRole(ROLE_ADMIN) // TODO: enable on production
     {        
 
         // TODO: remove on production
@@ -278,13 +278,13 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             _settings.feeMinimum > _settings.feeMaximum ||
             _settings.feeMaximum > 500 // 5.00% is hard limit on updating fee
         ) {
-            revert FeeIsWrong();
+            revert CerbySwapV1_FeeIsWrong();
         }
 
         if (
             _settings.tvlMultiplierMinimum > _settings.tvlMultiplierMaximum
         ) {
-            revert TvlMultiplierIsWrong();
+            revert CerbySwapV1_TvlMultiplierIsWrong();
         }
 
         settings = _settings;
@@ -309,10 +309,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
         // finding out how many tokens router have sent to us
         amountTokensIn = _getTokenBalance(token);
-        if(
+        if (
             amountTokensIn <= 1
         ) {
-            revert AmountOfTokensMustBeLargerThanOne();
+            revert CerbySwapV1_AmountOfTokensMustBeLargerThanOne();
         }
 
         // create new pool record
@@ -387,7 +387,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         if (
             amountTokensIn <= 1
         ) {
-            revert AmountOfTokensMustBeLargerThanOne();
+            revert CerbySwapV1_AmountOfTokensMustBeLargerThanOne();
         }
 
         // finding out if for some reason we've received cerUSD tokens as well
@@ -435,7 +435,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountCerUsdToMint <= 1
             ) {
-                revert AmountOfCerUsdMustBeLargerThanOne();
+                revert CerbySwapV1_AmountOfCerUsdMustBeLargerThanOne();
             }
 
             // minting cerUSD according to current pool
@@ -553,7 +553,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         if (
             newTokenBalance + amountTokensOut != oldTokenBalance
         ) {
-            revert FeeOnTransferTokensArentSupported();
+            revert CerbySwapV1_FeeOnTransferTokensArentSupported();
         }
 
         emit LiquidityRemoved(
@@ -603,7 +603,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         if (
             amountTokensIn <= 1
         ) {
-            revert AmountOfTokensMustBeLargerThanOne();
+            revert CerbySwapV1_AmountOfTokensMustBeLargerThanOne();
         }
     
         address fromAddress = msg.sender;
@@ -617,7 +617,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountTokensOut < minAmountTokensOut
             ) {
-                revert OutputCerUsdAmountIsLowerThanMinimumSpecified();
+                revert CerbySwapV1_OutputCerUsdAmountIsLowerThanMinimumSpecified();
             }
 
             // actually transferring the tokens to the pool
@@ -639,7 +639,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountTokensOut < minAmountTokensOut
             ) {
-                revert OutputTokensAmountIsLowerThanMinimumSpecified();
+                revert CerbySwapV1_OutputTokensAmountIsLowerThanMinimumSpecified();
             }
 
             // actually transferring the tokens to the pool
@@ -665,7 +665,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountTokensOut < minAmountTokensOut
             ) {
-                revert OutputTokensAmountIsLowerThanMinimumSpecified();
+                revert CerbySwapV1_OutputTokensAmountIsLowerThanMinimumSpecified();
             }
 
             // actually transferring the tokens to the pool
@@ -687,7 +687,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 transferTo
             );
         } else {
-            revert SwappingTokenToSameTokenIsForbidden(); // TODO: don't forget uncomment above!
+            revert CerbySwapV1_SwappingTokenToSameTokenIsForbidden(); // TODO: don't forget uncomment above!
         }
         
 
@@ -720,14 +720,14 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountTokensIn > maxAmountTokensIn
             ) {
-                revert InputTokensAmountIsLargerThanMaximumSpecified();
+                revert CerbySwapV1_InputTokensAmountIsLargerThanMaximumSpecified();
             }
 
             // amountTokensIn must be larger than 1 to avoid rounding errors
             if (
                 amountTokensIn <= 1
             ) {
-                revert AmountOfTokensMustBeLargerThanOne();
+                revert CerbySwapV1_AmountOfTokensMustBeLargerThanOne();
             }
 
             // actually transferring the tokens to the pool
@@ -749,14 +749,14 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountTokensIn > maxAmountTokensIn
             ) {
-                revert InputCerUsdAmountIsLargerThanMaximumSpecified();
+                revert CerbySwapV1_InputCerUsdAmountIsLargerThanMaximumSpecified();
             }
 
             // amountTokensIn must be larger than 1 to avoid rounding errors
             if (
                 amountTokensIn <= 1
             ) {
-                revert AmountOfCerUsdMustBeLargerThanOne();
+                revert CerbySwapV1_AmountOfCerUsdMustBeLargerThanOne();
             }
 
             // actually transferring the tokens to the pool
@@ -777,7 +777,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountCerUsdOut <= 1
             ) {
-                revert AmountOfCerUsdMustBeLargerThanOne();
+                revert CerbySwapV1_AmountOfCerUsdMustBeLargerThanOne();
             }
 
             amountTokensIn = getInputTokensForExactCerUsd(tokenIn, amountCerUsdOut);
@@ -786,14 +786,14 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountTokensIn > maxAmountTokensIn
             ) {
-                revert InputTokensAmountIsLargerThanMaximumSpecified();
+                revert CerbySwapV1_InputTokensAmountIsLargerThanMaximumSpecified();
             }
 
             // amountTokensIn must be larger than 1 to avoid rounding errors
             if (
                 amountTokensIn <= 1
             ) {
-                revert AmountOfTokensMustBeLargerThanOne();
+                revert CerbySwapV1_AmountOfTokensMustBeLargerThanOne();
             }
 
             // actually transferring the tokens to the pool
@@ -815,7 +815,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 transferTo
             );
         } else {
-            revert SwappingTokenToSameTokenIsForbidden();
+            revert CerbySwapV1_SwappingTokenToSameTokenIsForbidden();
         }
         return (amountTokensIn, amountTokensOut);
     }
@@ -855,7 +855,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         if (
             amountTokensIn + amountCerUsdIn <= 1
         ) {
-            revert AmountOfCerUsdOrTokensInMustBeLargerThanOne();
+            revert CerbySwapV1_AmountOfCerUsdOrTokensInMustBeLargerThanOne();
         }
 
         // calculating fees
@@ -887,7 +887,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 afterKValueDenormed < beforeKValueDenormed
             ) {
-                revert InvariantKValueMustBeSameOrIncreasedOnAnySwaps();
+                revert CerbySwapV1_InvariantKValueMustBeSameOrIncreasedOnAnySwaps();
             }
 
             // updating pool values
@@ -929,7 +929,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 newTokenBalance != pools[poolId].balanceToken
             ) {
-                revert FeeOnTransferTokensArentSupported();
+                revert CerbySwapV1_FeeOnTransferTokensArentSupported();
             }
         }
 
@@ -970,9 +970,9 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         if (token != nativeToken) {
             // caller must not send any native tokens
             if (
-                msg.value != 0
+                msg.value > 0
             ) {
-                revert MsgValueProvidedMustBeZero();
+                revert CerbySwapV1_MsgValueProvidedMustBeZero();
             }
 
             if (from != address(this)) {
@@ -983,7 +983,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 msg.value < amountIn
             ) {
-                revert MsgValueProvidedMustBeLargerThanAmountIn();
+                revert CerbySwapV1_MsgValueProvidedMustBeLargerThanAmountIn();
             }
 
             // refunding extra native tokens
@@ -1030,7 +1030,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             !success ||
             (data.length > 0 && abi.decode(data, (bool)))
         ) {
-            revert SafeTransferTokensFailed();
+            revert CerbySwapV1_SafeTransferTokensFailed();
         }
     }
 
@@ -1047,7 +1047,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             !success ||
             (data.length > 0 && abi.decode(data, (bool)))
         ) {
-            revert SafeTransferFromFailed();
+            revert CerbySwapV1_SafeTransferFromFailed();
         }
     }
 
@@ -1056,7 +1056,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         if (
             !success
         ) {
-            revert SafeTransferNativeFailed();
+            revert CerbySwapV1_SafeTransferNativeFailed();
         }
     }
 

@@ -28,21 +28,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "AmountOfCerUsdMustBeLargerThanOne",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "AmountOfCerUsdOrTokensInMustBeLargerThanOne",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "AmountOfTokensMustBeLargerThanOne",
-				"type": "error"
-			},
-			{
-				"inputs": [],
 				"name": "CanOnlyRenounceRoleForSelf",
 				"type": "error"
 			},
@@ -59,6 +44,106 @@
 			{
 				"inputs": [],
 				"name": "CerbySwapLP1155V1_TransactionsAreTemporarilyDisabled",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_AmountOfCerUsdMustBeLargerThanOne",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_AmountOfCerUsdOrTokensInMustBeLargerThanOne",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_AmountOfTokensMustBeLargerThanOne",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_FeeIsWrong",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_FeeOnTransferTokensArentSupported",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_InputCerUsdAmountIsLargerThanMaximumSpecified",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_InputTokensAmountIsLargerThanMaximumSpecified",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_InvariantKValueMustBeSameOrIncreasedOnAnySwaps",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_MsgValueProvidedMustBeLargerThanAmountIn",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_MsgValueProvidedMustBeZero",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_OutputCerUsdAmountIsLowerThanMinimumSpecified",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_OutputTokensAmountIsLowerThanMinimumSpecified",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_SafeTransferFromFailed",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_SafeTransferNativeFailed",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_SafeTransferTokensFailed",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_SwappingTokenToSameTokenIsForbidden",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_TokenAlreadyExists",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_TokenDoesNotExist",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_TransactionIsExpired",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_TvlMultiplierIsWrong",
 				"type": "error"
 			},
 			{
@@ -114,91 +199,6 @@
 			{
 				"inputs": [],
 				"name": "ERC1155_TransferToZeroAddress",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "FeeIsWrong",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "FeeOnTransferTokensArentSupported",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "InputCerUsdAmountIsLargerThanMaximumSpecified",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "InputTokensAmountIsLargerThanMaximumSpecified",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "InvariantKValueMustBeSameOrIncreasedOnAnySwaps",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "MsgValueProvidedMustBeLargerThanAmountIn",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "MsgValueProvidedMustBeZero",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "OutputCerUsdAmountIsLowerThanMinimumSpecified",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "OutputTokensAmountIsLowerThanMinimumSpecified",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "SafeTransferFromFailed",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "SafeTransferNativeFailed",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "SafeTransferTokensFailed",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "SwappingTokenToSameTokenIsForbidden",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "TokenAlreadyExists",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "TokenDoesNotExist",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "TransactionIsExpired",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "TvlMultiplierIsWrong",
 				"type": "error"
 			},
 			{
@@ -1718,7 +1718,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -1741,11 +1741,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x43e15247702e5075d4cd61d3c03b4fdfcfdb3b5f11e4dd578c33f1d0fb727b47",
+			"keccak256": "0x3e88e7f44c37b2c66329ae45e446dc49032316a33945cc7896e54ab9a0c62af9",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://3ea61f40d756ebcbcca0e02ac3a5df8b7181d02da3a2673648fbe9a816449cdf",
-				"dweb:/ipfs/QmdTu3ivJDHmzGanRLWrVpgtgnamG95tiSpi4Cu5fK2Gfp"
+				"bzz-raw://047865e2124771cce54b07fd0bec6fd8e8913558edfc0c62baa272416b5b4a28",
+				"dweb:/ipfs/QmbubEK9kqBELfcSsainAERtqznZAdCNPNpovjHZ4g75wP"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {
