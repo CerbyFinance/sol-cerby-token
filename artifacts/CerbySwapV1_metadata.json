@@ -88,6 +88,11 @@
 			},
 			{
 				"inputs": [],
+				"name": "CerbySwapV1_MintFeeMultiplierMustNotBeLargerThan50Percent",
+				"type": "error"
+			},
+			{
+				"inputs": [],
 				"name": "CerbySwapV1_MsgValueProvidedMustBeLargerThanAmountIn",
 				"type": "error"
 			},
@@ -922,7 +927,7 @@
 							},
 							{
 								"internalType": "uint128",
-								"name": "lastBalancerTokenAfterLiquidityUpdate",
+								"name": "lastSqrtKValue",
 								"type": "uint128"
 							}
 						],
@@ -963,7 +968,7 @@
 							},
 							{
 								"internalType": "uint128",
-								"name": "lastBalancerTokenAfterLiquidityUpdate",
+								"name": "lastSqrtKValue",
 								"type": "uint128"
 							}
 						],
@@ -1718,7 +1723,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -1741,11 +1746,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x8d0d736af87109a87e0e329a23d7a62aaca483b977ee3a4b075b8e5765bd5421",
+			"keccak256": "0xb486acd0c6426a8163fd15356e1388dad5667068354b0b7f9d8d8e5ddc830aa3",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://def4f6dfe1145d9192056d04e4e07187aaa1b3a92768b45f2f5adef6ff88b725",
-				"dweb:/ipfs/QmaMd8XAqc6y61zvAwxvAAPE6DYxwn1B9kjmxYd7gZTLTL"
+				"bzz-raw://e0f6eb1ad46a5e299c21b751eeb932013d5d9f3651481c5f0fa7490bca47b501",
+				"dweb:/ipfs/QmNPGJSi41S5g7AftRivqXG67YsWHchMBw99rbkUX5F1T4"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

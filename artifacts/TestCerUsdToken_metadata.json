@@ -482,7 +482,7 @@
 		},
 		"optimizer": {
 			"enabled": true,
-			"runs": 20
+			"runs": 200
 		},
 		"remappings": []
 	},

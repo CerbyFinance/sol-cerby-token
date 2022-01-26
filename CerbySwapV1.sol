@@ -42,9 +42,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     
     address nativeToken = 0x14769F96e57B80c66837701DE0B43686Fb4632De;
 
-    // mint fees = (fees * MINT_FEE_DENORM) / (mintFeeMultiplier + MINT_FEE_DENORM); 
-    // mintFeeMultiplier = 4*MINT_FEE_DENORM --> fees = 1/5 or 20% of all fees
-    // mintFeeMultiplier = 0 disables mint fees
     uint constant MINT_FEE_DENORM = 100;
     
     uint constant FEE_DENORM = 10000;
@@ -52,9 +49,9 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
     uint constant TVL_MULTIPLIER_DENORM = 1e10;  
 
-    // 6 4hours + 1 current 4hour + 1 next 4hour = 26 hours
+    // 6 4hours + 1 current 4hour + 1 next 4hour = 8 hours
     uint constant NUMBER_OF_TRADE_PERIODS = 8; 
-    uint constant ONE_PERIOD_IN_SECONDS = 240 minutes;
+    uint constant ONE_PERIOD_IN_SECONDS = 240 minutes; // 4 hours
 
     uint constant MINIMUM_LIQUIDITY = 1000;
     address constant DEAD_ADDRESS = address(0xdead);
@@ -74,7 +71,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint32[NUMBER_OF_TRADE_PERIODS] tradeVolumePerPeriodInCerUsd;
         uint128 balanceToken;
         uint128 balanceCerUsd;
-        uint128 lastBalancerTokenAfterLiquidityUpdate;
+        uint128 lastSqrtKValue;
     }
 
 
@@ -131,13 +128,14 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     error CerbySwapV1_AmountOfCerUsdOrTokensInMustBeLargerThanOne();
     error CerbySwapV1_FeeIsWrong();
     error CerbySwapV1_TvlMultiplierIsWrong();
+    error CerbySwapV1_MintFeeMultiplierMustNotBeLargerThan50Percent();
 
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
         
 
         address mintFeeBeneficiary = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8; // CerbyBridge fees wallet
-        uint mintFeeMultiplier = 4 * MINT_FEE_DENORM; // mintFeeMultiplier 1/5 of fees goes to buyback Cerby
+        uint mintFeeMultiplier = (MINT_FEE_DENORM * 20) / 100; // means 20% of fees goes to buyback & burn Cerby
         uint tvlMultiplier = 1369863014; // 0.1369863014
         uint feeMinimum = 1; // 0.01%
         uint feeMaximum = 200; // 2.00%
@@ -289,6 +287,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             revert CerbySwapV1_TvlMultiplierIsWrong();
         }
 
+        if (
+            _settings.mintFeeMultiplier * 2 >= MINT_FEE_DENORM
+        ) {
+            revert CerbySwapV1_MintFeeMultiplierMustNotBeLargerThan50Percent();
+        }
+
         settings = _settings;
     }
 
@@ -398,11 +402,18 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint newTotalCerUsdBalance = _getTokenBalance(cerUsdToken);
         uint amountCerUsdIn = newTotalCerUsdBalance - totalCerUsdBalance;
 
-        {            
+        {
+            // calculating new sqrt(k) value before updating pool
+            uint newSqrtKValue = 
+                sqrt(uint(pools[poolId].balanceToken) * 
+                        uint(pools[poolId].balanceCerUsd));
+            
             // minting trade fees
             uint amountLpTokensToMintAsFee = 
                 _getMintFeeLiquidityAmount(
-                    poolId
+                    pools[poolId].lastSqrtKValue, 
+                    newSqrtKValue, 
+                    _totalSupply[poolId]
                 );
 
             if (amountLpTokensToMintAsFee > 0) {
@@ -444,7 +455,9 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 pools[poolId].balanceToken + uint128(amountTokensIn);
             pools[poolId].balanceCerUsd = 
                 pools[poolId].balanceCerUsd + uint128(amountCerUsdIn + amountCerUsdToMint);
-            pools[poolId].lastBalancerTokenAfterLiquidityUpdate = pools[poolId].balanceToken;
+            pools[poolId].lastSqrtKValue = 
+                uint128(sqrt(uint(pools[poolId].balanceToken) * 
+                    uint(pools[poolId].balanceCerUsd)));
 
             emit LiquidityAdded(
                 token, 
@@ -502,7 +515,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint amountCerUsdToBurn = 
             (uint(pools[poolId].balanceCerUsd) * amountLpTokensBalanceToBurn) / totalLPSupply;
 
-        { // scope to avoid stack too deep error            
+        { // scope to avoid stack too deep error                
             // storing sqrt(k) value before updating pool
             uint newSqrtKValue = 
                 sqrt(uint(pools[poolId].balanceToken) * 
@@ -511,8 +524,11 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             // minting trade fees
             uint amountLpTokensToMintAsFee = 
                 _getMintFeeLiquidityAmount(
-                    poolId
+                    pools[poolId].lastSqrtKValue, 
+                    newSqrtKValue, 
+                    totalLPSupply
                 );
+
             if (amountLpTokensToMintAsFee > 0) {
                 _mint(
                     settings.mintFeeBeneficiary, 
@@ -528,7 +544,9 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 pools[poolId].balanceToken + uint128(amountTokensIn) - uint128(amountTokensOut);
             pools[poolId].balanceCerUsd = 
                 pools[poolId].balanceCerUsd + uint128(amountCerUsdIn) - uint128(amountCerUsdToBurn);
-            pools[poolId].lastBalancerTokenAfterLiquidityUpdate = pools[poolId].balanceToken;
+            pools[poolId].lastSqrtKValue = 
+                uint128(sqrt(uint(pools[poolId].balanceToken) * 
+                    uint(pools[poolId].balanceCerUsd)));
 
             // burning LP tokens from sender (without approval)
             _burn(msg.sender, poolId, amountLpTokensBalanceToBurn);
@@ -557,20 +575,25 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         return amountTokensOut;
     }
 
-    function _getMintFeeLiquidityAmount(uint poolId)
+    function _getMintFeeLiquidityAmount(uint lastSqrtKValue, uint newSqrtKValue, uint totalLPSupply)
         private
         view
         returns (uint)
     {
         uint amountLpTokensToMintAsFee;
+        uint mintFeeMultiplier = settings.mintFeeMultiplier;
         if (
-            settings.mintFeeMultiplier > 0
+            newSqrtKValue > lastSqrtKValue && 
+            lastSqrtKValue > 0 &&
+            mintFeeMultiplier > 0
         ) {
             amountLpTokensToMintAsFee = 
-                ((pools[poolId].balanceToken - pools[poolId].lastBalancerTokenAfterLiquidityUpdate) *
-                    settings.mintFeeMultiplier * _totalSupply[poolId]) /
-                        (MINT_FEE_DENORM * pools[poolId].balanceToken);
+                (totalLPSupply * mintFeeMultiplier  * (newSqrtKValue - lastSqrtKValue)) / 
+                    (newSqrtKValue * (MINT_FEE_DENORM - mintFeeMultiplier) + 
+                        lastSqrtKValue * mintFeeMultiplier);
         }
+
+        return amountLpTokensToMintAsFee;
     }
 
     function swapExactTokensForTokens(
