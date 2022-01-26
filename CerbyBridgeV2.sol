@@ -1,17 +1,10 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.11;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
+import "./interfaces/ICerbyTokenMinterBurner.sol";
 
-
-interface IMintableBurnableToken {
-    function balanceOf(address account) external returns (uint);
-
-    function mintByBridge(address to, uint256 amount) external;
-    function burnByBridge(address from, uint256 amount) external;
-}
-
-contract CrossChainBridgeV2 is AccessControlEnumerable {
+contract CerbyBridgeV2 is AccessControlEnumerable {
     event ProofOfBurn(
         bytes     srcToken,
         bytes     destToken,
@@ -59,6 +52,15 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         Blocked
     }
 
+    error CerbyBridgeV2_InvalidPackageLength();
+    error CerbyBridgeV2_AmountMustNotExceedAvailableBalance();
+    error CerbyBridgeV2_DirectionAllowanceWasNotFound();
+    error CerbyBridgeV2_InvalidDestinationTokenLength();
+    error CerbyBridgeV2_InvalidDestinationCallerLength();
+    error CerbyBridgeV2_AlreadyApproved();
+    error CerbyBridgeV2_ProofIsNotApprovedOrAlreadyExecuted();
+    error CerbyBridgeV2_ProvidedHashIsInvalid();
+
     ChainType _srcChainType;
 
     // it's common storage for all chains (evm, casper, solana etc)
@@ -67,10 +69,24 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
     mapping(address => uint32) public srcNonceByToken;
     mapping(bytes32 => Allowance) public allowances;
 
+    mapping(uint => uint) public chainIdToFee;
+    uint constant DEFAULT_FEE = 5e18; // 5 cerUSD fee
+    address constant CER_USD_CONTRACT = address(0);
+
     constructor() {
-        _srcChainType = ChainType.Evm;
-        
+        _srcChainType = ChainType.Evm;     
+
+        chainIdToFee[1] = 50e18; // 50 cerUSD to ethereum   
     }
+
+    function setChainsToFee(uint[] calldata chainIds, uint fee)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        for(uint i; i<chainIds.length; i++) {
+            chainIdToFee[chainIds[i]] = fee;
+        }
+    }    
 
     function setAllowance(
         address       srcToken,
@@ -114,13 +130,25 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         return result;
     }
 
-    function approveBurnProof(bytes32 proofHash) external {
-        require(
-            burnProofStorage[proofHash] == States.DefaultValue,
-            "CCB: Already approved"
-        );
+    function approveBurnProof(bytes32 proofHash) 
+        external
+        onlyRole(ROLE_APPROVER)
+    {
+        if (
+            burnProofStorage[proofHash] != States.DefaultValue
+        ) {
+            revert CerbyBridgeV2_AlreadyApproved();
+        }
         burnProofStorage[proofHash] = States.Approved;
         emit ApprovedBurnProof(proofHash);
+    }
+
+    function getReducedDestAmount(address srcToken, uint destAmount)
+        private
+        view
+        returns(uint)
+    {
+        uint fee = chainIdToFee[block.chainid] > 0? chainIdToFee[block.chainid]: DEFAULT_FEE;
     }
 
     function mintWithBurnProof(
@@ -131,10 +159,20 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         uint32       destChainId,
         bytes32      destBurnProofHash,
         uint256      destAmount,
-        uint256      destNonce
+        uint256      srcNonce
     ) external {
-        require(destCaller.length == 40, "invalid caller length");
-        require(destToken.length == 40,  "invalid token length");
+        if (
+            destCaller.length != 40
+        ) {
+            revert CerbyBridgeV2_InvalidDestinationCallerLength();
+        }
+        if (
+            destToken.length != 40
+        ) {
+            revert CerbyBridgeV2_InvalidDestinationTokenLength();
+        }
+
+        
 
         bytes memory srcCaller = genericAddress(msg.sender);
         bytes memory srcToken = genericAddress(_srcToken);
@@ -147,16 +185,18 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
                 destToken
             );
 
-            require(
-                allowances[allowanceHash] == Allowance.Allowed,
-                "allowance not found"
-            );
+            if (
+                allowances[allowanceHash] != Allowance.Allowed
+            ) {
+                revert CerbyBridgeV2_DirectionAllowanceWasNotFound();
+            }
         }
 
-        require(
-            burnProofStorage[destBurnProofHash] == States.Approved,
-            "CCB: Proof is not approved or already executed"
-        );
+        if (
+            burnProofStorage[destBurnProofHash] != States.Approved
+        ) {
+            revert CerbyBridgeV2_ProofIsNotApprovedOrAlreadyExecuted();
+        }
 
         bytes memory packed = abi.encodePacked(
             srcToken, destToken, 
@@ -164,18 +204,27 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
             destAmount,
             uint8(_srcChainType), uint32(block.chainid), // srcChainType, srcChainId
             destChainType, destChainId,
-            destNonce
+            srcNonce
         );
 
-        require(packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32, "package is invalid");
+
+        if (
+            packed.length != 230 // 230 = 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32
+        ) {
+            revert CerbyBridgeV2_InvalidPackageLength();
+        }
 
         bytes32 computedBurnProofHash = sha256(packed);
 
-        require(computedBurnProofHash == destBurnProofHash, "CCB: Provided hash is invalid");
+        if (
+            computedBurnProofHash != destBurnProofHash
+        ) {
+            revert CerbyBridgeV2_ProvidedHashIsInvalid();
+        }
 
         burnProofStorage[destBurnProofHash] = States.Executed;
 
-        IMintableBurnableToken(_srcToken).mintByBridge(msg.sender, destAmount);
+        ICerbyTokenMinterBurner(_srcToken).mintHumanAddress(msg.sender, destAmount);
 
         {
             ChainType _destChainType = ChainType(destChainType);
@@ -186,7 +235,6 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
                 srcCaller,
                 destCaller,
                 destAmount,
-                // destNonce ?
                 _srcChainType,
                 uint32(block.chainid),
                 _destChainType,
@@ -196,7 +244,9 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         }
     }
 
-     function burnAndCreateProof(
+    
+
+    function burnAndCreateProof(
         address      _srcToken,
         bytes memory destToken, 
         bytes memory destCaller,
@@ -204,8 +254,16 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
         uint8   destChainType,
         uint32  destChainId
     ) external {
-        require(destCaller.length == 40, "invalid caller length");
-        require(destToken.length == 40,  "invalid token length");
+        if (
+            destCaller.length != 40
+        ) {
+            revert CerbyBridgeV2_InvalidDestinationCallerLength();
+        }
+        if (
+            destToken.length != 40
+        ) {
+            revert CerbyBridgeV2_InvalidDestinationTokenLength();
+        }
 
         bytes memory srcCaller = genericAddress(msg.sender);
         bytes memory srcToken = genericAddress(_srcToken);
@@ -219,16 +277,18 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
                 destToken
             );
 
-            require(
-                allowances[allowanceHash] == Allowance.Allowed,
-                "allowance not found"
-            );
+            if (
+                allowances[allowanceHash] != Allowance.Allowed
+            ) {
+                revert CerbyBridgeV2_DirectionAllowanceWasNotFound();
+            }
         }
 
-        require(
-            srcAmount <= IMintableBurnableToken(_srcToken).balanceOf(msg.sender),
-            "CCB: Amount must not exceed available balance. Try reducing the amount."
-        );
+        if (
+            srcAmount > ICerbyTokenMinterBurner(_srcToken).balanceOf(msg.sender)
+        ) {
+            revert CerbyBridgeV2_AmountMustNotExceedAvailableBalance();
+        }
 
         uint256 srcNonce = srcNonceByToken[_srcToken];
 
@@ -241,13 +301,17 @@ contract CrossChainBridgeV2 is AccessControlEnumerable {
             srcNonce
         );
 
-        require(packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32, "package is invalid");
+        if (
+            packed.length != 230 // 230 = 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32
+        ) {
+            revert CerbyBridgeV2_InvalidPackageLength();
+        }
 
         bytes32 computedBurnProofHash = sha256(packed);
 
         burnProofStorage[computedBurnProofHash] = States.Burned;
 
-        IMintableBurnableToken(_srcToken).burnByBridge(msg.sender, srcAmount);
+        ICerbyTokenMinterBurner(_srcToken).burnHumanAddress(msg.sender, srcAmount);
 
         emit ProofOfBurn(
             srcToken,

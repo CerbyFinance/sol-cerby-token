@@ -74,7 +74,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint32[NUMBER_OF_TRADE_PERIODS] tradeVolumePerPeriodInCerUsd;
         uint128 balanceToken;
         uint128 balanceCerUsd;
-        uint128 lastSqrtKValue;
+        uint128 lastBalancerTokenAfterLiquidityUpdate;
     }
 
 
@@ -185,6 +185,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             tokenToPoolId[token] == 0 ||
             token == cerUsdToken
         ){ 
+            revert("C"); // TODO: remove this line on production
             revert CerbySwapV1_TokenDoesNotExist();
         }
         _;
@@ -205,6 +206,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         if (
             block.timestamp > expireTimestamp
         ) {
+            revert("D"); // TODO: remove this line on production
             revert CerbySwapV1_TransactionIsExpired();
         }
         _;
@@ -312,6 +314,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         if (
             amountTokensIn <= 1
         ) {
+            revert("F"); // TODO: remove this line on production
             revert CerbySwapV1_AmountOfTokensMustBeLargerThanOne();
         }
 
@@ -387,6 +390,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         if (
             amountTokensIn <= 1
         ) {
+            revert("F"); // TODO: remove this line on production
             revert CerbySwapV1_AmountOfTokensMustBeLargerThanOne();
         }
 
@@ -394,18 +398,11 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint newTotalCerUsdBalance = _getTokenBalance(cerUsdToken);
         uint amountCerUsdIn = newTotalCerUsdBalance - totalCerUsdBalance;
 
-        {
-            // calculating new sqrt(k) value before updating pool
-            uint newSqrtKValue = 
-                sqrt(uint(pools[poolId].balanceToken) * 
-                        uint(pools[poolId].balanceCerUsd));
-            
+        {            
             // minting trade fees
             uint amountLpTokensToMintAsFee = 
                 _getMintFeeLiquidityAmount(
-                    pools[poolId].lastSqrtKValue, 
-                    newSqrtKValue, 
-                    _totalSupply[poolId]
+                    poolId
                 );
 
             if (amountLpTokensToMintAsFee > 0) {
@@ -447,9 +444,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 pools[poolId].balanceToken + uint128(amountTokensIn);
             pools[poolId].balanceCerUsd = 
                 pools[poolId].balanceCerUsd + uint128(amountCerUsdIn + amountCerUsdToMint);
-            pools[poolId].lastSqrtKValue = 
-                uint128(sqrt(uint(pools[poolId].balanceToken) * 
-                    uint(pools[poolId].balanceCerUsd)));
+            pools[poolId].lastBalancerTokenAfterLiquidityUpdate = pools[poolId].balanceToken;
 
             emit LiquidityAdded(
                 token, 
@@ -516,9 +511,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             // minting trade fees
             uint amountLpTokensToMintAsFee = 
                 _getMintFeeLiquidityAmount(
-                    pools[poolId].lastSqrtKValue, 
-                    newSqrtKValue, 
-                    totalLPSupply
+                    poolId
                 );
             if (amountLpTokensToMintAsFee > 0) {
                 _mint(
@@ -535,9 +528,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 pools[poolId].balanceToken + uint128(amountTokensIn) - uint128(amountTokensOut);
             pools[poolId].balanceCerUsd = 
                 pools[poolId].balanceCerUsd + uint128(amountCerUsdIn) - uint128(amountCerUsdToBurn);
-            pools[poolId].lastSqrtKValue = 
-                uint128(sqrt(uint(pools[poolId].balanceToken) * 
-                    uint(pools[poolId].balanceCerUsd)));
+            pools[poolId].lastBalancerTokenAfterLiquidityUpdate = pools[poolId].balanceToken;
 
             // burning LP tokens from sender (without approval)
             _burn(msg.sender, poolId, amountLpTokensBalanceToBurn);
@@ -566,22 +557,20 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         return amountTokensOut;
     }
 
-    function _getMintFeeLiquidityAmount(uint lastSqrtKValue, uint newSqrtKValue, uint totalLPSupply)
+    function _getMintFeeLiquidityAmount(uint poolId)
         private
         view
-        returns (uint amountLpTokensToMintAsFee)
+        returns (uint)
     {
+        uint amountLpTokensToMintAsFee;
         if (
-            newSqrtKValue > lastSqrtKValue && 
-            lastSqrtKValue > 0 &&
             settings.mintFeeMultiplier > 0
         ) {
             amountLpTokensToMintAsFee = 
-                (totalLPSupply * MINT_FEE_DENORM * (newSqrtKValue - lastSqrtKValue)) / 
-                    (newSqrtKValue * settings.mintFeeMultiplier + lastSqrtKValue * MINT_FEE_DENORM);
+                ((pools[poolId].balanceToken - pools[poolId].lastBalancerTokenAfterLiquidityUpdate) *
+                    settings.mintFeeMultiplier * _totalSupply[poolId]) /
+                        (MINT_FEE_DENORM * pools[poolId].balanceToken);
         }
-
-        //amountLpTokensToMintAsFee = 0; // TODO: remove on production
     }
 
     function swapExactTokensForTokens(
@@ -603,6 +592,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         if (
             amountTokensIn <= 1
         ) {
+            revert("F"); // TODO: remove this line on production
             revert CerbySwapV1_AmountOfTokensMustBeLargerThanOne();
         }
     
@@ -617,6 +607,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountTokensOut < minAmountTokensOut
             ) {
+                revert("H"); // TODO: remove this line on production
                 revert CerbySwapV1_OutputCerUsdAmountIsLowerThanMinimumSpecified();
             }
 
@@ -639,6 +630,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountTokensOut < minAmountTokensOut
             ) {
+                revert("i"); // TODO: remove this line on production
                 revert CerbySwapV1_OutputTokensAmountIsLowerThanMinimumSpecified();
             }
 
@@ -665,6 +657,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountTokensOut < minAmountTokensOut
             ) {
+                revert("i"); // TODO: remove this line on production
                 revert CerbySwapV1_OutputTokensAmountIsLowerThanMinimumSpecified();
             }
 
@@ -687,6 +680,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 transferTo
             );
         } else {
+            revert("L"); // TODO: remove this line on production
             revert CerbySwapV1_SwappingTokenToSameTokenIsForbidden(); // TODO: don't forget uncomment above!
         }
         
@@ -720,6 +714,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountTokensIn > maxAmountTokensIn
             ) {
+                revert("K"); // TODO: remove this line on production
                 revert CerbySwapV1_InputTokensAmountIsLargerThanMaximumSpecified();
             }
 
@@ -727,6 +722,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountTokensIn <= 1
             ) {
+                revert("F"); // TODO: remove this line on production
                 revert CerbySwapV1_AmountOfTokensMustBeLargerThanOne();
             }
 
@@ -749,6 +745,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountTokensIn > maxAmountTokensIn
             ) {
+                revert("J"); // TODO: remove this line on production
                 revert CerbySwapV1_InputCerUsdAmountIsLargerThanMaximumSpecified();
             }
 
@@ -756,6 +753,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountTokensIn <= 1
             ) {
+                revert("U"); // TODO: remove this line on production
                 revert CerbySwapV1_AmountOfCerUsdMustBeLargerThanOne();
             }
 
@@ -777,6 +775,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountCerUsdOut <= 1
             ) {
+                revert("U"); // TODO: remove this line on production
                 revert CerbySwapV1_AmountOfCerUsdMustBeLargerThanOne();
             }
 
@@ -786,6 +785,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountTokensIn > maxAmountTokensIn
             ) {
+                revert("K"); // TODO: remove this line on production
                 revert CerbySwapV1_InputTokensAmountIsLargerThanMaximumSpecified();
             }
 
@@ -793,6 +793,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 amountTokensIn <= 1
             ) {
+                revert("F"); // TODO: remove this line on production
                 revert CerbySwapV1_AmountOfTokensMustBeLargerThanOne();
             }
 
@@ -815,6 +816,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 transferTo
             );
         } else {
+            revert("L"); // TODO: remove this line on production
             revert CerbySwapV1_SwappingTokenToSameTokenIsForbidden();
         }
         return (amountTokensIn, amountTokensOut);
@@ -972,6 +974,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 msg.value > 0
             ) {
+                revert("G"); // TODO: remove this line on production
                 revert CerbySwapV1_MsgValueProvidedMustBeZero();
             }
 

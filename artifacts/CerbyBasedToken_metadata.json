@@ -1148,8 +1148,8 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
-			"runs": 200
+			"enabled": true,
+			"runs": 20
 		},
 		"remappings": []
 	},
