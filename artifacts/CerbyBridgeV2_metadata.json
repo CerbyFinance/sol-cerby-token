@@ -877,11 +877,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBridgeV2.sol": {
-			"keccak256": "0xbe8547f2f50e0a2fab1e7cea5c6e0a3e5d3e30ac8fcbd2c85dd4f554cbb2cf03",
+			"keccak256": "0x8f042979ac163587e99c32042f77e287c0583f9c97e27476c5cc9eccd3efe292",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://46a2f3c71b87790c46cb19045ee62f90624d27e21c32f2db7159f5df7c9e0cea",
-				"dweb:/ipfs/QmZESTByPqFLEEvpCMnkSz76UDTAGBRfAqXEFWKdJG899a"
+				"bzz-raw://2d170f0f26a42aa376c86aad2b0e9169ea2284afb8f2da15fd8836e31708371a",
+				"dweb:/ipfs/QmZkQ847xABhAfcDBXPuWgkUvTkGmyfQgsQGUHD1kqGML5"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapV1.sol": {

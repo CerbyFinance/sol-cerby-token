@@ -256,21 +256,21 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         returns(bytes32)
     {
         bytes memory packed  = abi.encodePacked(
-            proof.burnGenericToken,  // поменял порядок
-            proof.burnGenericCaller,
-            proof.burnChainType,
-            proof.burnChainId,
-            proof.burnNonce,
-            HASH_SEPARATOR,     
-            proof.mintGenericToken, 
-            proof.mintGenericCaller,
-            proof.mintChainType,
-            proof.mintChainId,
-            proof.mintAmount
+            proof.burnGenericToken,     // 40 = bytes40
+            proof.burnGenericCaller,    // 40 = bytes40
+            proof.burnChainType,        // 1 = uint8
+            proof.burnChainId,          // 4 = uint32
+            proof.burnNonce,            // 8 = uint64
+            HASH_SEPARATOR,             // 4 = bytes4
+            proof.mintGenericToken,     // 40 = bytes40
+            proof.mintGenericCaller,    // 40 = bytes40
+            proof.mintChainType,        // 1 = uint8
+            proof.mintChainId,          // 4 = uint32
+            proof.mintAmount            // 32 = uint256
         );
 
         if (
-            packed.length != 230 // 230 = 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32
+            packed.length != 214 // 214 = 40 + 40 + 1 + 4 + 8 + 4 + 40 + 40 + 1 + 4 + 32
         ) {
             revert CerbyBridgeV2_InvalidPackageLength();
         }
