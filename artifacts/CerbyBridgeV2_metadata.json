@@ -848,11 +848,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBridgeV2.sol": {
-			"keccak256": "0x5da02356989a0e6091dd9fef5f5e574e2f0489d193a7dd9508b00751e3129254",
+			"keccak256": "0x66d0484bfc86469470c5b4b723550c5bc004f955868b061d25cf6dfb75fefb07",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://2aeed5dc99293c624866678bce6e452fd4295a9f914f9d5ad245a7cfd987af38",
-				"dweb:/ipfs/QmYe6VUv9RZhfgtGMVQL5a54n6sQTEzrzgEs2REJ2kfbXP"
+				"bzz-raw://6abf6063e7482f856301002bd8130b4b33bf16602678f8c1ef6425f32e6484af",
+				"dweb:/ipfs/QmWV63HkcqUWeNcEcTqcQZiNSjqgzLja1JY2gZYy9PKWDC"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapV1.sol": {

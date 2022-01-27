@@ -107,6 +107,8 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
                 chainIdToFee[destChainId]: 
                 DEFAULT_FEE;
         srcToken; // TODO: to silent warning remove on production
+
+        // if srcToken == CER_USD_CONTRACT then we substract fee directly from destAmount
         uint substractAmountInTokens = feeInCerUsd;
         /*
         // TODO: uncomment code below in production
