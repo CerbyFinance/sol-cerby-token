@@ -26,7 +26,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         Proof proof
     );
 
-    event ApprovedBurnProof(bytes32 burnProofHash);
+    event ApprovedBurnProofHash(bytes32 srcBurnProofHash);
 
     enum States {
         DefaultValue,
@@ -223,7 +223,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         }
     }
 
-    function generateSignature(
+    function computeBurnHash(
         Proof memory proof
     )
         private
@@ -299,7 +299,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         checkAllowanceHashSrc2Dest(proof);
 
         // generating src burn hash
-        proof.srcBurnProofHash = generateSignature(proof);
+        proof.srcBurnProofHash = computeBurnHash(proof);
 
         // burning amount user requested
         ICerbyTokenMinterBurner(srcToken).burnHumanAddress(msg.sender, srcAmount);
@@ -376,7 +376,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         }
 
         // generating src burn hash
-        bytes32 srcBurnProofHashComputed = generateSignature(proof);
+        bytes32 srcBurnProofHashComputed = computeBurnHash(proof);
 
         // making sure burn hash is valid
         if (
@@ -406,8 +406,9 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         ) {
             revert CerbyBridgeV2_AlreadyApproved();
         }
+
         burnProofStorage[proofHash] = States.Approved;
-        emit ApprovedBurnProof(proofHash);
+        emit ApprovedBurnProofHash(proofHash);
     }
 
 

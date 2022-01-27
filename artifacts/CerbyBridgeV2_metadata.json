@@ -82,11 +82,11 @@
 					{
 						"indexed": false,
 						"internalType": "bytes32",
-						"name": "burnProofHash",
+						"name": "srcBurnProofHash",
 						"type": "bytes32"
 					}
 				],
-				"name": "ApprovedBurnProof",
+				"name": "ApprovedBurnProofHash",
 				"type": "event"
 			},
 			{
@@ -843,11 +843,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBridgeV2.sol": {
-			"keccak256": "0x811b9f7f1e07bdaf1e17225fd138c45f2e97ca9c1c02758422403ff511091c28",
+			"keccak256": "0x1893fb175a836e01268e444529be2ecdc538bd2099b78a9d6ba3752de4d2b469",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://71dd257e64e33f65a909d4392d8f20b875c8724e20cfd388312f4c0f05be58e5",
-				"dweb:/ipfs/QmetcXkgVUyDvaRFR1CFXmCXxT7zpwNoBKbA4XtaNLXRM1"
+				"bzz-raw://fa2456de330e8f18f01580794f05a864fbed50e78c5fe096055d562241f243aa",
+				"dweb:/ipfs/QmegWbNre5TuaEvfg1P5ES4V4TdayZY4JsPWcyBknEopuD"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapV1.sol": {
