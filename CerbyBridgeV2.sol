@@ -6,32 +6,24 @@ import "./interfaces/ICerbyTokenMinterBurner.sol";
 import "./interfaces/ICerbySwapV1.sol";
 
 contract CerbyBridgeV2 is AccessControlEnumerable {
-    event ProofOfBurn(
-        bytes     srcToken,
-        bytes     destToken,
-        bytes     srcCaller,
-        bytes     destCaller,
-        uint   srcAmount,
-        uint   srcNonce,
-        ChainType srcChainType,
-        uint32    srcChainId,
-        ChainType destChainType,
-        uint32    destChainId,
-        bytes32   burnProofHash
-    );
 
-    event ProofOfMint(
-        bytes     srcToken,
-        bytes     destToken,
-        bytes     srcCaller,
-        bytes     destCaller,
-        uint   destAmount,
-        // destNonce ?
-        ChainType srcChainType,
-        uint32    srcChainId,
-        ChainType destChainType,
-        uint32    destChainId,
-        bytes32   burnProofHash
+    struct Proof {
+        bytes32 srcBurnProofHash;
+        bytes srcGenericToken;
+        bytes srcGenericCaller;
+        uint8 srcChainType;
+        uint32 srcChainId;
+        uint40 srcNonce;
+        bytes destGenericToken;
+        bytes destGenericCaller;
+        uint8 destChainType;
+        uint32 destChainId;
+        uint destAmount;
+    }
+
+    event ProofOfBurnOrMint(
+        bool isBurn,  // поменял порядок
+        Proof proof
     );
 
     event ApprovedBurnProof(bytes32 burnProofHash);
@@ -56,13 +48,14 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     error CerbyBridgeV2_InvalidPackageLength();
     error CerbyBridgeV2_AmountMustNotExceedAvailableBalance();
     error CerbyBridgeV2_DirectionAllowanceWasNotFound();
-    error CerbyBridgeV2_InvalidDestinationTokenLength();
-    error CerbyBridgeV2_InvalidDestinationCallerLength();
+    error CerbyBridgeV2_InvalidGenericTokenLength();
+    error CerbyBridgeV2_InvalidGenericCallerLength();
     error CerbyBridgeV2_AlreadyApproved();
     error CerbyBridgeV2_ProofIsNotApprovedOrAlreadyExecuted();
     error CerbyBridgeV2_ProvidedHashIsInvalid();
+    error CerbyBridgeV2_TokenAndCallerMustBeEqualForEvmBridging();
 
-    ChainType _currentBridgeChainType;
+    uint8 _currentBridgeChainType;
     
 
     // it's common storage for all chains (evm, casper, solana etc)
@@ -77,10 +70,13 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     address constant CERBY_SWAP_V1_CONTRACT = address(0);
     
     bytes32 public constant ROLE_APPROVER = keccak256("ROLE_APPROVER");
-    address constant brideFeesBeneficiary = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
+    address constant bridgeFeesBeneficiary = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
 
     constructor() {
-        _currentBridgeChainType = ChainType.Evm;     
+        _setupRole(ROLE_APPROVER, msg.sender);
+        _setupRole(ROLE_APPROVER, bridgeFeesBeneficiary);
+
+        _currentBridgeChainType = uint8(ChainType.Evm);
 
         chainIdToFee[1] = 50e18; // 50 cerUSD to ethereum   
     }
@@ -122,58 +118,94 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         return destAmount;
     }  
 
-    // TODO: setAllowancesBatch
-    function setAllowance(
-        address       srcToken,
-        bytes memory  destToken,
-        ChainType     destChainType,
-        uint32        destChainId
+    function setAllowancesBulk(
+        Proof[] memory proofs
     ) external {
-        bytes32 allowanceHash = getAllowanceHash(
-            genericAddress(srcToken),
-            destToken,
-            destChainType,
-            destChainId
-        );
+        uint proofsLength = proofs.length;
 
-        allowances[allowanceHash] = Allowance.Allowed;
+        for (uint i; i<proofsLength; i++) {
+
+            bytes32 allowanceHash = getAllowanceHashCurrent2Dest(
+                proofs[i]
+            );
+
+            allowances[allowanceHash] = Allowance.Allowed;
+        }
     }
 
-    function getAllowanceHash(
-        bytes memory  srcGenericToken, // поменял порядок
-        bytes memory  destGenericToken,
-        ChainType     destChainType,
-        uint32        destChainId
+    function getAllowanceHashCurrent2Dest(
+        Proof memory proof
     ) 
-        private 
+        public 
         view 
         returns(bytes32) 
     {
         return sha256(abi.encodePacked(
-            uint8(_currentBridgeChainType),
+            proof.srcGenericToken,
+            _currentBridgeChainType,
             uint32(block.chainid),
-            uint8(destChainType),
-            destChainId,
-            srcToken,
-            destToken
+            proof.destGenericToken,
+            proof.destChainType,
+            proof.destChainId
         ));
     }
 
-    function checkAllowanceHash(
-        bytes memory srcGenericToken,  // поменял порядок
-        bytes memory destGenericToken,
-        ChainType destChainType,
-        uint32 destChainId
+    function getAllowanceHashSrc2Dest(
+        Proof memory proof
+    ) 
+        private 
+        pure 
+        returns(bytes32) 
+    {
+        return sha256(abi.encodePacked(
+            proof.srcGenericToken, // поменял порядок
+            proof.srcChainType,
+            proof.srcChainId,
+            proof.destGenericToken,
+            proof.destChainType,
+            proof.destChainId
+        ));
+    }
+
+    function getAllowanceHashDest2Src(
+        Proof memory proof
+    ) 
+        private 
+        pure 
+        returns(bytes32) 
+    {
+        return sha256(abi.encodePacked(
+            proof.destGenericToken,
+            proof.destChainType,
+            proof.destChainId,
+            proof.srcGenericToken,
+            proof.srcChainType,
+            proof.srcChainId
+        ));
+    }
+
+    function checkAllowanceHashSrc2Dest(
+        Proof memory proof
     )
         private
         view
     {
-        bytes32 allowanceHash = getAllowanceHash(
-            srcGenericToken,
-            destGenericToken,
-            destChainType,
-            destChainId
-        );
+        bytes32 allowanceHash = getAllowanceHashSrc2Dest(proof);
+
+        if (
+            allowances[allowanceHash] != Allowance.Allowed
+        ) {
+            revert CerbyBridgeV2_DirectionAllowanceWasNotFound();
+        }
+    }
+
+    function checkAllowanceHashDest2Src(
+        Proof memory proof
+    )
+        private
+        view
+    {
+        bytes32 allowanceHash = getAllowanceHashDest2Src(proof);
 
         if (
             allowances[allowanceHash] != Allowance.Allowed
@@ -183,32 +215,23 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     }
 
     function generateSignature(
-        bytes memory srcGenericToken,  // поменял порядок
-        bytes memory srcGenericCaller, 
-        uint8 srcChainType,
-        uint32 srcChainId,
-        uint srcNonce,
-        bytes memory destGenericToken,
-        bytes memory destGenericCaller,
-        ChainType destChainType,
-        uint32 destChainId,
-        uint destAmount
+        Proof memory proof
     )
         private
         pure
         returns(bytes32)
     {
         bytes memory packed  = abi.encodePacked(
-            srcGenericToken,  // поменял порядок
-            srcGenericCaller,
-            srcChainType,
-            srcChainId,
-            srcNonce,            
-            destGenericToken, 
-            destGenericCaller,
-            destChainType, 
-            destChainId,
-            destAmount
+            proof.srcGenericToken,  // поменял порядок
+            proof.srcGenericCaller,
+            proof.srcChainType,
+            proof.srcChainId,
+            proof.srcNonce,            
+            proof.destGenericToken, 
+            proof.destGenericCaller,
+            proof.destChainType,
+            proof.destChainId,
+            proof.destAmount
         );
 
         if (
@@ -226,71 +249,55 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         address srcToken,
         bytes memory destGenericToken, 
         bytes memory destGenericCaller,
-        ChainType destChainType,
+        uint8 destChainType,
         uint32 destChainId
     ) external {
         if (
             destGenericToken.length != 40
         ) {
-            revert CerbyBridgeV2_InvalidDestinationCallerLength();
+            revert CerbyBridgeV2_InvalidGenericCallerLength();
         }
         if (
             destGenericToken.length != 40
         ) {
-            revert CerbyBridgeV2_InvalidDestinationTokenLength();
+            revert CerbyBridgeV2_InvalidGenericTokenLength();
         }
 
-        bytes memory srcGenericCaller = genericAddress(msg.sender);
-        bytes memory srcGenericToken = genericAddress(srcToken);
+        Proof memory proof = Proof(
+            "",                                         // srcBurnProofHash;
+            genericAddress(srcToken),                   // srcGenericToken;
+            genericAddress(msg.sender),                 // srcGenericCaller;
+            uint8(_currentBridgeChainType),             // srcChainType;
+            uint32(block.chainid),                      // srcChainId;
+            uint40(srcNonceByToken[srcToken]),          // srcNonce;
+            destGenericToken,                           // destGenericToken;
+            destGenericCaller,                          // destGenericCaller;
+            destChainType,                              // destChainType;
+            destChainId,                                // destChainId;
+            getReducedDestAmount(srcToken, srcAmount)   // destAmount;
+        );
 
+        // EVM --> EVM bridge is allowed only for the same wallet
         if (
-            destChainType == _currentBridgeChainType &&
-            (
-                destGenericToken != srcGenericToken ||
-                destGenericCaller != srcGenericCaller
-            )
+            destChainType == _currentBridgeChainType/* &&
+            destGenericCaller != proof.srcGenericCaller*/ // TODO: make it work
         ) {
             revert CerbyBridgeV2_TokenAndCallerMustBeEqualForEvmBridging();
         }
 
-        checkAllowanceHash(
-            srcGenericToken, 
-            destGenericToken,
-            destChainType,
-            destChainId
-        );
+        checkAllowanceHashSrc2Dest(proof);
 
-        uint srcNonce = srcNonceByToken[srcToken];
-        uint destAmount = getReducedDestAmount(srcToken, srcAmount);
-
-        bytes32 computedBurnProofHash = generateSignature(
-            srcGenericToken, 
-            srcGenericCaller, 
-            uint8(_currentBridgeChainType),
-            uint32(block.chainid),
-            srcNonce,
-            destGenericToken,
-            destGenericCaller,
-            destChainType,
-            destChainId,
-            destAmount
-        );
+        proof.srcBurnProofHash = generateSignature(proof);
 
         ICerbyTokenMinterBurner(srcToken).burnHumanAddress(msg.sender, srcAmount);
-        ICerbyTokenMinterBurner(srcToken).mintHumanAddress(brideFeesBeneficiary, srcAmount - destAmount);
+        ICerbyTokenMinterBurner(srcToken).mintHumanAddress(
+            bridgeFeesBeneficiary, 
+            srcAmount - proof.destAmount
+        );
 
-        emit ProofOfBurn(
-            srcGenericToken,
-            destGenericToken,
-            srcGenericCaller,
-            destGenericCaller,
-            destAmount,
-            srcNonce,
-            _currentBridgeChainType,
-            uint32(block.chainid),
-            ChainType(destChainType),
-            destChainId,
-            computedBurnProofHash
+        emit ProofOfBurnOrMint(
+            true,
+            proof
         );
 
         srcNonceByToken[srcToken]++;
@@ -304,80 +311,70 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         uint8 srcChainType,
         uint32 srcChainId,
         bytes32 srcBurnProofHash,
-        uint srcNonce,
-        bytes memory destGenericToken,
-        bytes memory destGenericCaller,
+        uint40 srcNonce,
+        address destToken,
         uint destAmount
-    ) external {
+    ) 
+        external 
+    {
         if (
-            srcChainType == _currentBridgeChainType &&
-            (
-                destGenericToken != srcGenericToken ||
-                destGenericCaller != srcGenericCaller
-            )
+            srcGenericToken.length != 40
+        ) {
+            revert CerbyBridgeV2_InvalidGenericCallerLength();
+        }
+        if (
+            srcGenericCaller.length != 40
+        ) {
+            revert CerbyBridgeV2_InvalidGenericTokenLength();
+        }
+
+        Proof memory proof = Proof(
+            srcBurnProofHash,                   // srcBurnProofHash;
+            srcGenericToken,                    // srcGenericToken;
+            srcGenericCaller,                   // srcGenericCaller;
+            srcChainType,                       // srcChainType;
+            srcChainId,                         // srcChainId;
+            srcNonce,                           // srcNonce;
+            genericAddress(destToken),          // destGenericToken;
+            genericAddress(msg.sender),         // destGenericCaller;
+            _currentBridgeChainType,     // destChainType;
+            uint32(block.chainid),              // destChainId;
+            destAmount                          // destAmount;
+        );
+
+        // EVM --> EVM bridge is allowed only for the same wallet
+        if (
+            srcChainType == _currentBridgeChainType/* &&
+            proof.destGenericCaller != srcGenericCaller*/ // TODO: make it work
         ) {
             revert CerbyBridgeV2_TokenAndCallerMustBeEqualForEvmBridging();
         }
-
-        checkAllowanceHash(
-            destGenericToken,
-            srcGenericToken, 
-            srcChainType,
-            srcChainId
-        );
+        
+        // checking opposite direction allowance
+        // if dest --> src allowed then src --> dest is allowed as well
+        checkAllowanceHashDest2Src(proof);
 
         if (
-            burnProofStorage[destBurnProofHash] != States.Approved
+            burnProofStorage[srcBurnProofHash] != States.Approved
         ) {
             revert CerbyBridgeV2_ProofIsNotApprovedOrAlreadyExecuted();
         }
 
-        bytes32 computedBurnProofHash = generateSignature(
-            srcGenericToken, 
-            srcGenericCaller, 
-            destGenericToken,
-            destGenericCaller,
-            destAmount,
-            uint8(_currentBridgeChainType),
-            uint32(block.chainid),
-            uint8(ChainType(destChainType)),
-            destChainId,
-            srcNonce
-        );
-    function generateSignature(
-        bytes memory srcGenericToken, 
-        bytes memory srcGenericCaller, 
-        uint8 srcChainType,
-        uint32 srcChainId,
-        uint srcNonce,
-        bytes memory destGenericToken,
-        bytes memory destGenericCaller,
-        uint8 destChainType,
-        uint32 destChainId,
-        uint destAmount
-    )
+        bytes32 destBurnProofHash = generateSignature(proof);
 
         if (
-            computedBurnProofHash != destBurnProofHash
+            srcBurnProofHash != destBurnProofHash
         ) {
             revert CerbyBridgeV2_ProvidedHashIsInvalid();
         }
 
         burnProofStorage[destBurnProofHash] = States.Executed;
 
-        ICerbyTokenMinterBurner(_srcToken).mintHumanAddress(msg.sender, destAmount);
+        ICerbyTokenMinterBurner(destToken).mintHumanAddress(msg.sender, destAmount);
 
-        emit ProofOfMint(
-            srcGenericToken,
-            destGenericToken,
-            srcGenericCaller,
-            destGenericCaller,
-            destAmount,
-            _currentBridgeChainType,
-            uint32(block.chainid),
-            ChainType(destChainType),
-            uint32(destChainId),
-            computedBurnProofHash
+        emit ProofOfBurnOrMint(
+            false,
+            proof
         );
     }
 
