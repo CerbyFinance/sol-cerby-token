@@ -32,66 +32,16 @@
 				"type": "error"
 			},
 			{
-				"inputs": [],
-				"name": "CerbyBridgeV2_AlreadyApproved",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "CerbyBridgeV2_AmountIsLessThanBridgeFees",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "CerbyBridgeV2_AmountMustNotExceedAvailableBalance",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "CerbyBridgeV2_DirectionAllowanceWasNotFound",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "CerbyBridgeV2_InvalidGenericCallerLength",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "CerbyBridgeV2_InvalidGenericTokenLength",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "CerbyBridgeV2_InvalidPackageLength",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "CerbyBridgeV2_ProofIsNotApprovedOrAlreadyExecuted",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "CerbyBridgeV2_ProvidedHashIsInvalid",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "CerbyBridgeV2_TokenAndCallerMustBeEqualForEvmBridging",
-				"type": "error"
-			},
-			{
 				"anonymous": false,
 				"inputs": [
 					{
 						"indexed": false,
 						"internalType": "bytes32",
-						"name": "srcBurnProofHash",
+						"name": "burnProofHash",
 						"type": "bytes32"
 					}
 				],
-				"name": "ApprovedBurnProofHash",
+				"name": "ApprovedBurnProof",
 				"type": "event"
 			},
 			{
@@ -99,75 +49,139 @@
 				"inputs": [
 					{
 						"indexed": false,
-						"internalType": "bool",
-						"name": "isBurn",
-						"type": "bool"
+						"internalType": "bytes",
+						"name": "srcToken",
+						"type": "bytes"
 					},
 					{
-						"components": [
-							{
-								"internalType": "bytes32",
-								"name": "srcBurnProofHash",
-								"type": "bytes32"
-							},
-							{
-								"internalType": "bytes",
-								"name": "srcGenericToken",
-								"type": "bytes"
-							},
-							{
-								"internalType": "bytes",
-								"name": "srcGenericCaller",
-								"type": "bytes"
-							},
-							{
-								"internalType": "uint8",
-								"name": "srcChainType",
-								"type": "uint8"
-							},
-							{
-								"internalType": "uint32",
-								"name": "srcChainId",
-								"type": "uint32"
-							},
-							{
-								"internalType": "uint64",
-								"name": "srcNonce",
-								"type": "uint64"
-							},
-							{
-								"internalType": "bytes",
-								"name": "destGenericToken",
-								"type": "bytes"
-							},
-							{
-								"internalType": "bytes",
-								"name": "destGenericCaller",
-								"type": "bytes"
-							},
-							{
-								"internalType": "uint8",
-								"name": "destChainType",
-								"type": "uint8"
-							},
-							{
-								"internalType": "uint32",
-								"name": "destChainId",
-								"type": "uint32"
-							},
-							{
-								"internalType": "uint256",
-								"name": "destAmount",
-								"type": "uint256"
-							}
-						],
 						"indexed": false,
-						"internalType": "struct CerbyBridgeV2.Proof",
-						"name": "proof",
-						"type": "tuple"
+						"internalType": "bytes",
+						"name": "destToken",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "srcCaller",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "destCaller",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "srcAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "srcNonce",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "enum CrossChainBridgeV2_Test.ChainType",
+						"name": "srcChainType",
+						"type": "uint8"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint32",
+						"name": "srcChainId",
+						"type": "uint32"
+					},
+					{
+						"indexed": false,
+						"internalType": "enum CrossChainBridgeV2_Test.ChainType",
+						"name": "destChainType",
+						"type": "uint8"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint32",
+						"name": "destChainId",
+						"type": "uint32"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes32",
+						"name": "burnProofHash",
+						"type": "bytes32"
 					}
 				],
-				"name": "ProofOfBurnOrMint",
+				"name": "ProofOfBurn",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "srcToken",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "destToken",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "srcCaller",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "destCaller",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "destAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "enum CrossChainBridgeV2_Test.ChainType",
+						"name": "srcChainType",
+						"type": "uint8"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint32",
+						"name": "srcChainId",
+						"type": "uint32"
+					},
+					{
+						"indexed": false,
+						"internalType": "enum CrossChainBridgeV2_Test.ChainType",
+						"name": "destChainType",
+						"type": "uint8"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint32",
+						"name": "destChainId",
+						"type": "uint32"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes32",
+						"name": "burnProofHash",
+						"type": "bytes32"
+					}
+				],
+				"name": "ProofOfMint",
 				"type": "event"
 			},
 			{
@@ -259,19 +273,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "ROLE_APPROVER",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -282,7 +283,7 @@
 				"name": "allowances",
 				"outputs": [
 					{
-						"internalType": "enum CerbyBridgeV2.Allowance",
+						"internalType": "enum CrossChainBridgeV2_Test.Allowance",
 						"name": "",
 						"type": "uint8"
 					}
@@ -306,24 +307,24 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "srcAmount",
-						"type": "uint256"
-					},
-					{
 						"internalType": "address",
-						"name": "srcToken",
+						"name": "_srcToken",
 						"type": "address"
 					},
 					{
 						"internalType": "bytes",
-						"name": "destGenericToken",
+						"name": "destToken",
 						"type": "bytes"
 					},
 					{
 						"internalType": "bytes",
-						"name": "destGenericCaller",
+						"name": "destCaller",
 						"type": "bytes"
+					},
+					{
+						"internalType": "uint256",
+						"name": "srcAmount",
+						"type": "uint256"
 					},
 					{
 						"internalType": "uint8",
@@ -352,104 +353,9 @@
 				"name": "burnProofStorage",
 				"outputs": [
 					{
-						"internalType": "enum CerbyBridgeV2.States",
+						"internalType": "enum CrossChainBridgeV2_Test.States",
 						"name": "",
 						"type": "uint8"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "chainIdToFee",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"components": [
-							{
-								"internalType": "bytes32",
-								"name": "srcBurnProofHash",
-								"type": "bytes32"
-							},
-							{
-								"internalType": "bytes",
-								"name": "srcGenericToken",
-								"type": "bytes"
-							},
-							{
-								"internalType": "bytes",
-								"name": "srcGenericCaller",
-								"type": "bytes"
-							},
-							{
-								"internalType": "uint8",
-								"name": "srcChainType",
-								"type": "uint8"
-							},
-							{
-								"internalType": "uint32",
-								"name": "srcChainId",
-								"type": "uint32"
-							},
-							{
-								"internalType": "uint64",
-								"name": "srcNonce",
-								"type": "uint64"
-							},
-							{
-								"internalType": "bytes",
-								"name": "destGenericToken",
-								"type": "bytes"
-							},
-							{
-								"internalType": "bytes",
-								"name": "destGenericCaller",
-								"type": "bytes"
-							},
-							{
-								"internalType": "uint8",
-								"name": "destChainType",
-								"type": "uint8"
-							},
-							{
-								"internalType": "uint32",
-								"name": "destChainId",
-								"type": "uint32"
-							},
-							{
-								"internalType": "uint256",
-								"name": "destAmount",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct CerbyBridgeV2.Proof",
-						"name": "proof",
-						"type": "tuple"
-					}
-				],
-				"name": "getAllowanceHashCurrent2Dest",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
 					}
 				],
 				"stateMutability": "view",
@@ -587,43 +493,43 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "_srcToken",
+						"type": "address"
+					},
+					{
 						"internalType": "bytes",
-						"name": "srcGenericToken",
+						"name": "destToken",
 						"type": "bytes"
 					},
 					{
 						"internalType": "bytes",
-						"name": "srcGenericCaller",
+						"name": "destCaller",
 						"type": "bytes"
 					},
 					{
 						"internalType": "uint8",
-						"name": "srcChainType",
+						"name": "destChainType",
 						"type": "uint8"
 					},
 					{
 						"internalType": "uint32",
-						"name": "srcChainId",
+						"name": "destChainId",
 						"type": "uint32"
 					},
 					{
 						"internalType": "bytes32",
-						"name": "srcBurnProofHash",
+						"name": "destBurnProofHash",
 						"type": "bytes32"
-					},
-					{
-						"internalType": "uint64",
-						"name": "srcNonce",
-						"type": "uint64"
-					},
-					{
-						"internalType": "address",
-						"name": "destToken",
-						"type": "address"
 					},
 					{
 						"internalType": "uint256",
 						"name": "destAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "destNonce",
 						"type": "uint256"
 					}
 				],
@@ -671,87 +577,27 @@
 			{
 				"inputs": [
 					{
-						"components": [
-							{
-								"internalType": "bytes32",
-								"name": "srcBurnProofHash",
-								"type": "bytes32"
-							},
-							{
-								"internalType": "bytes",
-								"name": "srcGenericToken",
-								"type": "bytes"
-							},
-							{
-								"internalType": "bytes",
-								"name": "srcGenericCaller",
-								"type": "bytes"
-							},
-							{
-								"internalType": "uint8",
-								"name": "srcChainType",
-								"type": "uint8"
-							},
-							{
-								"internalType": "uint32",
-								"name": "srcChainId",
-								"type": "uint32"
-							},
-							{
-								"internalType": "uint64",
-								"name": "srcNonce",
-								"type": "uint64"
-							},
-							{
-								"internalType": "bytes",
-								"name": "destGenericToken",
-								"type": "bytes"
-							},
-							{
-								"internalType": "bytes",
-								"name": "destGenericCaller",
-								"type": "bytes"
-							},
-							{
-								"internalType": "uint8",
-								"name": "destChainType",
-								"type": "uint8"
-							},
-							{
-								"internalType": "uint32",
-								"name": "destChainId",
-								"type": "uint32"
-							},
-							{
-								"internalType": "uint256",
-								"name": "destAmount",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct CerbyBridgeV2.Proof[]",
-						"name": "proofs",
-						"type": "tuple[]"
-					}
-				],
-				"name": "setAllowancesBulk",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256[]",
-						"name": "chainIdsTo",
-						"type": "uint256[]"
+						"internalType": "address",
+						"name": "srcToken",
+						"type": "address"
 					},
 					{
-						"internalType": "uint256",
-						"name": "fee",
-						"type": "uint256"
+						"internalType": "bytes",
+						"name": "destToken",
+						"type": "bytes"
+					},
+					{
+						"internalType": "enum CrossChainBridgeV2_Test.ChainType",
+						"name": "destChainType",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint32",
+						"name": "destChainId",
+						"type": "uint32"
 					}
 				],
-				"name": "setChainsToFee",
+				"name": "setAllowance",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -833,7 +679,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/CerbyBridgeV2.sol": "CerbyBridgeV2"
+			"sol-defifactory-token/CrossChainBridgeV2_Test.sol": "CrossChainBridgeV2_Test"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -847,28 +693,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/CerbyBridgeV2.sol": {
-			"keccak256": "0x6799d2b70f52c1a6df62878b3dafc33039034595edeea51ea0fb18decaad5e4d",
+		"sol-defifactory-token/CrossChainBridgeV2_Test.sol": {
+			"keccak256": "0x78cbf1db7f638b9e0330f553a3f74c7bfa1c070ef4ba461e7cc9f22b3fb18360",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://362790f6d42c3d9ee7652e1235eeb2cb38d777aebe0f3d2acc432e91f951fbed",
-				"dweb:/ipfs/Qmc5pRLUAbrh3zvjDqwmRe38ro7HRdNyte1v9DFTE64JUg"
-			]
-		},
-		"sol-defifactory-token/interfaces/ICerbySwapV1.sol": {
-			"keccak256": "0x0810c3b097ee7afd17912da76854a5841abade9fd0c756c628bbb83e429e40cb",
-			"license": "BUSL-1.1",
-			"urls": [
-				"bzz-raw://07d1a0a077adacddc7f4974ba00b544a055c4cda75d0ed47b4dfd0b84b000a9a",
-				"dweb:/ipfs/QmVEiK3JDYjnuHAgs6CHu9qKhAgaJ7a2yM54WkkuYgCMfK"
-			]
-		},
-		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {
-			"keccak256": "0xe9662b09cb4a69c4bcd634ae71ca5e60f630b89e2ef8f818ccf12ceb47707013",
-			"license": "BSD-2-Clause",
-			"urls": [
-				"bzz-raw://38d67dec9f8deaeb4adc5e58d8f483beef22cab8dbc191bc3247e3fc48e434eb",
-				"dweb:/ipfs/QmR1f6cNhWzmDt5qJ9gjuFJL21FwmnNnBhH3beJ2JbPqnz"
+				"bzz-raw://585812fce4dbd32030b2cbe51015452dc0697ba59677406e18b75013f68d61b8",
+				"dweb:/ipfs/QmeG6iDE8XPayH9EbbfoVkM5W1WRdxcUFNEGNuExx6BLoJ"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

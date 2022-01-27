@@ -74,7 +74,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/CerbyBridgeV2.sol": "IMintableBurnableToken"
+			"sol-defifactory-token/CrossChainBridgeV2_Test.sol": "IMintableBurnableToken"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -88,12 +88,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"sol-defifactory-token/CerbyBridgeV2.sol": {
-			"keccak256": "0x3ac903300bd30a3a37f91fa9f4293a41dfe5e24576b4eea9edda25f78d67b617",
+		"sol-defifactory-token/CrossChainBridgeV2_Test.sol": {
+			"keccak256": "0x78cbf1db7f638b9e0330f553a3f74c7bfa1c070ef4ba461e7cc9f22b3fb18360",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://46a5f7c08b96e76b7fb0f487a9d4e8d61b8afdb2499a0fc1a31ba2a58050de87",
-				"dweb:/ipfs/QmZnGUvWyTWUdWmkrgi4qWEvqTaG1Dt39MbmNFXSuCGoKJ"
+				"bzz-raw://585812fce4dbd32030b2cbe51015452dc0697ba59677406e18b75013f68d61b8",
+				"dweb:/ipfs/QmeG6iDE8XPayH9EbbfoVkM5W1WRdxcUFNEGNuExx6BLoJ"
 			]
 		},
 		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {

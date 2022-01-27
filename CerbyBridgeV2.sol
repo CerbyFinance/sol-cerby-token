@@ -13,12 +13,12 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         bytes srcGenericCaller;
         uint8 srcChainType;
         uint32 srcChainId;
-        uint40 srcNonce;
+        uint64 srcNonce;
         bytes destGenericToken;
         bytes destGenericCaller;
         uint8 destChainType;
         uint32 destChainId;
-        uint destAmount;
+        uint256 destAmount;
     }
 
     event ProofOfBurnOrMint(
@@ -66,8 +66,8 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     mapping(address => uint32) public srcNonceByToken;
     mapping(bytes32 => Allowance) public allowances;
 
-    mapping(uint => uint) public chainIdToFee;
-    uint constant DEFAULT_FEE = 5e18; // 5 cerUSD fee
+    mapping(uint256 => uint) public chainIdToFee;
+    uint256 constant DEFAULT_FEE = 5e18; // 5 cerUSD fee
     address constant CER_USD_CONTRACT = address(0);
     address constant CERBY_SWAP_V1_CONTRACT = address(0);
     
@@ -97,19 +97,19 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         return result;
     }
 
-    function getReducedDestAmount(address srcToken, uint destAmount, uint destChainId)
+    function getReducedDestAmount(address srcToken, uint256 destAmount, uint256 destChainId)
         private
         view
         returns(uint)
     {
-        uint feeInCerUsd = 
+        uint256 feeInCerUsd = 
             chainIdToFee[destChainId] > 0? 
                 chainIdToFee[destChainId]: 
                 DEFAULT_FEE;
         srcToken; // TODO: to silent warning remove on production
 
         // if srcToken == CER_USD_CONTRACT then we substract fee directly from destAmount
-        uint substractAmountInTokens = feeInCerUsd;
+        uint256 substractAmountInTokens = feeInCerUsd;
         /*
         // TODO: uncomment code below in production
         if (srcToken != CER_USD_CONTRACT) {
@@ -133,9 +133,9 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     function setAllowancesBulk(
         Proof[] memory proofs
     ) external {
-        uint proofsLength = proofs.length;
+        uint256 proofsLength = proofs.length;
 
-        for (uint i; i<proofsLength; i++) {
+        for (uint256 i; i<proofsLength; i++) {
 
             bytes32 allowanceHash = getAllowanceHashCurrent2Dest(
                 proofs[i]
@@ -257,7 +257,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     }
     
     function burnAndCreateProof(
-        uint srcAmount, // поменял порядок
+        uint256 srcAmount, // поменял порядок
         address srcToken,
         bytes memory destGenericToken, 
         bytes memory destGenericCaller,
@@ -282,7 +282,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
             getGenericAddress(msg.sender),                          // srcGenericCaller;
             _currentBridgeChainType,                                // srcChainType;
             _currentBridgeChainId,                                  // srcChainId;
-            uint40(srcNonceByToken[srcToken]),                      // srcNonce;
+            uint64(srcNonceByToken[srcToken]),                      // srcNonce;
             destGenericToken,                                       // destGenericToken;
             destGenericCaller,                                      // destGenericCaller;
             destChainType,                                          // destChainType;
@@ -328,9 +328,9 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         uint8 srcChainType,
         uint32 srcChainId,
         bytes32 srcBurnProofHash,
-        uint40 srcNonce,
+        uint64 srcNonce,
         address destToken,
-        uint destAmount
+        uint256 destAmount
     ) 
         external 
     {
@@ -414,12 +414,12 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         emit ApprovedBurnProofHash(proofHash);
     }
 
-    function setChainsToFee(uint[] calldata chainIdsTo, uint fee)
+    function setChainsToFee(uint[] calldata chainIdsTo, uint256 fee)
         public
         onlyRole(ROLE_ADMIN)
     {
-        uint chainIdsToLength = chainIdsTo.length;
-        for(uint i; i<chainIdsToLength; i++) {
+        uint256 chainIdsToLength = chainIdsTo.length;
+        for(uint256 i; i<chainIdsToLength; i++) {
             chainIdToFee[chainIdsTo[i]] = fee;
         }
     }  
@@ -434,8 +434,8 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         if (self.length != other.length) {
             return false;
         }
-        uint addr;
-        uint addr2;
+        uint256 addr;
+        uint256 addr2;
         assembly {
             addr := add(self, /*BYTES_HEADER_SIZE*/32)
             addr2 := add(other, /*BYTES_HEADER_SIZE*/32)
@@ -446,7 +446,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     // Compares the 'len' bytes starting at address 'addr' in memory with the 'len'
     // bytes starting at 'addr2'.
     // Returns 'true' if the bytes are the same, otherwise 'false'.
-    function memoryEquals(uint addr, uint addr2, uint len) internal pure returns (bool equal) {
+    function memoryEquals(uint256 addr, uint256 addr2, uint256 len) internal pure returns (bool equal) {
         assembly {
             equal := eq(keccak256(addr, len), keccak256(addr2, len))
         }
