@@ -38,6 +38,11 @@
 			},
 			{
 				"inputs": [],
+				"name": "CerbyBridgeV2_AmountIsLessThanBridgeFees",
+				"type": "error"
+			},
+			{
+				"inputs": [],
 				"name": "CerbyBridgeV2_AmountMustNotExceedAvailableBalance",
 				"type": "error"
 			},
@@ -737,7 +742,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256[]",
-						"name": "chainIds",
+						"name": "chainIdsTo",
 						"type": "uint256[]"
 					},
 					{
@@ -843,11 +848,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBridgeV2.sol": {
-			"keccak256": "0x1893fb175a836e01268e444529be2ecdc538bd2099b78a9d6ba3752de4d2b469",
+			"keccak256": "0x5da02356989a0e6091dd9fef5f5e574e2f0489d193a7dd9508b00751e3129254",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://fa2456de330e8f18f01580794f05a864fbed50e78c5fe096055d562241f243aa",
-				"dweb:/ipfs/QmegWbNre5TuaEvfg1P5ES4V4TdayZY4JsPWcyBknEopuD"
+				"bzz-raw://2aeed5dc99293c624866678bce6e452fd4295a9f914f9d5ad245a7cfd987af38",
+				"dweb:/ipfs/QmYe6VUv9RZhfgtGMVQL5a54n6sQTEzrzgEs2REJ2kfbXP"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapV1.sol": {

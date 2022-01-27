@@ -54,8 +54,10 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     error CerbyBridgeV2_ProofIsNotApprovedOrAlreadyExecuted();
     error CerbyBridgeV2_ProvidedHashIsInvalid();
     error CerbyBridgeV2_TokenAndCallerMustBeEqualForEvmBridging();
+    error CerbyBridgeV2_AmountIsLessThanBridgeFees();
 
     uint8 _currentBridgeChainType;
+    uint32 _currentBridgeChainId;
     
 
     // it's common storage for all chains (evm, casper, solana etc)
@@ -77,21 +79,13 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         _setupRole(ROLE_APPROVER, bridgeFeesBeneficiary);
 
         _currentBridgeChainType = uint8(ChainType.Evm);
+        _currentBridgeChainId = uint32(block.chainid);
 
         chainIdToFee[1] = 50e18; // 50 cerUSD to ethereum   
     }
 
-    function setChainsToFee(uint[] calldata chainIds, uint fee)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        for(uint i; i<chainIds.length; i++) {
-            chainIdToFee[chainIds[i]] = fee;
-        }
-    }  
-
     // 40 bytes
-    function genericAddress(address addr) 
+    function getGenericAddress(address addr) 
         private 
         pure 
         returns(bytes memory) 
@@ -103,28 +97,35 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         return result;
     }
 
-    function getReducedDestAmount(address srcToken, uint destAmount)
+    function getReducedDestAmount(address srcToken, uint destAmount, uint destChainId)
         private
         view
         returns(uint)
     {
-        uint fee = chainIdToFee[block.chainid] > 0? chainIdToFee[block.chainid]: DEFAULT_FEE;
+        uint feeInCerUsd = 
+            chainIdToFee[destChainId] > 0? 
+                chainIdToFee[destChainId]: 
+                DEFAULT_FEE;
         srcToken; // TODO: to silent warning remove on production
+        uint substractAmountInTokens = feeInCerUsd;
         /*
         // TODO: uncomment code below in production
-        if (srcToken == CER_USD_CONTRACT) {
-            destAmount -= fee;
-        } else {
-            destAmount -= ICerbySwapV1(CERBY_SWAP_V1_CONTRACT).getInputTokensForExactTokens(
-                srcToken,
-                CER_USD_CONTRACT,
-                fee
-            );
+        if (srcToken != CER_USD_CONTRACT) {
+            substractAmountInTokens = 
+                ICerbySwapV1(CERBY_SWAP_V1_CONTRACT).getInputTokensForExactTokens(
+                    srcToken,
+                    CER_USD_CONTRACT,
+                    feeInCerUsd
+                );
         }*/
 
-        destAmount -= fee;
+        if (
+            destAmount <= substractAmountInTokens
+        ) {
+            revert CerbyBridgeV2_AmountIsLessThanBridgeFees();
+        }
 
-        return destAmount;
+        return destAmount - substractAmountInTokens;
     }  
 
     function setAllowancesBulk(
@@ -152,7 +153,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         return sha256(abi.encodePacked(
             proof.srcGenericToken,
             _currentBridgeChainType,
-            uint32(block.chainid),
+            _currentBridgeChainId,
             proof.destGenericToken,
             proof.destChainType,
             proof.destChainId
@@ -274,17 +275,17 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
 
         // creating proof object from current chain to dest
         Proof memory proof = Proof(
-            "",                                         // srcBurnProofHash;
-            genericAddress(srcToken),                   // srcGenericToken;
-            genericAddress(msg.sender),                 // srcGenericCaller;
-            uint8(_currentBridgeChainType),             // srcChainType;
-            uint32(block.chainid),                      // srcChainId;
-            uint40(srcNonceByToken[srcToken]),          // srcNonce;
-            destGenericToken,                           // destGenericToken;
-            destGenericCaller,                          // destGenericCaller;
-            destChainType,                              // destChainType;
-            destChainId,                                // destChainId;
-            getReducedDestAmount(srcToken, srcAmount)   // destAmount;
+            "",                                                     // srcBurnProofHash;
+            getGenericAddress(srcToken),                            // srcGenericToken;
+            getGenericAddress(msg.sender),                          // srcGenericCaller;
+            _currentBridgeChainType,                                // srcChainType;
+            _currentBridgeChainId,                                  // srcChainId;
+            uint40(srcNonceByToken[srcToken]),                      // srcNonce;
+            destGenericToken,                                       // destGenericToken;
+            destGenericCaller,                                      // destGenericCaller;
+            destChainType,                                          // destChainType;
+            destChainId,                                            // destChainId;
+            getReducedDestAmount(srcToken, srcAmount, destChainId)  // destAmount;
         );
 
         // EVM --> EVM bridge is allowed only for the same wallet
@@ -350,10 +351,10 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
             srcChainType,                       // srcChainType;
             srcChainId,                         // srcChainId;
             srcNonce,                           // srcNonce;
-            genericAddress(destToken),          // destGenericToken;
-            genericAddress(msg.sender),         // destGenericCaller;
+            getGenericAddress(destToken),       // destGenericToken;
+            getGenericAddress(msg.sender),      // destGenericCaller;
             _currentBridgeChainType,            // destChainType;
-            uint32(block.chainid),              // destChainId;
+            _currentBridgeChainId,              // destChainId;
             destAmount                          // destAmount;
         );
 
@@ -410,6 +411,16 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         burnProofStorage[proofHash] = States.Approved;
         emit ApprovedBurnProofHash(proofHash);
     }
+
+    function setChainsToFee(uint[] calldata chainIdsTo, uint fee)
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        uint chainIdsToLength = chainIdsTo.length;
+        for(uint i; i<chainIdsToLength; i++) {
+            chainIdToFee[chainIdsTo[i]] = fee;
+        }
+    }  
 
 
     // Checks if two `bytes memory` variables are equal. This is done using hashing,
