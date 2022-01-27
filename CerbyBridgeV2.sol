@@ -66,13 +66,14 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     mapping(address => uint32) public burnNonceByToken;
     mapping(bytes32 => Allowance) public allowances;
 
-    mapping(uint256 => uint) public chainIdToFee;
+    mapping(bytes32 => uint) public chainToFee;
     uint256 constant DEFAULT_FEE = 5e18; // 5 cerUSD fee
     address constant CER_USD_CONTRACT = address(0);
     address constant CERBY_SWAP_V1_CONTRACT = address(0);
     
     bytes32 public constant ROLE_APPROVER = keccak256("ROLE_APPROVER");
     address constant bridgeFeesBeneficiary = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
+    bytes4 constant HASH_SEPARATOR = 0xc0de0001;
 
     constructor() {
         _setupRole(ROLE_APPROVER, msg.sender);
@@ -81,7 +82,9 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         _currentBridgeChainType = uint8(ChainType.Evm);
         _currentBridgeChainId = uint32(block.chainid);
 
-        chainIdToFee[1] = 50e18; // 50 cerUSD to ethereum   
+        bytes32 ethereumChainHash = 
+            getChainHash(_currentBridgeChainType, 1);
+        chainToFee[ethereumChainHash] = 50e18; // 50 cerUSD to ethereum, 5 cerUSD for other chains
     }
 
     // 40 bytes
@@ -97,15 +100,19 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         return result;
     }
 
-    function getReducedMintAmount(address burnToken, uint256 mintAmount, uint256 mintChainId)
+    function getReducedMintAmount(
+        address burnToken, 
+        uint256 mintAmount, 
+        uint8 mintChainType,
+        uint32 mintChainId
+    )
         private
         view
         returns(uint)
     {
-        uint256 feeInCerUsd = 
-            chainIdToFee[mintChainId] > 0? 
-                chainIdToFee[mintChainId]: 
-                DEFAULT_FEE;
+        bytes32 chainHash = getChainHash(mintChainType, mintChainId);
+        uint256 chainFee = chainToFee[chainHash];
+        uint256 feeInCerUsd = chainFee > 0? chainFee: DEFAULT_FEE;
         burnToken; // TODO: to silent warning remove on production
 
         // if burnToken == CER_USD_CONTRACT then we substract fee directly from mintAmount
@@ -133,7 +140,10 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     function setAllowancesBulk(
         Proof[] memory proofs,
         Allowance status
-    ) external {
+    ) 
+        external
+        onlyRole(ROLE_ADMIN)
+    {
         uint256 proofsLength = proofs.length;
 
         for (uint256 i; i<proofsLength; i++) {
@@ -201,6 +211,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
             proof.mintGenericToken,
             proof.mintChainType,
             proof.mintChainId,
+            HASH_SEPARATOR,
             proof.burnGenericToken,
             proof.burnChainType,
             proof.burnChainId
@@ -249,7 +260,8 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
             proof.burnGenericCaller,
             proof.burnChainType,
             proof.burnChainId,
-            proof.burnNonce,            
+            proof.burnNonce,
+            HASH_SEPARATOR,     
             proof.mintGenericToken, 
             proof.mintGenericCaller,
             proof.mintChainType,
@@ -298,7 +310,9 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
             mintGenericCaller,                                      // mintGenericCaller;
             mintChainType,                                          // mintChainType;
             mintChainId,                                            // mintChainId;
-            getReducedMintAmount(burnToken, burnAmount, mintChainId)  // mintAmount;
+            getReducedMintAmount(
+                burnToken, burnAmount, mintChainType, mintChainId
+            )  // mintAmount;
         );
 
         // EVM --> EVM bridge is allowed only for the same wallet
@@ -425,13 +439,25 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         emit ApprovedBurnProofHash(proofHash);
     }
 
-    function setChainsToFee(uint[] calldata chainIdsTo, uint256 fee)
+
+    function getChainHash(uint8 chainType, uint32 chainId)
+        public
+        pure
+        returns (bytes32)
+    {
+        return sha256(abi.encodePacked(
+            chainType,
+            chainId
+        ));
+    }    
+
+    function setChainsToFee(bytes32[] calldata chainsTo, uint256 fee)
         public
         onlyRole(ROLE_ADMIN)
     {
-        uint256 chainIdsToLength = chainIdsTo.length;
-        for(uint256 i; i<chainIdsToLength; i++) {
-            chainIdToFee[chainIdsTo[i]] = fee;
+        uint256 chainsToLength = chainsTo.length;
+        for(uint256 i; i<chainsToLength; i++) {
+            chainToFee[chainsTo[i]] = fee;
         }
     }
 }

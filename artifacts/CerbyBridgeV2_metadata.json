@@ -382,12 +382,12 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
+						"internalType": "bytes32",
 						"name": "",
-						"type": "uint256"
+						"type": "bytes32"
 					}
 				],
-				"name": "chainIdToFee",
+				"name": "chainToFee",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -472,6 +472,30 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint8",
+						"name": "chainType",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint32",
+						"name": "chainId",
+						"type": "uint32"
+					}
+				],
+				"name": "getChainHash",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "pure",
 				"type": "function"
 			},
 			{
@@ -765,9 +789,9 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256[]",
-						"name": "chainIdsTo",
-						"type": "uint256[]"
+						"internalType": "bytes32[]",
+						"name": "chainsTo",
+						"type": "bytes32[]"
 					},
 					{
 						"internalType": "uint256",
@@ -853,11 +877,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBridgeV2.sol": {
-			"keccak256": "0x67f02a12e709f845d7b95b6d71590230656d6d7162062595c491fa590c9f96ac",
+			"keccak256": "0xbe8547f2f50e0a2fab1e7cea5c6e0a3e5d3e30ac8fcbd2c85dd4f554cbb2cf03",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://596f93ad9adb2bc8fc7678bc5468ddb7fcfc4f4288614dcba17bce0e491c7e89",
-				"dweb:/ipfs/QmTVXx2yu14ExvhzPrRtKoigo4o6CNJ6JR5d1cqq1B1Hvs"
+				"bzz-raw://46a2f3c71b87790c46cb19045ee62f90624d27e21c32f2db7159f5df7c9e0cea",
+				"dweb:/ipfs/QmZESTByPqFLEEvpCMnkSz76UDTAGBRfAqXEFWKdJG899a"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapV1.sol": {
