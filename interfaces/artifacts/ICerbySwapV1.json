@@ -51,6 +51,7 @@
 		"methodIdentifiers": {
 			"addTokenLiquidity(address,uint256,uint256,address)": "43fefad4",
 			"getCurrentFeeBasedOnTrades(address)": "9162ebf0",
+			"getInputTokensForExactTokens(address,address,uint256)": "c790985a",
 			"getOutputExactTokensForTokens(address,address,uint256)": "48b08d62",
 			"getPoolsByTokens(address[])": "34e150ab",
 			"removeTokenLiquidity(address,uint256,uint256,address)": "74fcf071",
@@ -105,6 +106,35 @@
 				{
 					"internalType": "uint256",
 					"name": "fee",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "tokenIn",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "tokenOut",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "amountTokensOut",
+					"type": "uint256"
+				}
+			],
+			"name": "getInputTokensForExactTokens",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "amountTokensIn",
 					"type": "uint256"
 				}
 			],

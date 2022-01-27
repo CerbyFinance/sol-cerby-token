@@ -313,6 +313,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "ROLE_APPROVER",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -347,24 +360,24 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "srcAmount",
+						"type": "uint256"
+					},
+					{
 						"internalType": "address",
-						"name": "_srcToken",
+						"name": "srcToken",
 						"type": "address"
 					},
 					{
 						"internalType": "bytes",
-						"name": "destToken",
+						"name": "destGenericToken",
 						"type": "bytes"
 					},
 					{
 						"internalType": "bytes",
-						"name": "destCaller",
+						"name": "destGenericCaller",
 						"type": "bytes"
-					},
-					{
-						"internalType": "uint256",
-						"name": "srcAmount",
-						"type": "uint256"
 					},
 					{
 						"internalType": "uint8",
@@ -558,12 +571,12 @@
 					},
 					{
 						"internalType": "bytes",
-						"name": "destToken",
+						"name": "destGenericToken",
 						"type": "bytes"
 					},
 					{
 						"internalType": "bytes",
-						"name": "destCaller",
+						"name": "destGenericCaller",
 						"type": "bytes"
 					},
 					{
@@ -771,11 +784,19 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBridgeV2.sol": {
-			"keccak256": "0x5692ecacb49d1a0f1e707a4c961307a3c8dc24a3e0339b1bda428a6114a35afe",
+			"keccak256": "0xc0369796bff12b0383fead35eddddfc4bc05b76675fb36aeb59654ff2bfb3d36",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://241b8efaaf0739f04647d9af6a145cfc6c7b75ea0b4dcfab602291c161a15a58",
-				"dweb:/ipfs/QmPSfbM5yiZ58tSKT2A8AzyN9HKBDRV7cY3sm1KyWdFS3P"
+				"bzz-raw://41844f3930241b21cf53c7bd106b22fef504605a628988cfbfca5044c00487ad",
+				"dweb:/ipfs/QmU4x13mZfxHREeKMcQkJBJ5PQg2w9oArqPnUHEDpxDs6M"
+			]
+		},
+		"sol-defifactory-token/interfaces/ICerbySwapV1.sol": {
+			"keccak256": "0x0810c3b097ee7afd17912da76854a5841abade9fd0c756c628bbb83e429e40cb",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://07d1a0a077adacddc7f4974ba00b544a055c4cda75d0ed47b4dfd0b84b000a9a",
+				"dweb:/ipfs/QmVEiK3JDYjnuHAgs6CHu9qKhAgaJ7a2yM54WkkuYgCMfK"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol": {
