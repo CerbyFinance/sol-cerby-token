@@ -91,10 +91,14 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     }  
 
     // 40 bytes
-    function genericAddress(address some) private pure returns(bytes memory) {
+    function genericAddress(address addr) 
+        private 
+        pure 
+        returns(bytes memory) 
+    {
         bytes memory result = new bytes(40);
         assembly {
-            mstore(add(result, 40), some)
+            mstore(add(result, 40), addr)
         }
         return result;
     }
@@ -105,6 +109,9 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         returns(uint)
     {
         uint fee = chainIdToFee[block.chainid] > 0? chainIdToFee[block.chainid]: DEFAULT_FEE;
+        srcToken; // TODO: to silent warning remove on production
+        /*
+        // TODO: uncomment code below in production
         if (srcToken == CER_USD_CONTRACT) {
             destAmount -= fee;
         } else {
@@ -113,7 +120,9 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
                 CER_USD_CONTRACT,
                 fee
             );
-        }
+        }*/
+
+        destAmount -= fee;
 
         return destAmount;
     }  
@@ -263,6 +272,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
             revert CerbyBridgeV2_InvalidGenericTokenLength();
         }
 
+        // creating proof object from current chain to dest
         Proof memory proof = Proof(
             "",                                         // srcBurnProofHash;
             genericAddress(srcToken),                   // srcGenericToken;
@@ -279,30 +289,34 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
 
         // EVM --> EVM bridge is allowed only for the same wallet
         if (
-            destChainType == _currentBridgeChainType/* &&
-            destGenericCaller != proof.srcGenericCaller*/ // TODO: make it work
+            _currentBridgeChainType == destChainType &&
+            bytesEquals(proof.srcGenericCaller, destGenericCaller)
         ) {
             revert CerbyBridgeV2_TokenAndCallerMustBeEqualForEvmBridging();
         }
 
+        // checking src --> dest allowance
         checkAllowanceHashSrc2Dest(proof);
 
+        // generating src burn hash
         proof.srcBurnProofHash = generateSignature(proof);
 
+        // burning amount user requested
         ICerbyTokenMinterBurner(srcToken).burnHumanAddress(msg.sender, srcAmount);
+
+        // minting bridge fees
         ICerbyTokenMinterBurner(srcToken).mintHumanAddress(
             bridgeFeesBeneficiary, 
             srcAmount - proof.destAmount
         );
 
         emit ProofOfBurnOrMint(
-            true,
-            proof
+            true,   // isBurn
+            proof   // proof
         );
 
+        // increasing nonce, to produce new hash even if sent data was the same
         srcNonceByToken[srcToken]++;
-
-        // return computedBurnProofHash;
     }
 
     function mintWithBurnProof(
@@ -328,6 +342,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
             revert CerbyBridgeV2_InvalidGenericTokenLength();
         }
 
+        // creating proof object from src to current chain
         Proof memory proof = Proof(
             srcBurnProofHash,                   // srcBurnProofHash;
             srcGenericToken,                    // srcGenericToken;
@@ -337,21 +352,21 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
             srcNonce,                           // srcNonce;
             genericAddress(destToken),          // destGenericToken;
             genericAddress(msg.sender),         // destGenericCaller;
-            _currentBridgeChainType,     // destChainType;
+            _currentBridgeChainType,            // destChainType;
             uint32(block.chainid),              // destChainId;
             destAmount                          // destAmount;
         );
 
         // EVM --> EVM bridge is allowed only for the same wallet
         if (
-            srcChainType == _currentBridgeChainType/* &&
-            proof.destGenericCaller != srcGenericCaller*/ // TODO: make it work
+            srcChainType == _currentBridgeChainType &&
+            bytesEquals(srcGenericCaller, proof.destGenericCaller)
         ) {
             revert CerbyBridgeV2_TokenAndCallerMustBeEqualForEvmBridging();
         }
         
         // checking opposite direction allowance
-        // if dest --> src allowed then src --> dest is allowed as well
+        // if current chain (dest) --> src allowed then src --> current chain (dest) is allowed as well
         checkAllowanceHashDest2Src(proof);
 
         if (
@@ -360,21 +375,25 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
             revert CerbyBridgeV2_ProofIsNotApprovedOrAlreadyExecuted();
         }
 
-        bytes32 destBurnProofHash = generateSignature(proof);
+        // generating src burn hash
+        bytes32 srcBurnProofHashComputed = generateSignature(proof);
 
+        // making sure burn hash is valid
         if (
-            srcBurnProofHash != destBurnProofHash
+            srcBurnProofHash != srcBurnProofHashComputed
         ) {
             revert CerbyBridgeV2_ProvidedHashIsInvalid();
         }
 
-        burnProofStorage[destBurnProofHash] = States.Executed;
+        // updating hash in storage to make sure tokens are minted only once
+        burnProofStorage[srcBurnProofHashComputed] = States.Executed;
 
+        // minting the tokens to the current wallet
         ICerbyTokenMinterBurner(destToken).mintHumanAddress(msg.sender, destAmount);
 
         emit ProofOfBurnOrMint(
-            false,
-            proof
+            false,  // isBurn
+            proof   // proof
         );
     }
 
@@ -389,5 +408,33 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         }
         burnProofStorage[proofHash] = States.Approved;
         emit ApprovedBurnProof(proofHash);
+    }
+
+
+    // Checks if two `bytes memory` variables are equal. This is done using hashing,
+    // which is much more gas efficient then comparing each byte individually.
+    // Equality means that:
+    //  - 'self.length == other.length'
+    //  - For 'n' in '[0, self.length)', 'self[n] == other[n]'
+    function bytesEquals(bytes memory self, bytes memory other) internal pure returns (bool equal) {
+        if (self.length != other.length) {
+            return false;
+        }
+        uint addr;
+        uint addr2;
+        assembly {
+            addr := add(self, /*BYTES_HEADER_SIZE*/32)
+            addr2 := add(other, /*BYTES_HEADER_SIZE*/32)
+        }
+        equal = memoryEquals(addr, addr2, self.length);
+    }
+
+    // Compares the 'len' bytes starting at address 'addr' in memory with the 'len'
+    // bytes starting at 'addr2'.
+    // Returns 'true' if the bytes are the same, otherwise 'false'.
+    function memoryEquals(uint addr, uint addr2, uint len) internal pure returns (bool equal) {
+        assembly {
+            equal := eq(keccak256(addr, len), keccak256(addr2, len))
+        }
     }
 }
