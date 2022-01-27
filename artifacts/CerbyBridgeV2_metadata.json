@@ -87,7 +87,7 @@
 					{
 						"indexed": false,
 						"internalType": "bytes32",
-						"name": "srcBurnProofHash",
+						"name": "burnProofHash",
 						"type": "bytes32"
 					}
 				],
@@ -107,57 +107,57 @@
 						"components": [
 							{
 								"internalType": "bytes32",
-								"name": "srcBurnProofHash",
+								"name": "burnProofHash",
 								"type": "bytes32"
 							},
 							{
 								"internalType": "bytes",
-								"name": "srcGenericToken",
+								"name": "burnGenericToken",
 								"type": "bytes"
 							},
 							{
 								"internalType": "bytes",
-								"name": "srcGenericCaller",
+								"name": "burnGenericCaller",
 								"type": "bytes"
 							},
 							{
 								"internalType": "uint8",
-								"name": "srcChainType",
+								"name": "burnChainType",
 								"type": "uint8"
 							},
 							{
 								"internalType": "uint32",
-								"name": "srcChainId",
+								"name": "burnChainId",
 								"type": "uint32"
 							},
 							{
 								"internalType": "uint64",
-								"name": "srcNonce",
+								"name": "burnNonce",
 								"type": "uint64"
 							},
 							{
 								"internalType": "bytes",
-								"name": "destGenericToken",
+								"name": "mintGenericToken",
 								"type": "bytes"
 							},
 							{
 								"internalType": "bytes",
-								"name": "destGenericCaller",
+								"name": "mintGenericCaller",
 								"type": "bytes"
 							},
 							{
 								"internalType": "uint8",
-								"name": "destChainType",
+								"name": "mintChainType",
 								"type": "uint8"
 							},
 							{
 								"internalType": "uint32",
-								"name": "destChainId",
+								"name": "mintChainId",
 								"type": "uint32"
 							},
 							{
 								"internalType": "uint256",
-								"name": "destAmount",
+								"name": "mintAmount",
 								"type": "uint256"
 							}
 						],
@@ -307,38 +307,57 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "srcAmount",
+						"name": "burnAmount",
 						"type": "uint256"
 					},
 					{
 						"internalType": "address",
-						"name": "srcToken",
+						"name": "burnToken",
 						"type": "address"
 					},
 					{
 						"internalType": "bytes",
-						"name": "destGenericToken",
+						"name": "mintGenericToken",
 						"type": "bytes"
 					},
 					{
 						"internalType": "bytes",
-						"name": "destGenericCaller",
+						"name": "mintGenericCaller",
 						"type": "bytes"
 					},
 					{
 						"internalType": "uint8",
-						"name": "destChainType",
+						"name": "mintChainType",
 						"type": "uint8"
 					},
 					{
 						"internalType": "uint32",
-						"name": "destChainId",
+						"name": "mintChainId",
 						"type": "uint32"
 					}
 				],
 				"name": "burnAndCreateProof",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "burnNonceByToken",
+				"outputs": [
+					{
+						"internalType": "uint32",
+						"name": "",
+						"type": "uint32"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -385,57 +404,57 @@
 						"components": [
 							{
 								"internalType": "bytes32",
-								"name": "srcBurnProofHash",
+								"name": "burnProofHash",
 								"type": "bytes32"
 							},
 							{
 								"internalType": "bytes",
-								"name": "srcGenericToken",
+								"name": "burnGenericToken",
 								"type": "bytes"
 							},
 							{
 								"internalType": "bytes",
-								"name": "srcGenericCaller",
+								"name": "burnGenericCaller",
 								"type": "bytes"
 							},
 							{
 								"internalType": "uint8",
-								"name": "srcChainType",
+								"name": "burnChainType",
 								"type": "uint8"
 							},
 							{
 								"internalType": "uint32",
-								"name": "srcChainId",
+								"name": "burnChainId",
 								"type": "uint32"
 							},
 							{
 								"internalType": "uint64",
-								"name": "srcNonce",
+								"name": "burnNonce",
 								"type": "uint64"
 							},
 							{
 								"internalType": "bytes",
-								"name": "destGenericToken",
+								"name": "mintGenericToken",
 								"type": "bytes"
 							},
 							{
 								"internalType": "bytes",
-								"name": "destGenericCaller",
+								"name": "mintGenericCaller",
 								"type": "bytes"
 							},
 							{
 								"internalType": "uint8",
-								"name": "destChainType",
+								"name": "mintChainType",
 								"type": "uint8"
 							},
 							{
 								"internalType": "uint32",
-								"name": "destChainId",
+								"name": "mintChainId",
 								"type": "uint32"
 							},
 							{
 								"internalType": "uint256",
-								"name": "destAmount",
+								"name": "mintAmount",
 								"type": "uint256"
 							}
 						],
@@ -444,7 +463,7 @@
 						"type": "tuple"
 					}
 				],
-				"name": "getAllowanceHashCurrent2Dest",
+				"name": "getAllowanceHashCurrent2Mint",
 				"outputs": [
 					{
 						"internalType": "bytes32",
@@ -588,42 +607,42 @@
 				"inputs": [
 					{
 						"internalType": "bytes",
-						"name": "srcGenericToken",
+						"name": "burnGenericToken",
 						"type": "bytes"
 					},
 					{
 						"internalType": "bytes",
-						"name": "srcGenericCaller",
+						"name": "burnGenericCaller",
 						"type": "bytes"
 					},
 					{
 						"internalType": "uint8",
-						"name": "srcChainType",
+						"name": "burnChainType",
 						"type": "uint8"
 					},
 					{
 						"internalType": "uint32",
-						"name": "srcChainId",
+						"name": "burnChainId",
 						"type": "uint32"
 					},
 					{
 						"internalType": "bytes32",
-						"name": "srcBurnProofHash",
+						"name": "burnProofHash",
 						"type": "bytes32"
 					},
 					{
 						"internalType": "uint64",
-						"name": "srcNonce",
+						"name": "burnNonce",
 						"type": "uint64"
 					},
 					{
 						"internalType": "address",
-						"name": "destToken",
+						"name": "mintToken",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "destAmount",
+						"name": "mintAmount",
 						"type": "uint256"
 					}
 				],
@@ -674,57 +693,57 @@
 						"components": [
 							{
 								"internalType": "bytes32",
-								"name": "srcBurnProofHash",
+								"name": "burnProofHash",
 								"type": "bytes32"
 							},
 							{
 								"internalType": "bytes",
-								"name": "srcGenericToken",
+								"name": "burnGenericToken",
 								"type": "bytes"
 							},
 							{
 								"internalType": "bytes",
-								"name": "srcGenericCaller",
+								"name": "burnGenericCaller",
 								"type": "bytes"
 							},
 							{
 								"internalType": "uint8",
-								"name": "srcChainType",
+								"name": "burnChainType",
 								"type": "uint8"
 							},
 							{
 								"internalType": "uint32",
-								"name": "srcChainId",
+								"name": "burnChainId",
 								"type": "uint32"
 							},
 							{
 								"internalType": "uint64",
-								"name": "srcNonce",
+								"name": "burnNonce",
 								"type": "uint64"
 							},
 							{
 								"internalType": "bytes",
-								"name": "destGenericToken",
+								"name": "mintGenericToken",
 								"type": "bytes"
 							},
 							{
 								"internalType": "bytes",
-								"name": "destGenericCaller",
+								"name": "mintGenericCaller",
 								"type": "bytes"
 							},
 							{
 								"internalType": "uint8",
-								"name": "destChainType",
+								"name": "mintChainType",
 								"type": "uint8"
 							},
 							{
 								"internalType": "uint32",
-								"name": "destChainId",
+								"name": "mintChainId",
 								"type": "uint32"
 							},
 							{
 								"internalType": "uint256",
-								"name": "destAmount",
+								"name": "mintAmount",
 								"type": "uint256"
 							}
 						],
@@ -754,25 +773,6 @@
 				"name": "setChainsToFee",
 				"outputs": [],
 				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "srcNonceByToken",
-				"outputs": [
-					{
-						"internalType": "uint32",
-						"name": "",
-						"type": "uint32"
-					}
-				],
-				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -848,11 +848,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBridgeV2.sol": {
-			"keccak256": "0x6799d2b70f52c1a6df62878b3dafc33039034595edeea51ea0fb18decaad5e4d",
+			"keccak256": "0x96b5ef3b0d172439124c8fe817d972429396ffa1eabf8cfbffd19667b5e2cad0",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://362790f6d42c3d9ee7652e1235eeb2cb38d777aebe0f3d2acc432e91f951fbed",
-				"dweb:/ipfs/Qmc5pRLUAbrh3zvjDqwmRe38ro7HRdNyte1v9DFTE64JUg"
+				"bzz-raw://6a28128357b77aa18fa932e70a73df6a320eb06fa93fd8bf1a37fdcaee5c47bd",
+				"dweb:/ipfs/QmVzCHpc5fFAsNFZswo68XzZnojFNi7n1U7Z2YFDp9wWgb"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapV1.sol": {
