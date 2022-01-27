@@ -750,6 +750,11 @@
 						"internalType": "struct CerbyBridgeV2.Proof[]",
 						"name": "proofs",
 						"type": "tuple[]"
+					},
+					{
+						"internalType": "enum CerbyBridgeV2.Allowance",
+						"name": "status",
+						"type": "uint8"
 					}
 				],
 				"name": "setAllowancesBulk",
@@ -848,11 +853,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBridgeV2.sol": {
-			"keccak256": "0x96b5ef3b0d172439124c8fe817d972429396ffa1eabf8cfbffd19667b5e2cad0",
+			"keccak256": "0x67f02a12e709f845d7b95b6d71590230656d6d7162062595c491fa590c9f96ac",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://6a28128357b77aa18fa932e70a73df6a320eb06fa93fd8bf1a37fdcaee5c47bd",
-				"dweb:/ipfs/QmVzCHpc5fFAsNFZswo68XzZnojFNi7n1U7Z2YFDp9wWgb"
+				"bzz-raw://596f93ad9adb2bc8fc7678bc5468ddb7fcfc4f4288614dcba17bce0e491c7e89",
+				"dweb:/ipfs/QmTVXx2yu14ExvhzPrRtKoigo4o6CNJ6JR5d1cqq1B1Hvs"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapV1.sol": {

@@ -131,17 +131,28 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     }  
 
     function setAllowancesBulk(
-        Proof[] memory proofs
+        Proof[] memory proofs,
+        Allowance status
     ) external {
         uint256 proofsLength = proofs.length;
 
         for (uint256 i; i<proofsLength; i++) {
+            if (
+                _currentBridgeChainType == proofs[i].mintChainType &&
+                _currentBridgeChainId == proofs[i].mintChainId
+            ) {
+                continue;
+            }
 
             bytes32 allowanceHash = getAllowanceHashCurrent2Mint(
                 proofs[i]
             );
 
-            allowances[allowanceHash] = Allowance.Allowed;
+            if (
+                allowances[allowanceHash] != status
+            ) {
+                allowances[allowanceHash] = status;
+            }
         }
     }
 
@@ -293,7 +304,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         // EVM --> EVM bridge is allowed only for the same wallet
         if (
             _currentBridgeChainType == mintChainType &&
-            bytesEquals(proof.burnGenericCaller, mintGenericCaller)
+            sha256(proof.burnGenericCaller) == sha256(mintGenericCaller)
         ) {
             revert CerbyBridgeV2_TokenAndCallerMustBeEqualForEvmBridging();
         }
@@ -363,7 +374,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         // EVM --> EVM bridge is allowed only for the same wallet
         if (
             burnChainType == _currentBridgeChainType &&
-            bytesEquals(burnGenericCaller, proof.mintGenericCaller)
+            sha256(burnGenericCaller) == sha256(proof.mintGenericCaller)
         ) {
             revert CerbyBridgeV2_TokenAndCallerMustBeEqualForEvmBridging();
         }
@@ -421,34 +432,6 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         uint256 chainIdsToLength = chainIdsTo.length;
         for(uint256 i; i<chainIdsToLength; i++) {
             chainIdToFee[chainIdsTo[i]] = fee;
-        }
-    }  
-
-
-    // Checks if two `bytes memory` variables are equal. This is done using hashing,
-    // which is much more gas efficient then comparing each byte individually.
-    // Equality means that:
-    //  - 'self.length == other.length'
-    //  - For 'n' in '[0, self.length)', 'self[n] == other[n]'
-    function bytesEquals(bytes memory self, bytes memory other) internal pure returns (bool equal) {
-        if (self.length != other.length) {
-            return false;
-        }
-        uint256 addr;
-        uint256 addr2;
-        assembly {
-            addr := add(self, /*BYTES_HEADER_SIZE*/32)
-            addr2 := add(other, /*BYTES_HEADER_SIZE*/32)
-        }
-        equal = memoryEquals(addr, addr2, self.length);
-    }
-
-    // Compares the 'len' bytes starting at address 'addr' in memory with the 'len'
-    // bytes starting at 'addr2'.
-    // Returns 'true' if the bytes are the same, otherwise 'false'.
-    function memoryEquals(uint256 addr, uint256 addr2, uint256 len) internal pure returns (bool equal) {
-        assembly {
-            equal := eq(keccak256(addr, len), keccak256(addr2, len))
         }
     }
 }
