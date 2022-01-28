@@ -1019,7 +1019,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 uint(pools[poolId].balanceToken) + amountTokensIn - amountTokensOut;
 
 
-            // calculating new K value including trade fees (multiplied by FEE_DENORM^2)
+            // calculating new K value including trade fees
             uint afterKValueDenormed = 
                 (_balanceCerUsd * FEE_DENORM - amountCerUsdIn * (FEE_DENORM - oneMinusFee)) * 
                 (_balanceToken * FEE_DENORM - amountTokensIn * (FEE_DENORM - oneMinusFee));
@@ -1034,7 +1034,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             pools[poolId].balanceCerUsd = uint128(_balanceCerUsd);
             pools[poolId].balanceToken = uint128(_balanceToken);
             
-
             // updating creditCerUsd only if pool is user-created
             if (pools[poolId].creditCerUsd < type(uint).max) {
                 pools[poolId].creditCerUsd = 
