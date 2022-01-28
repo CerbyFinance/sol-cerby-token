@@ -463,6 +463,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     )
         public
         onlyRole(ROLE_ADMIN)
+        tokenMustExistInPool(token)
     {
         uint poolId = tokenToPoolId[token];
 
@@ -1004,7 +1005,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             // checking if cerUsd credit is enough to cover this swap
             if (
                 pools[poolId].creditCerUsd < type(uint).max &&
-                pools[poolId].creditCerUsd + amountTokensIn < amountTokensOut
+                pools[poolId].creditCerUsd + amountCerUsdIn < amountCerUsdOut
             ) {
                 revert("Z");
                 revert CerbySwapV1_CreditCerUsdMustNotBeBelowZero();
