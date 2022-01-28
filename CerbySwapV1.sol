@@ -438,12 +438,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(msg.sender, amountCerUsdCredit);
     }
 
-    // admin can increase cerUsd credit in the pool
+    // admin can change cerUsd credit in the pool
     // just in case user adds a token with too high price
     // admins will be able to fix it by increasing credit 
     // and swapping extra tokens + adding back to liquidity
     // using external contract assigned with admin role
-    function adminIncreaseCerUsdCreditInPool(
+    function adminChangeCerUsdCreditInPool(
         address token,
         uint amountCerUsdCredit
     )
@@ -452,13 +452,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     {
         uint poolId = tokenToPoolId[token];
 
-        // handling overflow just in case
-        if (pools[poolId].creditCerUsd > type(uint).max - amountCerUsdCredit) {
-            revert CerbySwapV1_CreditCerUsdIsOverflown();
-        }
-
-        // increasing credit for user-created pool
-        pools[poolId].creditCerUsd += amountCerUsdCredit;
+        // changing credit for user-created pool
+        pools[poolId].creditCerUsd = amountCerUsdCredit;
     }
 
     function addTokenLiquidity(
