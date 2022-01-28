@@ -472,6 +472,12 @@
 						"internalType": "uint256",
 						"name": "newBalanceCerUsd",
 						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "newCreditCerUsd",
+						"type": "uint256"
 					}
 				],
 				"name": "Sync",
@@ -1835,11 +1841,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xaf9326e19cb11f51bcb39817cdc81a11834885a1f31d97d51df220c43dc3737e",
+			"keccak256": "0x3ebb2403f74ed042bcf3733bcabedea8fb3dfda0209ec65b21160061c7eb999b",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://0c49691355f99def445d0b00680eae7eacad8434e77c86c2179b57bda6820fd5",
-				"dweb:/ipfs/QmR87wJ2a3S9yWKjNwAPJYtdX4q7r4H67v5Sbu9hWjjWLg"
+				"bzz-raw://380b5849bf5db8678e4396a6ac9cc7fc75bd0b428b07262809eba6f3cd13a4a5",
+				"dweb:/ipfs/QmcEgPrAbrFZeyDnzjSmDRWuvZCHdkg3VxinQ51dnwQPM1"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

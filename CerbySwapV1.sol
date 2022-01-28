@@ -105,7 +105,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     event Sync(
         address token, 
         uint newBalanceToken, 
-        uint newBalanceCerUsd
+        uint newBalanceCerUsd,
+        uint newCreditCerUsd
     );
 
         
@@ -322,7 +323,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         );
     }
 
-    // only admins are allowed to create new pools
+    // only admins are allowed to create new pools with unlimitted cerUSD credit
+    // this is only for trusted tokens such as ETH, BNB, UNI, etc
     function adminCreatePool(
         address token, 
         uint amountTokensIn, 
@@ -353,8 +355,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         private
         tokenDoesNotExistInPool(token)
     {
-        uint poolId = pools.length;
-
         _safeTransferFromHelper(token, msg.sender, amountTokensIn);
         ICerbyTokenMinterBurner(cerUsdToken).mintHumanAddress(address(this), amountCerUsdToMint);
 
@@ -383,7 +383,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             uint128(newSqrtKValue),
             creditCerUsd
         );
+
+        uint poolId = pools.length; // remembering last position where pool will be pushed to
         pools.push(pool);
+
         tokenToPoolId[token] = poolId;   
         totalCerUsdBalance += amountCerUsdToMint;
 
@@ -415,6 +418,13 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountCerUsdToMint, 
             lpAmount
         );
+        
+        emit Sync(
+            token, 
+            pools[poolId].balanceToken, 
+            pools[poolId].balanceCerUsd,
+            pools[poolId].creditCerUsd // creditCerUsd updated
+        );
     }
 
     // user can increase cerUsd credit in the pool
@@ -428,6 +438,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
         // handling overflow just in case
         if (pools[poolId].creditCerUsd > type(uint).max - amountCerUsdCredit) {
+            revert("X");
             revert CerbySwapV1_CreditCerUsdIsOverflown();
         }
 
@@ -436,6 +447,13 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
         // burning user's cerUsd tokens in order to increase the credit for given pool
         ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(msg.sender, amountCerUsdCredit);
+
+        emit Sync(
+            token, 
+            pools[poolId].balanceToken, 
+            pools[poolId].balanceCerUsd,
+            pools[poolId].creditCerUsd
+        );
     }
 
     // admin can change cerUsd credit in the pool
@@ -454,6 +472,13 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
         // changing credit for user-created pool
         pools[poolId].creditCerUsd = amountCerUsdCredit;
+        
+        emit Sync(
+            token, 
+            pools[poolId].balanceToken, 
+            pools[poolId].balanceCerUsd,
+            pools[poolId].creditCerUsd
+        );
     }
 
     function addTokenLiquidity(
@@ -981,6 +1006,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
             // checking if cerUsd credit is enough to cover this swap
             if (pools[poolId].creditCerUsd + amountTokensIn < amountTokensOut) {
+                revert("Z");
                 revert CerbySwapV1_CreditCerUsdMustNotBeBelowZero();
             }
             
@@ -1193,9 +1219,19 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 pools[poolId].balanceCerUsd + uint128(newTotalCerUsdBalance - totalCerUsdBalance):
                 pools[poolId].balanceCerUsd - uint128(totalCerUsdBalance - newTotalCerUsdBalance);
 
+        pools[poolId].creditCerUsd = 
+            newTotalCerUsdBalance > totalCerUsdBalance?
+                pools[poolId].creditCerUsd + newTotalCerUsdBalance - totalCerUsdBalance:
+                pools[poolId].creditCerUsd - totalCerUsdBalance + newTotalCerUsdBalance;
+
         totalCerUsdBalance = newTotalCerUsdBalance;
 
-        emit Sync(token, pools[poolId].balanceToken, pools[poolId].balanceCerUsd);
+        emit Sync(
+            token, 
+            pools[poolId].balanceToken, 
+            pools[poolId].balanceCerUsd,
+            pools[poolId].creditCerUsd
+        );
     }
 
     function skimPool(address token)
