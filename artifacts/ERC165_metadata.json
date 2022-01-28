@@ -6,24 +6,19 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"name": "CerbyCronJobsExecution_TransactionsAreTemporarilyDisabled",
-				"type": "error"
-			},
-			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "pos",
-						"type": "uint256"
+						"internalType": "bytes4",
+						"name": "interfaceId",
+						"type": "bytes4"
 					}
 				],
-				"name": "getUtilsContractAtPos",
+				"name": "supportsInterface",
 				"outputs": [
 					{
-						"internalType": "address",
+						"internalType": "bool",
 						"name": "",
-						"type": "address"
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -31,8 +26,13 @@
 			}
 		],
 		"devdoc": {
+			"details": "Implementation of the {IERC165} interface. Contracts that want to implement ERC165 should inherit from this contract and override {supportsInterface} to check for the additional interface id that will be supported. For example: ```solidity function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {     return interfaceId == type(MyInterface).interfaceId || super.supportsInterface(interfaceId); } ``` Alternatively, {ERC165Storage} provides an easier to use but more expensive implementation.",
 			"kind": "dev",
-			"methods": {},
+			"methods": {
+				"supportsInterface(bytes4)": {
+					"details": "See {IERC165-supportsInterface}."
+				}
+			},
 			"version": 1
 		},
 		"userdoc": {
@@ -43,7 +43,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/CerbySwapV1.sol": "CerbyCronJobsExecution"
+			"sol-defifactory-token/CerbySwapV1.sol": "ERC165"
 		},
 		"evmVersion": "london",
 		"libraries": {},

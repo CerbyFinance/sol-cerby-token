@@ -1002,7 +1002,10 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         { // scope to avoid stack too deep error
 
             // checking if cerUsd credit is enough to cover this swap
-            if (pools[poolId].creditCerUsd + amountTokensIn < amountTokensOut) {
+            if (
+                pools[poolId].creditCerUsd < type(uint).max &&
+                pools[poolId].creditCerUsd + amountTokensIn < amountTokensOut
+            ) {
                 revert("Z");
                 revert CerbySwapV1_CreditCerUsdMustNotBeBelowZero();
             }
@@ -1096,12 +1099,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             transferTo
         );
 
-        emit Sync(
+        /*emit Sync(
             token, 
             pools[poolId].balanceToken, 
             pools[poolId].balanceCerUsd,
             pools[poolId].creditCerUsd
-        );
+        );*/
     }
 
     function _getTokenBalance(address token)

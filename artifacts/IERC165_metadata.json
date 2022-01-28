@@ -6,24 +6,19 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"name": "CerbyCronJobsExecution_TransactionsAreTemporarilyDisabled",
-				"type": "error"
-			},
-			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "pos",
-						"type": "uint256"
+						"internalType": "bytes4",
+						"name": "interfaceId",
+						"type": "bytes4"
 					}
 				],
-				"name": "getUtilsContractAtPos",
+				"name": "supportsInterface",
 				"outputs": [
 					{
-						"internalType": "address",
+						"internalType": "bool",
 						"name": "",
-						"type": "address"
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -31,8 +26,13 @@
 			}
 		],
 		"devdoc": {
+			"details": "Interface of the ERC165 standard, as defined in the https://eips.ethereum.org/EIPS/eip-165[EIP]. Implementers can declare support of contract interfaces, which can then be queried by others ({ERC165Checker}). For an implementation, see {ERC165}.",
 			"kind": "dev",
-			"methods": {},
+			"methods": {
+				"supportsInterface(bytes4)": {
+					"details": "Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas."
+				}
+			},
 			"version": 1
 		},
 		"userdoc": {
@@ -43,7 +43,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/CerbySwapV1.sol": "CerbyCronJobsExecution"
+			"sol-defifactory-token/CerbySwapV1.sol": "IERC165"
 		},
 		"evmVersion": "london",
 		"libraries": {},

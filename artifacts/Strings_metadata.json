@@ -4,33 +4,9 @@
 	},
 	"language": "Solidity",
 	"output": {
-		"abi": [
-			{
-				"inputs": [],
-				"name": "CerbyCronJobsExecution_TransactionsAreTemporarilyDisabled",
-				"type": "error"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "pos",
-						"type": "uint256"
-					}
-				],
-				"name": "getUtilsContractAtPos",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			}
-		],
+		"abi": [],
 		"devdoc": {
+			"details": "String operations.",
 			"kind": "dev",
 			"methods": {},
 			"version": 1
@@ -43,7 +19,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/CerbySwapV1.sol": "CerbyCronJobsExecution"
+			"sol-defifactory-token/CerbySwapV1.sol": "Strings"
 		},
 		"evmVersion": "london",
 		"libraries": {},

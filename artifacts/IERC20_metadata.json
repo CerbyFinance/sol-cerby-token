@@ -6,24 +6,19 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"name": "CerbyCronJobsExecution_TransactionsAreTemporarilyDisabled",
-				"type": "error"
-			},
-			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "pos",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
 					}
 				],
-				"name": "getUtilsContractAtPos",
+				"name": "balanceOf",
 				"outputs": [
 					{
-						"internalType": "address",
+						"internalType": "uint256",
 						"name": "",
-						"type": "address"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -43,7 +38,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"sol-defifactory-token/CerbySwapV1.sol": "CerbyCronJobsExecution"
+			"sol-defifactory-token/CerbySwapV1.sol": "IERC20"
 		},
 		"evmVersion": "london",
 		"libraries": {},
