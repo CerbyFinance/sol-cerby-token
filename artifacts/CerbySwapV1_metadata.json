@@ -63,6 +63,16 @@
 			},
 			{
 				"inputs": [],
+				"name": "CerbySwapV1_CreditCerUsdIsOverflown",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbySwapV1_CreditCerUsdMustNotBeBelowZero",
+				"type": "error"
+			},
+			{
+				"inputs": [],
 				"name": "CerbySwapV1_FeeIsWrong",
 				"type": "error"
 			},
@@ -625,6 +635,11 @@
 						"type": "uint256"
 					},
 					{
+						"internalType": "uint256",
+						"name": "creditCerUsd",
+						"type": "uint256"
+					},
+					{
 						"internalType": "address",
 						"name": "transferTo",
 						"type": "address"
@@ -633,6 +648,24 @@
 				"name": "adminCreatePool",
 				"outputs": [],
 				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountCerUsdCredit",
+						"type": "uint256"
+					}
+				],
+				"name": "adminIncreaseCerUsdCreditInPool",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -790,6 +823,34 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountTokensIn",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountCerUsdToMint",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "transferTo",
+						"type": "address"
+					}
+				],
+				"name": "createPool",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "decimals",
 				"outputs": [
@@ -929,6 +990,11 @@
 								"internalType": "uint128",
 								"name": "lastSqrtKValue",
 								"type": "uint128"
+							},
+							{
+								"internalType": "uint256",
+								"name": "creditCerUsd",
+								"type": "uint256"
 							}
 						],
 						"internalType": "struct CerbySwapV1.Pool[]",
@@ -970,6 +1036,11 @@
 								"internalType": "uint128",
 								"name": "lastSqrtKValue",
 								"type": "uint128"
+							},
+							{
+								"internalType": "uint256",
+								"name": "creditCerUsd",
+								"type": "uint256"
 							}
 						],
 						"internalType": "struct CerbySwapV1.Pool[]",
@@ -1145,6 +1216,24 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountCerUsdCredit",
+						"type": "uint256"
+					}
+				],
+				"name": "increaseCerUsdCreditInPool",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -1723,7 +1812,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -1746,11 +1835,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0xb486acd0c6426a8163fd15356e1388dad5667068354b0b7f9d8d8e5ddc830aa3",
+			"keccak256": "0xc365f632138b8fb0ab2c3e155ff61fdb6ede9d1989f77b5f1415f457bcdde602",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://e0f6eb1ad46a5e299c21b751eeb932013d5d9f3651481c5f0fa7490bca47b501",
-				"dweb:/ipfs/QmNPGJSi41S5g7AftRivqXG67YsWHchMBw99rbkUX5F1T4"
+				"bzz-raw://3836626e010391c2f3e37fb66d344ea2ee9ccc8b0bc5949c673719c7b0951663",
+				"dweb:/ipfs/QmY3r1Mb1Twk4t4JHGdzT27sUE9wPUNJqZC4ZQSfxz6wZc"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

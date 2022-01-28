@@ -72,6 +72,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint128 balanceToken;
         uint128 balanceCerUsd;
         uint128 lastSqrtKValue;
+        uint creditCerUsd;
     }
 
 
@@ -129,6 +130,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     error CerbySwapV1_FeeIsWrong();
     error CerbySwapV1_TvlMultiplierIsWrong();
     error CerbySwapV1_MintFeeMultiplierMustNotBeLargerThan50Percent();
+    error CerbySwapV1_CreditCerUsdIsOverflown();
+    error CerbySwapV1_CreditCerUsdMustNotBeBelowZero();
 
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
@@ -154,6 +157,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         uint32[NUMBER_OF_TRADE_PERIODS] memory tradeVolumePerPeriodInCerUsd;
         pools.push(Pool(
             tradeVolumePerPeriodInCerUsd,
+            0,
             0,
             0,
             0
@@ -239,6 +243,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             testCerbyToken,
             1e18 * 1e6,
             1e18 * 5e5,
+            type(uint).max,
             msg.sender
         );
 
@@ -247,6 +252,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             testUsdcToken,
             1e18 * 7e5,
             1e18 * 7e5,
+            type(uint).max,
             msg.sender
         );
     }
@@ -263,6 +269,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             nativeToken,
             1e15,
             1e18 * 1e6,
+            type(uint).max,
             msg.sender
         );
     }
@@ -296,8 +303,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         settings = _settings;
     }
 
-    // only admins are allowed to create new pools
-    function adminCreatePool(
+    // only users are allowed to create new pools
+    function createPool(
         address token, 
         uint amountTokensIn, 
         uint amountCerUsdToMint, 
@@ -305,7 +312,45 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
     )
         public
         payable
-        onlyRole(ROLE_ADMIN) // TODO: enable on production
+    {
+        _createPool(
+            token, 
+            amountTokensIn, 
+            amountCerUsdToMint, 
+            0,
+            transferTo
+        );
+    }
+
+    // only admins are allowed to create new pools
+    function adminCreatePool(
+        address token, 
+        uint amountTokensIn, 
+        uint amountCerUsdToMint, 
+        uint creditCerUsd,
+        address transferTo
+    )
+        public
+        payable
+        onlyRole(ROLE_ADMIN)
+    {
+        _createPool(
+            token, 
+            amountTokensIn, 
+            amountCerUsdToMint, 
+            creditCerUsd,
+            transferTo
+        );
+    }
+
+    function _createPool(
+        address token, 
+        uint amountTokensIn, 
+        uint amountCerUsdToMint, 
+        uint creditCerUsd,
+        address transferTo
+    )
+        private
         tokenDoesNotExistInPool(token)
     {
         uint poolId = pools.length;
@@ -335,7 +380,8 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             tradeVolumePerPeriodInCerUsd,
             uint128(amountTokensIn),
             uint128(amountCerUsdToMint),
-            uint128(newSqrtKValue)
+            uint128(newSqrtKValue),
+            creditCerUsd
         );
         pools.push(pool);
         tokenToPoolId[token] = poolId;   
@@ -369,6 +415,50 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountCerUsdToMint, 
             lpAmount
         );
+    }
+
+    // user can increase cerUsd credit in the pool
+    function increaseCerUsdCreditInPool(
+        address token,
+        uint amountCerUsdCredit
+    )
+        public
+    {
+        uint poolId = tokenToPoolId[token];
+
+        // handling overflow just in case
+        if (pools[poolId].creditCerUsd > type(uint).max - amountCerUsdCredit) {
+            revert CerbySwapV1_CreditCerUsdIsOverflown();
+        }
+
+        // increasing credit for user-created pool
+        pools[poolId].creditCerUsd += amountCerUsdCredit;
+
+        // burning user's cerUsd tokens in order to increase the credit for given pool
+        ICerbyTokenMinterBurner(cerUsdToken).burnHumanAddress(msg.sender, amountCerUsdCredit);
+    }
+
+    // admin can increase cerUsd credit in the pool
+    // just in case user adds a token with too high price
+    // admins will be able to fix it by increasing credit 
+    // and swapping extra tokens + adding back to liquidity
+    // using external contract assigned with admin role
+    function adminIncreaseCerUsdCreditInPool(
+        address token,
+        uint amountCerUsdCredit
+    )
+        public
+        onlyRole(ROLE_ADMIN)
+    {
+        uint poolId = tokenToPoolId[token];
+
+        // handling overflow just in case
+        if (pools[poolId].creditCerUsd > type(uint).max - amountCerUsdCredit) {
+            revert CerbySwapV1_CreditCerUsdIsOverflown();
+        }
+
+        // increasing credit for user-created pool
+        pools[poolId].creditCerUsd += amountCerUsdCredit;
     }
 
     function addTokenLiquidity(
@@ -861,6 +951,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             transferTo
         );
     }
+
     function _swap(
         address token,
         uint amountTokensOut,
@@ -893,6 +984,11 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
 
         { // scope to avoid stack too deep error
 
+            // checking if cerUsd credit is enough to cover this swap
+            if (pools[poolId].creditCerUsd + amountTokensIn < amountTokensOut) {
+                revert CerbySwapV1_CreditCerUsdMustNotBeBelowZero();
+            }
+            
             // calculating old K value including trade fees (multiplied by FEE_DENORM^2)
             uint beforeKValueDenormed = 
                 uint(pools[poolId].balanceCerUsd) * FEE_DENORM *
@@ -904,6 +1000,9 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 uint(pools[poolId].balanceCerUsd) + amountCerUsdIn - amountCerUsdOut;
             uint _balanceToken =
                 uint(pools[poolId].balanceToken) + amountTokensIn - amountTokensOut;
+            uint _creditCerUsd = 
+                uint(pools[poolId].creditCerUsd) + amountCerUsdIn - amountCerUsdOut;
+
 
             // calculating new K value including trade fees (multiplied by FEE_DENORM^2)
             uint afterKValueDenormed = 
@@ -919,6 +1018,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             totalCerUsdBalance = _totalCerUsdBalance;
             pools[poolId].balanceCerUsd = uint128(_balanceCerUsd);
             pools[poolId].balanceToken = uint128(_balanceToken);
+            pools[poolId].creditCerUsd = _creditCerUsd;
         }
 
         // updating 1 hour trade pool values
