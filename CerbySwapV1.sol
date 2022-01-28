@@ -1099,12 +1099,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             transferTo
         );
 
-        /*emit Sync(
+        emit Sync(
             token, 
             pools[poolId].balanceToken, 
             pools[poolId].balanceCerUsd,
             pools[poolId].creditCerUsd
-        );*/
+        );
     }
 
     function _getTokenBalance(address token)
