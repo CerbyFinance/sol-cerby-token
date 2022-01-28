@@ -124,9 +124,11 @@ export interface Sync {
     token: string;
     newBalanceToken: BN;
     newBalanceCerUsd: BN;
+    newCreditCerUsd: BN;
     0: string;
     1: BN;
     2: BN;
+    3: BN;
   };
 }
 
@@ -220,11 +222,35 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  adminChangeCerUsdCreditInPool: {
+    (
+      token: string,
+      amountCerUsdCredit: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      token: string,
+      amountCerUsdCredit: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      token: string,
+      amountCerUsdCredit: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      token: string,
+      amountCerUsdCredit: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
   adminCreatePool: {
     (
       token: string,
       amountTokensIn: number | BN | string,
       amountCerUsdToMint: number | BN | string,
+      creditCerUsd: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
@@ -232,6 +258,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       token: string,
       amountTokensIn: number | BN | string,
       amountCerUsdToMint: number | BN | string,
+      creditCerUsd: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
@@ -239,6 +266,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       token: string,
       amountTokensIn: number | BN | string,
       amountCerUsdToMint: number | BN | string,
+      creditCerUsd: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
@@ -246,6 +274,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       token: string,
       amountTokensIn: number | BN | string,
       amountCerUsdToMint: number | BN | string,
+      creditCerUsd: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
@@ -387,6 +416,37 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  createPool: {
+    (
+      token: string,
+      amountTokensIn: number | BN | string,
+      amountCerUsdToMint: number | BN | string,
+      transferTo: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      token: string,
+      amountTokensIn: number | BN | string,
+      amountCerUsdToMint: number | BN | string,
+      transferTo: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      token: string,
+      amountTokensIn: number | BN | string,
+      amountCerUsdToMint: number | BN | string,
+      transferTo: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      token: string,
+      amountTokensIn: number | BN | string,
+      amountCerUsdToMint: number | BN | string,
+      transferTo: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
   decimals(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
   exists(
@@ -422,6 +482,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       balanceToken: BN;
       balanceCerUsd: BN;
       lastSqrtKValue: BN;
+      creditCerUsd: BN;
     }[]
   >;
 
@@ -434,6 +495,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       balanceToken: BN;
       balanceCerUsd: BN;
       lastSqrtKValue: BN;
+      creditCerUsd: BN;
     }[]
   >;
 
@@ -510,6 +572,29 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
     account: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<boolean>;
+
+  increaseCerUsdCreditInPool: {
+    (
+      token: string,
+      amountCerUsdCredit: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      token: string,
+      amountCerUsdCredit: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      token: string,
+      amountCerUsdCredit: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      token: string,
+      amountCerUsdCredit: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
 
   isApprovedForAll(
     account: string,
@@ -922,11 +1007,35 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    adminChangeCerUsdCreditInPool: {
+      (
+        token: string,
+        amountCerUsdCredit: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        token: string,
+        amountCerUsdCredit: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        token: string,
+        amountCerUsdCredit: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        token: string,
+        amountCerUsdCredit: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
     adminCreatePool: {
       (
         token: string,
         amountTokensIn: number | BN | string,
         amountCerUsdToMint: number | BN | string,
+        creditCerUsd: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
@@ -934,6 +1043,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         token: string,
         amountTokensIn: number | BN | string,
         amountCerUsdToMint: number | BN | string,
+        creditCerUsd: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
@@ -941,6 +1051,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         token: string,
         amountTokensIn: number | BN | string,
         amountCerUsdToMint: number | BN | string,
+        creditCerUsd: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
@@ -948,6 +1059,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         token: string,
         amountTokensIn: number | BN | string,
         amountCerUsdToMint: number | BN | string,
+        creditCerUsd: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
@@ -1089,6 +1201,37 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    createPool: {
+      (
+        token: string,
+        amountTokensIn: number | BN | string,
+        amountCerUsdToMint: number | BN | string,
+        transferTo: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        token: string,
+        amountTokensIn: number | BN | string,
+        amountCerUsdToMint: number | BN | string,
+        transferTo: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        token: string,
+        amountTokensIn: number | BN | string,
+        amountCerUsdToMint: number | BN | string,
+        transferTo: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        token: string,
+        amountTokensIn: number | BN | string,
+        amountCerUsdToMint: number | BN | string,
+        transferTo: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
     decimals(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
     exists(
@@ -1124,6 +1267,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         balanceToken: BN;
         balanceCerUsd: BN;
         lastSqrtKValue: BN;
+        creditCerUsd: BN;
       }[]
     >;
 
@@ -1136,6 +1280,7 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         balanceToken: BN;
         balanceCerUsd: BN;
         lastSqrtKValue: BN;
+        creditCerUsd: BN;
       }[]
     >;
 
@@ -1212,6 +1357,29 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       account: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<boolean>;
+
+    increaseCerUsdCreditInPool: {
+      (
+        token: string,
+        amountCerUsdCredit: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        token: string,
+        amountCerUsdCredit: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        token: string,
+        amountCerUsdCredit: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        token: string,
+        amountCerUsdCredit: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
 
     isApprovedForAll(
       account: string,

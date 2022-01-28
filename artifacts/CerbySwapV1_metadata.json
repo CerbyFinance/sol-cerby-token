@@ -659,11 +659,6 @@
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint256",
-						"name": "creditCerUsd",
-						"type": "uint256"
-					},
-					{
 						"internalType": "address",
 						"name": "transferTo",
 						"type": "address"
@@ -1841,11 +1836,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x3ebb2403f74ed042bcf3733bcabedea8fb3dfda0209ec65b21160061c7eb999b",
+			"keccak256": "0xd6adeb789c886b846818c72dc75835acfc02b87d26e70e2626b0421b76864665",
 			"license": "BSD-2-Clause",
 			"urls": [
-				"bzz-raw://380b5849bf5db8678e4396a6ac9cc7fc75bd0b428b07262809eba6f3cd13a4a5",
-				"dweb:/ipfs/QmcEgPrAbrFZeyDnzjSmDRWuvZCHdkg3VxinQ51dnwQPM1"
+				"bzz-raw://dcb97928a3e860789f21248a0cdd9b51ab59357265be1516c07cc7af9008cf92",
+				"dweb:/ipfs/QmYy7JGs8kH7RdFcne3fZTdM64varGSf2j19m3hTb6QZ1k"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbyBotDetection.sol": {

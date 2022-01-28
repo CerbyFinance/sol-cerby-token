@@ -244,7 +244,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             testCerbyToken,
             1e18 * 1e6,
             1e18 * 5e5,
-            type(uint).max,
             msg.sender
         );
 
@@ -253,7 +252,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             testUsdcToken,
             1e18 * 7e5,
             1e18 * 7e5,
-            type(uint).max,
             msg.sender
         );
     }
@@ -270,7 +268,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             nativeToken,
             1e15,
             1e18 * 1e6,
-            type(uint).max,
             msg.sender
         );
     }
@@ -304,7 +301,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         settings = _settings;
     }
 
-    // only users are allowed to create new pools
+    // only users are allowed to create new pools with creditCerUsd = 0
     function createPool(
         address token, 
         uint amountTokensIn, 
@@ -323,13 +320,12 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         );
     }
 
-    // only admins are allowed to create new pools with unlimitted cerUSD credit
+    // only admins are allowed to create new pools with creditCerUsd = unlimitted
     // this is only for trusted tokens such as ETH, BNB, UNI, etc
     function adminCreatePool(
         address token, 
         uint amountTokensIn, 
         uint amountCerUsdToMint, 
-        uint creditCerUsd,
         address transferTo
     )
         public
@@ -340,7 +336,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             token, 
             amountTokensIn, 
             amountCerUsdToMint, 
-            creditCerUsd,
+            type(uint).max,
             transferTo
         );
     }
@@ -1021,8 +1017,6 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
                 uint(pools[poolId].balanceCerUsd) + amountCerUsdIn - amountCerUsdOut;
             uint _balanceToken =
                 uint(pools[poolId].balanceToken) + amountTokensIn - amountTokensOut;
-            uint _creditCerUsd = 
-                uint(pools[poolId].creditCerUsd) + amountCerUsdIn - amountCerUsdOut;
 
 
             // calculating new K value including trade fees (multiplied by FEE_DENORM^2)
@@ -1039,7 +1033,13 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             totalCerUsdBalance = _totalCerUsdBalance;
             pools[poolId].balanceCerUsd = uint128(_balanceCerUsd);
             pools[poolId].balanceToken = uint128(_balanceToken);
-            pools[poolId].creditCerUsd = _creditCerUsd;
+            
+
+            // updating creditCerUsd only if pool is user-created
+            if (pools[poolId].creditCerUsd < type(uint).max) {
+                pools[poolId].creditCerUsd = 
+                    pools[poolId].creditCerUsd + amountCerUsdIn - amountCerUsdOut;
+            }
         }
 
         // updating 1 hour trade pool values
@@ -1093,6 +1093,13 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             amountCerUsdOut,
             FEE_DENORM - oneMinusFee, // = fee * FEE_DENORM
             transferTo
+        );
+
+        emit Sync(
+            token, 
+            pools[poolId].balanceToken, 
+            pools[poolId].balanceCerUsd,
+            pools[poolId].creditCerUsd
         );
     }
 
