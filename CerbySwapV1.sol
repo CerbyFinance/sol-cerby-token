@@ -395,7 +395,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         );
 
         // minting initial lp tokens
-        uint lpAmount = sqrt(uint(amountTokensIn) * uint(amountCerUsdToMint)) - MINIMUM_LIQUIDITY;
+        uint lpAmount = sqrt(amountTokensIn * amountCerUsdToMint) - MINIMUM_LIQUIDITY;
         _mint(
             transferTo,
             poolId,
@@ -987,6 +987,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         if (
             amountTokensIn + amountCerUsdIn <= 1
         ) {
+            revert("2");
             revert CerbySwapV1_AmountOfCerUsdOrTokensInMustBeLargerThanOne();
         }
 
@@ -1026,6 +1027,7 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
             if (
                 afterKValueDenormed < beforeKValueDenormed
             ) {
+                revert("1");
                 revert CerbySwapV1_InvariantKValueMustBeSameOrIncreasedOnAnySwaps();
             }
 
