@@ -1221,14 +1221,9 @@ contract CerbySwapV1 is CerbySwapLP1155V1 {
         
         uint newTotalCerUsdBalance = _getTokenBalance(cerUsdToken);
         pools[poolId].balanceCerUsd = 
-            newTotalCerUsdBalance > totalCerUsdBalance?
-                pools[poolId].balanceCerUsd + uint128(newTotalCerUsdBalance - totalCerUsdBalance):
-                pools[poolId].balanceCerUsd - uint128(totalCerUsdBalance - newTotalCerUsdBalance);
-
+            uint128(uint(pools[poolId].balanceCerUsd) + newTotalCerUsdBalance - totalCerUsdBalance);
         pools[poolId].creditCerUsd = 
-            newTotalCerUsdBalance > totalCerUsdBalance?
-                pools[poolId].creditCerUsd + newTotalCerUsdBalance - totalCerUsdBalance:
-                pools[poolId].creditCerUsd - totalCerUsdBalance + newTotalCerUsdBalance;
+            pools[poolId].creditCerUsd + newTotalCerUsdBalance - totalCerUsdBalance;
 
         totalCerUsdBalance = newTotalCerUsdBalance;
 

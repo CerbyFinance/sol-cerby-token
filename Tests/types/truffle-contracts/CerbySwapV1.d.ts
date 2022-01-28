@@ -250,7 +250,6 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       token: string,
       amountTokensIn: number | BN | string,
       amountCerUsdToMint: number | BN | string,
-      creditCerUsd: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
@@ -258,7 +257,6 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       token: string,
       amountTokensIn: number | BN | string,
       amountCerUsdToMint: number | BN | string,
-      creditCerUsd: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
@@ -266,7 +264,6 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       token: string,
       amountTokensIn: number | BN | string,
       amountCerUsdToMint: number | BN | string,
-      creditCerUsd: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
@@ -274,7 +271,6 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
       token: string,
       amountTokensIn: number | BN | string,
       amountCerUsdToMint: number | BN | string,
-      creditCerUsd: number | BN | string,
       transferTo: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
@@ -1035,7 +1031,6 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         token: string,
         amountTokensIn: number | BN | string,
         amountCerUsdToMint: number | BN | string,
-        creditCerUsd: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
@@ -1043,7 +1038,6 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         token: string,
         amountTokensIn: number | BN | string,
         amountCerUsdToMint: number | BN | string,
-        creditCerUsd: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
@@ -1051,7 +1045,6 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         token: string,
         amountTokensIn: number | BN | string,
         amountCerUsdToMint: number | BN | string,
-        creditCerUsd: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
@@ -1059,7 +1052,6 @@ export interface CerbySwapV1Instance extends Truffle.ContractInstance {
         token: string,
         amountTokensIn: number | BN | string,
         amountCerUsdToMint: number | BN | string,
-        creditCerUsd: number | BN | string,
         transferTo: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
