@@ -147,6 +147,11 @@
 								"internalType": "uint128",
 								"name": "lastSqrtKValue",
 								"type": "uint128"
+							},
+							{
+								"internalType": "uint256",
+								"name": "creditCerUsd",
+								"type": "uint256"
 							}
 						],
 						"internalType": "struct Pool[]",
@@ -262,18 +267,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"sol-defifactory-token/interfaces/ICerbySwapV1.sol": {
-			"keccak256": "0x0810c3b097ee7afd17912da76854a5841abade9fd0c756c628bbb83e429e40cb",
+			"keccak256": "0x88ff1af58113cf9fa11c39973189b2d57fd8a95df497827e6c82ca47f3a5c425",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://07d1a0a077adacddc7f4974ba00b544a055c4cda75d0ed47b4dfd0b84b000a9a",
-				"dweb:/ipfs/QmVEiK3JDYjnuHAgs6CHu9qKhAgaJ7a2yM54WkkuYgCMfK"
+				"bzz-raw://163638ffbdf584ccbf8f612cabcd5d2ccaab92ffe670036feb3608aa62d3d60a",
+				"dweb:/ipfs/QmfYfZWFXJNCVy7GKJWaUghjscdGuynQQpiatZeL5FDENq"
 			]
 		}
 	},

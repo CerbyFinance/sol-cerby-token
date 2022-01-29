@@ -7,6 +7,7 @@ struct Pool {
     uint128 balanceToken;
     uint128 balanceCerUsd;
     uint128 lastSqrtKValue;
+    uint creditCerUsd;
 }
 
 interface ICerbySwapV1 {

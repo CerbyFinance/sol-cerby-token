@@ -201,6 +201,11 @@
 							"internalType": "uint128",
 							"name": "lastSqrtKValue",
 							"type": "uint128"
+						},
+						{
+							"internalType": "uint256",
+							"name": "creditCerUsd",
+							"type": "uint256"
 						}
 					],
 					"internalType": "struct Pool[]",
