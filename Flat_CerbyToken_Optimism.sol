@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 // File: sol-defifactory-token/openzeppelin/utils/Counters.sol
 
-
-
 pragma solidity ^0.8.0;
 
 /**
@@ -42,8 +40,6 @@ library Counters {
 
 // File: sol-defifactory-token/openzeppelin/utils/cryptography/ECDSA.sol
 
-
-
 pragma solidity ^0.8.0;
 
 /**
@@ -67,7 +63,11 @@ library ECDSA {
      * this is by receiving a hash of the original message (which may otherwise
      * be too long), and then calling {toEthSignedMessageHash} on it.
      */
-    function recover(bytes32 hash, bytes memory signature) internal pure returns (address) {
+    function recover(bytes32 hash, bytes memory signature)
+        internal
+        pure
+        returns (address)
+    {
         // Divide the signature in r, s and v variables
         bytes32 r;
         bytes32 s;
@@ -92,7 +92,10 @@ library ECDSA {
             assembly {
                 let vs := mload(add(signature, 0x40))
                 r := mload(add(signature, 0x20))
-                s := and(vs, 0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff)
+                s := and(
+                    vs,
+                    0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                )
                 v := add(shr(255, vs), 27)
             }
         } else {
@@ -106,7 +109,12 @@ library ECDSA {
      * @dev Overload of {ECDSA-recover} that receives the `v`,
      * `r` and `s` signature fields separately.
      */
-    function recover(bytes32 hash, uint8 v, bytes32 r, bytes32 s) internal pure returns (address) {
+    function recover(
+        bytes32 hash,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) internal pure returns (address) {
         // EIP-2 still allows signature malleability for ecrecover(). Remove this possibility and make the signature
         // unique. Appendix F in the Ethereum Yellow paper (https://ethereum.github.io/yellowpaper/paper.pdf), defines
         // the valid range for s in (281): 0 < s < secp256k1n ÷ 2 + 1, and for v in (282): v ∈ {27, 28}. Most
@@ -116,7 +124,11 @@ library ECDSA {
         // with 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141 - s1 and flip v from 27 to 28 or
         // vice versa. If your library also generates signatures with 0/1 for v instead 27/28, add 27 to v to accept
         // these malleable signatures as well.
-        require(uint256(s) <= 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0, "ECDSA: invalid signature 's' value");
+        require(
+            uint256(s) <=
+                0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0,
+            "ECDSA: invalid signature 's' value"
+        );
         require(v == 27 || v == 28, "ECDSA: invalid signature 'v' value");
 
         // If the signature is valid (and not malleable), return the signer address
@@ -134,10 +146,17 @@ library ECDSA {
      *
      * See {recover}.
      */
-    function toEthSignedMessageHash(bytes32 hash) internal pure returns (bytes32) {
+    function toEthSignedMessageHash(bytes32 hash)
+        internal
+        pure
+        returns (bytes32)
+    {
         // 32 is the length in bytes of hash,
         // enforced by the type signature above
-        return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", hash));
+        return
+            keccak256(
+                abi.encodePacked("\x19Ethereum Signed Message:\n32", hash)
+            );
     }
 
     /**
@@ -149,17 +168,21 @@ library ECDSA {
      *
      * See {recover}.
      */
-    function toTypedDataHash(bytes32 domainSeparator, bytes32 structHash) internal pure returns (bytes32) {
-        return keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
+    function toTypedDataHash(bytes32 domainSeparator, bytes32 structHash)
+        internal
+        pure
+        returns (bytes32)
+    {
+        return
+            keccak256(
+                abi.encodePacked("\x19\x01", domainSeparator, structHash)
+            );
     }
 }
 
 // File: sol-defifactory-token/openzeppelin/utils/cryptography/draft-EIP712.sol
 
-
-
 pragma solidity ^0.8.0;
-
 
 /**
  * @dev https://eips.ethereum.org/EIPS/eip-712[EIP 712] is a standard for hashing and signing of typed structured data.
@@ -190,6 +213,7 @@ abstract contract EIP712 {
     bytes32 private immutable _HASHED_NAME;
     bytes32 private immutable _HASHED_VERSION;
     bytes32 private immutable _TYPE_HASH;
+
     /* solhint-enable var-name-mixedcase */
 
     /**
@@ -207,11 +231,17 @@ abstract contract EIP712 {
     constructor(string memory name, string memory version) {
         bytes32 hashedName = keccak256(bytes(name));
         bytes32 hashedVersion = keccak256(bytes(version));
-        bytes32 typeHash = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
+        bytes32 typeHash = keccak256(
+            "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+        );
         _HASHED_NAME = hashedName;
         _HASHED_VERSION = hashedVersion;
         _CACHED_CHAIN_ID = block.chainid;
-        _CACHED_DOMAIN_SEPARATOR = _buildDomainSeparator(typeHash, hashedName, hashedVersion);
+        _CACHED_DOMAIN_SEPARATOR = _buildDomainSeparator(
+            typeHash,
+            hashedName,
+            hashedVersion
+        );
         _TYPE_HASH = typeHash;
     }
 
@@ -222,20 +252,30 @@ abstract contract EIP712 {
         if (block.chainid == _CACHED_CHAIN_ID) {
             return _CACHED_DOMAIN_SEPARATOR;
         } else {
-            return _buildDomainSeparator(_TYPE_HASH, _HASHED_NAME, _HASHED_VERSION);
+            return
+                _buildDomainSeparator(
+                    _TYPE_HASH,
+                    _HASHED_NAME,
+                    _HASHED_VERSION
+                );
         }
     }
 
-    function _buildDomainSeparator(bytes32 typeHash, bytes32 name, bytes32 version) private view returns (bytes32) {
-        return keccak256(
-            abi.encode(
-                typeHash,
-                name,
-                version,
-                block.chainid,
-                address(this)
-            )
-        );
+    function _buildDomainSeparator(
+        bytes32 typeHash,
+        bytes32 name,
+        bytes32 version
+    ) private view returns (bytes32) {
+        return
+            keccak256(
+                abi.encode(
+                    typeHash,
+                    name,
+                    version,
+                    block.chainid,
+                    address(this)
+                )
+            );
     }
 
     /**
@@ -253,14 +293,17 @@ abstract contract EIP712 {
      * address signer = ECDSA.recover(digest, signature);
      * ```
      */
-    function _hashTypedDataV4(bytes32 structHash) internal view virtual returns (bytes32) {
+    function _hashTypedDataV4(bytes32 structHash)
+        internal
+        view
+        virtual
+        returns (bytes32)
+    {
         return ECDSA.toTypedDataHash(_domainSeparatorV4(), structHash);
     }
 }
 
 // File: sol-defifactory-token/openzeppelin/token/ERC20/IERC20.sol
-
-
 
 pragma solidity ^0.8.0;
 
@@ -285,7 +328,9 @@ interface IERC20 {
      *
      * Emits a {Transfer} event.
      */
-    function transfer(address recipient, uint256 amount) external returns (bool);
+    function transfer(address recipient, uint256 amount)
+        external
+        returns (bool);
 
     /**
      * @dev Returns the remaining number of tokens that `spender` will be
@@ -294,7 +339,10 @@ interface IERC20 {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    function allowance(address owner, address spender) external view returns (uint256);
+    function allowance(address owner, address spender)
+        external
+        view
+        returns (uint256);
 
     /**
      * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
@@ -321,7 +369,11 @@ interface IERC20 {
      *
      * Emits a {Transfer} event.
      */
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
 
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to
@@ -335,15 +387,16 @@ interface IERC20 {
      * @dev Emitted when the allowance of a `spender` for an `owner` is set by
      * a call to {approve}. `value` is the new allowance.
      */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
 }
 
 // File: sol-defifactory-token/openzeppelin/token/ERC20/extensions/IERC20Metadata.sol
 
-
-
 pragma solidity ^0.8.0;
-
 
 /**
  * @dev Interface for the optional metadata functions from the ERC20 standard.
@@ -368,8 +421,6 @@ interface IERC20Metadata is IERC20 {
 }
 
 // File: sol-defifactory-token/openzeppelin/token/ERC20/extensions/draft-IERC20Permit.sol
-
-
 
 pragma solidity ^0.8.0;
 
@@ -403,7 +454,15 @@ interface IERC20Permit {
      * https://eips.ethereum.org/EIPS/eip-2612#specification[relevant EIP
      * section].
      */
-    function permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external;
+    function permit(
+        address owner,
+        address spender,
+        uint256 value,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external;
 
     /**
      * @dev Returns the current nonce for `owner`. This value must be
@@ -422,8 +481,6 @@ interface IERC20Permit {
 }
 
 // File: sol-defifactory-token/openzeppelin/utils/structs/EnumerableSet.sol
-
-
 
 pragma solidity ^0.8.0;
 
@@ -464,10 +521,9 @@ library EnumerableSet {
     struct Set {
         // Storage of set values
         bytes32[] _values;
-
         // Position of the value in the `values` array, plus 1 because index 0
         // means a value is not in the set.
-        mapping (bytes32 => uint256) _indexes;
+        mapping(bytes32 => uint256) _indexes;
     }
 
     /**
@@ -498,7 +554,8 @@ library EnumerableSet {
         // We read and store the value's index to prevent multiple reads from the same storage slot
         uint256 valueIndex = set._indexes[value];
 
-        if (valueIndex != 0) { // Equivalent to contains(set, value)
+        if (valueIndex != 0) {
+            // Equivalent to contains(set, value)
             // To delete an element from the _values array in O(1), we swap the element to delete with the last one in
             // the array, and then remove the last element (sometimes called as 'swap and pop').
             // This modifies the order of the array, as noted in {at}.
@@ -530,7 +587,11 @@ library EnumerableSet {
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function _contains(Set storage set, bytes32 value) private view returns (bool) {
+    function _contains(Set storage set, bytes32 value)
+        private
+        view
+        returns (bool)
+    {
         return set._indexes[value] != 0;
     }
 
@@ -541,17 +602,21 @@ library EnumerableSet {
         return set._values.length;
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function _at(Set storage set, uint256 index) private view returns (bytes32) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function _at(Set storage set, uint256 index)
+        private
+        view
+        returns (bytes32)
+    {
         return set._values[index];
     }
 
@@ -567,7 +632,10 @@ library EnumerableSet {
      * Returns true if the value was added to the set, that is if it was not
      * already present.
      */
-    function add(Bytes32Set storage set, bytes32 value) internal returns (bool) {
+    function add(Bytes32Set storage set, bytes32 value)
+        internal
+        returns (bool)
+    {
         return _add(set._inner, value);
     }
 
@@ -577,14 +645,21 @@ library EnumerableSet {
      * Returns true if the value was removed from the set, that is if it was
      * present.
      */
-    function remove(Bytes32Set storage set, bytes32 value) internal returns (bool) {
+    function remove(Bytes32Set storage set, bytes32 value)
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, value);
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function contains(Bytes32Set storage set, bytes32 value) internal view returns (bool) {
+    function contains(Bytes32Set storage set, bytes32 value)
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, value);
     }
 
@@ -595,17 +670,21 @@ library EnumerableSet {
         return _length(set._inner);
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function at(Bytes32Set storage set, uint256 index) internal view returns (bytes32) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function at(Bytes32Set storage set, uint256 index)
+        internal
+        view
+        returns (bytes32)
+    {
         return _at(set._inner, index);
     }
 
@@ -621,7 +700,10 @@ library EnumerableSet {
      * Returns true if the value was added to the set, that is if it was not
      * already present.
      */
-    function add(AddressSet storage set, address value) internal returns (bool) {
+    function add(AddressSet storage set, address value)
+        internal
+        returns (bool)
+    {
         return _add(set._inner, bytes32(uint256(uint160(value))));
     }
 
@@ -631,14 +713,21 @@ library EnumerableSet {
      * Returns true if the value was removed from the set, that is if it was
      * present.
      */
-    function remove(AddressSet storage set, address value) internal returns (bool) {
+    function remove(AddressSet storage set, address value)
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, bytes32(uint256(uint160(value))));
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function contains(AddressSet storage set, address value) internal view returns (bool) {
+    function contains(AddressSet storage set, address value)
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, bytes32(uint256(uint160(value))));
     }
 
@@ -649,20 +738,23 @@ library EnumerableSet {
         return _length(set._inner);
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function at(AddressSet storage set, uint256 index) internal view returns (address) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function at(AddressSet storage set, uint256 index)
+        internal
+        view
+        returns (address)
+    {
         return address(uint160(uint256(_at(set._inner, index))));
     }
-
 
     // UintSet
 
@@ -686,14 +778,21 @@ library EnumerableSet {
      * Returns true if the value was removed from the set, that is if it was
      * present.
      */
-    function remove(UintSet storage set, uint256 value) internal returns (bool) {
+    function remove(UintSet storage set, uint256 value)
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, bytes32(value));
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function contains(UintSet storage set, uint256 value) internal view returns (bool) {
+    function contains(UintSet storage set, uint256 value)
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, bytes32(value));
     }
 
@@ -704,24 +803,26 @@ library EnumerableSet {
         return _length(set._inner);
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function at(UintSet storage set, uint256 index) internal view returns (uint256) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function at(UintSet storage set, uint256 index)
+        internal
+        view
+        returns (uint256)
+    {
         return uint256(_at(set._inner, index));
     }
 }
 
 // File: sol-defifactory-token/openzeppelin/utils/introspection/IERC165.sol
-
-
 
 pragma solidity ^0.8.0;
 
@@ -748,10 +849,7 @@ interface IERC165 {
 
 // File: sol-defifactory-token/openzeppelin/utils/introspection/ERC165.sol
 
-
-
 pragma solidity ^0.8.0;
-
 
 /**
  * @dev Implementation of the {IERC165} interface.
@@ -771,14 +869,18 @@ abstract contract ERC165 is IERC165 {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
         return interfaceId == type(IERC165).interfaceId;
     }
 }
 
 // File: sol-defifactory-token/openzeppelin/utils/Strings.sol
-
-
 
 pragma solidity ^0.8.0;
 
@@ -832,7 +934,11 @@ library Strings {
     /**
      * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.
      */
-    function toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
+    function toHexString(uint256 value, uint256 length)
+        internal
+        pure
+        returns (string memory)
+    {
         bytes memory buffer = new bytes(2 * length + 2);
         buffer[0] = "0";
         buffer[1] = "x";
@@ -843,12 +949,9 @@ library Strings {
         require(value == 0, "Strings: hex length insufficient");
         return string(buffer);
     }
-
 }
 
 // File: sol-defifactory-token/openzeppelin/utils/Context.sol
-
-
 
 pragma solidity ^0.8.0;
 
@@ -875,12 +978,7 @@ abstract contract Context {
 
 // File: sol-defifactory-token/openzeppelin/token/ERC20/ERC20Mod.sol
 
-
-
 pragma solidity ^0.8.0;
-
-
-
 
 /**
  * @dev Implementation of the {IERC20} interface.
@@ -907,11 +1005,10 @@ pragma solidity ^0.8.0;
  * allowances. See {IERC20-approve}.
  */
 contract ERC20Mod is Context, IERC20, IERC20Metadata {
-    mapping (address => uint256) internal tokenBalances;
-    uint internal totalTokenSupply;
+    mapping(address => uint256) internal tokenBalances;
+    uint256 internal totalTokenSupply;
 
-    mapping (address => mapping (address => uint256)) internal _allowances;
-
+    mapping(address => mapping(address => uint256)) internal _allowances;
 
     string internal _name;
     string internal _symbol;
@@ -925,7 +1022,7 @@ contract ERC20Mod is Context, IERC20, IERC20Metadata {
      * All two of these values are immutable: they can only be set once during
      * construction.
      */
-    constructor (string memory name_, string memory symbol_) {
+    constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
     }
@@ -973,7 +1070,13 @@ contract ERC20Mod is Context, IERC20, IERC20Metadata {
     /**
      * @dev See {IERC20-balanceOf}.
      */
-    function balanceOf(address account) public view virtual override returns (uint256) {
+    function balanceOf(address account)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
         return tokenBalances[account];
     }
 
@@ -985,12 +1088,23 @@ contract ERC20Mod is Context, IERC20, IERC20Metadata {
      * - `recipient` cannot be the zero address.
      * - the caller must have a balance of at least `amount`.
      */
-    function transfer(address recipient, uint256 amount) public virtual override returns (bool) { }
+    function transfer(address recipient, uint256 amount)
+        public
+        virtual
+        override
+        returns (bool)
+    {}
 
     /**
      * @dev See {IERC20-allowance}.
      */
-    function allowance(address owner, address spender) public view virtual override returns (uint256) {
+    function allowance(address owner, address spender)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
         return _allowances[owner][spender];
     }
 
@@ -1001,7 +1115,12 @@ contract ERC20Mod is Context, IERC20, IERC20Metadata {
      *
      * - `spender` cannot be the zero address.
      */
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
+    function approve(address spender, uint256 amount)
+        public
+        virtual
+        override
+        returns (bool)
+    {
         _approve(_msgSender(), spender, amount);
         return true;
     }
@@ -1019,7 +1138,11 @@ contract ERC20Mod is Context, IERC20, IERC20Metadata {
      * - the caller must have allowance for ``sender``'s tokens of at least
      * `amount`.
      */
-    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) { }
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) public virtual override returns (bool) {}
 
     /**
      * @dev Atomically increases the allowance granted to `spender` by the caller.
@@ -1033,8 +1156,16 @@ contract ERC20Mod is Context, IERC20, IERC20Metadata {
      *
      * - `spender` cannot be the zero address.
      */
-    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
-        _approve(_msgSender(), spender, _allowances[_msgSender()][spender] + addedValue);
+    function increaseAllowance(address spender, uint256 addedValue)
+        public
+        virtual
+        returns (bool)
+    {
+        _approve(
+            _msgSender(),
+            spender,
+            _allowances[_msgSender()][spender] + addedValue
+        );
         return true;
     }
 
@@ -1052,9 +1183,16 @@ contract ERC20Mod is Context, IERC20, IERC20Metadata {
      * - `spender` must have allowance for the caller of at least
      * `subtractedValue`.
      */
-    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
+    function decreaseAllowance(address spender, uint256 subtractedValue)
+        public
+        virtual
+        returns (bool)
+    {
         uint256 currentAllowance = _allowances[_msgSender()][spender];
-        require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
+        require(
+            currentAllowance >= subtractedValue,
+            "ERC20: decreased allowance below zero"
+        );
         _approve(_msgSender(), spender, currentAllowance - subtractedValue);
 
         return true;
@@ -1074,8 +1212,11 @@ contract ERC20Mod is Context, IERC20, IERC20Metadata {
      * - `recipient` cannot be the zero address.
      * - `sender` must have a balance of at least `amount`.
      */
-    function _transfer(address sender, address recipient, uint256 amount) internal virtual { }
-
+    function _transfer(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) internal virtual {}
 
     /**
      * @dev Sets `amount` as the allowance of `spender` over the `owner` s tokens.
@@ -1090,7 +1231,11 @@ contract ERC20Mod is Context, IERC20, IERC20Metadata {
      * - `owner` cannot be the zero address.
      * - `spender` cannot be the zero address.
      */
-    function _approve(address owner, address spender, uint256 amount) internal virtual {
+    function _approve(
+        address owner,
+        address spender,
+        uint256 amount
+    ) internal virtual {
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
 
@@ -1101,14 +1246,7 @@ contract ERC20Mod is Context, IERC20, IERC20Metadata {
 
 // File: sol-defifactory-token/openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol
 
-
-
 pragma solidity ^0.8.0;
-
-
-
-
-
 
 /**
  * @dev Implementation of the ERC20 Permit extension allowing approvals to be made via signatures, as defined in
@@ -1123,23 +1261,33 @@ pragma solidity ^0.8.0;
 abstract contract ERC20Permit is ERC20Mod, IERC20Permit, EIP712 {
     using Counters for Counters.Counter;
 
-    mapping (address => Counters.Counter) private _nonces;
+    mapping(address => Counters.Counter) private _nonces;
 
     // solhint-disable-next-line var-name-mixedcase
-    bytes32 private immutable _PERMIT_TYPEHASH = keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
+    bytes32 private immutable _PERMIT_TYPEHASH =
+        keccak256(
+            "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
+        );
 
     /**
      * @dev Initializes the {EIP712} domain separator using the `name` parameter, and setting `version` to `"1"`.
      *
      * It's a good idea to use the same `name` that is defined as the ERC20 token name.
      */
-    constructor(string memory name) EIP712(name, "1") {
-    }
+    constructor(string memory name) EIP712(name, "1") {}
 
     /**
      * @dev See {IERC20Permit-permit}.
      */
-    function permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public virtual override {
+    function permit(
+        address owner,
+        address spender,
+        uint256 value,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) public virtual override {
         // solhint-disable-next-line not-rely-on-time
         require(block.timestamp <= deadline, "ERC20Permit: expired deadline");
 
@@ -1165,7 +1313,13 @@ abstract contract ERC20Permit is ERC20Mod, IERC20Permit, EIP712 {
     /**
      * @dev See {IERC20Permit-nonces}.
      */
-    function nonces(address owner) public view virtual override returns (uint256) {
+    function nonces(address owner)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
         return _nonces[owner].current();
     }
 
@@ -1182,7 +1336,11 @@ abstract contract ERC20Permit is ERC20Mod, IERC20Permit, EIP712 {
      *
      * _Available since v4.1._
      */
-    function _useNonce(address owner) internal virtual returns (uint256 current) {
+    function _useNonce(address owner)
+        internal
+        virtual
+        returns (uint256 current)
+    {
         Counters.Counter storage nonce = _nonces[owner];
         current = nonce.current();
         nonce.increment();
@@ -1191,13 +1349,7 @@ abstract contract ERC20Permit is ERC20Mod, IERC20Permit, EIP712 {
 
 // File: sol-defifactory-token/openzeppelin/access/AccessControl.sol
 
-
-
 pragma solidity ^0.8.0;
-
-
-
-
 
 struct RoleAccess {
     bytes32 role;
@@ -1208,10 +1360,17 @@ struct RoleAccess {
  * @dev External interface of AccessControl declared to support ERC165 detection.
  */
 interface IAccessControl {
-    function hasRole(bytes32 role, address account) external view returns (bool);
+    function hasRole(bytes32 role, address account)
+        external
+        view
+        returns (bool);
+
     function getRoleAdmin(bytes32 role) external view returns (bytes32);
+
     function grantRole(bytes32 role, address account) external;
+
     function revokeRole(bytes32 role, address account) external;
+
     function renounceRole(bytes32 role, address account) external;
 }
 
@@ -1255,11 +1414,11 @@ interface IAccessControl {
  */
 abstract contract AccessControl is Context, IAccessControl, ERC165 {
     struct RoleData {
-        mapping (address => bool) members;
+        mapping(address => bool) members;
         bytes32 adminRole;
     }
 
-    mapping (bytes32 => RoleData) private _roles;
+    mapping(bytes32 => RoleData) private _roles;
 
     bytes32 public constant ROLE_ADMIN = 0x00;
 
@@ -1271,7 +1430,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * _Available since v3.1._
      */
-    event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole);
+    event RoleAdminChanged(
+        bytes32 indexed role,
+        bytes32 indexed previousAdminRole,
+        bytes32 indexed newAdminRole
+    );
 
     /**
      * @dev Emitted when `account` is granted `role`.
@@ -1279,7 +1442,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      * `sender` is the account that originated the contract call, an admin role
      * bearer except when using {_setupRole}.
      */
-    event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender);
+    event RoleGranted(
+        bytes32 indexed role,
+        address indexed account,
+        address indexed sender
+    );
 
     /**
      * @dev Emitted when `account` is revoked `role`.
@@ -1288,7 +1455,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *   - if using `revokeRole`, it is the admin role bearer
      *   - if using `renounceRole`, it is the role bearer (i.e. `account`)
      */
-    event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender);
+    event RoleRevoked(
+        bytes32 indexed role,
+        address indexed account,
+        address indexed sender
+    );
 
     /**
      * @dev Modifier that checks that an account has a specific role. Reverts
@@ -1308,15 +1479,27 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(IAccessControl).interfaceId
-            || super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
+        return
+            interfaceId == type(IAccessControl).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 
     /**
      * @dev Returns `true` if `account` has been granted `role`.
      */
-    function hasRole(bytes32 role, address account) public view override returns (bool) {
+    function hasRole(bytes32 role, address account)
+        public
+        view
+        override
+        returns (bool)
+    {
         return _roles[role].members[account];
     }
 
@@ -1328,13 +1511,17 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *  /^AccessControl: account (0x[0-9a-f]{20}) is missing role (0x[0-9a-f]{32})$/
      */
     function _checkRole(bytes32 role, address account) internal view {
-        if(!hasRole(role, account)) {
-            revert(string(abi.encodePacked(
-                "AccessControl: account ",
-                Strings.toHexString(uint160(account), 20),
-                " is missing role ",
-                Strings.toHexString(uint256(role), 32)
-            )));
+        if (!hasRole(role, account)) {
+            revert(
+                string(
+                    abi.encodePacked(
+                        "AccessControl: account ",
+                        Strings.toHexString(uint160(account), 20),
+                        " is missing role ",
+                        Strings.toHexString(uint256(role), 32)
+                    )
+                )
+            );
         }
     }
 
@@ -1358,16 +1545,20 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * - the caller must have ``role``'s admin role.
      */
-    function grantRole(bytes32 role, address account) public virtual override onlyRole(ROLE_ADMIN) {
+    function grantRole(bytes32 role, address account)
+        public
+        virtual
+        override
+        onlyRole(ROLE_ADMIN)
+    {
         _grantRole(role, account);
     }
-    
+
     function grantRolesBulk(RoleAccess[] calldata roles)
         external
         onlyRole(ROLE_ADMIN)
     {
-        for(uint i = 0; i<roles.length; i++)
-        {
+        for (uint256 i = 0; i < roles.length; i++) {
             _setupRole(roles[i].role, roles[i].addr);
         }
     }
@@ -1381,7 +1572,12 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * - the caller must have ``role``'s admin role.
      */
-    function revokeRole(bytes32 role, address account) public virtual override onlyRole(getRoleAdmin(role)) {
+    function revokeRole(bytes32 role, address account)
+        public
+        virtual
+        override
+        onlyRole(getRoleAdmin(role))
+    {
         _revokeRole(role, account);
     }
 
@@ -1399,8 +1595,15 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * - the caller must be `account`.
      */
-    function renounceRole(bytes32 role, address account) public virtual override {
-        require(account == _msgSender(), "AccessControl: can only renounce roles for self");
+    function renounceRole(bytes32 role, address account)
+        public
+        virtual
+        override
+    {
+        require(
+            account == _msgSender(),
+            "AccessControl: can only renounce roles for self"
+        );
 
         _revokeRole(role, account);
     }
@@ -1452,34 +1655,44 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
 
 // File: sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol
 
-
-
 pragma solidity ^0.8.0;
-
-
 
 /**
  * @dev External interface of AccessControlEnumerable declared to support ERC165 detection.
  */
 interface IAccessControlEnumerable {
-    function getRoleMember(bytes32 role, uint256 index) external view returns (address);
+    function getRoleMember(bytes32 role, uint256 index)
+        external
+        view
+        returns (address);
+
     function getRoleMemberCount(bytes32 role) external view returns (uint256);
 }
 
 /**
  * @dev Extension of {AccessControl} that allows enumerating the members of each role.
  */
-abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessControl {
+abstract contract AccessControlEnumerable is
+    IAccessControlEnumerable,
+    AccessControl
+{
     using EnumerableSet for EnumerableSet.AddressSet;
 
-    mapping (bytes32 => EnumerableSet.AddressSet) private _roleMembers;
+    mapping(bytes32 => EnumerableSet.AddressSet) private _roleMembers;
 
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(IAccessControlEnumerable).interfaceId
-            || super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
+        return
+            interfaceId == type(IAccessControlEnumerable).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 
     /**
@@ -1494,7 +1707,12 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
      * https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post]
      * for more information.
      */
-    function getRoleMember(bytes32 role, uint256 index) public view override returns (address) {
+    function getRoleMember(bytes32 role, uint256 index)
+        public
+        view
+        override
+        returns (address)
+    {
         return _roleMembers[role].at(index);
     }
 
@@ -1502,7 +1720,12 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
      * @dev Returns the number of accounts that have `role`. Can be used
      * together with {getRoleMember} to enumerate all bearers of a role.
      */
-    function getRoleMemberCount(bytes32 role) public view override returns (uint256) {
+    function getRoleMemberCount(bytes32 role)
+        public
+        view
+        override
+        returns (uint256)
+    {
         return _roleMembers[role].length();
     }
 
@@ -1525,7 +1748,11 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
     /**
      * @dev Overload {renounceRole} to track enumerable memberships
      */
-    function renounceRole(bytes32 role, address account) public virtual override {
+    function renounceRole(bytes32 role, address account)
+        public
+        virtual
+        override
+    {
         super.renounceRole(role, account);
         _roleMembers[role].remove(account);
     }
@@ -1533,15 +1760,17 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
     /**
      * @dev Overload {_setupRole} to track enumerable memberships
      */
-    function _setupRole(bytes32 role, address account) internal virtual override {
+    function _setupRole(bytes32 role, address account)
+        internal
+        virtual
+        override
+    {
         super._setupRole(role, account);
         _roleMembers[role].add(account);
     }
 }
 
 // File: sol-defifactory-token/interfaces/ICerbyBotDetection.sol
-
-
 
 pragma solidity ^0.8.4;
 
@@ -1551,132 +1780,111 @@ struct TransactionInfo {
 }
 
 interface ICerbyBotDetection {
-        
-    function checkTransactionInfo(address tokenAddr, address sender, address recipient, uint recipientBalance, uint transferAmount)
-        external
-        returns (TransactionInfo memory output);
-    
-    function isBotAddress(address addr)
-        external
-        view
-        returns (bool);
+    function checkTransactionInfo(
+        address tokenAddr,
+        address sender,
+        address recipient,
+        uint256 recipientBalance,
+        uint256 transferAmount
+    ) external returns (TransactionInfo memory output);
+
+    function isBotAddress(address addr) external view returns (bool);
 }
 // File: sol-defifactory-token/interfaces/ICerbyToken.sol
-
-
 
 pragma solidity ^0.8.4;
 
 struct AccessSettings {
-        bool isMinter;
-        bool isBurner;
-        bool isTransferer;
-        bool isModerator;
-        bool isTaxer;
-        
-        address addr;
-    }
+    bool isMinter;
+    bool isBurner;
+    bool isTransferer;
+    bool isModerator;
+    bool isTaxer;
+    address addr;
+}
 
 interface ICerbyToken {
-    
-    function allowance(
-        address owner, 
-        address spender
-    ) external view returns (uint);
-    
+    function allowance(address owner, address spender)
+        external
+        view
+        returns (uint256);
+
     function transferFrom(
-        address sender, 
-        address recipient, 
+        address sender,
+        address recipient,
         uint256 amount
     ) external returns (bool);
-    
-    function transfer(
-        address recipient, 
-        uint256 amount
-    ) external returns (bool);
-    
-    function approve(
-        address _spender,
-        uint _value
-    )  external returns (
-        bool success
-    );
-    
-    function balanceOf(
-        address account
-    )
-        external
-        view
-        returns (uint);
-    
-    function totalSupply()
-        external
-        view
-        returns (uint);
-        
-    function mintHumanAddress(address to, uint desiredAmountToMint) external;
 
-    function burnHumanAddress(address from, uint desiredAmountToBurn) external;
-
-    function mintByBridge(address to, uint realAmountToMint) external;
-
-    function burnByBridge(address from, uint realAmountBurn) external;
-    
-    function getUtilsContractAtPos(uint pos)
+    function transfer(address recipient, uint256 amount)
         external
-        view
-        returns (address);
-    
+        returns (bool);
+
+    function approve(address _spender, uint256 _value)
+        external
+        returns (bool success);
+
+    function balanceOf(address account) external view returns (uint256);
+
+    function totalSupply() external view returns (uint256);
+
+    function mintHumanAddress(address to, uint256 desiredAmountToMint) external;
+
+    function burnHumanAddress(address from, uint256 desiredAmountToBurn)
+        external;
+
+    function mintByBridge(address to, uint256 realAmountToMint) external;
+
+    function burnByBridge(address from, uint256 realAmountBurn) external;
+
+    function getUtilsContractAtPos(uint256 pos) external view returns (address);
+
     function updateUtilsContracts(AccessSettings[] calldata accessSettings)
         external;
-    
-    function transferCustom(address sender, address recipient, uint256 amount)
-        external;
+
+    function transferCustom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external;
 }
 // File: sol-defifactory-token/CerbyBasedToken.sol
 
-
-
 pragma solidity ^0.8.4;
 
-
-
-
-
-contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Permit {
+contract CerbyBasedToken is
+    Context,
+    AccessControlEnumerable,
+    ERC20Mod,
+    ERC20Permit
+{
     bytes32 public constant ROLE_MINTER = keccak256("ROLE_MINTER");
     bytes32 public constant ROLE_BURNER = keccak256("ROLE_BURNER");
     bytes32 public constant ROLE_TRANSFERER = keccak256("ROLE_TRANSFERER");
     bytes32 public constant ROLE_MODERATOR = keccak256("ROLE_MODERATOR");
-    
-    uint internal constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
-    address constant CERBY_TOKEN_CONTRACT_ADDRESS = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
+
+    uint256 internal constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
+    address constant CERBY_TOKEN_CONTRACT_ADDRESS =
+        0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
     address constant BURN_ADDRESS = address(0x0);
-    
+
     bool public isPaused;
     bool isInitialized;
-    
-    event TransferCustom(address sender, address recipient, uint amount);
-    event MintHumanAddress(address recipient, uint amount);
-    event BurnHumanAddress(address sender, uint amount);
-    
-    event MintedByBridge(address recipient, uint amount);
-    event BurnedByBridge(address sender, uint amount);
 
-    constructor(string memory name, string memory symbol) 
-        ERC20Mod(name, symbol) 
+    event TransferCustom(address sender, address recipient, uint256 amount);
+    event MintHumanAddress(address recipient, uint256 amount);
+    event BurnHumanAddress(address sender, uint256 amount);
+
+    event MintedByBridge(address recipient, uint256 amount);
+    event BurnedByBridge(address sender, uint256 amount);
+
+    constructor(string memory name, string memory symbol)
+        ERC20Mod(name, symbol)
         ERC20Permit(name)
-    {
-    }
-    
-    function initializeOwner(address owner)
-        internal
-    {
-        require(
-            !isInitialized,
-            "T: Already initialized"
-        );
-        
+    {}
+
+    function initializeOwner(address owner) internal {
+        require(!isInitialized, "T: Already initialized");
+
         isInitialized = true;
         _setupRole(ROLE_ADMIN, owner);
         _setupRole(ROLE_MINTER, owner);
@@ -1684,144 +1892,152 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
         _setupRole(ROLE_TRANSFERER, owner);
         _setupRole(ROLE_MODERATOR, owner);
     }
-    
-    modifier checkTransaction(address sender, address recipient, uint transferAmount)
-    {
+
+    modifier checkTransaction(
+        address sender,
+        address recipient,
+        uint256 transferAmount
+    ) {
         ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
             getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
         );
         iCerbyBotDetection.checkTransactionInfo(
-            CERBY_TOKEN_CONTRACT_ADDRESS, 
-            sender, 
-            recipient, 
-            tokenBalances[recipient], 
+            CERBY_TOKEN_CONTRACT_ADDRESS,
+            sender,
+            recipient,
+            tokenBalances[recipient],
             transferAmount
         );
         _;
     }
-    
-    modifier notPausedContract {
-        require(
-            !isPaused,
-            "T: paused"
-        );
+
+    modifier notPausedContract() {
+        require(!isPaused, "T: paused");
         _;
     }
-    
-    modifier pausedContract {
-        require(
-            isPaused,
-            "T: !paused"
-        );
+
+    modifier pausedContract() {
+        require(isPaused, "T: !paused");
         _;
     }
-    
+
     modifier recipientIsNotBurnAddress(address recipient) {
-        require(
-            recipient != BURN_ADDRESS,
-            "T: !burn"
-        );
+        require(recipient != BURN_ADDRESS, "T: !burn");
         _;
     }
-    
-    function getUtilsContractAtPos(uint pos)
+
+    function getUtilsContractAtPos(uint256 pos)
         public
         view
         virtual
         returns (address)
     {
-        return ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(pos);
+        return
+            ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).getUtilsContractAtPos(
+                pos
+            );
     }
-    
-    function updateNameAndSymbol(string calldata __name, string calldata __symbol)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
+
+    function updateNameAndSymbol(
+        string calldata __name,
+        string calldata __symbol
+    ) external onlyRole(ROLE_ADMIN) {
         _name = __name;
         _symbol = __symbol;
     }
-    
-    function pauseContract()
-        external
-        notPausedContract
-        onlyRole(ROLE_ADMIN)
-    {
+
+    function pauseContract() external notPausedContract onlyRole(ROLE_ADMIN) {
         isPaused = true;
     }
-    
-    function resumeContract()
-        external
-        pausedContract
-        onlyRole(ROLE_ADMIN)
-    {
+
+    function resumeContract() external pausedContract onlyRole(ROLE_ADMIN) {
         isPaused = false;
     }
-    
-    function transfer(address recipient, uint256 amount) 
-        public 
+
+    function transfer(address recipient, uint256 amount)
+        public
+        virtual
+        override
         notPausedContract
-        virtual 
-        override 
-        returns (bool) 
+        returns (bool)
     {
         _transfer(_msgSender(), recipient, amount);
         return true;
     }
-    
-    function transferFrom(address sender, address recipient, uint256 amount) 
-        public 
+
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    )
+        public
+        virtual
+        override
         notPausedContract
         recipientIsNotBurnAddress(recipient)
-        virtual 
-        override 
-        returns (bool) 
+        returns (bool)
     {
         _transfer(sender, recipient, amount);
 
         uint256 currentAllowance = _allowances[sender][_msgSender()];
-        require(currentAllowance >= amount, "T: transfer amount exceeds allowance");
+        require(
+            currentAllowance >= amount,
+            "T: transfer amount exceeds allowance"
+        );
         _approve(sender, _msgSender(), currentAllowance - amount);
 
         return true;
     }
-    
-    function moderatorTransferFromWhilePaused(address sender, address recipient, uint256 amount) 
-        external 
+
+    function moderatorTransferFromWhilePaused(
+        address sender,
+        address recipient,
+        uint256 amount
+    )
+        external
         pausedContract
         onlyRole(ROLE_MODERATOR)
         recipientIsNotBurnAddress(recipient)
-        returns (bool) 
+        returns (bool)
     {
         _transfer(sender, recipient, amount);
 
         return true;
     }
-    
-    function transferCustom(address sender, address recipient, uint256 amount)
+
+    function transferCustom(
+        address sender,
+        address recipient,
+        uint256 amount
+    )
         external
         notPausedContract
         onlyRole(ROLE_TRANSFERER)
         recipientIsNotBurnAddress(recipient)
     {
         _transfer(sender, recipient, amount);
-        
+
         emit TransferCustom(sender, recipient, amount);
     }
-    
-    function _transfer(address sender, address recipient, uint transferAmount) 
+
+    function _transfer(
+        address sender,
+        address recipient,
+        uint256 transferAmount
+    )
         internal
-        virtual 
+        virtual
+        override
         recipientIsNotBurnAddress(recipient)
         checkTransaction(sender, recipient, transferAmount)
-        override 
     {
         tokenBalances[sender] -= transferAmount;
         tokenBalances[recipient] += transferAmount;
-        
+
         emit Transfer(sender, recipient, transferAmount);
     }
-    
-    function mintByBridge(address to, uint desiredAmountToMint) 
+
+    function mintByBridge(address to, uint256 desiredAmountToMint)
         external
         notPausedContract
         onlyRole(ROLE_MINTER)
@@ -1829,8 +2045,8 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
         _mintHumanAddress(to, desiredAmountToMint);
         emit MintedByBridge(to, desiredAmountToMint);
     }
-    
-    function mintHumanAddress(address to, uint desiredAmountToMint) 
+
+    function mintHumanAddress(address to, uint256 desiredAmountToMint)
         external
         notPausedContract
         onlyRole(ROLE_MINTER)
@@ -1838,18 +2054,18 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
         _mintHumanAddress(to, desiredAmountToMint);
         emit MintHumanAddress(to, desiredAmountToMint);
     }
-    
-    function _mintHumanAddress(address to, uint desiredAmountToMint) 
+
+    function _mintHumanAddress(address to, uint256 desiredAmountToMint)
         private
         recipientIsNotBurnAddress(to)
     {
         tokenBalances[to] += desiredAmountToMint;
         totalTokenSupply += desiredAmountToMint;
-        
+
         emit Transfer(BURN_ADDRESS, to, desiredAmountToMint);
     }
 
-    function burnByBridge(address from, uint desiredAmountToBurn)
+    function burnByBridge(address from, uint256 desiredAmountToBurn)
         external
         notPausedContract
         onlyRole(ROLE_BURNER)
@@ -1858,7 +2074,7 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
         emit BurnedByBridge(from, desiredAmountToBurn);
     }
 
-    function burnHumanAddress(address from, uint desiredAmountToBurn)
+    function burnHumanAddress(address from, uint256 desiredAmountToBurn)
         external
         notPausedContract
         onlyRole(ROLE_BURNER)
@@ -1867,89 +2083,73 @@ contract CerbyBasedToken is Context, AccessControlEnumerable, ERC20Mod, ERC20Per
         emit BurnHumanAddress(from, desiredAmountToBurn);
     }
 
-    function _burnHumanAddress(address from, uint desiredAmountToBurn)
+    function _burnHumanAddress(address from, uint256 desiredAmountToBurn)
         private
     {
         tokenBalances[from] -= desiredAmountToBurn;
         totalTokenSupply -= desiredAmountToBurn;
-        
+
         emit Transfer(from, BURN_ADDRESS, desiredAmountToBurn);
     }
-    
-    function getChainId() 
-        external 
-        view 
-        returns (uint) 
-    {
+
+    function getChainId() external view returns (uint256) {
         return block.chainid;
     }
 }
 
 // File: sol-defifactory-token/CerbyToken.sol
 
-
-
 pragma solidity ^0.8.4;
 
-
 contract CerbyToken is CerbyBasedToken {
-    
-    
     address[] utilsContracts;
-    
+
     event UpdatedUtilsContracts(AccessSettings[] accessSettings);
-    
-    
-    constructor()
-        CerbyBasedToken("Cerby Token", "CERBY")
-    {
+
+    constructor() CerbyBasedToken("Cerby Token", "CERBY") {
         initializeOwner(msg.sender);
     }
-    
-    
-    
+
     // ----------------------
-    
+
     function updateUtilsContracts(AccessSettings[] memory accessSettings)
         public
         onlyRole(ROLE_ADMIN)
     {
-        for(uint i = 0; i < utilsContracts.length; i++)
-        {
+        for (uint256 i = 0; i < utilsContracts.length; i++) {
             revokeRole(ROLE_MINTER, utilsContracts[i]);
             revokeRole(ROLE_BURNER, utilsContracts[i]);
             revokeRole(ROLE_TRANSFERER, utilsContracts[i]);
             revokeRole(ROLE_MODERATOR, utilsContracts[i]);
         }
         delete utilsContracts;
-        
-        for(uint i = 0; i < accessSettings.length; i++)
-        {
-            if (accessSettings[i].isMinter) grantRole(ROLE_MINTER, accessSettings[i].addr);
-            if (accessSettings[i].isBurner) grantRole(ROLE_BURNER, accessSettings[i].addr);
-            if (accessSettings[i].isTransferer) grantRole(ROLE_TRANSFERER, accessSettings[i].addr);
-            if (accessSettings[i].isModerator) grantRole(ROLE_MODERATOR, accessSettings[i].addr);
-            
+
+        for (uint256 i = 0; i < accessSettings.length; i++) {
+            if (accessSettings[i].isMinter)
+                grantRole(ROLE_MINTER, accessSettings[i].addr);
+            if (accessSettings[i].isBurner)
+                grantRole(ROLE_BURNER, accessSettings[i].addr);
+            if (accessSettings[i].isTransferer)
+                grantRole(ROLE_TRANSFERER, accessSettings[i].addr);
+            if (accessSettings[i].isModerator)
+                grantRole(ROLE_MODERATOR, accessSettings[i].addr);
+
             utilsContracts.push(accessSettings[i].addr);
         }
-        
+
         emit UpdatedUtilsContracts(accessSettings);
     }
-    
-    function getUtilsContractAtPos(uint pos)
+
+    function getUtilsContractAtPos(uint256 pos)
         public
-        override
         view
+        override
         returns (address)
     {
         return utilsContracts[pos];
     }
-    
-    function getUtilsContractsCount()
-        external
-        view
-        returns(uint)
-    {
+
+    function getUtilsContractsCount() external view returns (uint256) {
         return utilsContracts.length;
     }
 }

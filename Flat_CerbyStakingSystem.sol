@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 // File: sol-defifactory-token/interfaces/ICerbyBotDetection.sol
 
-
-
 pragma solidity ^0.8.10;
 
 struct TransactionInfo {
@@ -11,50 +9,39 @@ struct TransactionInfo {
 }
 
 interface ICerbyBotDetection {
-        
-    function checkTransactionInfo(address tokenAddr, address sender, address recipient, uint recipientBalance, uint transferAmount)
-        external
-        returns (TransactionInfo memory output);
-    
-    function isBotAddress(address addr)
-        external
-        view
-        returns (bool);
+    function checkTransactionInfo(
+        address tokenAddr,
+        address sender,
+        address recipient,
+        uint256 recipientBalance,
+        uint256 transferAmount
+    ) external returns (TransactionInfo memory output);
+
+    function isBotAddress(address addr) external view returns (bool);
 }
 // File: sol-defifactory-token/interfaces/ICerbyTokenMinterBurner.sol
-
-
 
 pragma solidity ^0.8.10;
 
 interface ICerbyTokenMinterBurner {
-    
-    function balanceOf(
-        address account
-    )
-        external
-        view
-        returns (uint);
-    
-    function totalSupply()
-        external
-        view
-        returns (uint);
-        
-    function mintHumanAddress(address to, uint desiredAmountToMint) external;
+    function balanceOf(address account) external view returns (uint256);
 
-    function burnHumanAddress(address from, uint desiredAmountToBurn) external;
-    
-    function transferCustom(address sender, address recipient, uint256 amount) external;
-    
-    function getUtilsContractAtPos(uint pos)
-        external
-        view
-        returns (address);
+    function totalSupply() external view returns (uint256);
+
+    function mintHumanAddress(address to, uint256 desiredAmountToMint) external;
+
+    function burnHumanAddress(address from, uint256 desiredAmountToBurn)
+        external;
+
+    function transferCustom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external;
+
+    function getUtilsContractAtPos(uint256 pos) external view returns (address);
 }
 // File: sol-defifactory-token/openzeppelin/utils/structs/EnumerableSet.sol
-
-
 
 pragma solidity ^0.8.0;
 
@@ -95,10 +82,9 @@ library EnumerableSet {
     struct Set {
         // Storage of set values
         bytes32[] _values;
-
         // Position of the value in the `values` array, plus 1 because index 0
         // means a value is not in the set.
-        mapping (bytes32 => uint256) _indexes;
+        mapping(bytes32 => uint256) _indexes;
     }
 
     /**
@@ -129,7 +115,8 @@ library EnumerableSet {
         // We read and store the value's index to prevent multiple reads from the same storage slot
         uint256 valueIndex = set._indexes[value];
 
-        if (valueIndex != 0) { // Equivalent to contains(set, value)
+        if (valueIndex != 0) {
+            // Equivalent to contains(set, value)
             // To delete an element from the _values array in O(1), we swap the element to delete with the last one in
             // the array, and then remove the last element (sometimes called as 'swap and pop').
             // This modifies the order of the array, as noted in {at}.
@@ -161,7 +148,11 @@ library EnumerableSet {
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function _contains(Set storage set, bytes32 value) private view returns (bool) {
+    function _contains(Set storage set, bytes32 value)
+        private
+        view
+        returns (bool)
+    {
         return set._indexes[value] != 0;
     }
 
@@ -172,17 +163,21 @@ library EnumerableSet {
         return set._values.length;
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function _at(Set storage set, uint256 index) private view returns (bytes32) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function _at(Set storage set, uint256 index)
+        private
+        view
+        returns (bytes32)
+    {
         return set._values[index];
     }
 
@@ -198,7 +193,10 @@ library EnumerableSet {
      * Returns true if the value was added to the set, that is if it was not
      * already present.
      */
-    function add(Bytes32Set storage set, bytes32 value) internal returns (bool) {
+    function add(Bytes32Set storage set, bytes32 value)
+        internal
+        returns (bool)
+    {
         return _add(set._inner, value);
     }
 
@@ -208,14 +206,21 @@ library EnumerableSet {
      * Returns true if the value was removed from the set, that is if it was
      * present.
      */
-    function remove(Bytes32Set storage set, bytes32 value) internal returns (bool) {
+    function remove(Bytes32Set storage set, bytes32 value)
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, value);
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function contains(Bytes32Set storage set, bytes32 value) internal view returns (bool) {
+    function contains(Bytes32Set storage set, bytes32 value)
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, value);
     }
 
@@ -226,17 +231,21 @@ library EnumerableSet {
         return _length(set._inner);
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function at(Bytes32Set storage set, uint256 index) internal view returns (bytes32) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function at(Bytes32Set storage set, uint256 index)
+        internal
+        view
+        returns (bytes32)
+    {
         return _at(set._inner, index);
     }
 
@@ -252,7 +261,10 @@ library EnumerableSet {
      * Returns true if the value was added to the set, that is if it was not
      * already present.
      */
-    function add(AddressSet storage set, address value) internal returns (bool) {
+    function add(AddressSet storage set, address value)
+        internal
+        returns (bool)
+    {
         return _add(set._inner, bytes32(uint256(uint160(value))));
     }
 
@@ -262,14 +274,21 @@ library EnumerableSet {
      * Returns true if the value was removed from the set, that is if it was
      * present.
      */
-    function remove(AddressSet storage set, address value) internal returns (bool) {
+    function remove(AddressSet storage set, address value)
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, bytes32(uint256(uint160(value))));
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function contains(AddressSet storage set, address value) internal view returns (bool) {
+    function contains(AddressSet storage set, address value)
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, bytes32(uint256(uint160(value))));
     }
 
@@ -280,20 +299,23 @@ library EnumerableSet {
         return _length(set._inner);
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function at(AddressSet storage set, uint256 index) internal view returns (address) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function at(AddressSet storage set, uint256 index)
+        internal
+        view
+        returns (address)
+    {
         return address(uint160(uint256(_at(set._inner, index))));
     }
-
 
     // UintSet
 
@@ -317,14 +339,21 @@ library EnumerableSet {
      * Returns true if the value was removed from the set, that is if it was
      * present.
      */
-    function remove(UintSet storage set, uint256 value) internal returns (bool) {
+    function remove(UintSet storage set, uint256 value)
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, bytes32(value));
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function contains(UintSet storage set, uint256 value) internal view returns (bool) {
+    function contains(UintSet storage set, uint256 value)
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, bytes32(value));
     }
 
@@ -335,24 +364,26 @@ library EnumerableSet {
         return _length(set._inner);
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function at(UintSet storage set, uint256 index) internal view returns (uint256) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function at(UintSet storage set, uint256 index)
+        internal
+        view
+        returns (uint256)
+    {
         return uint256(_at(set._inner, index));
     }
 }
 
 // File: sol-defifactory-token/openzeppelin/utils/introspection/IERC165.sol
-
-
 
 pragma solidity ^0.8.0;
 
@@ -379,10 +410,7 @@ interface IERC165 {
 
 // File: sol-defifactory-token/openzeppelin/utils/introspection/ERC165.sol
 
-
-
 pragma solidity ^0.8.0;
-
 
 /**
  * @dev Implementation of the {IERC165} interface.
@@ -402,14 +430,18 @@ abstract contract ERC165 is IERC165 {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
         return interfaceId == type(IERC165).interfaceId;
     }
 }
 
 // File: sol-defifactory-token/openzeppelin/utils/Strings.sol
-
-
 
 pragma solidity ^0.8.0;
 
@@ -463,7 +495,11 @@ library Strings {
     /**
      * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.
      */
-    function toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
+    function toHexString(uint256 value, uint256 length)
+        internal
+        pure
+        returns (string memory)
+    {
         bytes memory buffer = new bytes(2 * length + 2);
         buffer[0] = "0";
         buffer[1] = "x";
@@ -474,12 +510,9 @@ library Strings {
         require(value == 0, "Strings: hex length insufficient");
         return string(buffer);
     }
-
 }
 
 // File: sol-defifactory-token/openzeppelin/utils/Context.sol
-
-
 
 pragma solidity ^0.8.0;
 
@@ -506,13 +539,7 @@ abstract contract Context {
 
 // File: sol-defifactory-token/openzeppelin/access/AccessControl.sol
 
-
-
 pragma solidity ^0.8.0;
-
-
-
-
 
 struct RoleAccess {
     bytes32 role;
@@ -523,10 +550,17 @@ struct RoleAccess {
  * @dev External interface of AccessControl declared to support ERC165 detection.
  */
 interface IAccessControl {
-    function hasRole(bytes32 role, address account) external view returns (bool);
+    function hasRole(bytes32 role, address account)
+        external
+        view
+        returns (bool);
+
     function getRoleAdmin(bytes32 role) external view returns (bytes32);
+
     function grantRole(bytes32 role, address account) external;
+
     function revokeRole(bytes32 role, address account) external;
+
     function renounceRole(bytes32 role, address account) external;
 }
 
@@ -570,11 +604,11 @@ interface IAccessControl {
  */
 abstract contract AccessControl is Context, IAccessControl, ERC165 {
     struct RoleData {
-        mapping (address => bool) members;
+        mapping(address => bool) members;
         bytes32 adminRole;
     }
 
-    mapping (bytes32 => RoleData) private _roles;
+    mapping(bytes32 => RoleData) private _roles;
 
     bytes32 public constant ROLE_ADMIN = 0x00;
 
@@ -586,7 +620,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * _Available since v3.1._
      */
-    event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole);
+    event RoleAdminChanged(
+        bytes32 indexed role,
+        bytes32 indexed previousAdminRole,
+        bytes32 indexed newAdminRole
+    );
 
     /**
      * @dev Emitted when `account` is granted `role`.
@@ -594,7 +632,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      * `sender` is the account that originated the contract call, an admin role
      * bearer except when using {_setupRole}.
      */
-    event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender);
+    event RoleGranted(
+        bytes32 indexed role,
+        address indexed account,
+        address indexed sender
+    );
 
     /**
      * @dev Emitted when `account` is revoked `role`.
@@ -603,7 +645,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *   - if using `revokeRole`, it is the admin role bearer
      *   - if using `renounceRole`, it is the role bearer (i.e. `account`)
      */
-    event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender);
+    event RoleRevoked(
+        bytes32 indexed role,
+        address indexed account,
+        address indexed sender
+    );
 
     /**
      * @dev Modifier that checks that an account has a specific role. Reverts
@@ -623,15 +669,27 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(IAccessControl).interfaceId
-            || super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
+        return
+            interfaceId == type(IAccessControl).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 
     /**
      * @dev Returns `true` if `account` has been granted `role`.
      */
-    function hasRole(bytes32 role, address account) public view override returns (bool) {
+    function hasRole(bytes32 role, address account)
+        public
+        view
+        override
+        returns (bool)
+    {
         return _roles[role].members[account];
     }
 
@@ -643,13 +701,17 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *  /^AccessControl: account (0x[0-9a-f]{20}) is missing role (0x[0-9a-f]{32})$/
      */
     function _checkRole(bytes32 role, address account) internal view {
-        if(!hasRole(role, account)) {
-            revert(string(abi.encodePacked(
-                "AccessControl: account ",
-                Strings.toHexString(uint160(account), 20),
-                " is missing role ",
-                Strings.toHexString(uint256(role), 32)
-            )));
+        if (!hasRole(role, account)) {
+            revert(
+                string(
+                    abi.encodePacked(
+                        "AccessControl: account ",
+                        Strings.toHexString(uint160(account), 20),
+                        " is missing role ",
+                        Strings.toHexString(uint256(role), 32)
+                    )
+                )
+            );
         }
     }
 
@@ -673,16 +735,20 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * - the caller must have ``role``'s admin role.
      */
-    function grantRole(bytes32 role, address account) public virtual override onlyRole(ROLE_ADMIN) {
+    function grantRole(bytes32 role, address account)
+        public
+        virtual
+        override
+        onlyRole(ROLE_ADMIN)
+    {
         _grantRole(role, account);
     }
-    
+
     function grantRolesBulk(RoleAccess[] calldata roles)
         external
         onlyRole(ROLE_ADMIN)
     {
-        for(uint i = 0; i<roles.length; i++)
-        {
+        for (uint256 i = 0; i < roles.length; i++) {
             _setupRole(roles[i].role, roles[i].addr);
         }
     }
@@ -696,7 +762,12 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * - the caller must have ``role``'s admin role.
      */
-    function revokeRole(bytes32 role, address account) public virtual override onlyRole(getRoleAdmin(role)) {
+    function revokeRole(bytes32 role, address account)
+        public
+        virtual
+        override
+        onlyRole(getRoleAdmin(role))
+    {
         _revokeRole(role, account);
     }
 
@@ -714,8 +785,15 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * - the caller must be `account`.
      */
-    function renounceRole(bytes32 role, address account) public virtual override {
-        require(account == _msgSender(), "AccessControl: can only renounce roles for self");
+    function renounceRole(bytes32 role, address account)
+        public
+        virtual
+        override
+    {
+        require(
+            account == _msgSender(),
+            "AccessControl: can only renounce roles for self"
+        );
 
         _revokeRole(role, account);
     }
@@ -767,34 +845,44 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
 
 // File: sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol
 
-
-
 pragma solidity ^0.8.0;
-
-
 
 /**
  * @dev External interface of AccessControlEnumerable declared to support ERC165 detection.
  */
 interface IAccessControlEnumerable {
-    function getRoleMember(bytes32 role, uint256 index) external view returns (address);
+    function getRoleMember(bytes32 role, uint256 index)
+        external
+        view
+        returns (address);
+
     function getRoleMemberCount(bytes32 role) external view returns (uint256);
 }
 
 /**
  * @dev Extension of {AccessControl} that allows enumerating the members of each role.
  */
-abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessControl {
+abstract contract AccessControlEnumerable is
+    IAccessControlEnumerable,
+    AccessControl
+{
     using EnumerableSet for EnumerableSet.AddressSet;
 
-    mapping (bytes32 => EnumerableSet.AddressSet) private _roleMembers;
+    mapping(bytes32 => EnumerableSet.AddressSet) private _roleMembers;
 
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(IAccessControlEnumerable).interfaceId
-            || super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
+        return
+            interfaceId == type(IAccessControlEnumerable).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 
     /**
@@ -809,7 +897,12 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
      * https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post]
      * for more information.
      */
-    function getRoleMember(bytes32 role, uint256 index) public view override returns (address) {
+    function getRoleMember(bytes32 role, uint256 index)
+        public
+        view
+        override
+        returns (address)
+    {
         return _roleMembers[role].at(index);
     }
 
@@ -817,7 +910,12 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
      * @dev Returns the number of accounts that have `role`. Can be used
      * together with {getRoleMember} to enumerate all bearers of a role.
      */
-    function getRoleMemberCount(bytes32 role) public view override returns (uint256) {
+    function getRoleMemberCount(bytes32 role)
+        public
+        view
+        override
+        returns (uint256)
+    {
         return _roleMembers[role].length();
     }
 
@@ -840,7 +938,11 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
     /**
      * @dev Overload {renounceRole} to track enumerable memberships
      */
-    function renounceRole(bytes32 role, address account) public virtual override {
+    function renounceRole(bytes32 role, address account)
+        public
+        virtual
+        override
+    {
         super.renounceRole(role, account);
         _roleMembers[role].remove(account);
     }
@@ -848,7 +950,11 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
     /**
      * @dev Overload {_setupRole} to track enumerable memberships
      */
-    function _setupRole(bytes32 role, address account) internal virtual override {
+    function _setupRole(bytes32 role, address account)
+        internal
+        virtual
+        override
+    {
         super._setupRole(role, account);
         _roleMembers[role].add(account);
     }
@@ -856,163 +962,134 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
 
 // File: sol-defifactory-token/CerbyStakingSystem.sol
 
-
-
 pragma solidity ^0.8.10;
 
-
-
-
 struct DailySnapshot {
-    uint inflationAmount;
-    uint totalShares;
-    uint sharePrice;
+    uint256 inflationAmount;
+    uint256 totalShares;
+    uint256 sharePrice;
 }
 
 struct Stake {
     address owner;
-    uint stakedAmount;
-    uint startDay;
-    uint lockedForXDays;
-    uint endDay;
-    uint maxSharesCountOnStartStake;
+    uint256 stakedAmount;
+    uint256 startDay;
+    uint256 lockedForXDays;
+    uint256 endDay;
+    uint256 maxSharesCountOnStartStake;
 }
 
 struct StartStake {
-    uint stakedAmount;
-    uint lockedForXDays;
+    uint256 stakedAmount;
+    uint256 lockedForXDays;
 }
 
 struct Settings {
-    uint MINIMUM_DAYS_FOR_HIGH_PENALTY;
-    uint CONTROLLED_APY;
-    uint SMALLER_PAYS_BETTER_BONUS;
-    uint LONGER_PAYS_BETTER_BONUS;
-    uint END_STAKE_FROM;
-    uint END_STAKE_TO;
-    uint MINIMUM_STAKE_DAYS;
-    uint MAXIMUM_STAKE_DAYS;
+    uint256 MINIMUM_DAYS_FOR_HIGH_PENALTY;
+    uint256 CONTROLLED_APY;
+    uint256 SMALLER_PAYS_BETTER_BONUS;
+    uint256 LONGER_PAYS_BETTER_BONUS;
+    uint256 END_STAKE_FROM;
+    uint256 END_STAKE_TO;
+    uint256 MINIMUM_STAKE_DAYS;
+    uint256 MAXIMUM_STAKE_DAYS;
 }
 
 contract CerbyStakingSystem is AccessControlEnumerable {
     DailySnapshot[] public dailySnapshots;
-    uint[] public cachedInterestPerShare;
-    
+    uint256[] public cachedInterestPerShare;
+
     Stake[] public stakes;
     Settings public settings;
-    
-    uint constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
-    uint constant MINIMUM_SMALLER_PAYS_BETTER = 1000 * 1e18; // 1k CERBY
-    uint constant MAXIMUM_SMALLER_PAYS_BETTER = 1000000 * 1e18; // 1M CERBY
-    uint constant CACHED_DAYS_INTEREST = 100;
-    uint constant DAYS_IN_ONE_YEAR = 365;
-    uint constant SHARE_PRICE_DENORM = 1e18;
-    uint constant INTEREST_PER_SHARE_DENORM = 1e18;
-    uint constant APY_DENORM = 1e6;
-    uint constant SECONDS_IN_ONE_DAY = 86400;
-    
-    ICerbyTokenMinterBurner cerbyToken = ICerbyTokenMinterBurner(
-        0xdef1fac7Bf08f173D286BbBDcBeeADe695129840
-    );
-    
-    uint public launchTimestamp;
-    
+
+    uint256 constant CERBY_BOT_DETECTION_CONTRACT_ID = 3;
+    uint256 constant MINIMUM_SMALLER_PAYS_BETTER = 1000 * 1e18; // 1k CERBY
+    uint256 constant MAXIMUM_SMALLER_PAYS_BETTER = 1000000 * 1e18; // 1M CERBY
+    uint256 constant CACHED_DAYS_INTEREST = 100;
+    uint256 constant DAYS_IN_ONE_YEAR = 365;
+    uint256 constant SHARE_PRICE_DENORM = 1e18;
+    uint256 constant INTEREST_PER_SHARE_DENORM = 1e18;
+    uint256 constant APY_DENORM = 1e6;
+    uint256 constant SECONDS_IN_ONE_DAY = 86400;
+
+    ICerbyTokenMinterBurner cerbyToken =
+        ICerbyTokenMinterBurner(0xdef1fac7Bf08f173D286BbBDcBeeADe695129840);
+
+    uint256 public launchTimestamp;
+
     event StakeStarted(
-        uint stakeId, 
-        address owner, 
-        uint stakedAmount, 
-        uint startDay, 
-        uint lockedForXDays, 
-        uint sharesCount
+        uint256 stakeId,
+        address owner,
+        uint256 stakedAmount,
+        uint256 startDay,
+        uint256 lockedForXDays,
+        uint256 sharesCount
     );
     event StakeEnded(
-        uint stakeId, 
-        uint endDay, 
-        uint interest, 
-        uint penalty
+        uint256 stakeId,
+        uint256 endDay,
+        uint256 interest,
+        uint256 penalty
     );
-    event StakeOwnerChanged(
-        uint stakeId, 
-        address newOwner
-    );
+    event StakeOwnerChanged(uint256 stakeId, address newOwner);
     event StakeUpdated(
-        uint stakeId, 
-        uint lockedForXDays,
-        uint sharesCount
+        uint256 stakeId,
+        uint256 lockedForXDays,
+        uint256 sharesCount
     );
-    
+
     event DailySnapshotSealed(
-        uint sealedDay, 
-        uint inflationAmount,
-        uint totalShares,
-        uint sharePrice,
-        uint totalStaked,
-        uint totalSupply
+        uint256 sealedDay,
+        uint256 inflationAmount,
+        uint256 totalShares,
+        uint256 sharePrice,
+        uint256 totalStaked,
+        uint256 totalSupply
     );
     event CachedInterestPerShareSealed(
-        uint sealedDay,
-        uint sealedCachedDay, 
-        uint cachedInterestPerShare
+        uint256 sealedDay,
+        uint256 sealedCachedDay,
+        uint256 cachedInterestPerShare
     );
-    
-    event SettingsUpdated(
-        Settings Settings
-    );
-    
-    event NewMaxSharePriceReached(
-        uint newSharePrice
-    );
-   
+
+    event SettingsUpdated(Settings Settings);
+
+    event NewMaxSharePriceReached(uint256 newSharePrice);
+
     event BurnedAndAddedToStakersInflation(
-        address fromAddr, 
-        uint amountToBurn, 
-        uint currentDay
+        address fromAddr,
+        uint256 amountToBurn,
+        uint256 currentDay
     );
-    
-    constructor() 
-    {
+
+    constructor() {
         settings.MINIMUM_DAYS_FOR_HIGH_PENALTY = 0;
         settings.CONTROLLED_APY = 4e5; // 40%
         settings.END_STAKE_FROM = 30;
-        settings.END_STAKE_TO = 2*DAYS_IN_ONE_YEAR; // 5% per month penalty
+        settings.END_STAKE_TO = 2 * DAYS_IN_ONE_YEAR; // 5% per month penalty
         settings.MINIMUM_STAKE_DAYS = 1;
-        settings.MAXIMUM_STAKE_DAYS = 100*DAYS_IN_ONE_YEAR;
+        settings.MAXIMUM_STAKE_DAYS = 100 * DAYS_IN_ONE_YEAR;
         settings.LONGER_PAYS_BETTER_BONUS = 3e6; // 3e6/1e6 = 300% shares bonus max
         settings.SMALLER_PAYS_BETTER_BONUS = 25e4; // 25e4/1e6 = 25% shares bonus max
-        
-        
+
         launchTimestamp = 1635604537; // 30 October 2021
-        
-        dailySnapshots.push(DailySnapshot(
-            0,
-            0,
-            SHARE_PRICE_DENORM
-        ));
-        emit DailySnapshotSealed(
-            0,
-            0,
-            0,
-            SHARE_PRICE_DENORM,
-            0,
-            0
-        );
-        dailySnapshots.push(DailySnapshot(
-            0,
-            0,
-            SHARE_PRICE_DENORM
-        ));
+
+        dailySnapshots.push(DailySnapshot(0, 0, SHARE_PRICE_DENORM));
+        emit DailySnapshotSealed(0, 0, 0, SHARE_PRICE_DENORM, 0, 0);
+        dailySnapshots.push(DailySnapshot(0, 0, SHARE_PRICE_DENORM));
         cachedInterestPerShare.push(0);
         emit NewMaxSharePriceReached(SHARE_PRICE_DENORM);
-        
+
         updateAllSnapshots();
-        
+
         _setupRole(ROLE_ADMIN, msg.sender);
     }
-    
-    modifier onlyRealUsers()
-    {
+
+    modifier onlyRealUsers() {
         ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
-            ICerbyTokenMinterBurner(cerbyToken).getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
+            ICerbyTokenMinterBurner(cerbyToken).getUtilsContractAtPos(
+                CERBY_BOT_DETECTION_CONTRACT_ID
+            )
         );
         require(
             !iCerbyBotDetection.isBotAddress(msg.sender),
@@ -1020,69 +1097,60 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         );
         _;
     }
-    
-    modifier onlyStakeOwners(uint stakeId)
-    {
+
+    modifier onlyStakeOwners(uint256 stakeId) {
         require(
             msg.sender == stakes[stakeId].owner,
             "SS: Stake owner does not match"
         );
         _;
     }
-    
-    modifier onlyExistingStake(uint stakeId)
-    {
-        require(
-            stakeId < stakes.length,
-            "SS: Stake does not exist"
-        );
+
+    modifier onlyExistingStake(uint256 stakeId) {
+        require(stakeId < stakes.length, "SS: Stake does not exist");
         _;
     }
-    
-    modifier onlyActiveStake(uint stakeId)
-    {
-        require(
-            stakes[stakeId].endDay == 0,
-            "SS: Stake was already ended"
-        );
+
+    modifier onlyActiveStake(uint256 stakeId) {
+        require(stakes[stakeId].endDay == 0, "SS: Stake was already ended");
         _;
     }
-    
+
     function adminUpdateSettings(Settings calldata _settings)
         public
         onlyRole(ROLE_ADMIN)
     {
         settings = _settings;
-        
+
         emit SettingsUpdated(_settings);
     }
-    
-    function adminBurnAndAddToStakersInflation(address fromAddr, uint amountToBurn)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
+
+    function adminBurnAndAddToStakersInflation(
+        address fromAddr,
+        uint256 amountToBurn
+    ) public onlyRole(ROLE_ADMIN) {
         updateAllSnapshots();
-        
+
         cerbyToken.burnHumanAddress(fromAddr, amountToBurn);
-        
-        uint today = getCurrentDaySinceLaunch();
+
+        uint256 today = getCurrentDaySinceLaunch();
         dailySnapshots[today].inflationAmount += amountToBurn;
-        
+
         emit BurnedAndAddedToStakersInflation(fromAddr, amountToBurn, today);
     }
-    
-    function bulkTransferOwnership(uint[] calldata stakeIds, address newOwner)
-        public
-    {
-        for(uint i = 0; i<stakeIds.length; i++)
-        {
+
+    function bulkTransferOwnership(
+        uint256[] calldata stakeIds,
+        address newOwner
+    ) public {
+        for (uint256 i = 0; i < stakeIds.length; i++) {
             transferOwnership(stakeIds[i], newOwner);
         }
     }
-    
-    function transferOwnership(uint stakeId, address newOwner)
+
+    function transferOwnership(uint256 stakeId, address newOwner)
         public
-        onlyRealUsers()
+        onlyRealUsers
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
@@ -1091,50 +1159,49 @@ contract CerbyStakingSystem is AccessControlEnumerable {
             stakes[stakeId].owner != newOwner,
             "SS: New owner must be different from old owner"
         );
-        
+
         updateAllSnapshots();
-        
+
         stakes[stakeId].owner = newOwner;
         emit StakeOwnerChanged(stakeId, newOwner);
     }
-    
-    function updateAllSnapshots()
-        public
-    {
+
+    function updateAllSnapshots() public {
         updateSnapshots(getCurrentDaySinceLaunch());
     }
-    
-    function updateSnapshots(uint givenDay)
-        public
-    {
+
+    function updateSnapshots(uint256 givenDay) public {
         require(
             givenDay <= getCurrentDaySinceLaunch(),
             "SS: Exceeded current day"
         );
-        
-        uint startDay = dailySnapshots.length-1; // last sealed day
+
+        uint256 startDay = dailySnapshots.length - 1; // last sealed day
         if (startDay == givenDay) return;
-        
-        for (uint i = startDay; i<givenDay; i++)
-        {
-            uint currentSnapshotIndex = dailySnapshots.length > i? i: dailySnapshots.length-1;
-            uint sharesCount =
-                ((settings.LONGER_PAYS_BETTER_BONUS + APY_DENORM) * SHARE_PRICE_DENORM) / 
-                    (APY_DENORM * dailySnapshots[currentSnapshotIndex].sharePrice);
-            uint inflationAmount = 
-                (settings.CONTROLLED_APY * (dailySnapshots[currentSnapshotIndex].totalShares + sharesCount)) / 
-                    (sharesCount * DAYS_IN_ONE_YEAR * APY_DENORM);
-            
-            if (dailySnapshots.length > i)
-            {
-                dailySnapshots[currentSnapshotIndex].inflationAmount += inflationAmount;
-            } else
-            {
-                dailySnapshots.push(DailySnapshot(
-                    inflationAmount,
-                    dailySnapshots[currentSnapshotIndex].totalShares,
-                    dailySnapshots[currentSnapshotIndex].sharePrice
-                ));
+
+        for (uint256 i = startDay; i < givenDay; i++) {
+            uint256 currentSnapshotIndex = dailySnapshots.length > i
+                ? i
+                : dailySnapshots.length - 1;
+            uint256 sharesCount = ((settings.LONGER_PAYS_BETTER_BONUS +
+                APY_DENORM) * SHARE_PRICE_DENORM) /
+                (APY_DENORM * dailySnapshots[currentSnapshotIndex].sharePrice);
+            uint256 inflationAmount = (settings.CONTROLLED_APY *
+                (dailySnapshots[currentSnapshotIndex].totalShares +
+                    sharesCount)) /
+                (sharesCount * DAYS_IN_ONE_YEAR * APY_DENORM);
+
+            if (dailySnapshots.length > i) {
+                dailySnapshots[currentSnapshotIndex]
+                    .inflationAmount += inflationAmount;
+            } else {
+                dailySnapshots.push(
+                    DailySnapshot(
+                        inflationAmount,
+                        dailySnapshots[currentSnapshotIndex].totalShares,
+                        dailySnapshots[currentSnapshotIndex].sharePrice
+                    )
+                );
             }
             emit DailySnapshotSealed(
                 i,
@@ -1145,31 +1212,35 @@ contract CerbyStakingSystem is AccessControlEnumerable {
                 cerbyToken.totalSupply()
             );
         }
-        
-        if (dailySnapshots.length == givenDay)
-        {
-            dailySnapshots.push(DailySnapshot(
-                0,
-                dailySnapshots[givenDay-1].totalShares,
-                dailySnapshots[givenDay-1].sharePrice
-            ));
+
+        if (dailySnapshots.length == givenDay) {
+            dailySnapshots.push(
+                DailySnapshot(
+                    0,
+                    dailySnapshots[givenDay - 1].totalShares,
+                    dailySnapshots[givenDay - 1].sharePrice
+                )
+            );
         }
-        
-        uint startCachedDay = cachedInterestPerShare.length-1;
-        uint endCachedDay = givenDay / CACHED_DAYS_INTEREST;
-        for(uint i = startCachedDay; i<endCachedDay; i++)
-        {
-            uint interestPerShare;
-            for(uint j = i*CACHED_DAYS_INTEREST; j<(i+1)*CACHED_DAYS_INTEREST; j++)
-            {
+
+        uint256 startCachedDay = cachedInterestPerShare.length - 1;
+        uint256 endCachedDay = givenDay / CACHED_DAYS_INTEREST;
+        for (uint256 i = startCachedDay; i < endCachedDay; i++) {
+            uint256 interestPerShare;
+            for (
+                uint256 j = i * CACHED_DAYS_INTEREST;
+                j < (i + 1) * CACHED_DAYS_INTEREST;
+                j++
+            ) {
                 if (dailySnapshots[j].totalShares == 0) continue;
-                
-                interestPerShare += 
-                    (dailySnapshots[j].inflationAmount * INTEREST_PER_SHARE_DENORM) / dailySnapshots[j].totalShares;
+
+                interestPerShare +=
+                    (dailySnapshots[j].inflationAmount *
+                        INTEREST_PER_SHARE_DENORM) /
+                    dailySnapshots[j].totalShares;
             }
-            
-            if (cachedInterestPerShare.length > i)
-            {
+
+            if (cachedInterestPerShare.length > i) {
                 cachedInterestPerShare[i] = interestPerShare;
             } else {
                 cachedInterestPerShare.push(interestPerShare);
@@ -1180,25 +1251,21 @@ contract CerbyStakingSystem is AccessControlEnumerable {
                 interestPerShare
             );
         }
-        if (cachedInterestPerShare.length == endCachedDay)
-        {
+        if (cachedInterestPerShare.length == endCachedDay) {
             cachedInterestPerShare.push(0);
         }
     }
-    
-    function bulkStartStake(StartStake[] calldata startStakes)
-        public
-    {
-        for(uint i; i<startStakes.length; i++)
-        {
+
+    function bulkStartStake(StartStake[] calldata startStakes) public {
+        for (uint256 i; i < startStakes.length; i++) {
             startStake(startStakes[i]);
         }
     }
-    
+
     function startStake(StartStake memory _startStake)
         public
-        onlyRealUsers()
-        returns(uint stakeId)
+        onlyRealUsers
+        returns (uint256 stakeId)
     {
         require(
             _startStake.stakedAmount > 0,
@@ -1216,12 +1283,16 @@ contract CerbyStakingSystem is AccessControlEnumerable {
             _startStake.lockedForXDays <= settings.MAXIMUM_STAKE_DAYS,
             "SS: Stake must be locked for less than max years"
         );
-        
+
         updateAllSnapshots();
-        
-        cerbyToken.transferCustom(msg.sender, address(this), _startStake.stakedAmount);
-        
-        uint today = getCurrentDaySinceLaunch();
+
+        cerbyToken.transferCustom(
+            msg.sender,
+            address(this),
+            _startStake.stakedAmount
+        );
+
+        uint256 today = getCurrentDaySinceLaunch();
         Stake memory stake = Stake(
             msg.sender,
             _startStake.stakedAmount,
@@ -1231,109 +1302,102 @@ contract CerbyStakingSystem is AccessControlEnumerable {
             0
         );
         stake.maxSharesCountOnStartStake = getSharesCountByStake(stake, 0);
-        
-        stakes.push(
-            stake
-        );
+
+        stakes.push(stake);
         stakeId = stakes.length - 1;
-        
+
         dailySnapshots[today].totalShares += stake.maxSharesCountOnStartStake;
-        
+
         emit StakeStarted(
             stakeId,
             stake.owner,
-            stake.stakedAmount, 
+            stake.stakedAmount,
             stake.startDay,
             stake.lockedForXDays,
             stake.maxSharesCountOnStartStake
         );
-        
+
         return stakeId;
     }
-    
-    function bulkEndStake(uint[] calldata stakeIds)
-        public
-    {
-        for(uint i; i<stakeIds.length; i++)
-        {
+
+    function bulkEndStake(uint256[] calldata stakeIds) public {
+        for (uint256 i; i < stakeIds.length; i++) {
             endStake(stakeIds[i]);
         }
     }
-    
-    function endStake(
-        uint stakeId
-    )
+
+    function endStake(uint256 stakeId)
         public
-        onlyRealUsers()
+        onlyRealUsers
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
         updateAllSnapshots();
-        
-        uint today = getCurrentDaySinceLaunch();
+
+        uint256 today = getCurrentDaySinceLaunch();
         stakes[stakeId].endDay = today;
-        
-        cerbyToken.transferCustom(address(this), msg.sender, stakes[stakeId].stakedAmount);
-        
-        uint interest;
-        if (
-                today < stakes[stakeId].startDay + stakes[stakeId].lockedForXDays
-        ) { // Early end stake: Calculating interest similar to scrapeStake one
+
+        cerbyToken.transferCustom(
+            address(this),
+            msg.sender,
+            stakes[stakeId].stakedAmount
+        );
+
+        uint256 interest;
+        if (today < stakes[stakeId].startDay + stakes[stakeId].lockedForXDays) {
+            // Early end stake: Calculating interest similar to scrapeStake one
             Stake memory modifiedStakeToGetInterest = stakes[stakeId];
-            modifiedStakeToGetInterest.lockedForXDays = today - stakes[stakeId].startDay;
-            
+            modifiedStakeToGetInterest.lockedForXDays =
+                today -
+                stakes[stakeId].startDay;
+
             interest = getInterestByStake(modifiedStakeToGetInterest, today);
-        } else { // Late or correct end stake
+        } else {
+            // Late or correct end stake
             interest = getInterestByStake(stakes[stakeId], today);
         }
-        
-        if (interest > 0)
-        {
+
+        if (interest > 0) {
             cerbyToken.mintHumanAddress(msg.sender, interest);
         }
-        
-        uint penalty = getPenaltyByStake(stakes[stakeId], today, interest);
-        if (penalty > 0) 
-        {
+
+        uint256 penalty = getPenaltyByStake(stakes[stakeId], today, interest);
+        if (penalty > 0) {
             cerbyToken.burnHumanAddress(msg.sender, penalty);
             dailySnapshots[today].inflationAmount += penalty;
         }
-        
-        uint payout = stakes[stakeId].stakedAmount + interest - penalty;
-        uint ROI = (payout * SHARE_PRICE_DENORM) / stakes[stakeId].stakedAmount;
-        if (ROI > dailySnapshots[today].sharePrice) 
-        {
-           dailySnapshots[today].sharePrice = ROI;
-           emit NewMaxSharePriceReached(ROI);
+
+        uint256 payout = stakes[stakeId].stakedAmount + interest - penalty;
+        uint256 ROI = (payout * SHARE_PRICE_DENORM) /
+            stakes[stakeId].stakedAmount;
+        if (ROI > dailySnapshots[today].sharePrice) {
+            dailySnapshots[today].sharePrice = ROI;
+            emit NewMaxSharePriceReached(ROI);
         }
-        
-        dailySnapshots[today].totalShares -= stakes[stakeId].maxSharesCountOnStartStake;
-        
+
+        dailySnapshots[today].totalShares -= stakes[stakeId]
+            .maxSharesCountOnStartStake;
+
         emit StakeEnded(stakeId, today, interest, penalty);
     }
-    
-    function bulkScrapeStake(uint[] calldata stakeIds)
-        public
-    {
-        for(uint i; i<stakeIds.length; i++)
-        {
+
+    function bulkScrapeStake(uint256[] calldata stakeIds) public {
+        for (uint256 i; i < stakeIds.length; i++) {
             scrapeStake(stakeIds[i]);
         }
     }
-    
-    function scrapeStake(
-        uint stakeId
-    )
+
+    function scrapeStake(uint256 stakeId)
         public
-        onlyRealUsers()
+        onlyRealUsers
         onlyStakeOwners(stakeId)
         onlyExistingStake(stakeId)
         onlyActiveStake(stakeId)
     {
         updateAllSnapshots();
-        
-        uint today = getCurrentDaySinceLaunch();
+
+        uint256 today = getCurrentDaySinceLaunch();
         require(
             today > stakes[stakeId].startDay,
             "SS: Scraping is available once in 1 day"
@@ -1342,123 +1406,123 @@ contract CerbyStakingSystem is AccessControlEnumerable {
             today < stakes[stakeId].startDay + stakes[stakeId].lockedForXDays,
             "SS: Scraping is available once while stake is In Progress status"
         );
-        
-        uint oldLockedForXDays = stakes[stakeId].lockedForXDays;
-        uint oldSharesCount = stakes[stakeId].maxSharesCountOnStartStake;
-        
+
+        uint256 oldLockedForXDays = stakes[stakeId].lockedForXDays;
+        uint256 oldSharesCount = stakes[stakeId].maxSharesCountOnStartStake;
+
         stakes[stakeId].lockedForXDays = today - stakes[stakeId].startDay;
-        uint newSharesCount = getSharesCountByStake(stakes[stakeId], 0);
-        
-        dailySnapshots[today].totalShares = dailySnapshots[today].totalShares - oldSharesCount + newSharesCount;
+        uint256 newSharesCount = getSharesCountByStake(stakes[stakeId], 0);
+
+        dailySnapshots[today].totalShares =
+            dailySnapshots[today].totalShares -
+            oldSharesCount +
+            newSharesCount;
         stakes[stakeId].maxSharesCountOnStartStake = newSharesCount;
-        
+
         emit StakeUpdated(
-            stakeId, 
+            stakeId,
             stakes[stakeId].lockedForXDays,
             newSharesCount
         );
-        
+
         endStake(stakeId);
-        
-        uint newLockedForXDays = oldLockedForXDays - stakes[stakeId].lockedForXDays;
+
+        uint256 newLockedForXDays = oldLockedForXDays -
+            stakes[stakeId].lockedForXDays;
         startStake(StartStake(stakes[stakeId].stakedAmount, newLockedForXDays));
     }
-    
-    function getTotalTokensStaked()
-        public
-        view
-        returns(uint)
-    {
+
+    function getTotalTokensStaked() public view returns (uint256) {
         return ICerbyTokenMinterBurner(cerbyToken).balanceOf(address(this));
     }
-    
-    function getDailySnapshotsLength()
-        public
-        view
-        returns(uint)
-    {
+
+    function getDailySnapshotsLength() public view returns (uint256) {
         return dailySnapshots.length;
     }
-    
-    function getCachedInterestPerShareLength()
-        public
-        view
-        returns(uint)
-    {
+
+    function getCachedInterestPerShareLength() public view returns (uint256) {
         return cachedInterestPerShare.length;
     }
-    
-    function getStakesLength()
-        public
-        view
-        returns(uint)
-    {
+
+    function getStakesLength() public view returns (uint256) {
         return stakes.length;
     }
-    
-    function getInterestById(uint stakeId, uint givenDay)
+
+    function getInterestById(uint256 stakeId, uint256 givenDay)
         public
         view
-        returns (uint)
+        returns (uint256)
     {
         return getInterestByStake(stakes[stakeId], givenDay);
     }
-    
-    function getInterestByStake(Stake memory stake, uint givenDay)
+
+    function getInterestByStake(Stake memory stake, uint256 givenDay)
         public
         view
-        returns (uint)
+        returns (uint256)
     {
         if (givenDay <= stake.startDay) return 0;
-        
-        uint interest;
-        
-        uint endDay = minOfTwoUints(givenDay, stake.startDay + stake.lockedForXDays);
+
+        uint256 interest;
+
+        uint256 endDay = minOfTwoUints(
+            givenDay,
+            stake.startDay + stake.lockedForXDays
+        );
         endDay = minOfTwoUints(endDay, dailySnapshots.length);
-        
-        uint sharesCount = getSharesCountByStake(stake, givenDay);
-        uint startCachedDay = stake.startDay/CACHED_DAYS_INTEREST + 1;
-        uint endBeforeFirstCachedDay = minOfTwoUints(endDay, startCachedDay*CACHED_DAYS_INTEREST); 
-        for(uint i = stake.startDay; i<endBeforeFirstCachedDay; i++)
-        {
+
+        uint256 sharesCount = getSharesCountByStake(stake, givenDay);
+        uint256 startCachedDay = stake.startDay / CACHED_DAYS_INTEREST + 1;
+        uint256 endBeforeFirstCachedDay = minOfTwoUints(
+            endDay,
+            startCachedDay * CACHED_DAYS_INTEREST
+        );
+        for (uint256 i = stake.startDay; i < endBeforeFirstCachedDay; i++) {
             if (dailySnapshots[i].totalShares == 0) continue;
-            
-            interest += (dailySnapshots[i].inflationAmount * sharesCount) / dailySnapshots[i].totalShares;
+
+            interest +=
+                (dailySnapshots[i].inflationAmount * sharesCount) /
+                dailySnapshots[i].totalShares;
         }
-        
-        uint endCachedDay = endDay/CACHED_DAYS_INTEREST; 
-        for(uint i = startCachedDay; i<endCachedDay; i++)
-        {
-            interest += (cachedInterestPerShare[i] * sharesCount) / INTEREST_PER_SHARE_DENORM;
+
+        uint256 endCachedDay = endDay / CACHED_DAYS_INTEREST;
+        for (uint256 i = startCachedDay; i < endCachedDay; i++) {
+            interest +=
+                (cachedInterestPerShare[i] * sharesCount) /
+                INTEREST_PER_SHARE_DENORM;
         }
-        
-        uint startAfterLastCachedDay = endDay - endDay % CACHED_DAYS_INTEREST;
-        if (startAfterLastCachedDay > stake.startDay) // do not double iterate if numberOfDaysServed < CACHED_DAYS_INTEREST 
+
+        uint256 startAfterLastCachedDay = endDay -
+            (endDay % CACHED_DAYS_INTEREST);
+        if (
+            startAfterLastCachedDay > stake.startDay
+        ) // do not double iterate if numberOfDaysServed < CACHED_DAYS_INTEREST
         {
-            for(uint i = startAfterLastCachedDay; i<endDay; i++)
-            {
+            for (uint256 i = startAfterLastCachedDay; i < endDay; i++) {
                 if (dailySnapshots[i].totalShares == 0) continue;
-                
-                interest += (dailySnapshots[i].inflationAmount * sharesCount) / dailySnapshots[i].totalShares;
+
+                interest +=
+                    (dailySnapshots[i].inflationAmount * sharesCount) /
+                    dailySnapshots[i].totalShares;
             }
         }
-        
+
         return interest;
     }
-    
-    function getPenaltyById(uint stakeId, uint givenDay, uint interest)
-        public
-        view
-        returns (uint)
-    {
+
+    function getPenaltyById(
+        uint256 stakeId,
+        uint256 givenDay,
+        uint256 interest
+    ) public view returns (uint256) {
         return getPenaltyByStake(stakes[stakeId], givenDay, interest);
     }
-    
-    function getPenaltyByStake(Stake memory stake, uint givenDay, uint interest)
-        public
-        view
-        returns (uint)
-    {
+
+    function getPenaltyByStake(
+        Stake memory stake,
+        uint256 givenDay,
+        uint256 interest
+    ) public view returns (uint256) {
         /*
         0 -- 0 days served => 0% principal back
         0 days -- 100% served --> 0-100% (principal+interest) back
@@ -1466,108 +1530,132 @@ contract CerbyStakingSystem is AccessControlEnumerable {
         100% + 30 days -- 100% + 30 days + 2*365 days --> 100-10% (principal+interest) back
         > 100% + 30 days + 30*20 days --> 10% (principal+interest) back
         */
-        uint penalty;
-        uint howManyDaysServed = givenDay > stake.startDay? givenDay - stake.startDay: 0;
-        uint riskAmount = stake.stakedAmount + interest;
-        
-        if (howManyDaysServed <= settings.MINIMUM_DAYS_FOR_HIGH_PENALTY) // Stake just started or less than 7 days passed)
+        uint256 penalty;
+        uint256 howManyDaysServed = givenDay > stake.startDay
+            ? givenDay - stake.startDay
+            : 0;
+        uint256 riskAmount = stake.stakedAmount + interest;
+
+        if (
+            howManyDaysServed <= settings.MINIMUM_DAYS_FOR_HIGH_PENALTY
+        ) // Stake just started or less than 7 days passed)
         {
             penalty = riskAmount; // 100%
-        } else if (howManyDaysServed <= stake.lockedForXDays) 
-        {
+        } else if (howManyDaysServed <= stake.lockedForXDays) {
             // 100-0%
-            penalty = 
-                (riskAmount * (stake.lockedForXDays - howManyDaysServed)) / (stake.lockedForXDays - settings.MINIMUM_DAYS_FOR_HIGH_PENALTY);
-        } else if (howManyDaysServed <= stake.lockedForXDays + settings.END_STAKE_FROM)
-        {
+            penalty =
+                (riskAmount * (stake.lockedForXDays - howManyDaysServed)) /
+                (stake.lockedForXDays - settings.MINIMUM_DAYS_FOR_HIGH_PENALTY);
+        } else if (
+            howManyDaysServed <= stake.lockedForXDays + settings.END_STAKE_FROM
+        ) {
             penalty = 0;
-        } else if (howManyDaysServed <= stake.lockedForXDays + settings.END_STAKE_FROM + settings.END_STAKE_TO) {
+        } else if (
+            howManyDaysServed <=
+            stake.lockedForXDays +
+                settings.END_STAKE_FROM +
+                settings.END_STAKE_TO
+        ) {
             // 0-90%
-            penalty = 
-                (riskAmount * 9 * (howManyDaysServed - stake.lockedForXDays - settings.END_STAKE_FROM)) / (10 * settings.END_STAKE_TO);
-        } else // if (howManyDaysServed > stake.lockedForXDays + settings.END_STAKE_FROM + settings.END_STAKE_TO)
-        {
+            penalty =
+                (riskAmount *
+                    9 *
+                    (howManyDaysServed -
+                        stake.lockedForXDays -
+                        settings.END_STAKE_FROM)) /
+                (10 * settings.END_STAKE_TO);
+        }
+        // if (howManyDaysServed > stake.lockedForXDays + settings.END_STAKE_FROM + settings.END_STAKE_TO)
+        else {
             // 90%
             penalty = (riskAmount * 9) / 10;
-        } 
-        
+        }
+
         return penalty;
     }
-    
-    function getSharesCountById(uint stakeId, uint givenDay)
+
+    function getSharesCountById(uint256 stakeId, uint256 givenDay)
         public
         view
-        returns(uint)
+        returns (uint256)
     {
         return getSharesCountByStake(stakes[stakeId], givenDay);
     }
-    
-    function getSharesCountByStake(Stake memory stake, uint givenDay)
+
+    function getSharesCountByStake(Stake memory stake, uint256 givenDay)
         public
         view
-        returns (uint)
+        returns (uint256)
     {
-        uint numberOfDaysServed;
-        if (givenDay == 0)
-        {
+        uint256 numberOfDaysServed;
+        if (givenDay == 0) {
             numberOfDaysServed = stake.lockedForXDays;
-        } else if (givenDay > stake.startDay)
-        {
+        } else if (givenDay > stake.startDay) {
             numberOfDaysServed = givenDay - stake.startDay;
-        } else // givenDay > 0 && givenDay < stake.startDay
-        {
+        }
+        // givenDay > 0 && givenDay < stake.startDay
+        else {
             return 0;
         }
-        numberOfDaysServed = minOfTwoUints(numberOfDaysServed, 10*DAYS_IN_ONE_YEAR);
-        
-        uint initialSharesCount = 
-            (stake.stakedAmount * SHARE_PRICE_DENORM) / dailySnapshots[stake.startDay].sharePrice;
-        uint longerPaysBetterSharesCount =
-            (settings.LONGER_PAYS_BETTER_BONUS * numberOfDaysServed * stake.stakedAmount * SHARE_PRICE_DENORM) / 
-                (APY_DENORM * 10 * DAYS_IN_ONE_YEAR * dailySnapshots[stake.startDay].sharePrice);
-        uint smallerPaysBetterSharesCountMultiplier;
-        if (stake.stakedAmount <= MINIMUM_SMALLER_PAYS_BETTER)
-        {
-            smallerPaysBetterSharesCountMultiplier = APY_DENORM + settings.SMALLER_PAYS_BETTER_BONUS;
+        numberOfDaysServed = minOfTwoUints(
+            numberOfDaysServed,
+            10 * DAYS_IN_ONE_YEAR
+        );
+
+        uint256 initialSharesCount = (stake.stakedAmount * SHARE_PRICE_DENORM) /
+            dailySnapshots[stake.startDay].sharePrice;
+        uint256 longerPaysBetterSharesCount = (settings
+            .LONGER_PAYS_BETTER_BONUS *
+            numberOfDaysServed *
+            stake.stakedAmount *
+            SHARE_PRICE_DENORM) /
+            (APY_DENORM *
+                10 *
+                DAYS_IN_ONE_YEAR *
+                dailySnapshots[stake.startDay].sharePrice);
+        uint256 smallerPaysBetterSharesCountMultiplier;
+        if (stake.stakedAmount <= MINIMUM_SMALLER_PAYS_BETTER) {
+            smallerPaysBetterSharesCountMultiplier =
+                APY_DENORM +
+                settings.SMALLER_PAYS_BETTER_BONUS;
         } else if (
             MINIMUM_SMALLER_PAYS_BETTER < stake.stakedAmount &&
             stake.stakedAmount < MAXIMUM_SMALLER_PAYS_BETTER
         ) {
-            smallerPaysBetterSharesCountMultiplier = 
-                APY_DENORM + 
-                    (settings.SMALLER_PAYS_BETTER_BONUS * (MAXIMUM_SMALLER_PAYS_BETTER - stake.stakedAmount)) /
-                        (MAXIMUM_SMALLER_PAYS_BETTER - MINIMUM_SMALLER_PAYS_BETTER);
-        } else // MAXIMUM_SMALLER_PAYS_BETTER >= stake.stakedAmount
-        {
+            smallerPaysBetterSharesCountMultiplier =
+                APY_DENORM +
+                (settings.SMALLER_PAYS_BETTER_BONUS *
+                    (MAXIMUM_SMALLER_PAYS_BETTER - stake.stakedAmount)) /
+                (MAXIMUM_SMALLER_PAYS_BETTER - MINIMUM_SMALLER_PAYS_BETTER);
+        }
+        // MAXIMUM_SMALLER_PAYS_BETTER >= stake.stakedAmount
+        else {
             smallerPaysBetterSharesCountMultiplier = APY_DENORM;
         }
-        uint sharesCount = 
-            ((initialSharesCount + longerPaysBetterSharesCount) * smallerPaysBetterSharesCountMultiplier) / 
-                APY_DENORM;
-                
+        uint256 sharesCount = ((initialSharesCount +
+            longerPaysBetterSharesCount) *
+            smallerPaysBetterSharesCountMultiplier) / APY_DENORM;
+
         return sharesCount;
     }
-    
-    function getCurrentDaySinceLaunch()
-        public
-        view
-        returns (uint)
-    {
-        return 1 + block.timestamp / SECONDS_IN_ONE_DAY - launchTimestamp / SECONDS_IN_ONE_DAY;
+
+    function getCurrentDaySinceLaunch() public view returns (uint256) {
+        return
+            1 +
+            block.timestamp /
+            SECONDS_IN_ONE_DAY -
+            launchTimestamp /
+            SECONDS_IN_ONE_DAY;
     }
-    
-    function getCurrentCachedPerShareDay()
-        public
-        view
-        returns (uint)
-    {
+
+    function getCurrentCachedPerShareDay() public view returns (uint256) {
         return getCurrentDaySinceLaunch() / CACHED_DAYS_INTEREST;
     }
-    
-    function minOfTwoUints(uint uint1, uint uint2)
+
+    function minOfTwoUints(uint256 uint1, uint256 uint2)
         private
         pure
-        returns(uint)
+        returns (uint256)
     {
         if (uint1 < uint2) return uint1;
         return uint2;

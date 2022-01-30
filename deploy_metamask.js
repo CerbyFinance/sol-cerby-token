@@ -1,92 +1,127 @@
 (async () => {
-    console.log("Deploying: " + new Date());
-    web3.eth.getBlockNumber().then(console.log);
-    
-    const account = (await web3.eth.getAccounts())[0];
-    /*const ethNetwork = 'https://kovan.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33';
+  console.log("Deploying: " + new Date());
+  web3.eth.getBlockNumber().then(console.log);
+
+  const account = (await web3.eth.getAccounts())[0];
+  /*const ethNetwork = 'https://kovan.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33';
     let web3 = await new Web3(new Web3.providers.WebsocketProvider(ethNetwork))
     let accountInst = web3.eth.accounts.
         privateKeyToAccount("0xc7c9d41a50ac661df0f0e5eb8b788135a6ded1581d088b42898487296cf3fefb");
     web3.eth.accounts.wallet.add(accountInst);
     let account = accountInst.address;*/
 
-    let defiFactoryJson = JSON.parse(await remix.call('fileManager', 'getFile', "sol-defifactory-token/artifacts/DEFT/DefiFactoryToken.json"));
-    let noBotsTechJson = JSON.parse(await remix.call('fileManager', 'getFile', "sol-defifactory-token/artifacts/NoBotsTechV2.json"));
-    
-    
-    let [defiFactoryTokenContract, noBotsTechContract, teamVestingContract] = await Promise.all([
-        deployContract("DefiFactoryToken", defiFactoryJson, account, 0),
-        deployContract("NoBotsTechV2", noBotsTechJson, account, 0)
-    ]);
-    
-    console.log("DefiFactoryToken: ", defiFactoryTokenContract.options.address);
-    console.log("NoBotsTechV2: ", noBotsTechContract.options.address);
-    
-    async function step1() {
-        //console.log("DefiFactoryToken.updateUtilsContracts: " + new Date());
-        try {
-            await defiFactoryTokenContract.methods.
-                updateUtilsContracts([
-                    [true, true, false, false, false, noBotsTechContract.options.address],
-                    [false, false, false, false, false, "0x000000000000000000000000000000000000dead"],
-                    [false, false, false, false, false, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"], //Uniswap factory v2
-                    //[false, false, false, false, false, "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc"], //Pancake factory v2
+  let defiFactoryJson = JSON.parse(
+    await remix.call(
+      "fileManager",
+      "getFile",
+      "sol-defifactory-token/artifacts/DEFT/DefiFactoryToken.json"
+    )
+  );
+  let noBotsTechJson = JSON.parse(
+    await remix.call(
+      "fileManager",
+      "getFile",
+      "sol-defifactory-token/artifacts/NoBotsTechV2.json"
+    )
+  );
 
-                ]).send({
-                    from: account, 
-                    gas: 1e6,
-                    gasPrice: 5e9 + 1,
-                    value: 0
-                })
-            .then(function (result) {
-                //console.log(result);
-            });
-        }
-        catch (error) { console.log(error.message);fail; }
+  let [defiFactoryTokenContract, noBotsTechContract, teamVestingContract] =
+    await Promise.all([
+      deployContract("DefiFactoryToken", defiFactoryJson, account, 0),
+      deployContract("NoBotsTechV2", noBotsTechJson, account, 0),
+    ]);
+
+  console.log("DefiFactoryToken: ", defiFactoryTokenContract.options.address);
+  console.log("NoBotsTechV2: ", noBotsTechContract.options.address);
+
+  async function step1() {
+    //console.log("DefiFactoryToken.updateUtilsContracts: " + new Date());
+    try {
+      await defiFactoryTokenContract.methods
+        .updateUtilsContracts([
+          [true, true, false, false, false, noBotsTechContract.options.address],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            "0x000000000000000000000000000000000000dead",
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+          ], //Uniswap factory v2
+          //[false, false, false, false, false, "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc"], //Pancake factory v2
+        ])
+        .send({
+          from: account,
+          gas: 1e6,
+          gasPrice: 5e9 + 1,
+          value: 0,
+        })
+        .then(function (result) {
+          //console.log(result);
+        });
+    } catch (error) {
+      console.log(error.message);
+      fail;
     }
-    
-    async function step2() {
-        //console.log("NoBotsTech.grantRolesBulk: " + new Date());
-        try {
-            await noBotsTechContract.methods.
-                grantRolesBulk([
-                    ["0x0000000000000000000000000000000000000000000000000000000000000000", defiFactoryTokenContract.options.address]
-                ]).send({
-                    from: account, 
-                    gas: 7e5,
-                    gasPrice: 5e9 + 1,
-                    value: 0
-                })
-            .then(function (result) {
-                //console.log(result);
-            });
-        }
-        catch (error) { console.log(error.message);fail; }
+  }
+
+  async function step2() {
+    //console.log("NoBotsTech.grantRolesBulk: " + new Date());
+    try {
+      await noBotsTechContract.methods
+        .grantRolesBulk([
+          [
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+            defiFactoryTokenContract.options.address,
+          ],
+        ])
+        .send({
+          from: account,
+          gas: 7e5,
+          gasPrice: 5e9 + 1,
+          value: 0,
+        })
+        .then(function (result) {
+          //console.log(result);
+        });
+    } catch (error) {
+      console.log(error.message);
+      fail;
     }
-    
-    async function step3() {
-        //console.log("TeamVestingContract.updateDefiFactoryContract: " + new Date());
-        try {
-            await noBotsTechContract.methods.
-                updateDefiFactoryTokenAddress(
-                    defiFactoryTokenContract.options.address
-                ).send({
-                    from: account, 
-                    gas: 2e5,
-                    gasPrice: 5e9 + 1,
-                    value: 0
-                })
-            .then(function (result) {
-                //console.log(result);
-            });
-        }
-        catch (error) { console.log(error.message);fail; }
+  }
+
+  async function step3() {
+    //console.log("TeamVestingContract.updateDefiFactoryContract: " + new Date());
+    try {
+      await noBotsTechContract.methods
+        .updateDefiFactoryTokenAddress(defiFactoryTokenContract.options.address)
+        .send({
+          from: account,
+          gas: 2e5,
+          gasPrice: 5e9 + 1,
+          value: 0,
+        })
+        .then(function (result) {
+          //console.log(result);
+        });
+    } catch (error) {
+      console.log(error.message);
+      fail;
     }
-    
-    async function step4() {
-        //console.log("TeamVestingContract.updateInvestmentSettings: " + new Date());
-        try {
-            /*await teamVestingContract.methods.
+  }
+
+  async function step4() {
+    //console.log("TeamVestingContract.updateInvestmentSettings: " + new Date());
+    try {
+      /*await teamVestingContract.methods.
                 updateInvestmentSettings(
                     "0xd0A1E359811322d97991E03f863a0C30C2cF029C", // Native token: WETH kovan
                     //"0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd" // Native token: WBNB testnet
@@ -102,14 +137,16 @@
             .then(function (result) {
                 //console.log(result);
             });*/
-        }
-        catch (error) { console.log(error.message);fail; }
+    } catch (error) {
+      console.log(error.message);
+      fail;
     }
-    
-    async function step5() {
-        //console.log("NoBotsTech.updateReCachePeriod: " + new Date());
-        try {
-            /*await noBotsTechContract.methods.
+  }
+
+  async function step5() {
+    //console.log("NoBotsTech.updateReCachePeriod: " + new Date());
+    try {
+      /*await noBotsTechContract.methods.
                 updateReCachePeriod(
                     60
                 ).send({
@@ -121,46 +158,50 @@
             .then(function (result) {
                 //console.log(result);
             });*/
-        }
-        catch (error) { console.log(error.message);fail; }
+    } catch (error) {
+      console.log(error.message);
+      fail;
     }
-    
-    await Promise.all([step1(), step2(), step3(), step4(), step5()]);
-    
-    
-    //console.log("TeamVestingContract.createPairAndAddLiqudity: " + new Date());
-    try {
-        await teamVestingContract.methods.
-            createPair(
-            ).send({
-                from: account, 
-                gas: 7e6,
-                gasPrice: 5e9 + 1,
-                value: 0
-            })
-        .then(function (result) {
-            //console.log(result);
-        });
-    }
-    catch (error) { console.log(error.message); fail; }
-    
-    try {
-        await teamVestingContract.methods.
-            addLiquidity(
-            ).send({
-                from: account, 
-                gas: 7e6,
-                gasPrice: 5e9 + 1,
-                value: 0
-            })
-        .then(function (result) {
-            //console.log(result);
-        });
-    }
-    catch (error) { console.log(error.message); fail; }
-    
-    
-    /*
+  }
+
+  await Promise.all([step1(), step2(), step3(), step4(), step5()]);
+
+  //console.log("TeamVestingContract.createPairAndAddLiqudity: " + new Date());
+  try {
+    await teamVestingContract.methods
+      .createPair()
+      .send({
+        from: account,
+        gas: 7e6,
+        gasPrice: 5e9 + 1,
+        value: 0,
+      })
+      .then(function (result) {
+        //console.log(result);
+      });
+  } catch (error) {
+    console.log(error.message);
+    fail;
+  }
+
+  try {
+    await teamVestingContract.methods
+      .addLiquidity()
+      .send({
+        from: account,
+        gas: 7e6,
+        gasPrice: 5e9 + 1,
+        value: 0,
+      })
+      .then(function (result) {
+        //console.log(result);
+      });
+  } catch (error) {
+    console.log(error.message);
+    fail;
+  }
+
+  /*
     async function ref1() {
         //console.log("NoBotsTech.updateReCachePeriod: " + new Date());
         try {
@@ -291,10 +332,9 @@
     await Promise.all([ref1(), ref2(), ref3(), ref4(), ref5(), ref6(), fill1()]);
     
     */
-    
-    
-    //console.log("TeamVestingContract.addLiquidity: " + new Date());
-    /*try {
+
+  //console.log("TeamVestingContract.addLiquidity: " + new Date());
+  /*try {
         await teamVestingContract.methods.
             addLiquidity(
             ).send({
@@ -325,31 +365,26 @@
     }
     catch (error) { console.log(error.message);fail; }*/
 
-    console.log("Completed: " + new Date());
+  console.log("Completed: " + new Date());
 })();
 
-async function deployContract (contractName, metadata, account, value)  {
+async function deployContract(contractName, metadata, account, value) {
   try {
     let contract = new web3.eth.Contract(metadata.abi);
 
     contract = contract.deploy({
       data: metadata.data.bytecode.object,
-      arguments: []
+      arguments: [],
     });
 
     let newContractInstance = await contract.send({
-        from: account,
-        gas: 6e6,
-        gasPrice: 5e9 + 1,
-        value: value
+      from: account,
+      gas: 6e6,
+      gasPrice: 5e9 + 1,
+      value: value,
     });
     return newContractInstance;
   } catch (e) {
     console.log(contractName + ": " + e.message);
   }
 }
-
-
-
-
-

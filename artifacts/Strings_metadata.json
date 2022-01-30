@@ -1,45 +1,45 @@
 {
-	"compiler": {
-		"version": "0.8.11+commit.d7f03943"
-	},
-	"language": "Solidity",
-	"output": {
-		"abi": [],
-		"devdoc": {
-			"details": "String operations.",
-			"kind": "dev",
-			"methods": {},
-			"version": 1
-		},
-		"userdoc": {
-			"kind": "user",
-			"methods": {},
-			"version": 1
-		}
-	},
-	"settings": {
-		"compilationTarget": {
-			"sol-defifactory-token/CerbySwapV1.sol": "Strings"
-		},
-		"evmVersion": "london",
-		"libraries": {},
-		"metadata": {
-			"bytecodeHash": "ipfs"
-		},
-		"optimizer": {
-			"enabled": true,
-			"runs": 200
-		},
-		"remappings": []
-	},
-	"sources": {
-		"sol-defifactory-token/CerbySwapV1.sol": {
-			"keccak256": "0x06b14a3d7592da6f8d7d7bb77f4a4b91fea67b61411a5456ba0a3de17cdae257",
-			"urls": [
-				"bzz-raw://5456d044ce5460b3d02125d744dc1b464c9850c3106554710d51d278413060b0",
-				"dweb:/ipfs/QmWCukeLZY7w33MUNGKH1hmafUJSetXuwYwFYGbJPTjrw3"
-			]
-		}
-	},
-	"version": 1
+  "compiler": {
+    "version": "0.8.11+commit.d7f03943"
+  },
+  "language": "Solidity",
+  "output": {
+    "abi": [],
+    "devdoc": {
+      "details": "String operations.",
+      "kind": "dev",
+      "methods": {},
+      "version": 1
+    },
+    "userdoc": {
+      "kind": "user",
+      "methods": {},
+      "version": 1
+    }
+  },
+  "settings": {
+    "compilationTarget": {
+      "sol-defifactory-token/CerbySwapV1.sol": "Strings"
+    },
+    "evmVersion": "london",
+    "libraries": {},
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "remappings": []
+  },
+  "sources": {
+    "sol-defifactory-token/CerbySwapV1.sol": {
+      "keccak256": "0x06b14a3d7592da6f8d7d7bb77f4a4b91fea67b61411a5456ba0a3de17cdae257",
+      "urls": [
+        "bzz-raw://5456d044ce5460b3d02125d744dc1b464c9850c3106554710d51d278413060b0",
+        "dweb:/ipfs/QmWCukeLZY7w33MUNGKH1hmafUJSetXuwYwFYGbJPTjrw3"
+      ]
+    }
+  },
+  "version": 1
 }

@@ -3,45 +3,31 @@
 pragma solidity ^0.8.10;
 
 struct DailySnapshot {
-    uint inflationAmount;
-    uint totalShares;
-    uint sharePrice;
+    uint256 inflationAmount;
+    uint256 totalShares;
+    uint256 sharePrice;
 }
 struct Stake {
     address owner;
-    uint stakedAmount;
-    uint startDay;
-    uint lockedForXDays;
-    uint endDay;
-    uint maxSharesCountOnStartStake;
+    uint256 stakedAmount;
+    uint256 startDay;
+    uint256 lockedForXDays;
+    uint256 endDay;
+    uint256 maxSharesCountOnStartStake;
 }
 
-
 interface ICerbyStakingSystem {
-    function getDailySnapshotsLength()
-        external
-        view
-        returns(uint);
+    function getDailySnapshotsLength() external view returns (uint256);
 
-    function getStakesLength()
-        external
-        view
-        returns(uint);
+    function getStakesLength() external view returns (uint256);
 
-    function getCachedInterestPerShareLength()
-        external
-        view
-        returns(uint);        
+    function getCachedInterestPerShareLength() external view returns (uint256);
 
-    function dailySnapshots(uint pos)
+    function dailySnapshots(uint256 pos)
         external
-        returns (DailySnapshot memory);        
+        returns (DailySnapshot memory);
 
-    function stakes(uint pos)
-        external
-        returns (Stake memory);        
+    function stakes(uint256 pos) external returns (Stake memory);
 
-    function cachedInterestPerShare(uint pos)
-        external
-        returns (uint);
+    function cachedInterestPerShare(uint256 pos) external returns (uint256);
 }

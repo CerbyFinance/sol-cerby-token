@@ -3,33 +3,17 @@
 pragma solidity ^0.8.10;
 
 interface IWeth {
+    function balanceOf(address account) external view returns (uint256);
 
-    function balanceOf(
-        address account
-    )
+    function transfer(address _to, uint256 _value)
         external
-        view
-        returns (uint);
+        returns (bool success);
 
-    function transfer(
-        address _to,
-        uint _value
-    )  external returns (
-        bool success
-    );
-        
-    function deposit()
+    function deposit() external payable;
+
+    function withdraw(uint256 wad) external;
+
+    function approve(address _spender, uint256 _value)
         external
-        payable;
-
-    function withdraw(
-        uint wad
-    ) external;
-
-    function approve(
-        address _spender,
-        uint _value
-    )  external returns (
-        bool success
-    );
+        returns (bool success);
 }

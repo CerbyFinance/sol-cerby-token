@@ -5,68 +5,60 @@ pragma solidity ^0.8.8;
 struct TaxAmountsInput {
     address sender;
     address recipient;
-    uint transferAmount;
-    uint senderRealBalance;
-    uint recipientRealBalance;
+    uint256 transferAmount;
+    uint256 senderRealBalance;
+    uint256 recipientRealBalance;
 }
 struct TaxAmountsOutput {
-    uint senderRealBalance;
-    uint recipientRealBalance;
-    uint burnAndRewardAmount;
-    uint recipientGetsAmount;
+    uint256 senderRealBalance;
+    uint256 recipientRealBalance;
+    uint256 burnAndRewardAmount;
+    uint256 recipientGetsAmount;
 }
 
 interface INoBotsTech {
-    
-    function botTaxPercent()
+    function botTaxPercent() external returns (uint256);
+
+    function prepareTaxAmounts(TaxAmountsInput calldata taxAmountsInput)
         external
-        returns (uint);
-    
-    function prepareTaxAmounts(
-        TaxAmountsInput calldata taxAmountsInput
-    ) 
-        external
-        returns(TaxAmountsOutput memory taxAmountsOutput);
-    
-    function updateSupply(uint _realTotalSupply, uint _rewardsBalance)
+        returns (TaxAmountsOutput memory taxAmountsOutput);
+
+    function updateSupply(uint256 _realTotalSupply, uint256 _rewardsBalance)
         external;
-        
-    function prepareHumanAddressMintOrBurnRewardsAmounts(bool isMint, address account, uint desiredAmountToMintOrBurn)
-        external
-        returns (uint realAmountToMintOrBurn);
-        
-    function getBalance(address account, uint accountBalance)
-        external
-        view
-        returns(uint);
-        
-    function getRealBalance(address account, uint accountBalance)
+
+    function prepareHumanAddressMintOrBurnRewardsAmounts(
+        bool isMint,
+        address account,
+        uint256 desiredAmountToMintOrBurn
+    ) external returns (uint256 realAmountToMintOrBurn);
+
+    function getBalance(address account, uint256 accountBalance)
         external
         view
-        returns(uint);
-        
-    function getRealBalanceTeamVestingContract(uint accountBalance)
+        returns (uint256);
+
+    function getRealBalance(address account, uint256 accountBalance)
         external
         view
-        returns(uint);
-        
-    function getTotalSupply()
+        returns (uint256);
+
+    function getRealBalanceTeamVestingContract(uint256 accountBalance)
         external
         view
-        returns (uint);
-        
-    function grantRole(bytes32 role, address account) 
-        external;
-        
-    function chargeCustomTax(uint taxAmount, uint accountBalance)
+        returns (uint256);
+
+    function getTotalSupply() external view returns (uint256);
+
+    function grantRole(bytes32 role, address account) external;
+
+    function chargeCustomTax(uint256 taxAmount, uint256 accountBalance)
         external
-        returns (uint);
-    
-    function chargeCustomTaxTeamVestingContract(uint taxAmount, uint accountBalance)
-        external
-        returns (uint);
-        
-    function publicForcedUpdateCacheMultiplier()
-        external;
-    
+        returns (uint256);
+
+    function chargeCustomTaxTeamVestingContract(
+        uint256 taxAmount,
+        uint256 accountBalance
+    ) external returns (uint256);
+
+    function publicForcedUpdateCacheMultiplier() external;
 }

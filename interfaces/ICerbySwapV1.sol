@@ -1,21 +1,19 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.11;
 
-
 struct Pool {
     uint32[8] tradeVolumePerPeriodInCerUsd;
     uint128 balanceToken;
     uint128 balanceCerUsd;
     uint128 lastSqrtKValue;
-    uint creditCerUsd;
+    uint256 creditCerUsd;
 }
 
 interface ICerbySwapV1 {
-
     function getCurrentFeeBasedOnTrades(address token)
         external
         view
-        returns (uint fee);
+        returns (uint256 fee);
 
     function getPoolsByTokens(address[] calldata tokens)
         external
@@ -23,51 +21,37 @@ interface ICerbySwapV1 {
         returns (Pool[] memory);
 
     function addTokenLiquidity(
-        address token, 
-        uint amountTokensIn, 
-        uint expireTimestamp,
+        address token,
+        uint256 amountTokensIn,
+        uint256 expireTimestamp,
         address transferTo
-    )
-        external
-        payable
-        returns (uint);
+    ) external payable returns (uint256);
 
     function removeTokenLiquidity(
-        address token, 
-        uint amountLpTokensBalanceToBurn, 
-        uint expireTimestamp,
+        address token,
+        uint256 amountLpTokensBalanceToBurn,
+        uint256 expireTimestamp,
         address transferTo
-    )
-        external
-        returns (uint);
+    ) external returns (uint256);
 
     function swapExactTokensForTokens(
         address tokenIn,
         address tokenOut,
-        uint amountTokensIn,
-        uint minAmountTokensOut,
-        uint expireTimestamp,
+        uint256 amountTokensIn,
+        uint256 minAmountTokensOut,
+        uint256 expireTimestamp,
         address transferTo
-    )
-        external
-        payable
-        returns (uint, uint);
+    ) external payable returns (uint256, uint256);
 
     function getInputTokensForExactTokens(
         address tokenIn,
         address tokenOut,
-        uint amountTokensOut
-    )
-        external
-        view
-        returns (uint amountTokensIn);
+        uint256 amountTokensOut
+    ) external view returns (uint256 amountTokensIn);
 
     function getOutputExactTokensForTokens(
         address tokenIn,
         address tokenOut,
-        uint amountTokensIn
-    )
-        external
-        view
-        returns (uint amountTokensOut);
+        uint256 amountTokensIn
+    ) external view returns (uint256 amountTokensOut);
 }

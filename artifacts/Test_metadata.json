@@ -1,65 +1,65 @@
 {
-	"compiler": {
-		"version": "0.8.11+commit.d7f03943"
-	},
-	"language": "Solidity",
-	"output": {
-		"abi": [
-			{
-				"inputs": [],
-				"name": "InsufficientBalance",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "revertError",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "revertStruct",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			}
-		],
-		"devdoc": {
-			"kind": "dev",
-			"methods": {},
-			"version": 1
-		},
-		"userdoc": {
-			"kind": "user",
-			"methods": {},
-			"version": 1
-		}
-	},
-	"settings": {
-		"compilationTarget": {
-			"localhost/sol-defifactory-token/Test.sol": "Test"
-		},
-		"evmVersion": "london",
-		"libraries": {},
-		"metadata": {
-			"bytecodeHash": "ipfs"
-		},
-		"optimizer": {
-			"enabled": true,
-			"runs": 200
-		},
-		"remappings": []
-	},
-	"sources": {
-		"localhost/sol-defifactory-token/Test.sol": {
-			"keccak256": "0x84f1c4ac54bfb0888616543565307c3d57057f745b730db883b7a8eeed2a4803",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://b0a4566f01a73abe2a96744ce084b1f0b3b00834643a676c2db6fd35caf2e6fe",
-				"dweb:/ipfs/QmYDjG1xsmfzjZ6QPJYfwia12C2BSDECKeozjcDeVMFGyj"
-			]
-		}
-	},
-	"version": 1
+  "compiler": {
+    "version": "0.8.11+commit.d7f03943"
+  },
+  "language": "Solidity",
+  "output": {
+    "abi": [
+      {
+        "inputs": [],
+        "name": "InsufficientBalance",
+        "type": "error"
+      },
+      {
+        "inputs": [],
+        "name": "revertError",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "revertStruct",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }
+    ],
+    "devdoc": {
+      "kind": "dev",
+      "methods": {},
+      "version": 1
+    },
+    "userdoc": {
+      "kind": "user",
+      "methods": {},
+      "version": 1
+    }
+  },
+  "settings": {
+    "compilationTarget": {
+      "localhost/sol-defifactory-token/Test.sol": "Test"
+    },
+    "evmVersion": "london",
+    "libraries": {},
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "remappings": []
+  },
+  "sources": {
+    "localhost/sol-defifactory-token/Test.sol": {
+      "keccak256": "0x84f1c4ac54bfb0888616543565307c3d57057f745b730db883b7a8eeed2a4803",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://b0a4566f01a73abe2a96744ce084b1f0b3b00834643a676c2db6fd35caf2e6fe",
+        "dweb:/ipfs/QmYDjG1xsmfzjZ6QPJYfwia12C2BSDECKeozjcDeVMFGyj"
+      ]
+    }
+  },
+  "version": 1
 }

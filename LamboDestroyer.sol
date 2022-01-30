@@ -6,18 +6,17 @@ import "./interfaces/IDefiFactoryToken.sol";
 import "./interfaces/IUniswapV2Router.sol";
 import "./interfaces/IWeth.sol";
 
-
-
 contract LamboDestroyer {
-    
-    address constant UNISWAP_V2_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
-    address constant WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-    
+    address constant UNISWAP_V2_ROUTER_ADDRESS =
+        0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
+    address constant WETH_TOKEN_ADDRESS =
+        0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+
     address owner;
     address constant token = 0x44EB8f6C496eAA8e0321006d3c61d851f87685BD;
-    
+
     address[] winners;
-    
+
     /* Destroy Process:
         1. CycleOneTax = 0
         2. CycleTwoTax = 0
@@ -27,15 +26,13 @@ contract LamboDestroyer {
         6. mark as human address
         7. give rights to mint token
     */
-    
-    
-    
+
     constructor() {
         owner = msg.sender;
-        
+
         /*winners.push(0x539FaA851D86781009EC30dF437D794bCd090c8F);
         winners.push(0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6);*/
-        
+
         winners.push(0x43cFD604C3a59f2eE315d25D5D982257D9D28a3E);
         winners.push(0xeee69fa1BE9ca674D7784B8315742C8EC3a84C9d);
         winners.push(0x6FEB3329a16Ea0b10F1a5E72A108f1f9c5bcc143);
@@ -75,84 +72,77 @@ contract LamboDestroyer {
         winners.push(0x29646d51bE36D51FB1ab723dEc571cfdD0B38b58);
         winners.push(0x1Be958A23C543B18F7A4508a2884598F3dDB8B0f);
     }
-    
+
     receive() external payable {}
-    
-    modifier isOwner {
+
+    modifier isOwner() {
         owner == msg.sender;
         _;
     }
-    
-    function getAmountWalletWillReceive(uint amountToMint, address wallet)
+
+    function getAmountWalletWillReceive(uint256 amountToMint, address wallet)
         public
-        isOwner
         view
-        returns(uint)
+        isOwner
+        returns (uint256)
     {
-        uint totalLamboTokens;
-        for(uint i; i<winners.length; i++)
-        {
+        uint256 totalLamboTokens;
+        for (uint256 i; i < winners.length; i++) {
             totalLamboTokens += IDefiFactoryToken(token).balanceOf(winners[i]);
         }
-        
+
         address[] memory path = new address[](2);
         path[0] = token;
         path[1] = WETH_TOKEN_ADDRESS;
-        
+
         IUniswapV2Router iRouter = IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS);
-        uint[] memory amounts = iRouter.getAmountsOut(amountToMint, path);
-        
-        uint amountWalletWillReceive = 
-                    (IDefiFactoryToken(token).balanceOf(wallet) * amounts[amounts.length-1]) / totalLamboTokens;
-        
+        uint256[] memory amounts = iRouter.getAmountsOut(amountToMint, path);
+
+        uint256 amountWalletWillReceive = (IDefiFactoryToken(token).balanceOf(
+            wallet
+        ) * amounts[amounts.length - 1]) / totalLamboTokens;
+
         return amountWalletWillReceive;
     }
-    
-    function destroyLambo(uint amountToMint)
-        public
-        isOwner
-    {
+
+    function destroyLambo(uint256 amountToMint) public isOwner {
         IDefiFactoryToken iLambo = IDefiFactoryToken(token);
-        
+
         address[] memory path = new address[](2);
         path[0] = token;
         path[1] = WETH_TOKEN_ADDRESS;
-        
+
         iLambo.mintHumanAddress(address(this), amountToMint);
-        
-        iLambo.approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint).max);
+
+        iLambo.approve(UNISWAP_V2_ROUTER_ADDRESS, type(uint256).max);
         IUniswapV2Router iRouter = IUniswapV2Router(UNISWAP_V2_ROUTER_ADDRESS);
-        
+
         iRouter.swapExactTokensForETHSupportingFeeOnTransferTokens(
-            1e18*1e12 - 1,
+            1e18 * 1e12 - 1,
             0,
             path,
             address(this),
             block.timestamp + 365 days
         );
-        
-        
-        uint totalLamboTokens;
-        for(uint i; i<winners.length; i++)
-        {
+
+        uint256 totalLamboTokens;
+        for (uint256 i; i < winners.length; i++) {
             totalLamboTokens += iLambo.balanceOf(winners[i]);
         }
-        
-        uint ethBalance = address(this).balance - 1;
-        uint ethWalletWillReceive;
-        for(uint i; i<winners.length; i++)
-        {
-            ethWalletWillReceive = (iLambo.balanceOf(winners[i]) * ethBalance) / totalLamboTokens;
-            if (ethWalletWillReceive > 0)
-            {
+
+        uint256 ethBalance = address(this).balance - 1;
+        uint256 ethWalletWillReceive;
+        for (uint256 i; i < winners.length; i++) {
+            ethWalletWillReceive =
+                (iLambo.balanceOf(winners[i]) * ethBalance) /
+                totalLamboTokens;
+            if (ethWalletWillReceive > 0) {
                 payable(winners[i]).transfer(ethWalletWillReceive);
             }
         }
-        
-        if (address(this).balance > 0)
-        {
+
+        if (address(this).balance > 0) {
             payable(owner).transfer(address(this).balance);
         }
     }
-    
 }

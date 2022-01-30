@@ -3,41 +3,41 @@ pragma solidity ^0.8.7;
 
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 
-
 interface IMintableBurnableToken {
-    function balanceOf(address account) external returns (uint);
+    function balanceOf(address account) external returns (uint256);
 
     function mintByBridge(address to, uint256 amount) external;
+
     function burnByBridge(address from, uint256 amount) external;
 }
 
 contract CrossChainBridgeV2_Test is AccessControlEnumerable {
     event ProofOfBurn(
-        bytes     srcToken,
-        bytes     destToken,
-        bytes     srcCaller,
-        bytes     destCaller,
-        uint256   srcAmount,
-        uint256   srcNonce,
+        bytes srcToken,
+        bytes destToken,
+        bytes srcCaller,
+        bytes destCaller,
+        uint256 srcAmount,
+        uint256 srcNonce,
         ChainType srcChainType,
-        uint32    srcChainId,
+        uint32 srcChainId,
         ChainType destChainType,
-        uint32    destChainId,
-        bytes32   burnProofHash
+        uint32 destChainId,
+        bytes32 burnProofHash
     );
 
     event ProofOfMint(
-        bytes     srcToken,
-        bytes     destToken,
-        bytes     srcCaller,
-        bytes     destCaller,
-        uint256   destAmount,
+        bytes srcToken,
+        bytes destToken,
+        bytes srcCaller,
+        bytes destCaller,
+        uint256 destAmount,
         // destNonce ?
         ChainType srcChainType,
-        uint32    srcChainId,
+        uint32 srcChainId,
         ChainType destChainType,
-        uint32    destChainId,
-        bytes32   burnProofHash
+        uint32 destChainId,
+        bytes32 burnProofHash
     );
 
     event ApprovedBurnProof(bytes32 burnProofHash);
@@ -50,7 +50,11 @@ contract CrossChainBridgeV2_Test is AccessControlEnumerable {
     }
 
     enum ChainType {
-        Undefined, Evm, Casper, Solana, Radix 
+        Undefined,
+        Evm,
+        Casper,
+        Solana,
+        Radix
     }
 
     enum Allowance {
@@ -69,14 +73,13 @@ contract CrossChainBridgeV2_Test is AccessControlEnumerable {
 
     constructor() {
         _srcChainType = ChainType.Evm;
-        
     }
 
     function setAllowance(
-        address       srcToken,
-        bytes memory  destToken,
-        ChainType     destChainType,
-        uint32        destChainId
+        address srcToken,
+        bytes memory destToken,
+        ChainType destChainType,
+        uint32 destChainId
     ) external {
         bytes32 allowanceHash = getAllowanceHash(
             destChainType,
@@ -88,25 +91,27 @@ contract CrossChainBridgeV2_Test is AccessControlEnumerable {
         allowances[allowanceHash] = Allowance.Allowed;
     }
 
-
     function getAllowanceHash(
-        ChainType     destChainType,
-        uint32        destChainId,
-        bytes memory  srcToken,
-        bytes memory  destToken
-    ) private view returns(bytes32) {
-        return sha256(abi.encodePacked(
-            uint8(_srcChainType),
-            uint32(block.chainid),
-            uint8(destChainType),
-            destChainId,
-            srcToken,
-            destToken
-        ));
+        ChainType destChainType,
+        uint32 destChainId,
+        bytes memory srcToken,
+        bytes memory destToken
+    ) private view returns (bytes32) {
+        return
+            sha256(
+                abi.encodePacked(
+                    uint8(_srcChainType),
+                    uint32(block.chainid),
+                    uint8(destChainType),
+                    destChainId,
+                    srcToken,
+                    destToken
+                )
+            );
     }
 
     // 40 bytes
-    function genericAddress(address some) private pure returns(bytes memory) {
+    function genericAddress(address some) private pure returns (bytes memory) {
         bytes memory result = new bytes(40);
         assembly {
             mstore(add(result, 40), some)
@@ -124,17 +129,17 @@ contract CrossChainBridgeV2_Test is AccessControlEnumerable {
     }
 
     function mintWithBurnProof(
-        address      _srcToken,
-        bytes memory destToken,  
+        address _srcToken,
+        bytes memory destToken,
         bytes memory destCaller,
-        uint8        destChainType,
-        uint32       destChainId,
-        bytes32      destBurnProofHash,
-        uint256      destAmount,
-        uint256      destNonce
+        uint8 destChainType,
+        uint32 destChainId,
+        bytes32 destBurnProofHash,
+        uint256 destAmount,
+        uint256 destNonce
     ) external {
         require(destCaller.length == 40, "invalid caller length");
-        require(destToken.length == 40,  "invalid token length");
+        require(destToken.length == 40, "invalid token length");
 
         bytes memory srcCaller = genericAddress(msg.sender);
         bytes memory srcToken = genericAddress(_srcToken);
@@ -159,19 +164,29 @@ contract CrossChainBridgeV2_Test is AccessControlEnumerable {
         );
 
         bytes memory packed = abi.encodePacked(
-            srcToken, destToken, 
-            srcCaller, destCaller,
+            srcToken,
+            destToken,
+            srcCaller,
+            destCaller,
             destAmount,
-            uint8(_srcChainType), uint32(block.chainid), // srcChainType, srcChainId
-            destChainType, destChainId,
+            uint8(_srcChainType),
+            uint32(block.chainid), // srcChainType, srcChainId
+            destChainType,
+            destChainId,
             destNonce
         );
 
-        require(packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32, "package is invalid");
+        require(
+            packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32,
+            "package is invalid"
+        );
 
         bytes32 computedBurnProofHash = sha256(packed);
 
-        require(computedBurnProofHash == destBurnProofHash, "CCB: Provided hash is invalid");
+        require(
+            computedBurnProofHash == destBurnProofHash,
+            "CCB: Provided hash is invalid"
+        );
 
         burnProofStorage[destBurnProofHash] = States.Executed;
 
@@ -196,16 +211,16 @@ contract CrossChainBridgeV2_Test is AccessControlEnumerable {
         }
     }
 
-     function burnAndCreateProof(
-        address      _srcToken,
-        bytes memory destToken, 
+    function burnAndCreateProof(
+        address _srcToken,
+        bytes memory destToken,
         bytes memory destCaller,
         uint256 srcAmount,
-        uint8   destChainType,
-        uint32  destChainId
+        uint8 destChainType,
+        uint32 destChainId
     ) external {
         require(destCaller.length == 40, "invalid caller length");
-        require(destToken.length == 40,  "invalid token length");
+        require(destToken.length == 40, "invalid token length");
 
         bytes memory srcCaller = genericAddress(msg.sender);
         bytes memory srcToken = genericAddress(_srcToken);
@@ -226,22 +241,30 @@ contract CrossChainBridgeV2_Test is AccessControlEnumerable {
         }
 
         require(
-            srcAmount <= IMintableBurnableToken(_srcToken).balanceOf(msg.sender),
+            srcAmount <=
+                IMintableBurnableToken(_srcToken).balanceOf(msg.sender),
             "CCB: Amount must not exceed available balance. Try reducing the amount."
         );
 
         uint256 srcNonce = srcNonceByToken[_srcToken];
 
-        bytes memory packed  = abi.encodePacked(
-            srcToken, destToken, 
-            srcCaller, destCaller,
+        bytes memory packed = abi.encodePacked(
+            srcToken,
+            destToken,
+            srcCaller,
+            destCaller,
             srcAmount,
-            uint8(_srcChainType), uint32(block.chainid), // srcChainType, srcChainId
-            destChainType, destChainId,
+            uint8(_srcChainType),
+            uint32(block.chainid), // srcChainType, srcChainId
+            destChainType,
+            destChainId,
             srcNonce
         );
 
-        require(packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32, "package is invalid");
+        require(
+            packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32,
+            "package is invalid"
+        );
 
         bytes32 computedBurnProofHash = sha256(packed);
 

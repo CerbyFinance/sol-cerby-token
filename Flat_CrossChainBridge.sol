@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
 
-
-
-
 /*
  * @dev Provides information about the current execution context, including the
  * sender of the transaction and its data. While these are generally available
@@ -24,10 +21,6 @@ abstract contract Context {
         return msg.data;
     }
 }
-
-
-
-
 
 /**
  * @dev String operations.
@@ -79,7 +72,11 @@ library Strings {
     /**
      * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.
      */
-    function toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
+    function toHexString(uint256 value, uint256 length)
+        internal
+        pure
+        returns (string memory)
+    {
         bytes memory buffer = new bytes(2 * length + 2);
         buffer[0] = "0";
         buffer[1] = "x";
@@ -90,16 +87,7 @@ library Strings {
         require(value == 0, "Strings: hex length insufficient");
         return string(buffer);
     }
-
 }
-
-
-
-
-
-
-
-
 
 /**
  * @dev Interface of the ERC165 standard, as defined in the
@@ -122,7 +110,6 @@ interface IERC165 {
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }
 
-
 /**
  * @dev Implementation of the {IERC165} interface.
  *
@@ -141,12 +128,16 @@ abstract contract ERC165 is IERC165 {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
         return interfaceId == type(IERC165).interfaceId;
     }
 }
-
-
 
 struct RoleAccess {
     bytes32 role;
@@ -157,10 +148,17 @@ struct RoleAccess {
  * @dev External interface of AccessControl declared to support ERC165 detection.
  */
 interface IAccessControl {
-    function hasRole(bytes32 role, address account) external view returns (bool);
+    function hasRole(bytes32 role, address account)
+        external
+        view
+        returns (bool);
+
     function getRoleAdmin(bytes32 role) external view returns (bytes32);
+
     function grantRole(bytes32 role, address account) external;
+
     function revokeRole(bytes32 role, address account) external;
+
     function renounceRole(bytes32 role, address account) external;
 }
 
@@ -204,11 +202,11 @@ interface IAccessControl {
  */
 abstract contract AccessControl is Context, IAccessControl, ERC165 {
     struct RoleData {
-        mapping (address => bool) members;
+        mapping(address => bool) members;
         bytes32 adminRole;
     }
 
-    mapping (bytes32 => RoleData) private _roles;
+    mapping(bytes32 => RoleData) private _roles;
 
     bytes32 public constant ROLE_ADMIN = 0x00;
 
@@ -220,7 +218,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * _Available since v3.1._
      */
-    event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole);
+    event RoleAdminChanged(
+        bytes32 indexed role,
+        bytes32 indexed previousAdminRole,
+        bytes32 indexed newAdminRole
+    );
 
     /**
      * @dev Emitted when `account` is granted `role`.
@@ -228,7 +230,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      * `sender` is the account that originated the contract call, an admin role
      * bearer except when using {_setupRole}.
      */
-    event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender);
+    event RoleGranted(
+        bytes32 indexed role,
+        address indexed account,
+        address indexed sender
+    );
 
     /**
      * @dev Emitted when `account` is revoked `role`.
@@ -237,7 +243,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *   - if using `revokeRole`, it is the admin role bearer
      *   - if using `renounceRole`, it is the role bearer (i.e. `account`)
      */
-    event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender);
+    event RoleRevoked(
+        bytes32 indexed role,
+        address indexed account,
+        address indexed sender
+    );
 
     /**
      * @dev Modifier that checks that an account has a specific role. Reverts
@@ -257,15 +267,27 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(IAccessControl).interfaceId
-            || super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
+        return
+            interfaceId == type(IAccessControl).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 
     /**
      * @dev Returns `true` if `account` has been granted `role`.
      */
-    function hasRole(bytes32 role, address account) public view override returns (bool) {
+    function hasRole(bytes32 role, address account)
+        public
+        view
+        override
+        returns (bool)
+    {
         return _roles[role].members[account];
     }
 
@@ -277,13 +299,17 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *  /^AccessControl: account (0x[0-9a-f]{20}) is missing role (0x[0-9a-f]{32})$/
      */
     function _checkRole(bytes32 role, address account) internal view {
-        if(!hasRole(role, account)) {
-            revert(string(abi.encodePacked(
-                "AccessControl: account ",
-                Strings.toHexString(uint160(account), 20),
-                " is missing role ",
-                Strings.toHexString(uint256(role), 32)
-            )));
+        if (!hasRole(role, account)) {
+            revert(
+                string(
+                    abi.encodePacked(
+                        "AccessControl: account ",
+                        Strings.toHexString(uint160(account), 20),
+                        " is missing role ",
+                        Strings.toHexString(uint256(role), 32)
+                    )
+                )
+            );
         }
     }
 
@@ -307,16 +333,20 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * - the caller must have ``role``'s admin role.
      */
-    function grantRole(bytes32 role, address account) public virtual override onlyRole(ROLE_ADMIN) {
+    function grantRole(bytes32 role, address account)
+        public
+        virtual
+        override
+        onlyRole(ROLE_ADMIN)
+    {
         _grantRole(role, account);
     }
-    
+
     function grantRolesBulk(RoleAccess[] calldata roles)
         external
         onlyRole(ROLE_ADMIN)
     {
-        for(uint i = 0; i<roles.length; i++)
-        {
+        for (uint256 i = 0; i < roles.length; i++) {
             _setupRole(roles[i].role, roles[i].addr);
         }
     }
@@ -330,7 +360,12 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * - the caller must have ``role``'s admin role.
      */
-    function revokeRole(bytes32 role, address account) public virtual override onlyRole(getRoleAdmin(role)) {
+    function revokeRole(bytes32 role, address account)
+        public
+        virtual
+        override
+        onlyRole(getRoleAdmin(role))
+    {
         _revokeRole(role, account);
     }
 
@@ -348,8 +383,15 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * - the caller must be `account`.
      */
-    function renounceRole(bytes32 role, address account) public virtual override {
-        require(account == _msgSender(), "AccessControl: can only renounce roles for self");
+    function renounceRole(bytes32 role, address account)
+        public
+        virtual
+        override
+    {
+        require(
+            account == _msgSender(),
+            "AccessControl: can only renounce roles for self"
+        );
 
         _revokeRole(role, account);
     }
@@ -399,10 +441,6 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     }
 }
 
-
-
-
-
 /**
  * @dev Library for managing
  * https://en.wikipedia.org/wiki/Set_(abstract_data_type)[sets] of primitive
@@ -440,10 +478,9 @@ library EnumerableSet {
     struct Set {
         // Storage of set values
         bytes32[] _values;
-
         // Position of the value in the `values` array, plus 1 because index 0
         // means a value is not in the set.
-        mapping (bytes32 => uint256) _indexes;
+        mapping(bytes32 => uint256) _indexes;
     }
 
     /**
@@ -474,7 +511,8 @@ library EnumerableSet {
         // We read and store the value's index to prevent multiple reads from the same storage slot
         uint256 valueIndex = set._indexes[value];
 
-        if (valueIndex != 0) { // Equivalent to contains(set, value)
+        if (valueIndex != 0) {
+            // Equivalent to contains(set, value)
             // To delete an element from the _values array in O(1), we swap the element to delete with the last one in
             // the array, and then remove the last element (sometimes called as 'swap and pop').
             // This modifies the order of the array, as noted in {at}.
@@ -506,7 +544,11 @@ library EnumerableSet {
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function _contains(Set storage set, bytes32 value) private view returns (bool) {
+    function _contains(Set storage set, bytes32 value)
+        private
+        view
+        returns (bool)
+    {
         return set._indexes[value] != 0;
     }
 
@@ -517,17 +559,21 @@ library EnumerableSet {
         return set._values.length;
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function _at(Set storage set, uint256 index) private view returns (bytes32) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function _at(Set storage set, uint256 index)
+        private
+        view
+        returns (bytes32)
+    {
         return set._values[index];
     }
 
@@ -543,7 +589,10 @@ library EnumerableSet {
      * Returns true if the value was added to the set, that is if it was not
      * already present.
      */
-    function add(Bytes32Set storage set, bytes32 value) internal returns (bool) {
+    function add(Bytes32Set storage set, bytes32 value)
+        internal
+        returns (bool)
+    {
         return _add(set._inner, value);
     }
 
@@ -553,14 +602,21 @@ library EnumerableSet {
      * Returns true if the value was removed from the set, that is if it was
      * present.
      */
-    function remove(Bytes32Set storage set, bytes32 value) internal returns (bool) {
+    function remove(Bytes32Set storage set, bytes32 value)
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, value);
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function contains(Bytes32Set storage set, bytes32 value) internal view returns (bool) {
+    function contains(Bytes32Set storage set, bytes32 value)
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, value);
     }
 
@@ -571,17 +627,21 @@ library EnumerableSet {
         return _length(set._inner);
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function at(Bytes32Set storage set, uint256 index) internal view returns (bytes32) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function at(Bytes32Set storage set, uint256 index)
+        internal
+        view
+        returns (bytes32)
+    {
         return _at(set._inner, index);
     }
 
@@ -597,7 +657,10 @@ library EnumerableSet {
      * Returns true if the value was added to the set, that is if it was not
      * already present.
      */
-    function add(AddressSet storage set, address value) internal returns (bool) {
+    function add(AddressSet storage set, address value)
+        internal
+        returns (bool)
+    {
         return _add(set._inner, bytes32(uint256(uint160(value))));
     }
 
@@ -607,14 +670,21 @@ library EnumerableSet {
      * Returns true if the value was removed from the set, that is if it was
      * present.
      */
-    function remove(AddressSet storage set, address value) internal returns (bool) {
+    function remove(AddressSet storage set, address value)
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, bytes32(uint256(uint160(value))));
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function contains(AddressSet storage set, address value) internal view returns (bool) {
+    function contains(AddressSet storage set, address value)
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, bytes32(uint256(uint160(value))));
     }
 
@@ -625,20 +695,23 @@ library EnumerableSet {
         return _length(set._inner);
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function at(AddressSet storage set, uint256 index) internal view returns (address) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function at(AddressSet storage set, uint256 index)
+        internal
+        view
+        returns (address)
+    {
         return address(uint160(uint256(_at(set._inner, index))));
     }
-
 
     // UintSet
 
@@ -662,14 +735,21 @@ library EnumerableSet {
      * Returns true if the value was removed from the set, that is if it was
      * present.
      */
-    function remove(UintSet storage set, uint256 value) internal returns (bool) {
+    function remove(UintSet storage set, uint256 value)
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, bytes32(value));
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function contains(UintSet storage set, uint256 value) internal view returns (bool) {
+    function contains(UintSet storage set, uint256 value)
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, bytes32(value));
     }
 
@@ -680,44 +760,61 @@ library EnumerableSet {
         return _length(set._inner);
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function at(UintSet storage set, uint256 index) internal view returns (uint256) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function at(UintSet storage set, uint256 index)
+        internal
+        view
+        returns (uint256)
+    {
         return uint256(_at(set._inner, index));
     }
 }
-
 
 /**
  * @dev External interface of AccessControlEnumerable declared to support ERC165 detection.
  */
 interface IAccessControlEnumerable {
-    function getRoleMember(bytes32 role, uint256 index) external view returns (address);
+    function getRoleMember(bytes32 role, uint256 index)
+        external
+        view
+        returns (address);
+
     function getRoleMemberCount(bytes32 role) external view returns (uint256);
 }
 
 /**
  * @dev Extension of {AccessControl} that allows enumerating the members of each role.
  */
-abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessControl {
+abstract contract AccessControlEnumerable is
+    IAccessControlEnumerable,
+    AccessControl
+{
     using EnumerableSet for EnumerableSet.AddressSet;
 
-    mapping (bytes32 => EnumerableSet.AddressSet) private _roleMembers;
+    mapping(bytes32 => EnumerableSet.AddressSet) private _roleMembers;
 
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(IAccessControlEnumerable).interfaceId
-            || super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
+        return
+            interfaceId == type(IAccessControlEnumerable).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 
     /**
@@ -732,7 +829,12 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
      * https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post]
      * for more information.
      */
-    function getRoleMember(bytes32 role, uint256 index) public view override returns (address) {
+    function getRoleMember(bytes32 role, uint256 index)
+        public
+        view
+        override
+        returns (address)
+    {
         return _roleMembers[role].at(index);
     }
 
@@ -740,7 +842,12 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
      * @dev Returns the number of accounts that have `role`. Can be used
      * together with {getRoleMember} to enumerate all bearers of a role.
      */
-    function getRoleMemberCount(bytes32 role) public view override returns (uint256) {
+    function getRoleMemberCount(bytes32 role)
+        public
+        view
+        override
+        returns (uint256)
+    {
         return _roleMembers[role].length();
     }
 
@@ -763,7 +870,11 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
     /**
      * @dev Overload {renounceRole} to track enumerable memberships
      */
-    function renounceRole(bytes32 role, address account) public virtual override {
+    function renounceRole(bytes32 role, address account)
+        public
+        virtual
+        override
+    {
         super.renounceRole(role, account);
         _roleMembers[role].remove(account);
     }
@@ -771,78 +882,63 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
     /**
      * @dev Overload {_setupRole} to track enumerable memberships
      */
-    function _setupRole(bytes32 role, address account) internal virtual override {
+    function _setupRole(bytes32 role, address account)
+        internal
+        virtual
+        override
+    {
         super._setupRole(role, account);
         _roleMembers[role].add(account);
     }
 }
 
-
-
-
-
 struct AccessSettings {
-        bool isMinter;
-        bool isBurner;
-        bool isTransferer;
-        bool isModerator;
-        bool isTaxer;
-        
-        address addr;
-    }
-
-interface IDefiFactoryToken {
-    function approve(
-        address _spender,
-        uint _value
-    )  external returns (
-        bool success
-    );
-    
-    function balanceOf(
-        address account
-    )
-        external
-        view
-        returns (uint);
-    
-    function totalSupply()
-        external
-        view
-        returns (uint);
-        
-    function chargeCustomTax(address from, uint amount)
-        external;
-        
-    function mintHumanAddress(address to, uint desiredAmountToMint) external;
-
-    function burnHumanAddress(address from, uint desiredAmountToBurn) external;
-
-    function mintByBridge(address to, uint realAmountToMint) external;
-
-    function burnByBridge(address from, uint realAmountBurn) external;
-    
-    function getUtilsContractAtPos(uint pos)
-        external
-        view
-        returns (address);
-        
-    function transferFromTeamVestingContract(address recipient, uint256 amount) external;
-    
-    function correctTransferEvents(address[] calldata addrs)
-        external;
-    
-    function publicForcedUpdateCacheMultiplier()
-        external;
-    
-    function updateUtilsContracts(AccessSettings[] calldata accessSettings)
-        external;
-    
-    function transferCustom(address sender, address recipient, uint256 amount)
-        external;
+    bool isMinter;
+    bool isBurner;
+    bool isTransferer;
+    bool isModerator;
+    bool isTaxer;
+    address addr;
 }
 
+interface IDefiFactoryToken {
+    function approve(address _spender, uint256 _value)
+        external
+        returns (bool success);
 
+    function balanceOf(address account) external view returns (uint256);
+
+    function totalSupply() external view returns (uint256);
+
+    function chargeCustomTax(address from, uint256 amount) external;
+
+    function mintHumanAddress(address to, uint256 desiredAmountToMint) external;
+
+    function burnHumanAddress(address from, uint256 desiredAmountToBurn)
+        external;
+
+    function mintByBridge(address to, uint256 realAmountToMint) external;
+
+    function burnByBridge(address from, uint256 realAmountBurn) external;
+
+    function getUtilsContractAtPos(uint256 pos) external view returns (address);
+
+    function transferFromTeamVestingContract(address recipient, uint256 amount)
+        external;
+
+    function correctTransferEvents(address[] calldata addrs) external;
+
+    function publicForcedUpdateCacheMultiplier() external;
+
+    function updateUtilsContracts(AccessSettings[] calldata accessSettings)
+        external;
+
+    function transferCustom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external;
+}
 
 struct IsHumanInfo {
     bool isHumanTransaction;
@@ -851,151 +947,177 @@ struct IsHumanInfo {
 }
 
 interface IDeftStorageContract {
-    
     function getBuyTimestamp(address tokenAddr, address addr)
         external
         view
-        returns (uint);
-    
-    function updateBuyTimestamp(address tokenAddr, address addr, uint newBuyTimestamp)
-        external;
-        
-    function isHumanTransaction(address tokenAddr, address sender, address recipient)
-        external
-        returns (IsHumanInfo memory);
-    
-    function isBotAddress(address addr)
-        external
-        view
-        returns (bool);
-    
-    function isExcludedFromBalance(address addr)
-        external
-        view
-        returns (bool);
-    
-    function bulkMarkAddressAsBot(address[] calldata addrs)
-        external;
-    
-    function markAddressAsBot(address addr)
-        external;
-    
-    function markAddressAsNotBot(address addr)
-        external;
-        
-        
-    function markPairAsDeftEthPair(address addr, bool value)
-        external;
-    
-    function markPairAsDeftOtherPair(address addr, bool value)
-        external;
+        returns (uint256);
+
+    function updateBuyTimestamp(
+        address tokenAddr,
+        address addr,
+        uint256 newBuyTimestamp
+    ) external;
+
+    function isHumanTransaction(
+        address tokenAddr,
+        address sender,
+        address recipient
+    ) external returns (IsHumanInfo memory);
+
+    function isBotAddress(address addr) external view returns (bool);
+
+    function isExcludedFromBalance(address addr) external view returns (bool);
+
+    function bulkMarkAddressAsBot(address[] calldata addrs) external;
+
+    function markAddressAsBot(address addr) external;
+
+    function markAddressAsNotBot(address addr) external;
+
+    function markPairAsDeftEthPair(address addr, bool value) external;
+
+    function markPairAsDeftOtherPair(address addr, bool value) external;
 }
 
-
 contract CrossChainBridge is AccessControlEnumerable {
-    event ProofOfBurn(address addr, address token, uint amount, uint amountAsFee, uint currentNonce, uint sourceChain, uint destinationChain, bytes32 transactionHash);
-    event ProofOfMint(address addr, address token, uint amountAsFee, uint finalAmount, bytes32 transactionHash);
+    event ProofOfBurn(
+        address addr,
+        address token,
+        uint256 amount,
+        uint256 amountAsFee,
+        uint256 currentNonce,
+        uint256 sourceChain,
+        uint256 destinationChain,
+        bytes32 transactionHash
+    );
+    event ProofOfMint(
+        address addr,
+        address token,
+        uint256 amountAsFee,
+        uint256 finalAmount,
+        bytes32 transactionHash
+    );
     event ApprovedTransaction(bytes32 transactionHash);
     event BulkApprovedTransactions(bytes32[] transactionHashes);
-    event FeeUpdated(uint newFeePercent);
-    
-    enum States{ DefaultValue, Burned, Approved, Executed }
+    event FeeUpdated(uint256 newFeePercent);
+
+    enum States {
+        DefaultValue,
+        Burned,
+        Approved,
+        Executed
+    }
     mapping(bytes32 => States) public transactionStorage;
-    
-    uint constant NO_BOTS_TECH_CONTRACT_ID = 0;
-    uint constant DEFT_STORAGE_CONTRACT_ID = 3;
+
+    uint256 constant NO_BOTS_TECH_CONTRACT_ID = 0;
+    uint256 constant DEFT_STORAGE_CONTRACT_ID = 3;
     bytes32 public constant ROLE_APPROVER = keccak256("ROLE_APPROVER");
-    
-    
+
     address UNISWAP_V2_FACTORY_ADDRESS;
     address WETH_TOKEN_ADDRESS;
-    
-    mapping(address => uint) public currentNonce;
+
+    mapping(address => uint256) public currentNonce;
     address public beneficiaryAddress;
-    
-    mapping(address => mapping (uint => uint)) feeDependingOnDestinationChainId;
-    
-    uint constant ETH_MAINNET_CHAIN_ID = 1;
-    uint constant ETH_ROPSTEN_CHAIN_ID = 3;
-    uint constant ETH_KOVAN_CHAIN_ID = 42;
-    uint constant BSC_MAINNET_CHAIN_ID = 56;
-    uint constant BSC_TESTNET_CHAIN_ID = 97;
-    uint constant MATIC_MAINNET_CHAIN_ID = 137;
-    
-    address constant APPROVER_WALLET = 0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
-    
+
+    mapping(address => mapping(uint256 => uint256)) feeDependingOnDestinationChainId;
+
+    uint256 constant ETH_MAINNET_CHAIN_ID = 1;
+    uint256 constant ETH_ROPSTEN_CHAIN_ID = 3;
+    uint256 constant ETH_KOVAN_CHAIN_ID = 42;
+    uint256 constant BSC_MAINNET_CHAIN_ID = 56;
+    uint256 constant BSC_TESTNET_CHAIN_ID = 97;
+    uint256 constant MATIC_MAINNET_CHAIN_ID = 137;
+
+    address constant APPROVER_WALLET =
+        0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
+
     struct SourceProofOfBurn {
-        uint amountToBridge;
-        uint amountAsFee;
-        uint sourceChainId;
-        uint sourceNonce;
+        uint256 amountToBridge;
+        uint256 amountAsFee;
+        uint256 sourceChainId;
+        uint256 sourceNonce;
         address sourceTokenAddr;
         bytes32 transactionHash;
     }
-    
+
     constructor() {
         _setupRole(ROLE_ADMIN, msg.sender);
         _setupRole(ROLE_APPROVER, msg.sender);
         _setupRole(ROLE_APPROVER, APPROVER_WALLET);
-        
-        
+
         beneficiaryAddress = APPROVER_WALLET;
-        
-        
+
         /* Testnet */
-        if (block.chainid == ETH_KOVAN_CHAIN_ID)
-        {
+        if (block.chainid == ETH_KOVAN_CHAIN_ID) {
             _setupRole(ROLE_ADMIN, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
-            _setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
-            
-            feeDependingOnDestinationChainId[0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248][BSC_TESTNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to bsc
-        } else if (block.chainid == BSC_TESTNET_CHAIN_ID)
-        {
+            _setupRole(
+                ROLE_APPROVER,
+                0x539FaA851D86781009EC30dF437D794bCd090c8F
+            );
+
+            feeDependingOnDestinationChainId[
+                0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248
+            ][BSC_TESTNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to bsc
+        } else if (block.chainid == BSC_TESTNET_CHAIN_ID) {
             _setupRole(ROLE_ADMIN, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
-            _setupRole(ROLE_APPROVER, 0x539FaA851D86781009EC30dF437D794bCd090c8F);
-            
-            feeDependingOnDestinationChainId[0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248][ETH_KOVAN_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
+            _setupRole(
+                ROLE_APPROVER,
+                0x539FaA851D86781009EC30dF437D794bCd090c8F
+            );
+
+            feeDependingOnDestinationChainId[
+                0x40A24Fe8E4F7dDd2F614C0BC7e3d405b60f6a248
+            ][ETH_KOVAN_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
         }
-        
+
         /* MAINNET */
-        if (block.chainid == ETH_MAINNET_CHAIN_ID)
-        {
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to bsc
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to polygon
-        } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
-        {
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][MATIC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to polygon
-        } else if (block.chainid == MATIC_MAINNET_CHAIN_ID)
-        {
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][ETH_MAINNET_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
-            feeDependingOnDestinationChainId[0xdef1fac7Bf08f173D286BbBDcBeeADe695129840][BSC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to bsc
+        if (block.chainid == ETH_MAINNET_CHAIN_ID) {
+            feeDependingOnDestinationChainId[
+                0xdef1fac7Bf08f173D286BbBDcBeeADe695129840
+            ][BSC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to bsc
+            feeDependingOnDestinationChainId[
+                0xdef1fac7Bf08f173D286BbBDcBeeADe695129840
+            ][MATIC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to polygon
+        } else if (block.chainid == BSC_MAINNET_CHAIN_ID) {
+            feeDependingOnDestinationChainId[
+                0xdef1fac7Bf08f173D286BbBDcBeeADe695129840
+            ][ETH_MAINNET_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
+            feeDependingOnDestinationChainId[
+                0xdef1fac7Bf08f173D286BbBDcBeeADe695129840
+            ][MATIC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to polygon
+        } else if (block.chainid == MATIC_MAINNET_CHAIN_ID) {
+            feeDependingOnDestinationChainId[
+                0xdef1fac7Bf08f173D286BbBDcBeeADe695129840
+            ][ETH_MAINNET_CHAIN_ID] = 2e6 * 1e18; // allow to bridge to eth
+            feeDependingOnDestinationChainId[
+                0xdef1fac7Bf08f173D286BbBDcBeeADe695129840
+            ][BSC_MAINNET_CHAIN_ID] = 1e5 * 1e18; // allow to bridge to bsc
         }
     }
-    
-    function getFeeDependingOnDestinationChainId(address tokenAddr, uint destinationChainId)
-        public
-        view
-        returns(uint)
-    {
+
+    function getFeeDependingOnDestinationChainId(
+        address tokenAddr,
+        uint256 destinationChainId
+    ) public view returns (uint256) {
         return feeDependingOnDestinationChainId[tokenAddr][destinationChainId];
     }
-    
-    function updateFeeDependingOnDestinationChainId(address token, uint chainId, uint amountAsFee)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
+
+    function updateFeeDependingOnDestinationChainId(
+        address token,
+        uint256 chainId,
+        uint256 amountAsFee
+    ) external onlyRole(ROLE_ADMIN) {
         feeDependingOnDestinationChainId[token][chainId] = amountAsFee;
     }
-    
+
     function updateBeneficiaryAddress(address newBeneficiaryAddr)
         external
         onlyRole(ROLE_ADMIN)
     {
         beneficiaryAddress = newBeneficiaryAddr;
     }
-    
-    function markTransactionAsApproved(bytes32 transactionHash) 
+
+    function markTransactionAsApproved(bytes32 transactionHash)
         external
         onlyRole(ROLE_APPROVER)
     {
@@ -1006,75 +1128,94 @@ contract CrossChainBridge is AccessControlEnumerable {
         transactionStorage[transactionHash] = States.Approved;
         emit ApprovedTransaction(transactionHash);
     }
-    
-    function bulkMarkTransactionsAsApproved(bytes32[] memory transactionHashes) 
+
+    function bulkMarkTransactionsAsApproved(bytes32[] memory transactionHashes)
         external
         onlyRole(ROLE_APPROVER)
     {
-        for(uint i=0; i<transactionHashes.length; i++)
-        {
-            if (transactionStorage[transactionHashes[i]] < States.Approved)
-            {
+        for (uint256 i = 0; i < transactionHashes.length; i++) {
+            if (transactionStorage[transactionHashes[i]] < States.Approved) {
                 transactionStorage[transactionHashes[i]] = States.Approved;
-            } else
-            {
+            } else {
                 transactionHashes[i] = 0x0;
             }
         }
         emit BulkApprovedTransactions(transactionHashes);
     }
-    
-    function mintWithBurnProof(SourceProofOfBurn memory sourceProofOfBurn) 
+
+    function mintWithBurnProof(SourceProofOfBurn memory sourceProofOfBurn)
         external
     {
         require(
-            transactionStorage[sourceProofOfBurn.transactionHash] == States.Approved,
+            transactionStorage[sourceProofOfBurn.transactionHash] ==
+                States.Approved,
             "CCB: Transaction is not approved or already executed"
         );
-        
-        bytes32 transactionHash = keccak256(abi.encodePacked(
-                msg.sender, sourceProofOfBurn.sourceTokenAddr, sourceProofOfBurn.amountToBridge, sourceProofOfBurn.amountAsFee, sourceProofOfBurn.sourceChainId, block.chainid, sourceProofOfBurn.sourceNonce
-            ));
+
+        bytes32 transactionHash = keccak256(
+            abi.encodePacked(
+                msg.sender,
+                sourceProofOfBurn.sourceTokenAddr,
+                sourceProofOfBurn.amountToBridge,
+                sourceProofOfBurn.amountAsFee,
+                sourceProofOfBurn.sourceChainId,
+                block.chainid,
+                sourceProofOfBurn.sourceNonce
+            )
+        );
         require(
             transactionHash == sourceProofOfBurn.transactionHash,
             "CCB: Provided hash is invalid"
         );
-        
-        uint amountAsFeeHasToBeLargerThanZero = feeDependingOnDestinationChainId[sourceProofOfBurn.sourceTokenAddr][sourceProofOfBurn.sourceChainId];
+
+        uint256 amountAsFeeHasToBeLargerThanZero = feeDependingOnDestinationChainId[
+                sourceProofOfBurn.sourceTokenAddr
+            ][sourceProofOfBurn.sourceChainId];
         require(
             amountAsFeeHasToBeLargerThanZero > 0,
             "CCB: Destination is forbidden (mint)"
         );
-        
-        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(sourceProofOfBurn.sourceTokenAddr);
+
+        IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(
+            sourceProofOfBurn.sourceTokenAddr
+        );
         if (
-                block.chainid == ETH_MAINNET_CHAIN_ID ||
-                block.chainid == MATIC_MAINNET_CHAIN_ID ||
-                block.chainid == BSC_MAINNET_CHAIN_ID
-            )
-        {
+            block.chainid == ETH_MAINNET_CHAIN_ID ||
+            block.chainid == MATIC_MAINNET_CHAIN_ID ||
+            block.chainid == BSC_MAINNET_CHAIN_ID
+        ) {
             IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-                iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+                iDefiFactoryToken.getUtilsContractAtPos(
+                    DEFT_STORAGE_CONTRACT_ID
+                )
             );
             require(
                 !iDeftStorageContract.isBotAddress(msg.sender),
                 "CCB: Minting is temporary disabled!"
             );
         }
-        
+
         transactionStorage[sourceProofOfBurn.transactionHash] = States.Executed;
-        
-        uint amountAsFee = sourceProofOfBurn.amountAsFee;
-        uint finalAmount = sourceProofOfBurn.amountToBridge - amountAsFee; 
-        
+
+        uint256 amountAsFee = sourceProofOfBurn.amountAsFee;
+        uint256 finalAmount = sourceProofOfBurn.amountToBridge - amountAsFee;
+
         iDefiFactoryToken.mintByBridge(msg.sender, finalAmount);
-        
-        emit ProofOfMint(msg.sender, sourceProofOfBurn.sourceTokenAddr, amountAsFee, finalAmount, transactionHash);
+
+        emit ProofOfMint(
+            msg.sender,
+            sourceProofOfBurn.sourceTokenAddr,
+            amountAsFee,
+            finalAmount,
+            transactionHash
+        );
     }
-    
-    function burnAndCreateProof(address token, uint amount, uint destinationChainId) 
-        external
-    {
+
+    function burnAndCreateProof(
+        address token,
+        uint256 amount,
+        uint256 destinationChainId
+    ) external {
         IDefiFactoryToken iDefiFactoryToken = IDefiFactoryToken(token);
         require(
             amount <= iDefiFactoryToken.balanceOf(msg.sender),
@@ -1084,42 +1225,59 @@ contract CrossChainBridge is AccessControlEnumerable {
             block.chainid != destinationChainId,
             "CCB: Destination chain must be different from current chain"
         );
-        
-        uint amountAsFee = feeDependingOnDestinationChainId[token][destinationChainId];
-        require(
-            amountAsFee > 0,
-            "CCB: Destination is forbidden (burn)"
-        );
+
+        uint256 amountAsFee = feeDependingOnDestinationChainId[token][
+            destinationChainId
+        ];
+        require(amountAsFee > 0, "CCB: Destination is forbidden (burn)");
         require(
             amount > amountAsFee,
             "CCB: Amount is lower than the minimum permitted amount"
         );
-        
+
         if (
-                block.chainid == ETH_MAINNET_CHAIN_ID ||
-                block.chainid == MATIC_MAINNET_CHAIN_ID ||
-                block.chainid == BSC_MAINNET_CHAIN_ID
-            )
-        {
+            block.chainid == ETH_MAINNET_CHAIN_ID ||
+            block.chainid == MATIC_MAINNET_CHAIN_ID ||
+            block.chainid == BSC_MAINNET_CHAIN_ID
+        ) {
             IDeftStorageContract iDeftStorageContract = IDeftStorageContract(
-                iDefiFactoryToken.getUtilsContractAtPos(DEFT_STORAGE_CONTRACT_ID)
+                iDefiFactoryToken.getUtilsContractAtPos(
+                    DEFT_STORAGE_CONTRACT_ID
+                )
             );
             require(
                 !iDeftStorageContract.isBotAddress(msg.sender),
                 "CCB: Burning is temporary disabled!"
             );
         }
-        
-        bytes32 transactionHash = keccak256(abi.encodePacked(
-                msg.sender, token, amount, amountAsFee, block.chainid, destinationChainId, currentNonce[token]
-            ));
-            
+
+        bytes32 transactionHash = keccak256(
+            abi.encodePacked(
+                msg.sender,
+                token,
+                amount,
+                amountAsFee,
+                block.chainid,
+                destinationChainId,
+                currentNonce[token]
+            )
+        );
+
         transactionStorage[transactionHash] = States.Burned;
-        
+
         iDefiFactoryToken.burnByBridge(msg.sender, amount);
         iDefiFactoryToken.mintHumanAddress(beneficiaryAddress, amountAsFee);
-        
-        emit ProofOfBurn(msg.sender, token, amount, amountAsFee, currentNonce[token], block.chainid, destinationChainId, transactionHash);
+
+        emit ProofOfBurn(
+            msg.sender,
+            token,
+            amount,
+            amountAsFee,
+            currentNonce[token],
+            block.chainid,
+            destinationChainId,
+            transactionHash
+        );
         currentNonce[token]++;
     }
 }

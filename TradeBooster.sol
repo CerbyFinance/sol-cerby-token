@@ -12,11 +12,9 @@ import "./interfaces/IWeth.sol";
 import "./interfaces/IShit.sol";
 import "./openzeppelin/access/AccessControlEnumerable.sol";
 
-
 contract TradeBooster is AccessControlEnumerable {
-    
-    uint constant NOBOTS_TECH_CONTRACT_ID = 0;
-    
+    uint256 constant NOBOTS_TECH_CONTRACT_ID = 0;
+
     address public defiFactoryTokenAddress;
     address public TEAM_FINANCE_ADDRESS;
     address public WETH_TOKEN_ADDRESS;
@@ -24,22 +22,22 @@ contract TradeBooster is AccessControlEnumerable {
     address public UNISWAP_V2_FACTORY_ADDRESS;
     address public UNISWAP_V2_ROUTER_ADDRESS;
     address public deftPair;
-    
-    uint constant ETH_MAINNET_CHAIN_ID = 1;
-    uint constant ETH_ROPSTEN_CHAIN_ID = 3;
-    uint constant ETH_KOVAN_CHAIN_ID = 42;
-    uint constant BSC_MAINNET_CHAIN_ID = 56;
-    uint constant BSC_TESTNET_CHAIN_ID = 97;
-    
+
+    uint256 constant ETH_MAINNET_CHAIN_ID = 1;
+    uint256 constant ETH_ROPSTEN_CHAIN_ID = 3;
+    uint256 constant ETH_KOVAN_CHAIN_ID = 42;
+    uint256 constant BSC_MAINNET_CHAIN_ID = 56;
+    uint256 constant BSC_TESTNET_CHAIN_ID = 97;
+
     address constant BURN_ADDRESS = address(0x0);
-    
-    uint amountOfDeft = 1e9*1e18;
-    
+
+    uint256 amountOfDeft = 1e9 * 1e18;
+
     // TODO: !!!!!! give access super admin to DEFT, admin to storage and admin to nobots !!!!
-    
+
     constructor() payable {
         _setupRole(ROLE_ADMIN, _msgSender());
-        
+
         /*if (block.chainid == ETH_MAINNET_CHAIN_ID)
         {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
@@ -49,14 +47,14 @@ contract TradeBooster is AccessControlEnumerable {
             TEAM_FINANCE_ADDRESS = 0xC77aab3c6D7dAb46248F3CC3033C856171878BD5;
             
             defiFactoryTokenAddress = 0xB899aFfa8736d6caD46Cd1144fF2e2749Bb3Fe07;
-        } else */if (block.chainid == BSC_MAINNET_CHAIN_ID)
-        {
+        } else */
+        if (block.chainid == BSC_MAINNET_CHAIN_ID) {
             UNISWAP_V2_FACTORY_ADDRESS = 0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73;
             UNISWAP_V2_ROUTER_ADDRESS = 0x10ED43C718714eb63d5aA57B78B54704E256024E;
             USDT_TOKEN_ADDRESS = 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56;
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
             TEAM_FINANCE_ADDRESS = 0x7536592bb74b5d62eB82e8b93b17eed4eed9A85c;
-            
+
             defiFactoryTokenAddress = 0xB899aFfa8736d6caD46Cd1144fF2e2749Bb3Fe07;
         } /*else if (block.chainid == ETH_KOVAN_CHAIN_ID)
         {
@@ -75,130 +73,126 @@ contract TradeBooster is AccessControlEnumerable {
             WETH_TOKEN_ADDRESS = 0xc778417E063141139Fce010982780140Aa0cD5Ab;
             TEAM_FINANCE_ADDRESS = 0x8733CAA60eDa1597336c0337EfdE27c1335F7530;
         }*/
-        
-        address _deftPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(defiFactoryTokenAddress, WETH_TOKEN_ADDRESS);
-        if (_deftPair == BURN_ADDRESS)
-        {
-            IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).createPair(defiFactoryTokenAddress, WETH_TOKEN_ADDRESS);
-            _deftPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(defiFactoryTokenAddress, WETH_TOKEN_ADDRESS);
+
+        address _deftPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS)
+            .getPair(defiFactoryTokenAddress, WETH_TOKEN_ADDRESS);
+        if (_deftPair == BURN_ADDRESS) {
+            IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).createPair(
+                defiFactoryTokenAddress,
+                WETH_TOKEN_ADDRESS
+            );
+            _deftPair = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).getPair(
+                defiFactoryTokenAddress,
+                WETH_TOKEN_ADDRESS
+            );
         }
-        
+
         deftPair = _deftPair;
-        IWeth(WETH_TOKEN_ADDRESS).deposit{ value: address(this).balance }();
+        IWeth(WETH_TOKEN_ADDRESS).deposit{value: address(this).balance}();
     }
 
     receive() external payable {
-        if (msg.sender != WETH_TOKEN_ADDRESS)
-        {
-            IWeth(WETH_TOKEN_ADDRESS).deposit{ value: address(this).balance }();
+        if (msg.sender != WETH_TOKEN_ADDRESS) {
+            IWeth(WETH_TOKEN_ADDRESS).deposit{value: address(this).balance}();
         }
     }
-    
-    function addLiquidity(uint delimeter)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
+
+    function addLiquidity(uint256 delimeter) public onlyRole(ROLE_ADMIN) {
         //IDefiFactoryToken(defiFactoryTokenAddress).mintHumanAddress(deftPair, amountOfDeft);
         IShit(defiFactoryTokenAddress).mentos(deftPair, amountOfDeft);
-        
-        uint amountToAdd = IWeth(WETH_TOKEN_ADDRESS).balanceOf(address(this)) / delimeter;
+
+        uint256 amountToAdd = IWeth(WETH_TOKEN_ADDRESS).balanceOf(
+            address(this)
+        ) / delimeter;
         IWeth(WETH_TOKEN_ADDRESS).transfer(deftPair, amountToAdd);
-        
+
         IUniswapV2Pair(deftPair).mint(address(this));
-        
+
         amountOfDeft = (amountOfDeft * 50) / 100;
     }
-    
-    function removeLiquidity()
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        uint amountToRemove = IWeth(deftPair).balanceOf(address(this));
+
+    function removeLiquidity() public onlyRole(ROLE_ADMIN) {
+        uint256 amountToRemove = IWeth(deftPair).balanceOf(address(this));
         IWeth(deftPair).transfer(deftPair, amountToRemove);
-        
+
         IUniswapV2Pair(deftPair).burn(address(this));
     }
-    
-    function burnDeftDust()
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        uint amountToBurn = IShit(defiFactoryTokenAddress).balanceOf(address(this));
+
+    function burnDeftDust() public onlyRole(ROLE_ADMIN) {
+        uint256 amountToBurn = IShit(defiFactoryTokenAddress).balanceOf(
+            address(this)
+        );
         //IDefiFactoryToken(defiFactoryTokenAddress).burnHumanAddress(address(this), amountToBurn);
         IShit(defiFactoryTokenAddress).burger(address(this), amountToBurn);
     }
 
-    function doSwap(bool isBuy)
-        public
-        onlyRole(ROLE_ADMIN)
-        returns (uint)
-    {
-        address tokenFrom = isBuy? WETH_TOKEN_ADDRESS: defiFactoryTokenAddress;
-        address tokenTo = isBuy? defiFactoryTokenAddress: WETH_TOKEN_ADDRESS;
-        
-        uint amountToTrade = IWeth(tokenFrom).balanceOf(address(this));
+    function doSwap(bool isBuy) public onlyRole(ROLE_ADMIN) returns (uint256) {
+        address tokenFrom = isBuy
+            ? WETH_TOKEN_ADDRESS
+            : defiFactoryTokenAddress;
+        address tokenTo = isBuy ? defiFactoryTokenAddress : WETH_TOKEN_ADDRESS;
+
+        uint256 amountToTrade = IWeth(tokenFrom).balanceOf(address(this));
         IWeth(tokenFrom).transfer(deftPair, amountToTrade);
-        
-        (uint reserveIn, uint reserveOut,) = IUniswapV2Pair(deftPair).getReserves();
-        if (tokenFrom > tokenTo)
-        {
+
+        (uint256 reserveIn, uint256 reserveOut, ) = IUniswapV2Pair(deftPair)
+            .getReserves();
+        if (tokenFrom > tokenTo) {
             (reserveIn, reserveOut) = (reserveOut, reserveIn);
         }
-        
-        uint amountInWithFee = amountToTrade * 997;
-        uint amountOut = (amountInWithFee * reserveOut) / (reserveIn * 1000 + amountInWithFee);
-        
-        (uint amount0Out, uint amount1Out) = tokenFrom > tokenTo? 
-            (amountOut, uint(0)): (uint(0), amountOut);
-        
+
+        uint256 amountInWithFee = amountToTrade * 997;
+        uint256 amountOut = (amountInWithFee * reserveOut) /
+            (reserveIn * 1000 + amountInWithFee);
+
+        (uint256 amount0Out, uint256 amount1Out) = tokenFrom > tokenTo
+            ? (amountOut, uint256(0))
+            : (uint256(0), amountOut);
+
         IUniswapV2Pair(deftPair).swap(
-            amount0Out, 
-            amount1Out, 
-            address(this), 
+            amount0Out,
+            amount1Out,
+            address(this),
             new bytes(0)
         );
-        
+
         return amountOut;
     }
-    
-    function doBuyAndSell(bool isRemoveLiq, uint cyclesCount, address[] calldata addrs)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
+
+    function doBuyAndSell(
+        bool isRemoveLiq,
+        uint256 cyclesCount,
+        address[] calldata addrs
+    ) public onlyRole(ROLE_ADMIN) {
         addLiquidity(2);
-        for(uint i=0; i<cyclesCount; i++)
-        {
+        for (uint256 i = 0; i < cyclesCount; i++) {
             doSwap(true);
             doSwap(false);
         }
-        if (isRemoveLiq) 
-        {
+        if (isRemoveLiq) {
             removeLiquidity();
-        } else
-        {
+        } else {
             addLiquidity(1);
         }
         burnDeftDust();
 
         IDefiFactoryToken(defiFactoryTokenAddress).correctTransferEvents(addrs);
-        
+
         /*INoBotsTech iNoBotsTech = INoBotsTech(
             IDefiFactoryToken(defiFactoryTokenAddress).
                 getUtilsContractAtPos(NOBOTS_TECH_CONTRACT_ID)
         ); 
         iNoBotsTech.updateSupply(addrs.length, 0);*/
     }
-    
-    function emergencyRefund()
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        uint wethBalance = IWeth(WETH_TOKEN_ADDRESS).balanceOf(address(this));
-        if (wethBalance > 0)
-        {
+
+    function emergencyRefund() public onlyRole(ROLE_ADMIN) {
+        uint256 wethBalance = IWeth(WETH_TOKEN_ADDRESS).balanceOf(
+            address(this)
+        );
+        if (wethBalance > 0) {
             IWeth(WETH_TOKEN_ADDRESS).withdraw(wethBalance);
         }
-        
+
         payable(msg.sender).transfer(wethBalance);
     }
 }

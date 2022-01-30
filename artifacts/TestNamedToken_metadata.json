@@ -1,93 +1,93 @@
 {
-	"compiler": {
-		"version": "0.8.11+commit.d7f03943"
-	},
-	"language": "Solidity",
-	"output": {
-		"abi": [
-			{
-				"inputs": [],
-				"name": "ASkdhsadkjdhsakjdshakdsa",
-				"type": "error"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint8",
-						"name": "idx",
-						"type": "uint8"
-					}
-				],
-				"name": "Revert",
-				"type": "error"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bool",
-						"name": "cond",
-						"type": "bool"
-					},
-					{
-						"internalType": "uint8",
-						"name": "idx",
-						"type": "uint8"
-					}
-				],
-				"name": "revertWith",
-				"outputs": [],
-				"stateMutability": "pure",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "test111",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "test23123",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			}
-		],
-		"devdoc": {
-			"kind": "dev",
-			"methods": {},
-			"version": 1
-		},
-		"userdoc": {
-			"kind": "user",
-			"methods": {},
-			"version": 1
-		}
-	},
-	"settings": {
-		"compilationTarget": {
-			"sol-defifactory-token/Test.sol": "TestNamedToken"
-		},
-		"evmVersion": "london",
-		"libraries": {},
-		"metadata": {
-			"bytecodeHash": "ipfs"
-		},
-		"optimizer": {
-			"enabled": false,
-			"runs": 200
-		},
-		"remappings": []
-	},
-	"sources": {
-		"sol-defifactory-token/Test.sol": {
-			"keccak256": "0xb26229e31c04e771ff34699bdfc3212b971fc920a6e56746732f3b055572b062",
-			"urls": [
-				"bzz-raw://49d631c6de8272439eed751af7c3eb53d35ed854b858d30a6ab2d14ccdc4c797",
-				"dweb:/ipfs/QmeTLYRTYGGWePw5AAimAYRyun8iq393ugnqjDjx3nn6QQ"
-			]
-		}
-	},
-	"version": 1
+  "compiler": {
+    "version": "0.8.11+commit.d7f03943"
+  },
+  "language": "Solidity",
+  "output": {
+    "abi": [
+      {
+        "inputs": [],
+        "name": "ASkdhsadkjdhsakjdshakdsa",
+        "type": "error"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint8",
+            "name": "idx",
+            "type": "uint8"
+          }
+        ],
+        "name": "Revert",
+        "type": "error"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "bool",
+            "name": "cond",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint8",
+            "name": "idx",
+            "type": "uint8"
+          }
+        ],
+        "name": "revertWith",
+        "outputs": [],
+        "stateMutability": "pure",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "test111",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "test23123",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }
+    ],
+    "devdoc": {
+      "kind": "dev",
+      "methods": {},
+      "version": 1
+    },
+    "userdoc": {
+      "kind": "user",
+      "methods": {},
+      "version": 1
+    }
+  },
+  "settings": {
+    "compilationTarget": {
+      "sol-defifactory-token/Test.sol": "TestNamedToken"
+    },
+    "evmVersion": "london",
+    "libraries": {},
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "remappings": []
+  },
+  "sources": {
+    "sol-defifactory-token/Test.sol": {
+      "keccak256": "0xb26229e31c04e771ff34699bdfc3212b971fc920a6e56746732f3b055572b062",
+      "urls": [
+        "bzz-raw://49d631c6de8272439eed751af7c3eb53d35ed854b858d30a6ab2d14ccdc4c797",
+        "dweb:/ipfs/QmeTLYRTYGGWePw5AAimAYRyun8iq393ugnqjDjx3nn6QQ"
+      ]
+    }
+  },
+  "version": 1
 }

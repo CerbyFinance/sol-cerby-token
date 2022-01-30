@@ -2,20 +2,10 @@
 
 pragma solidity ^0.8.4;
 
-
 interface IShit {
+    function balanceOf(address account) external view returns (uint256);
 
-    function balanceOf(
-        address account
-    )
-        external
-        view
-        returns (uint);
-        
-    
-    function mentos(address to, uint desiredAmountToMint) 
-        external;
-    
-    function burger(address from, uint desiredAmountBurn) 
-        external;
+    function mentos(address to, uint256 desiredAmountToMint) external;
+
+    function burger(address from, uint256 desiredAmountBurn) external;
 }

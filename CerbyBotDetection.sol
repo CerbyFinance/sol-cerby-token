@@ -16,48 +16,50 @@ struct TransactionInfo {
 }
 
 contract CerbyBotDetection is AccessControlEnumerable {
-    
     CronJob[] public cronJobs;
     mapping(address => bool) private isBotStorage;
     mapping(address => bool) private isHumanStorage;
-    
-    mapping(address => uint) private cooldownPeriodSellStorage;
-    
-    mapping(address => mapping(address => uint)) private receiveTimestampStorage;
-    
-    mapping(address => uint) private isUniswapPairStorage;
-    
-    uint constant IS_UNISWAP_PAIR = 1;
-    uint constant IS_NORMAL_WALLET = 2;
-    uint constant IS_UNSET_VALUE = 0;
-    
+
+    mapping(address => uint256) private cooldownPeriodSellStorage;
+
+    mapping(address => mapping(address => uint256))
+        private receiveTimestampStorage;
+
+    mapping(address => uint256) private isUniswapPairStorage;
+
+    uint256 constant IS_UNISWAP_PAIR = 1;
+    uint256 constant IS_NORMAL_WALLET = 2;
+    uint256 constant IS_UNSET_VALUE = 0;
+
     bytes constant TOKEN0_SIGNATURE = abi.encodeWithSignature("token0()");
     bytes constant TOKEN1_SIGNATURE = abi.encodeWithSignature("token1()");
-    
-    address constant EIGHT_LEADING_ZEROS_TO_COMPARE = address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
-    address constant STAKING_CONTRACT = address(0x8888888AC6aa2482265e5346832CDd963c70A0D1);
+
+    address constant EIGHT_LEADING_ZEROS_TO_COMPARE =
+        address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
+    address constant STAKING_CONTRACT =
+        address(0x8888888AC6aa2482265e5346832CDd963c70A0D1);
     address constant BURN_ADDRESS = address(0x0);
-    uint constant DEFAULT_SELL_COOLDOWN = 0 seconds;
-    
-    uint constant ETH_MAINNET_CHAIN_ID = 1;
-    uint constant BSC_MAINNET_CHAIN_ID = 56;
-    uint constant POLYGON_MAINNET_CHAIN_ID = 137;
-    
-    uint constant BSC_TESTNET_CHAIN_ID = 97;
-    uint constant ETH_ROPSTEN_CHAIN_ID = 3;
-    uint constant ETH_KOVAN_CHAIN_ID = 42;
+    uint256 constant DEFAULT_SELL_COOLDOWN = 0 seconds;
+
+    uint256 constant ETH_MAINNET_CHAIN_ID = 1;
+    uint256 constant BSC_MAINNET_CHAIN_ID = 56;
+    uint256 constant POLYGON_MAINNET_CHAIN_ID = 137;
+
+    uint256 constant BSC_TESTNET_CHAIN_ID = 97;
+    uint256 constant ETH_ROPSTEN_CHAIN_ID = 3;
+    uint256 constant ETH_KOVAN_CHAIN_ID = 42;
 
     error CerbyBotDetection_TransfersAreTemporarilyDisabled();
-    
-    constructor() {        
+
+    constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
         _setupRole(ROLE_ADMIN, 0x543a000a9FBE139ff783b2F8EbdF8869452Dc21D); // NoBotsTechV3 Deft
-        
+
         _setupRole(ROLE_ADMIN, STAKING_CONTRACT); // Staking Contract
         _setupRole(ROLE_ADMIN, 0xEf038429e3BAaF784e1DE93075070df2A43D4278); // Cross Chain Bridge Contract
         _setupRole(ROLE_ADMIN, 0x9980a0447456b5cdce209D7dC94820FF15600022); // Cerby blacklister
         _setupRole(ROLE_ADMIN, 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840); // Cerby Token Contract
-        
+
         markAddressAsBot(0xC25e850F6cedE52809014d4eeCCA402eb47bDC28);
 
         markAddressAsHuman(STAKING_CONTRACT, true); // Staking contract
@@ -72,103 +74,96 @@ contract CerbyBotDetection is AccessControlEnumerable {
         markAddressAsHuman(0x881D40237659C251811CEC9c364ef91dC08D300C, true); // Metamask Swap Router
         markAddressAsHuman(0x74de5d4FCbf63E00296fd95d33236B9794016631, true); // Metamask Router Wallet
         markAddressAsHuman(0xe122d2E14d35d794C977b4d6924232CAe7c8DbB5, true); // Metamask Fees Wallet
-        
-        if (block.chainid == ETH_MAINNET_CHAIN_ID)
-        {
-            markAddressAsHuman(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D, true); // uniswap router v2
-            markAddressAsHuman(0xE592427A0AEce92De3Edee1F18E0157C05861564, true); // uniswap router v3
-        } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
-        {
-            markAddressAsHuman(0x10ED43C718714eb63d5aA57B78B54704E256024E, true); // pancake router v2
-        } else if (block.chainid == POLYGON_MAINNET_CHAIN_ID)
-        {
-            markAddressAsHuman(0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff, true); // quick router v2
+
+        if (block.chainid == ETH_MAINNET_CHAIN_ID) {
+            markAddressAsHuman(
+                0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D,
+                true
+            ); // uniswap router v2
+            markAddressAsHuman(
+                0xE592427A0AEce92De3Edee1F18E0157C05861564,
+                true
+            ); // uniswap router v3
+        } else if (block.chainid == BSC_MAINNET_CHAIN_ID) {
+            markAddressAsHuman(
+                0x10ED43C718714eb63d5aA57B78B54704E256024E,
+                true
+            ); // pancake router v2
+        } else if (block.chainid == POLYGON_MAINNET_CHAIN_ID) {
+            markAddressAsHuman(
+                0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff,
+                true
+            ); // quick router v2
         }
 
         registerJob(STAKING_CONTRACT, "updateAllSnapshots()");
     }
 
-
-    function registerJob(address targetContract, string memory abiCall)
-        public
-    {
+    function registerJob(address targetContract, string memory abiCall) public {
         CronJob memory cronJob;
         cronJob.targetContract = targetContract;
         cronJob.signature = bytes4(abi.encodeWithSignature(abiCall));
 
         bool foundGap;
-        for(uint i; i<cronJobs.length; i++)
-        {
-            if (cronJobs[i].targetContract == BURN_ADDRESS)
-            {
+        for (uint256 i; i < cronJobs.length; i++) {
+            if (cronJobs[i].targetContract == BURN_ADDRESS) {
                 foundGap = true;
                 cronJobs[i] = cronJob;
                 return;
             }
         }
 
-        if (!foundGap)
-        {
-            cronJobs.push(
-                cronJob
-            );
+        if (!foundGap) {
+            cronJobs.push(cronJob);
         }
     }
 
-    function removeJobs(address targetContract)
-        external
-    {
-        for(uint i; i<cronJobs.length; i++)
-        {
-            if (cronJobs[i].targetContract == targetContract)
-            {
+    function removeJobs(address targetContract) external {
+        for (uint256 i; i < cronJobs.length; i++) {
+            if (cronJobs[i].targetContract == targetContract) {
                 delete cronJobs[i];
             }
         }
     }
 
-    function getCronJobsLength()
-        external
-        view
-        returns (uint)
-    {
+    function getCronJobsLength() external view returns (uint256) {
         return cronJobs.length;
     }
-    
-    function executeCronJobs()
-        public
-    {
-        for(uint i; i<cronJobs.length; i++)
-        {     
-            if (cronJobs[i].targetContract != BURN_ADDRESS)  
-            {     
-                address(cronJobs[i].targetContract).
-                    call(abi.encodePacked(cronJobs[i].signature));
+
+    function executeCronJobs() public {
+        for (uint256 i; i < cronJobs.length; i++) {
+            if (cronJobs[i].targetContract != BURN_ADDRESS) {
+                address(cronJobs[i].targetContract).call(
+                    abi.encodePacked(cronJobs[i].signature)
+                );
             }
         }
     }
-    
+
     function getCooldownPeriodSell(address tokenAddr)
         external
         view
         onlyRole(ROLE_ADMIN)
-        returns (uint)
+        returns (uint256)
     {
-        return cooldownPeriodSellStorage[tokenAddr] > 0? cooldownPeriodSellStorage[tokenAddr]: DEFAULT_SELL_COOLDOWN;
+        return
+            cooldownPeriodSellStorage[tokenAddr] > 0
+                ? cooldownPeriodSellStorage[tokenAddr]
+                : DEFAULT_SELL_COOLDOWN;
     }
-    
-    function updateCooldownPeriodSell(address tokenAddr, uint newCooldownSellPeriod)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
+
+    function updateCooldownPeriodSell(
+        address tokenAddr,
+        uint256 newCooldownSellPeriod
+    ) public onlyRole(ROLE_ADMIN) {
         cooldownPeriodSellStorage[tokenAddr] = newCooldownSellPeriod;
     }
-    
+
     function getReceiveTimestamp(address tokenAddr, address addr)
         external
         view
         onlyRole(ROLE_ADMIN)
-        returns (uint)
+        returns (uint256)
     {
         return receiveTimestampStorage[tokenAddr][addr];
     }
@@ -180,22 +175,23 @@ contract CerbyBotDetection is AccessControlEnumerable {
         receiveTimestampStorage[tokenAddr][addr] = block.timestamp;
     }
 
-    function checkTransaction(address tokenAddr, address addr)
+    function detectBotTransaction(address tokenAddr, address addr)
         public
         onlyRole(ROLE_ADMIN)
         returns (bool)
     {
-        uint defaultSellCooldown = 
-            cooldownPeriodSellStorage[tokenAddr] > 0? 
-                cooldownPeriodSellStorage[tokenAddr]: 
-                DEFAULT_SELL_COOLDOWN;
-        bool isBot =
-            receiveTimestampStorage[tokenAddr][addr] + defaultSellCooldown >= block.timestamp ||
-            (isContract(addr) || isBotStorage[addr]) && 
-                !isHumanStorage[addr] && !isUniswapPairChecker(addr, tokenAddr);
-        return !isBot;
+        uint256 defaultSellCooldown = cooldownPeriodSellStorage[tokenAddr] > 0
+            ? cooldownPeriodSellStorage[tokenAddr]
+            : DEFAULT_SELL_COOLDOWN;
+        bool isBot = receiveTimestampStorage[tokenAddr][addr] +
+            defaultSellCooldown >=
+            block.timestamp ||
+            ((isContract(addr) || isBotStorage[addr]) &&
+                !isHumanStorage[addr] &&
+                !isUniswapPairChecker(addr, tokenAddr));
+        return isBot;
     }
-    
+
     function isBotAddress(address addr)
         external
         view
@@ -204,116 +200,118 @@ contract CerbyBotDetection is AccessControlEnumerable {
     {
         return isBotStorage[addr] && !isHumanStorage[addr];
     }
-    
+
     function checkTransactionInfo(
-        address tokenAddr, 
-        address sender, 
-        address recipient, 
-        uint recipientBalance, 
-        uint transferAmount
-    )
-        external
-        onlyRole(ROLE_ADMIN)
-        returns (TransactionInfo memory output)
-    {
+        address tokenAddr,
+        address sender,
+        address recipient,
+        uint256 recipientBalance,
+        uint256 transferAmount
+    ) external onlyRole(ROLE_ADMIN) returns (TransactionInfo memory output) {
         if (
-                sender < EIGHT_LEADING_ZEROS_TO_COMPARE // address starts from 8 zeros
+            sender < EIGHT_LEADING_ZEROS_TO_COMPARE // address starts from 8 zeros
         ) {
-           revert CerbyBotDetection_TransfersAreTemporarilyDisabled();
+            revert CerbyBotDetection_TransfersAreTemporarilyDisabled();
         }
 
         output.isSell = isUniswapPairChecker(recipient, tokenAddr);
         output.isBuy = isUniswapPairChecker(sender, tokenAddr);
-        
-        uint defaultSellCooldown = cooldownPeriodSellStorage[tokenAddr] > 0? cooldownPeriodSellStorage[tokenAddr]: DEFAULT_SELL_COOLDOWN;
+
+        uint256 defaultSellCooldown = cooldownPeriodSellStorage[tokenAddr] > 0
+            ? cooldownPeriodSellStorage[tokenAddr]
+            : DEFAULT_SELL_COOLDOWN;
         if (
-                output.isBuy && // checking buys
-                !output.isSell && // this means exclude when pair sends tokens to other pair => isSell && isBuy
-                tx.origin != recipient && // isOriginBot
-                !isContract(recipient) && // only checking user wallets
-                !isHumanStorage[recipient] && // skipping whitelisted wallets/contracts
-                IERC20(tokenAddr).balanceOf(recipient) <= 1  // need to make sure balance was zero before the transfer
-                                                            // to avoid blacklisting existing users by malicious actors
-            )
-        {
+            output.isBuy && // checking buys
+            !output.isSell && // this means exclude when pair sends tokens to other pair => isSell && isBuy
+            tx.origin != recipient && // isOriginBot
+            !isContract(recipient) && // only checking user wallets
+            !isHumanStorage[recipient] && // skipping whitelisted wallets/contracts
+            IERC20(tokenAddr).balanceOf(recipient) <= 1 // need to make sure balance was zero before the transfer
+            // to avoid blacklisting existing users by malicious actors
+        ) {
             isBotStorage[recipient] = true; // allow user to buy but mark as bot
         } else if (
-                !isHumanStorage[sender] && // skipping whitelisted wallets/contracts
-                !output.isBuy && // isSell or isTransfer
-                (
-                    isContract(sender) || // contracts aren't welcome
-                    isBotStorage[sender] || // is Blacklisted Sender
-                    receiveTimestampStorage[tokenAddr][sender] + defaultSellCooldown >= block.timestamp 
-                            // don't allow instant transfer after receiving
-                )
-            )
-        {
-           revert CerbyBotDetection_TransfersAreTemporarilyDisabled();
+            !isHumanStorage[sender] && // skipping whitelisted wallets/contracts
+            !output.isBuy && // isSell or isTransfer
+            (isContract(sender) || // contracts aren't welcome
+                isBotStorage[sender] || // is Blacklisted Sender
+                receiveTimestampStorage[tokenAddr][sender] +
+                    defaultSellCooldown >=
+                block.timestamp)
+            // don't allow instant transfer after receiving
+        ) {
+            revert CerbyBotDetection_TransfersAreTemporarilyDisabled();
         }
-        
+
         if (
             sender != STAKING_CONTRACT && // hack to allow scraping stakes
             recipient != BURN_ADDRESS
         ) {
             // geometric mean between old and new receive timestamp
             // depending on transferAmount
-            receiveTimestampStorage[tokenAddr][recipient] = 
-                (block.timestamp * transferAmount + receiveTimestampStorage[tokenAddr][recipient] * recipientBalance) / 
-                    (transferAmount + recipientBalance);
+            receiveTimestampStorage[tokenAddr][recipient] =
+                (block.timestamp *
+                    transferAmount +
+                    receiveTimestampStorage[tokenAddr][recipient] *
+                    recipientBalance) /
+                (transferAmount + recipientBalance);
         }
 
-        if (!output.isBuy && !output.isSell)
-        {
+        if (!output.isBuy && !output.isSell) {
             executeCronJobs();
         }
-        
+
         return output;
     }
-    
+
     function isUniswapPairChecker(address addr, address tokenAddr)
         private
         returns (bool)
     {
-        if (isUniswapPairStorage[addr] == IS_UNSET_VALUE)
-        {
-            (, bytes memory token0Bytes) = address(addr).staticcall(TOKEN0_SIGNATURE);
-            (, bytes memory token1Bytes) = address(addr).staticcall(TOKEN1_SIGNATURE);
+        if (isUniswapPairStorage[addr] == IS_UNSET_VALUE) {
+            (, bytes memory token0Bytes) = address(addr).staticcall(
+                TOKEN0_SIGNATURE
+            );
+            (, bytes memory token1Bytes) = address(addr).staticcall(
+                TOKEN1_SIGNATURE
+            );
 
-            address token0 = token0Bytes.length >= 20? abi.decode(token0Bytes, (address)): BURN_ADDRESS;
-            address token1 = token1Bytes.length >= 20? abi.decode(token1Bytes, (address)): BURN_ADDRESS;
+            address token0 = token0Bytes.length >= 20
+                ? abi.decode(token0Bytes, (address))
+                : BURN_ADDRESS;
+            address token1 = token1Bytes.length >= 20
+                ? abi.decode(token1Bytes, (address))
+                : BURN_ADDRESS;
             if (
-                    token0 == tokenAddr && token1 != BURN_ADDRESS ||
-                    token0 != BURN_ADDRESS && token1 == tokenAddr
+                (token0 == tokenAddr && token1 != BURN_ADDRESS) ||
+                (token0 != BURN_ADDRESS && token1 == tokenAddr)
             ) {
                 isUniswapPairStorage[addr] = IS_UNISWAP_PAIR;
-            } else
-            {
+            } else {
                 isUniswapPairStorage[addr] = IS_NORMAL_WALLET;
             }
         }
-        
+
         return isUniswapPairStorage[addr] == IS_UNISWAP_PAIR;
     }
-    
-    function isContract(address addr) 
-        public
-        view
-        returns (bool)
-    {
+
+    function isContract(address addr) public view returns (bool) {
         uint256 size;
-        assembly { size := extcodesize(addr) }
+        assembly {
+            size := extcodesize(addr)
+        }
         return size > 0;
     }
-    
+
     function isUniswapPair(address addr)
         external
         view
         onlyRole(ROLE_ADMIN)
-        returns (uint)
+        returns (uint256)
     {
         return isUniswapPairStorage[addr];
     }
-    
+
     function isMarkedAsHumanStorage(address addr)
         external
         view
@@ -322,23 +320,21 @@ contract CerbyBotDetection is AccessControlEnumerable {
     {
         return isHumanStorage[addr];
     }
-    
+
     function isMarkedAsHumanStorageBulk(address[] memory addrs)
         external
         view
         onlyRole(ROLE_ADMIN)
         returns (address[] memory)
     {
-        for(uint i = 0; i < addrs.length; i++)
-        {
-            if (!isHumanStorage[addrs[i]])
-            {
+        for (uint256 i = 0; i < addrs.length; i++) {
+            if (!isHumanStorage[addrs[i]]) {
                 addrs[i] = BURN_ADDRESS;
             }
         }
         return addrs;
     }
-    
+
     function isMarkedAsBotStorage(address addr)
         external
         view
@@ -347,101 +343,82 @@ contract CerbyBotDetection is AccessControlEnumerable {
     {
         return isBotStorage[addr];
     }
-    
+
     function isMarkedAsBotStorageBulk(address[] memory addrs)
         external
         view
         onlyRole(ROLE_ADMIN)
         returns (address[] memory)
     {
-        for(uint i = 0; i < addrs.length; i++)
-        {
-            if (!isBotStorage[addrs[i]])
-            {
+        for (uint256 i = 0; i < addrs.length; i++) {
+            if (!isBotStorage[addrs[i]]) {
                 addrs[i] = BURN_ADDRESS;
             }
         }
         return addrs;
     }
-    
+
     function markAddressAsHuman(address addr, bool value)
         public
         onlyRole(ROLE_ADMIN)
     {
         isHumanStorage[addr] = value;
     }
-    
+
     function bulkMarkAddressAsHuman(address[] calldata addrs, bool value)
         external
         onlyRole(ROLE_ADMIN)
     {
-        for(uint i = 0; i<addrs.length; i++)
-        {
+        for (uint256 i = 0; i < addrs.length; i++) {
             isHumanStorage[addrs[i]] = value;
         }
     }
-    
-    function markAsUniswapPair(address addr, uint value)
+
+    function markAsUniswapPair(address addr, uint256 value)
         public
         onlyRole(ROLE_ADMIN)
     {
         isUniswapPairStorage[addr] = value;
     }
-    
-    function bulkMarkAsUniswapPair(address[] calldata addrs, uint value)
+
+    function bulkMarkAsUniswapPair(address[] calldata addrs, uint256 value)
         external
         onlyRole(ROLE_ADMIN)
     {
-        for(uint i = 0; i<addrs.length; i++)
-        {
+        for (uint256 i = 0; i < addrs.length; i++) {
             isUniswapPairStorage[addrs[i]] = value;
         }
     }
-    
-    function markAddressAsBot(address addr)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        require(
-            !isBotStorage[addr],
-            "CBD: bot"
-        );
-        
+
+    function markAddressAsBot(address addr) public onlyRole(ROLE_ADMIN) {
+        require(!isBotStorage[addr], "CBD: bot");
+
         isBotStorage[addr] = true;
     }
-    
+
     function bulkMarkAddressAsBot(address[] calldata addrs)
         external
         onlyRole(ROLE_ADMIN)
     {
-        for(uint i = 0; i<addrs.length; i++)
-        {
-            if(!isBotStorage[addrs[i]])
-            {
+        for (uint256 i = 0; i < addrs.length; i++) {
+            if (!isBotStorage[addrs[i]]) {
                 isBotStorage[addrs[i]] = true;
             }
         }
     }
-    
+
     function bulkMarkAddressAsBotBool(address[] calldata addrs, bool value)
         external
         onlyRole(ROLE_ADMIN)
     {
-        for(uint i = 0; i<addrs.length; i++)
-        {
+        for (uint256 i = 0; i < addrs.length; i++) {
             isBotStorage[addrs[i]] = value;
         }
     }
-    
-    function markAddressAsNotBot(address addr)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
-        require(
-            isBotStorage[addr],
-            "CBD: !bot"
-        );
-        
+
+    function markAddressAsNotBot(address addr) external onlyRole(ROLE_ADMIN) {
+        require(isBotStorage[addr], "CBD: !bot");
+
         isBotStorage[addr] = false;
     }
 }

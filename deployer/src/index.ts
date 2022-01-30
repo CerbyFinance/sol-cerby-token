@@ -33,14 +33,14 @@ const web3 = new Web3(
     //"https://data-seed-prebsc-1-s1.binance.org:8545/",
     "https://kovan.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33"
     //"https://ropsten.infura.io/v3/6af3a6f4302246e8bbd4e69b5bfc9e33"
-  ),
+  )
 );
 
 async function deployContract(
   contractName: string,
   metadata: any,
   account: string,
-  value: number,
+  value: number
 ) {
   try {
     const contractFromAbi = new web3.eth.Contract(metadata.abi);
@@ -54,7 +54,7 @@ async function deployContract(
       from: account,
       gas: 6e6,
       // @ts-ignore
-      gasPrice: 1e9+1,
+      gasPrice: 1e9 + 1,
       value,
     });
 
@@ -77,19 +77,25 @@ const start = async () => {
   const account = _account.address;
 
   const defiFactoryJson = JSON.parse(
-    fs.readFileSync(path.resolve("../DEFT/artifacts/DefiFactoryToken.json"), "utf8"),
+    fs.readFileSync(
+      path.resolve("../DEFT/artifacts/DefiFactoryToken.json"),
+      "utf8"
+    )
   );
   const noBotsTechJson = JSON.parse(
-    fs.readFileSync(path.resolve("../artifacts/NoBotsTechV3.json"), "utf8"),
+    fs.readFileSync(path.resolve("../artifacts/NoBotsTechV3.json"), "utf8")
   );
   const liquidityHelperJson = JSON.parse(
-    fs.readFileSync(path.resolve("../artifacts/LiquidityHelper.json"), "utf8"),
+    fs.readFileSync(path.resolve("../artifacts/LiquidityHelper.json"), "utf8")
   );
   const deftStorageJson = JSON.parse(
-    fs.readFileSync(path.resolve("../artifacts/DeftStorageContract.json"), "utf8"),
+    fs.readFileSync(
+      path.resolve("../artifacts/DeftStorageContract.json"),
+      "utf8"
+    )
   );
   const crossChainBridgeJson = JSON.parse(
-    fs.readFileSync(path.resolve("../artifacts/CrossChainBridge.json"), "utf8"),
+    fs.readFileSync(path.resolve("../artifacts/CrossChainBridge.json"), "utf8")
   );
 
   const currentBlock = await web3.eth.getBlockNumber();
@@ -98,15 +104,15 @@ const start = async () => {
   const deftStorageContract = new web3.eth.Contract(
     // @ts-ignore
     deftStorageJson.abi,
-    DEFT_STORAGE_ADDRESS,
-  )
+    DEFT_STORAGE_ADDRESS
+  );
   console.log("DeftStorageContract: ", deftStorageContract.options.address);
 
   const defiFactoryTokenContract = await deployContract(
     "DefiFactoryToken",
     defiFactoryJson,
     account,
-    0,
+    0
   );
   console.log("DefiFactoryToken: ", defiFactoryTokenContract.options.address);
 
@@ -114,7 +120,7 @@ const start = async () => {
     "NoBotsTechV3",
     noBotsTechJson,
     account,
-    0,
+    0
   );
   console.log("NoBotsTechV3: ", noBotsTechContract.options.address);
 
@@ -122,11 +128,9 @@ const start = async () => {
     "LiquidityHelper",
     liquidityHelperJson,
     account,
-    1e15,
+    1e15
   );
   console.log("LiquidityHelper: ", liquidityHelperContract.options.address);
-
-
 
   /*const crossChainBridgeContract = await deployContract(
     "CrossChainBridge",
@@ -138,10 +142,9 @@ const start = async () => {
   const crossChainBridgeContract = new web3.eth.Contract(
     // @ts-ignore
     crossChainBridgeJson.abi,
-    CROSS_CHAIN_BRIDGE_ADDRESS,
-  )
+    CROSS_CHAIN_BRIDGE_ADDRESS
+  );
   console.log("CrossChainBridge: ", crossChainBridgeContract.options.address);
-
 
   let nonce = await web3.eth.getTransactionCount(account);
 
@@ -176,7 +179,7 @@ const start = async () => {
       console.log(funcName, ' ', error.message);
     }
   }
-  
+
   // prettier-ignore
   async function stepNoBotsRoles() {
     let funcName = 'stepNoBotsRoles';
@@ -201,7 +204,7 @@ const start = async () => {
       console.log(funcName, ' ', error.message);
     }
   }
-  
+
   // prettier-ignore
   async function stepDeftStorageRoles() {
     let funcName = 'stepDeftStorageRoles';
@@ -228,7 +231,7 @@ const start = async () => {
       console.log(funcName, ' ', error.message);
     }
   }
-  
+
   // prettier-ignore
   async function stepDeftStorageMarkAsHuman() {
     let funcName = 'stepDeftStorageMarkAsHuman';
@@ -251,7 +254,7 @@ const start = async () => {
       console.log(funcName, ' ', error.message);
     }
   }
-  
+
   // prettier-ignore
   async function stepDeftRoleMinter() {
     let funcName = 'stepDeftRoleMinter';
@@ -276,7 +279,7 @@ const start = async () => {
       console.log(funcName, ' ', error.message);
     }
   }
-  
+
   // prettier-ignore
   async function stepDeftRoleBurner() {
     let funcName = 'stepDeftRoleBurner';
@@ -301,7 +304,7 @@ const start = async () => {
       console.log(funcName, ' ', error.message);
     }
   }
-  
+
   // prettier-ignore
   async function stepUpdateDeftContractInNoBots() {
     let funcName = 'stepUpdateDeftContractInNoBots';
@@ -324,7 +327,7 @@ const start = async () => {
       console.log(funcName, ' ', error.message);
     }
   }
-  
+
   // prettier-ignore
   async function stepUpdateDeftContractInLiquidityHelper() {
     let funcName = 'stepUpdateDeftContractInLiquidityHelper';
@@ -347,8 +350,7 @@ const start = async () => {
       console.log(funcName, ' ', error.message);
     }
   }
-  
-   
+
   // prettier-ignore
   async function stepUpdateDeftContractInCrossChainSwap() {
     let funcName = 'stepUpdateDeftContractInCrossChainSwap';
@@ -371,7 +373,7 @@ const start = async () => {
       console.log(funcName, ' ', error.message);
     }
   }
-  
+
   // prettier-ignore
   async function stepDeftRoles() {
     let funcName = 'stepDeftRoles';
@@ -396,8 +398,6 @@ const start = async () => {
       console.log(funcName, ' ', error.message);
     }
   }
-
-  
 
   await Promise.all([
     stepDeftUtilsContracts(),
@@ -457,11 +457,10 @@ const start = async () => {
       console.log(error.message);
     }
   }
-  
+
   await createPairOnUniswapV2();
   //await delay(1000);
   await addLiquidityOnUniswapV2();
-  
 };
 
 start();
@@ -479,7 +478,6 @@ function chunk<T>(arr: T[], len: number) {
   return chunks;
 }
 
-function delay(ms: number)
-{
-  return new Promise(resolve => setTimeout(resolve, ms));
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

@@ -1,48 +1,48 @@
 {
-	"compiler": {
-		"version": "0.8.4+commit.c7e474f2"
-	},
-	"language": "Solidity",
-	"output": {
-		"abi": [],
-		"devdoc": {
-			"author": "Matt Condon (@shrugs)",
-			"details": "Provides counters that can only be incremented or decremented by one. This can be used e.g. to track the number of elements in a mapping, issuing ERC721 ids, or counting request ids. Include with `using Counters for Counters.Counter;`",
-			"kind": "dev",
-			"methods": {},
-			"title": "Counters",
-			"version": 1
-		},
-		"userdoc": {
-			"kind": "user",
-			"methods": {},
-			"version": 1
-		}
-	},
-	"settings": {
-		"compilationTarget": {
-			"sol-defifactory-token/DEFT/Flat_LamboToken.sol": "Counters"
-		},
-		"evmVersion": "istanbul",
-		"libraries": {},
-		"metadata": {
-			"bytecodeHash": "ipfs"
-		},
-		"optimizer": {
-			"enabled": true,
-			"runs": 1000
-		},
-		"remappings": []
-	},
-	"sources": {
-		"sol-defifactory-token/DEFT/Flat_LamboToken.sol": {
-			"keccak256": "0xc699e5c6cdb402f542538f2beb43ca107a4727f3970c135d634d0153d561610f",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://5acd8cf5d7a9c0522564b2b3fd93e4a7f922329f740e61082dc2ff3ec55b594b",
-				"dweb:/ipfs/QmeBsScDeGWJRRZgNrRGr2xxWYUAt37Cd19HUa3DmQ8fn5"
-			]
-		}
-	},
-	"version": 1
+  "compiler": {
+    "version": "0.8.4+commit.c7e474f2"
+  },
+  "language": "Solidity",
+  "output": {
+    "abi": [],
+    "devdoc": {
+      "author": "Matt Condon (@shrugs)",
+      "details": "Provides counters that can only be incremented or decremented by one. This can be used e.g. to track the number of elements in a mapping, issuing ERC721 ids, or counting request ids. Include with `using Counters for Counters.Counter;`",
+      "kind": "dev",
+      "methods": {},
+      "title": "Counters",
+      "version": 1
+    },
+    "userdoc": {
+      "kind": "user",
+      "methods": {},
+      "version": 1
+    }
+  },
+  "settings": {
+    "compilationTarget": {
+      "sol-defifactory-token/DEFT/Flat_LamboToken.sol": "Counters"
+    },
+    "evmVersion": "istanbul",
+    "libraries": {},
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "optimizer": {
+      "enabled": true,
+      "runs": 1000
+    },
+    "remappings": []
+  },
+  "sources": {
+    "sol-defifactory-token/DEFT/Flat_LamboToken.sol": {
+      "keccak256": "0xc699e5c6cdb402f542538f2beb43ca107a4727f3970c135d634d0153d561610f",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://5acd8cf5d7a9c0522564b2b3fd93e4a7f922329f740e61082dc2ff3ec55b594b",
+        "dweb:/ipfs/QmeBsScDeGWJRRZgNrRGr2xxWYUAt37Cd19HUa3DmQ8fn5"
+      ]
+    }
+  },
+  "version": 1
 }

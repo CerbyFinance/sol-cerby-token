@@ -1,191 +1,191 @@
 {
-	"compiler": {
-		"version": "0.8.11+commit.d7f03943"
-	},
-	"language": "Solidity",
-	"output": {
-		"abi": [
-			{
-				"inputs": [],
-				"stateMutability": "payable",
-				"type": "constructor"
-			},
-			{
-				"inputs": [],
-				"name": "TOTAL_SUPPLY_CAP",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "addLiquidityOnUniswapV2",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "createPairOnUniswapV2",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "defiFactoryToken",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "percentForTheTeam",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "percentForUniswap",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "newContract",
-						"type": "address"
-					}
-				],
-				"name": "updateDefiFactoryTokenAddress",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "wethAndTokenPairContract",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			}
-		],
-		"devdoc": {
-			"kind": "dev",
-			"methods": {},
-			"version": 1
-		},
-		"userdoc": {
-			"kind": "user",
-			"methods": {},
-			"version": 1
-		}
-	},
-	"settings": {
-		"compilationTarget": {
-			"sol-defifactory-token/LiquidityHelper.sol": "LiquidityHelper"
-		},
-		"evmVersion": "london",
-		"libraries": {},
-		"metadata": {
-			"bytecodeHash": "ipfs"
-		},
-		"optimizer": {
-			"enabled": true,
-			"runs": 200
-		},
-		"remappings": []
-	},
-	"sources": {
-		"sol-defifactory-token/LiquidityHelper.sol": {
-			"keccak256": "0xaf3f043d8b547da2afa54d6e0a4c37b3d08b1f6569d8463672d5fdb89c5084b2",
-			"license": "BSD-2-Clause",
-			"urls": [
-				"bzz-raw://99ec0c8f1b50aefd94586aedb451ee5d0c9cdc4daf1a8ee72fdc605521196a81",
-				"dweb:/ipfs/QmeC2bJyvrSCbDPvqq5cV1116nBaH4QMPve1Rw8SKSxUoK"
-			]
-		},
-		"sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
-			"keccak256": "0x55662dadf86392fd06c9bb78fc84c42a31cb3786ac836c0bbae077d7edc94fc7",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://7e802caeac0f00050211fd881950e3f767242197387b430f935f139d95024496",
-				"dweb:/ipfs/QmZGfnBk7fQfVipUJyqLpmcnfFbwP1SyrrHmD2tHPhapUN"
-			]
-		},
-		"sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
-			"keccak256": "0x31c4471e0df11f688ea99faf7d94b82a2896d15057e838cf55f66b3deef49ae8",
-			"license": "BUSL-1.1",
-			"urls": [
-				"bzz-raw://1295f95ac55f3b8a47a29afebb64e095a442f9bac9783bdfd679cb44f1513735",
-				"dweb:/ipfs/QmeFdRCuBNu1uCe9MdHX2eiihWiEKeMZQoHfkP9AWH7Xqk"
-			]
-		},
-		"sol-defifactory-token/interfaces/INoBotsTech.sol": {
-			"keccak256": "0xd18065280d57f7a855e3b3cb371afc1b170f4eed6dd0488fdda1f8cbddf561ed",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://d399593010fe566d8620cecbcc2aa42a117f0cb56cdace6324640f7fbf8c970a",
-				"dweb:/ipfs/QmQUZHbVeLiFHpZHgdVTru6MnigNvjgtqizbpaBE98Dp9D"
-			]
-		},
-		"sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {
-			"keccak256": "0xcedf8f2d94a11375f62ab9e3c0cbca9e584de936dc974d84c0785935c08555fc",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://355af2d26712d9ec44a3fc629162d8c0c3b40126b7916a1fc3f4e39ba42224f6",
-				"dweb:/ipfs/QmTataj3Mb5b6E6n5NU7GLtPC5N8ugJwUKJ5fR8LqT69m1"
-			]
-		},
-		"sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
-			"keccak256": "0x3d746e2e553a23587aa29666fcb38bf03ae46b69e52b55140b631ec7818ccd3a",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://88cdcbdf13d8890ba32ccdf99e1ad982533092bccd476a3f83ed75e0a5da399a",
-				"dweb:/ipfs/Qmbk4TmCL4LMQveoSzEuory1BpaCCzeRMgiLGpzNeb6suJ"
-			]
-		},
-		"sol-defifactory-token/interfaces/IWeth.sol": {
-			"keccak256": "0xaebf064916d07f10ca2ca496bff1160dc28ad0a0ae92bbb52fd0f21ff964d9e8",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://6e85dbc5e9dd412cc18ca50e53160765f510e2e6b5c5be6de3a25f3dc8eb39b1",
-				"dweb:/ipfs/QmYmKKacDwTZz4vUQud2us8qXP7GqUzEGS3b9AAriKjYMr"
-			]
-		}
-	},
-	"version": 1
+  "compiler": {
+    "version": "0.8.11+commit.d7f03943"
+  },
+  "language": "Solidity",
+  "output": {
+    "abi": [
+      {
+        "inputs": [],
+        "stateMutability": "payable",
+        "type": "constructor"
+      },
+      {
+        "inputs": [],
+        "name": "TOTAL_SUPPLY_CAP",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "addLiquidityOnUniswapV2",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "createPairOnUniswapV2",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "defiFactoryToken",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "percentForTheTeam",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "percentForUniswap",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "newContract",
+            "type": "address"
+          }
+        ],
+        "name": "updateDefiFactoryTokenAddress",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "wethAndTokenPairContract",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      }
+    ],
+    "devdoc": {
+      "kind": "dev",
+      "methods": {},
+      "version": 1
+    },
+    "userdoc": {
+      "kind": "user",
+      "methods": {},
+      "version": 1
+    }
+  },
+  "settings": {
+    "compilationTarget": {
+      "sol-defifactory-token/LiquidityHelper.sol": "LiquidityHelper"
+    },
+    "evmVersion": "london",
+    "libraries": {},
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "remappings": []
+  },
+  "sources": {
+    "sol-defifactory-token/LiquidityHelper.sol": {
+      "keccak256": "0xaf3f043d8b547da2afa54d6e0a4c37b3d08b1f6569d8463672d5fdb89c5084b2",
+      "license": "BSD-2-Clause",
+      "urls": [
+        "bzz-raw://99ec0c8f1b50aefd94586aedb451ee5d0c9cdc4daf1a8ee72fdc605521196a81",
+        "dweb:/ipfs/QmeC2bJyvrSCbDPvqq5cV1116nBaH4QMPve1Rw8SKSxUoK"
+      ]
+    },
+    "sol-defifactory-token/interfaces/IDefiFactoryToken.sol": {
+      "keccak256": "0x55662dadf86392fd06c9bb78fc84c42a31cb3786ac836c0bbae077d7edc94fc7",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://7e802caeac0f00050211fd881950e3f767242197387b430f935f139d95024496",
+        "dweb:/ipfs/QmZGfnBk7fQfVipUJyqLpmcnfFbwP1SyrrHmD2tHPhapUN"
+      ]
+    },
+    "sol-defifactory-token/interfaces/IDeftStorageContract.sol": {
+      "keccak256": "0x31c4471e0df11f688ea99faf7d94b82a2896d15057e838cf55f66b3deef49ae8",
+      "license": "BUSL-1.1",
+      "urls": [
+        "bzz-raw://1295f95ac55f3b8a47a29afebb64e095a442f9bac9783bdfd679cb44f1513735",
+        "dweb:/ipfs/QmeFdRCuBNu1uCe9MdHX2eiihWiEKeMZQoHfkP9AWH7Xqk"
+      ]
+    },
+    "sol-defifactory-token/interfaces/INoBotsTech.sol": {
+      "keccak256": "0xd18065280d57f7a855e3b3cb371afc1b170f4eed6dd0488fdda1f8cbddf561ed",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://d399593010fe566d8620cecbcc2aa42a117f0cb56cdace6324640f7fbf8c970a",
+        "dweb:/ipfs/QmQUZHbVeLiFHpZHgdVTru6MnigNvjgtqizbpaBE98Dp9D"
+      ]
+    },
+    "sol-defifactory-token/interfaces/IUniswapV2Factory.sol": {
+      "keccak256": "0xcedf8f2d94a11375f62ab9e3c0cbca9e584de936dc974d84c0785935c08555fc",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://355af2d26712d9ec44a3fc629162d8c0c3b40126b7916a1fc3f4e39ba42224f6",
+        "dweb:/ipfs/QmTataj3Mb5b6E6n5NU7GLtPC5N8ugJwUKJ5fR8LqT69m1"
+      ]
+    },
+    "sol-defifactory-token/interfaces/IUniswapV2Pair.sol": {
+      "keccak256": "0x3d746e2e553a23587aa29666fcb38bf03ae46b69e52b55140b631ec7818ccd3a",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://88cdcbdf13d8890ba32ccdf99e1ad982533092bccd476a3f83ed75e0a5da399a",
+        "dweb:/ipfs/Qmbk4TmCL4LMQveoSzEuory1BpaCCzeRMgiLGpzNeb6suJ"
+      ]
+    },
+    "sol-defifactory-token/interfaces/IWeth.sol": {
+      "keccak256": "0xaebf064916d07f10ca2ca496bff1160dc28ad0a0ae92bbb52fd0f21ff964d9e8",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://6e85dbc5e9dd412cc18ca50e53160765f510e2e6b5c5be6de3a25f3dc8eb39b1",
+        "dweb:/ipfs/QmYmKKacDwTZz4vUQud2us8qXP7GqUzEGS3b9AAriKjYMr"
+      ]
+    }
+  },
+  "version": 1
 }

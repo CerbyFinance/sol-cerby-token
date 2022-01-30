@@ -5,12 +5,8 @@ pragma solidity ^0.8.7;
 import "./PresaleContract.sol";
 
 contract PresaleFactory {
-    
-    
-    
     PresaleContract[] public presaleContracts;
-    
-    
+
     /*
 0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6
 0xE019B37896f129354cf0b8f1Cf33936b86913A34
@@ -26,47 +22,42 @@ Kovan: ["0xe4F85af0DDC43DDd18f78F76ec64046E1940ECe8","Some3 Token Presale","http
 Ropsten: ["0xe9961895C8820A05964b8Edf21E57c671D7f3fE9","Lambo1 Token Presale","https://lambo.defifactory.finance","https://t.me/LamboTokenOwners",3153600000,0,60,30,120,"1000000000000000000000",1000000000000000,"1000000000000000000","1000000000000000000"]
 BSC: ["0x923480ad9b9EcDd933212C6531B93a6129e24671","Tesla3 Token Presale","https://lambo.defifactory.finance","https://t.me/LamboTokenOwners",3153600000,0,60,30,120,"100000000000000000",1000000000000000,"1000000000000000000","1000000000000000000"]
     */
-    
+
     /* TODO: 
         - add custom presales 
         - max/min per wallet is zero
         - tokenomics missing uniswap and ref
         - 
     */
-    
+
     function createPresale(
-            Tokenomics[] memory _tokenomics,
-            Settings memory _settings)
-        external
-        returns (address)
-    {
+        Tokenomics[] memory _tokenomics,
+        Settings memory _settings
+    ) external returns (address) {
         presaleContracts.push(
-            new PresaleContract(
-                msg.sender,
-                _tokenomics,
-                _settings
-            )
+            new PresaleContract(msg.sender, _tokenomics, _settings)
         );
-        
+
         return (address(presaleContracts[presaleContracts.length - 1]));
     }
-    
-    function listPresales(address walletAddress, uint page, uint limit)
-        external
-        view
-        returns (OutputItem[] memory output)
-    {
-        uint start = (page-1) * limit;
-        uint end = page * limit;
-        end = (end > presaleContracts.length)? presaleContracts.length: end;
-        uint numItems = (end > start)? end - start: 0;
-        
+
+    function listPresales(
+        address walletAddress,
+        uint256 page,
+        uint256 limit
+    ) external view returns (OutputItem[] memory output) {
+        uint256 start = (page - 1) * limit;
+        uint256 end = page * limit;
+        end = (end > presaleContracts.length) ? presaleContracts.length : end;
+        uint256 numItems = (end > start) ? end - start : 0;
+
         output = new OutputItem[](numItems);
-        for(uint i = start; i < end; i++)
-        {
-            output[i - start] = presaleContracts[i].getInformation(walletAddress);
+        for (uint256 i = start; i < end; i++) {
+            output[i - start] = presaleContracts[i].getInformation(
+                walletAddress
+            );
         }
-        
+
         return output;
     }
 }

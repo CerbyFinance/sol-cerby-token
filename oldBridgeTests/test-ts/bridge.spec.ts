@@ -16,7 +16,7 @@ const bridgeAddress = "0x99B2eC6eb6D25D2DBb5127D084553ddc9575d40f";
 
 contract("CerbyBridgeV2", () => {
   it("deploy cross-chain-bridge", async () => {
-    const address = await CrossChainBridgeV2.deployed().then(_ => _.address);
+    const address = await CrossChainBridgeV2.deployed().then((_) => _.address);
 
     console.log({
       address,
@@ -26,8 +26,8 @@ contract("CerbyBridgeV2", () => {
   it("deploy them all", async () => {
     const deployed = await Promise.all(
       tokens.map(([name, symbol]) =>
-        TestNamedToken.new(name, symbol).then(some => some.address),
-      ),
+        TestNamedToken.new(name, symbol).then((some) => some.address)
+      )
     );
 
     console.log(deployed);
@@ -60,7 +60,7 @@ contract("CerbyBridgeV2", () => {
     // 3 combos
     // set allowance only for those tokens that are similar
     const combos = evmTokens.map(
-      (evmToken, i) => [evmToken, casperTokens[i]] as const,
+      (evmToken, i) => [evmToken, casperTokens[i]] as const
     );
 
     const deploys = await Promise.all(
@@ -69,9 +69,9 @@ contract("CerbyBridgeV2", () => {
           evmToken,
           casperToken,
           2, // casper
-          casperChainId,
+          casperChainId
         );
-      }),
+      })
     );
   });
 });

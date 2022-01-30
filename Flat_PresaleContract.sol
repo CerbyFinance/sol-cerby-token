@@ -2,319 +2,311 @@
 
 pragma solidity ^0.8.4;
 
-
-
-
-
 interface ITeamFinance {
-    function lockTokens(address _tokenAddress, address _withdrawalAddress, uint256 _amount, uint256 _unlockTime) external returns (uint256 _id);
+    function lockTokens(
+        address _tokenAddress,
+        address _withdrawalAddress,
+        uint256 _amount,
+        uint256 _unlockTime
+    ) external returns (uint256 _id);
 }
-
-
-
 
 struct AccessSettings {
-        bool isMinter;
-        bool isBurner;
-        bool isTransferer;
-        bool isModerator;
-        bool isTaxer;
-        
-        address addr;
-    }
+    bool isMinter;
+    bool isBurner;
+    bool isTransferer;
+    bool isModerator;
+    bool isTaxer;
+    address addr;
+}
 
 interface IDefiFactoryToken {
-    function approve(
-        address _spender,
-        uint _value
-    )  external returns (
-        bool success
-    );
-    
-    function balanceOf(
-        address account
-    )
+    function approve(address _spender, uint256 _value)
         external
-        view
-        returns (uint);
-        
-    function chargeCustomTax(address from, uint amount)
-        external;
-        
-    function mintHumanAddress(address to, uint desiredAmountToMint) external;
+        returns (bool success);
 
-    function burnHumanAddress(address from, uint desiredAmountToBurn) external;
+    function balanceOf(address account) external view returns (uint256);
 
-    function mintByBridge(address to, uint realAmountToMint) external;
+    function chargeCustomTax(address from, uint256 amount) external;
 
-    function burnByBridge(address from, uint realAmountBurn) external;
-    
-    function getUtilsContractAtPos(uint pos)
-        external
-        view
-        returns (address);
-        
-    function transferFromTeamVestingContract(address recipient, uint256 amount) external;
-    
-    function correctTransferEvents(address[] calldata addrs)
+    function mintHumanAddress(address to, uint256 desiredAmountToMint) external;
+
+    function burnHumanAddress(address from, uint256 desiredAmountToBurn)
         external;
-    
-    function publicForcedUpdateCacheMultiplier()
+
+    function mintByBridge(address to, uint256 realAmountToMint) external;
+
+    function burnByBridge(address from, uint256 realAmountBurn) external;
+
+    function getUtilsContractAtPos(uint256 pos) external view returns (address);
+
+    function transferFromTeamVestingContract(address recipient, uint256 amount)
         external;
-    
+
+    function correctTransferEvents(address[] calldata addrs) external;
+
+    function publicForcedUpdateCacheMultiplier() external;
+
     function updateUtilsContracts(AccessSettings[] calldata accessSettings)
         external;
-    
-    function transferCustom(address sender, address recipient, uint256 amount)
-        external;
+
+    function transferCustom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external;
 }
 
-
-
-
 interface IUniswapV2Factory {
-    function allPairs(uint) external view returns (address pair);
-    function allPairsLength() external view returns (uint);
-  
-    function getPair(
-        address tokenA,
-        address tokenB
-    )
+    function allPairs(uint256) external view returns (address pair);
+
+    function allPairsLength() external view returns (uint256);
+
+    function getPair(address tokenA, address tokenB)
         external
         view
         returns (address);
-        
-    function createPair(
-        address tokenA,
-        address tokenB
-    ) 
+
+    function createPair(address tokenA, address tokenB)
         external
         returns (address);
-        
 }
 
-
-
-
-
 interface IUniswapV2Pair {
-    
-    function sync()
-        external;
-        
+    function sync() external;
+
     function getReserves()
         external
         view
-        returns (uint, uint, uint32);
-        
-    function token0()
+        returns (
+            uint256,
+            uint256,
+            uint32
+        );
+
+    function token0() external view returns (address);
+
+    function token1() external view returns (address);
+
+    function mint(address to) external returns (uint256);
+
+    function burn(address to)
         external
-        view
-        returns (address);
-        
-    function token1()
-        external
-        view
-        returns (address);
-        
-    function mint(address to) 
-        external
-        returns (uint);
-    
-    function burn(address to) 
-        external 
-        returns (uint amount0, uint amount1);
-    
+        returns (uint256 amount0, uint256 amount1);
+
     function swap(
-        uint amount0Out, 
-        uint amount1Out, 
-        address to, 
+        uint256 amount0Out,
+        uint256 amount1Out,
+        address to,
         bytes calldata data
-    ) 
-        external;
-    
-    
-    function skim(address to) 
-        external;
+    ) external;
+
+    function skim(address to) external;
 }
 
-
-
-
-
 interface IUniswapV2Router {
-    
     function factory() external pure returns (address);
+
     function WETH() external pure returns (address);
 
     function swapExactTokensForTokensSupportingFeeOnTransferTokens(
-        uint amountIn,
-        uint amountOutMin,
+        uint256 amountIn,
+        uint256 amountOutMin,
         address[] calldata path,
         address to,
-        uint deadline
+        uint256 deadline
     ) external;
+
     function swapExactETHForTokensSupportingFeeOnTransferTokens(
-        uint amountOutMin,
+        uint256 amountOutMin,
         address[] calldata path,
         address to,
-        uint deadline
+        uint256 deadline
     ) external payable;
+
     function swapExactTokensForETHSupportingFeeOnTransferTokens(
-        uint amountIn,
-        uint amountOutMin,
+        uint256 amountIn,
+        uint256 amountOutMin,
         address[] calldata path,
         address to,
-        uint deadline
+        uint256 deadline
     ) external;
+
     function addLiquidity(
         address tokenA,
         address tokenB,
-        uint amountADesired,
-        uint amountBDesired,
-        uint amountAMin,
-        uint amountBMin,
+        uint256 amountADesired,
+        uint256 amountBDesired,
+        uint256 amountAMin,
+        uint256 amountBMin,
         address to,
-        uint deadline
-    ) external returns (uint amountA, uint amountB, uint liquidity);
+        uint256 deadline
+    )
+        external
+        returns (
+            uint256 amountA,
+            uint256 amountB,
+            uint256 liquidity
+        );
+
     function addLiquidityETH(
         address token,
-        uint amountTokenDesired,
-        uint amountTokenMin,
-        uint amountETHMin,
+        uint256 amountTokenDesired,
+        uint256 amountTokenMin,
+        uint256 amountETHMin,
         address to,
-        uint deadline
-    ) external payable returns (uint amountToken, uint amountETH, uint liquidity);
+        uint256 deadline
+    )
+        external
+        payable
+        returns (
+            uint256 amountToken,
+            uint256 amountETH,
+            uint256 liquidity
+        );
+
     function removeLiquidity(
         address tokenA,
         address tokenB,
-        uint liquidity,
-        uint amountAMin,
-        uint amountBMin,
+        uint256 liquidity,
+        uint256 amountAMin,
+        uint256 amountBMin,
         address to,
-        uint deadline
-    ) external returns (uint amountA, uint amountB);
+        uint256 deadline
+    ) external returns (uint256 amountA, uint256 amountB);
+
     function removeLiquidityETH(
         address token,
-        uint liquidity,
-        uint amountTokenMin,
-        uint amountETHMin,
+        uint256 liquidity,
+        uint256 amountTokenMin,
+        uint256 amountETHMin,
         address to,
-        uint deadline
-    ) external returns (uint amountToken, uint amountETH);
+        uint256 deadline
+    ) external returns (uint256 amountToken, uint256 amountETH);
+
     function removeLiquidityWithPermit(
         address tokenA,
         address tokenB,
-        uint liquidity,
-        uint amountAMin,
-        uint amountBMin,
+        uint256 liquidity,
+        uint256 amountAMin,
+        uint256 amountBMin,
         address to,
-        uint deadline,
-        bool approveMax, uint8 v, bytes32 r, bytes32 s
-    ) external returns (uint amountA, uint amountB);
+        uint256 deadline,
+        bool approveMax,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external returns (uint256 amountA, uint256 amountB);
+
     function removeLiquidityETHWithPermit(
         address token,
-        uint liquidity,
-        uint amountTokenMin,
-        uint amountETHMin,
+        uint256 liquidity,
+        uint256 amountTokenMin,
+        uint256 amountETHMin,
         address to,
-        uint deadline,
-        bool approveMax, uint8 v, bytes32 r, bytes32 s
-    ) external returns (uint amountToken, uint amountETH);
+        uint256 deadline,
+        bool approveMax,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external returns (uint256 amountToken, uint256 amountETH);
+
     function swapExactTokensForTokens(
-        uint amountIn,
-        uint amountOutMin,
+        uint256 amountIn,
+        uint256 amountOutMin,
         address[] calldata path,
         address to,
-        uint deadline
-    ) external returns (uint[] memory amounts);
+        uint256 deadline
+    ) external returns (uint256[] memory amounts);
+
     function swapTokensForExactTokens(
-        uint amountOut,
-        uint amountInMax,
+        uint256 amountOut,
+        uint256 amountInMax,
         address[] calldata path,
         address to,
-        uint deadline
-    ) external returns (uint[] memory amounts);
-    function swapExactETHForTokens(uint amountOutMin, address[] calldata path, address to, uint deadline)
-        external
-        payable
-        returns (uint[] memory amounts);
-    function swapTokensForExactETH(uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline)
-        external
-        returns (uint[] memory amounts);
-    function swapExactTokensForETH(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline)
-        external
-        returns (uint[] memory amounts);
-    function swapETHForExactTokens(uint amountOut, address[] calldata path, address to, uint deadline)
-        external
-        payable
-        returns (uint[] memory amounts);
+        uint256 deadline
+    ) external returns (uint256[] memory amounts);
 
-    function quote(uint amountA, uint reserveA, uint reserveB) external pure returns (uint amountB);
-    function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) external pure returns (uint amountOut);
-    function getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) external pure returns (uint amountIn);
-    function getAmountsOut(uint amountIn, address[] calldata path) external view returns (uint[] memory amounts);
-    function getAmountsIn(uint amountOut, address[] calldata path) external view returns (uint[] memory amounts);
+    function swapExactETHForTokens(
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external payable returns (uint256[] memory amounts);
+
+    function swapTokensForExactETH(
+        uint256 amountOut,
+        uint256 amountInMax,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external returns (uint256[] memory amounts);
+
+    function swapExactTokensForETH(
+        uint256 amountIn,
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external returns (uint256[] memory amounts);
+
+    function swapETHForExactTokens(
+        uint256 amountOut,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external payable returns (uint256[] memory amounts);
+
+    function quote(
+        uint256 amountA,
+        uint256 reserveA,
+        uint256 reserveB
+    ) external pure returns (uint256 amountB);
+
+    function getAmountOut(
+        uint256 amountIn,
+        uint256 reserveIn,
+        uint256 reserveOut
+    ) external pure returns (uint256 amountOut);
+
+    function getAmountIn(
+        uint256 amountOut,
+        uint256 reserveIn,
+        uint256 reserveOut
+    ) external pure returns (uint256 amountIn);
+
+    function getAmountsOut(uint256 amountIn, address[] calldata path)
+        external
+        view
+        returns (uint256[] memory amounts);
+
+    function getAmountsIn(uint256 amountOut, address[] calldata path)
+        external
+        view
+        returns (uint256[] memory amounts);
 }
-
-
-
-
 
 interface IWeth {
+    function balanceOf(address account) external view returns (uint256);
 
-    function balanceOf(
-        address account
-    )
+    function decimals() external view returns (uint256);
+
+    function transfer(address _to, uint256 _value)
         external
-        view
-        returns (uint);
-        
-    function decimals()
+        returns (bool success);
+
+    function mint(address to, uint256 desiredAmountToMint) external;
+
+    function burn(address from, uint256 desiredAmountBurn) external;
+
+    function deposit() external payable;
+
+    function withdraw(uint256 wad) external;
+
+    function approve(address _spender, uint256 _value)
         external
-        view
-        returns (uint);
-
-    function transfer(
-        address _to,
-        uint _value
-    )  external returns (
-        bool success
-    );
-    
-    function mint(address to, uint desiredAmountToMint) 
-        external;
-    
-    function burn(address from, uint desiredAmountBurn) 
-        external;
-        
-    function deposit()
-        external
-        payable;
-
-    function withdraw(
-        uint wad
-    ) external;
-
-    function approve(
-        address _spender,
-        uint _value
-    )  external returns (
-        bool success
-    );
+        returns (bool success);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*
  * @dev Provides information about the current execution context, including the
@@ -336,10 +328,6 @@ abstract contract Context {
         return msg.data;
     }
 }
-
-
-
-
 
 /**
  * @dev String operations.
@@ -391,7 +379,11 @@ library Strings {
     /**
      * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.
      */
-    function toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
+    function toHexString(uint256 value, uint256 length)
+        internal
+        pure
+        returns (string memory)
+    {
         bytes memory buffer = new bytes(2 * length + 2);
         buffer[0] = "0";
         buffer[1] = "x";
@@ -402,16 +394,7 @@ library Strings {
         require(value == 0, "Strings: hex length insufficient");
         return string(buffer);
     }
-
 }
-
-
-
-
-
-
-
-
 
 /**
  * @dev Interface of the ERC165 standard, as defined in the
@@ -434,7 +417,6 @@ interface IERC165 {
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }
 
-
 /**
  * @dev Implementation of the {IERC165} interface.
  *
@@ -453,12 +435,16 @@ abstract contract ERC165 is IERC165 {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
         return interfaceId == type(IERC165).interfaceId;
     }
 }
-
-
 
 struct RoleAccess {
     bytes32 role;
@@ -469,10 +455,17 @@ struct RoleAccess {
  * @dev External interface of AccessControl declared to support ERC165 detection.
  */
 interface IAccessControl {
-    function hasRole(bytes32 role, address account) external view returns (bool);
+    function hasRole(bytes32 role, address account)
+        external
+        view
+        returns (bool);
+
     function getRoleAdmin(bytes32 role) external view returns (bytes32);
+
     function grantRole(bytes32 role, address account) external;
+
     function revokeRole(bytes32 role, address account) external;
+
     function renounceRole(bytes32 role, address account) external;
 }
 
@@ -516,11 +509,11 @@ interface IAccessControl {
  */
 abstract contract AccessControl is Context, IAccessControl, ERC165 {
     struct RoleData {
-        mapping (address => bool) members;
+        mapping(address => bool) members;
         bytes32 adminRole;
     }
 
-    mapping (bytes32 => RoleData) private _roles;
+    mapping(bytes32 => RoleData) private _roles;
 
     bytes32 public constant ROLE_ADMIN = 0x00;
 
@@ -532,7 +525,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * _Available since v3.1._
      */
-    event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole);
+    event RoleAdminChanged(
+        bytes32 indexed role,
+        bytes32 indexed previousAdminRole,
+        bytes32 indexed newAdminRole
+    );
 
     /**
      * @dev Emitted when `account` is granted `role`.
@@ -540,7 +537,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      * `sender` is the account that originated the contract call, an admin role
      * bearer except when using {_setupRole}.
      */
-    event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender);
+    event RoleGranted(
+        bytes32 indexed role,
+        address indexed account,
+        address indexed sender
+    );
 
     /**
      * @dev Emitted when `account` is revoked `role`.
@@ -549,7 +550,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *   - if using `revokeRole`, it is the admin role bearer
      *   - if using `renounceRole`, it is the role bearer (i.e. `account`)
      */
-    event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender);
+    event RoleRevoked(
+        bytes32 indexed role,
+        address indexed account,
+        address indexed sender
+    );
 
     /**
      * @dev Modifier that checks that an account has a specific role. Reverts
@@ -569,15 +574,27 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(IAccessControl).interfaceId
-            || super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
+        return
+            interfaceId == type(IAccessControl).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 
     /**
      * @dev Returns `true` if `account` has been granted `role`.
      */
-    function hasRole(bytes32 role, address account) public view override returns (bool) {
+    function hasRole(bytes32 role, address account)
+        public
+        view
+        override
+        returns (bool)
+    {
         return _roles[role].members[account];
     }
 
@@ -589,13 +606,17 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *  /^AccessControl: account (0x[0-9a-f]{20}) is missing role (0x[0-9a-f]{32})$/
      */
     function _checkRole(bytes32 role, address account) internal view {
-        if(!hasRole(role, account)) {
-            revert(string(abi.encodePacked(
-                "AccessControl: account ",
-                Strings.toHexString(uint160(account), 20),
-                " is missing role ",
-                Strings.toHexString(uint256(role), 32)
-            )));
+        if (!hasRole(role, account)) {
+            revert(
+                string(
+                    abi.encodePacked(
+                        "AccessControl: account ",
+                        Strings.toHexString(uint160(account), 20),
+                        " is missing role ",
+                        Strings.toHexString(uint256(role), 32)
+                    )
+                )
+            );
         }
     }
 
@@ -619,16 +640,20 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * - the caller must have ``role``'s admin role.
      */
-    function grantRole(bytes32 role, address account) public virtual override onlyRole(ROLE_ADMIN) {
+    function grantRole(bytes32 role, address account)
+        public
+        virtual
+        override
+        onlyRole(ROLE_ADMIN)
+    {
         _grantRole(role, account);
     }
-    
+
     function grantRolesBulk(RoleAccess[] calldata roles)
         external
         onlyRole(ROLE_ADMIN)
     {
-        for(uint i = 0; i<roles.length; i++)
-        {
+        for (uint256 i = 0; i < roles.length; i++) {
             _setupRole(roles[i].role, roles[i].addr);
         }
     }
@@ -642,7 +667,12 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * - the caller must have ``role``'s admin role.
      */
-    function revokeRole(bytes32 role, address account) public virtual override onlyRole(getRoleAdmin(role)) {
+    function revokeRole(bytes32 role, address account)
+        public
+        virtual
+        override
+        onlyRole(getRoleAdmin(role))
+    {
         _revokeRole(role, account);
     }
 
@@ -660,8 +690,15 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * - the caller must be `account`.
      */
-    function renounceRole(bytes32 role, address account) public virtual override {
-        require(account == _msgSender(), "AccessControl: can only renounce roles for self");
+    function renounceRole(bytes32 role, address account)
+        public
+        virtual
+        override
+    {
+        require(
+            account == _msgSender(),
+            "AccessControl: can only renounce roles for self"
+        );
 
         _revokeRole(role, account);
     }
@@ -711,10 +748,6 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     }
 }
 
-
-
-
-
 /**
  * @dev Library for managing
  * https://en.wikipedia.org/wiki/Set_(abstract_data_type)[sets] of primitive
@@ -752,10 +785,9 @@ library EnumerableSet {
     struct Set {
         // Storage of set values
         bytes32[] _values;
-
         // Position of the value in the `values` array, plus 1 because index 0
         // means a value is not in the set.
-        mapping (bytes32 => uint256) _indexes;
+        mapping(bytes32 => uint256) _indexes;
     }
 
     /**
@@ -786,7 +818,8 @@ library EnumerableSet {
         // We read and store the value's index to prevent multiple reads from the same storage slot
         uint256 valueIndex = set._indexes[value];
 
-        if (valueIndex != 0) { // Equivalent to contains(set, value)
+        if (valueIndex != 0) {
+            // Equivalent to contains(set, value)
             // To delete an element from the _values array in O(1), we swap the element to delete with the last one in
             // the array, and then remove the last element (sometimes called as 'swap and pop').
             // This modifies the order of the array, as noted in {at}.
@@ -818,7 +851,11 @@ library EnumerableSet {
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function _contains(Set storage set, bytes32 value) private view returns (bool) {
+    function _contains(Set storage set, bytes32 value)
+        private
+        view
+        returns (bool)
+    {
         return set._indexes[value] != 0;
     }
 
@@ -829,17 +866,21 @@ library EnumerableSet {
         return set._values.length;
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function _at(Set storage set, uint256 index) private view returns (bytes32) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function _at(Set storage set, uint256 index)
+        private
+        view
+        returns (bytes32)
+    {
         return set._values[index];
     }
 
@@ -855,7 +896,10 @@ library EnumerableSet {
      * Returns true if the value was added to the set, that is if it was not
      * already present.
      */
-    function add(Bytes32Set storage set, bytes32 value) internal returns (bool) {
+    function add(Bytes32Set storage set, bytes32 value)
+        internal
+        returns (bool)
+    {
         return _add(set._inner, value);
     }
 
@@ -865,14 +909,21 @@ library EnumerableSet {
      * Returns true if the value was removed from the set, that is if it was
      * present.
      */
-    function remove(Bytes32Set storage set, bytes32 value) internal returns (bool) {
+    function remove(Bytes32Set storage set, bytes32 value)
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, value);
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function contains(Bytes32Set storage set, bytes32 value) internal view returns (bool) {
+    function contains(Bytes32Set storage set, bytes32 value)
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, value);
     }
 
@@ -883,17 +934,21 @@ library EnumerableSet {
         return _length(set._inner);
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function at(Bytes32Set storage set, uint256 index) internal view returns (bytes32) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function at(Bytes32Set storage set, uint256 index)
+        internal
+        view
+        returns (bytes32)
+    {
         return _at(set._inner, index);
     }
 
@@ -909,7 +964,10 @@ library EnumerableSet {
      * Returns true if the value was added to the set, that is if it was not
      * already present.
      */
-    function add(AddressSet storage set, address value) internal returns (bool) {
+    function add(AddressSet storage set, address value)
+        internal
+        returns (bool)
+    {
         return _add(set._inner, bytes32(uint256(uint160(value))));
     }
 
@@ -919,14 +977,21 @@ library EnumerableSet {
      * Returns true if the value was removed from the set, that is if it was
      * present.
      */
-    function remove(AddressSet storage set, address value) internal returns (bool) {
+    function remove(AddressSet storage set, address value)
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, bytes32(uint256(uint160(value))));
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function contains(AddressSet storage set, address value) internal view returns (bool) {
+    function contains(AddressSet storage set, address value)
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, bytes32(uint256(uint160(value))));
     }
 
@@ -937,20 +1002,23 @@ library EnumerableSet {
         return _length(set._inner);
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function at(AddressSet storage set, uint256 index) internal view returns (address) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function at(AddressSet storage set, uint256 index)
+        internal
+        view
+        returns (address)
+    {
         return address(uint160(uint256(_at(set._inner, index))));
     }
-
 
     // UintSet
 
@@ -974,14 +1042,21 @@ library EnumerableSet {
      * Returns true if the value was removed from the set, that is if it was
      * present.
      */
-    function remove(UintSet storage set, uint256 value) internal returns (bool) {
+    function remove(UintSet storage set, uint256 value)
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, bytes32(value));
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function contains(UintSet storage set, uint256 value) internal view returns (bool) {
+    function contains(UintSet storage set, uint256 value)
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, bytes32(value));
     }
 
@@ -992,44 +1067,61 @@ library EnumerableSet {
         return _length(set._inner);
     }
 
-   /**
-    * @dev Returns the value stored at position `index` in the set. O(1).
-    *
-    * Note that there are no guarantees on the ordering of values inside the
-    * array, and it may change when more values are added or removed.
-    *
-    * Requirements:
-    *
-    * - `index` must be strictly less than {length}.
-    */
-    function at(UintSet storage set, uint256 index) internal view returns (uint256) {
+    /**
+     * @dev Returns the value stored at position `index` in the set. O(1).
+     *
+     * Note that there are no guarantees on the ordering of values inside the
+     * array, and it may change when more values are added or removed.
+     *
+     * Requirements:
+     *
+     * - `index` must be strictly less than {length}.
+     */
+    function at(UintSet storage set, uint256 index)
+        internal
+        view
+        returns (uint256)
+    {
         return uint256(_at(set._inner, index));
     }
 }
-
 
 /**
  * @dev External interface of AccessControlEnumerable declared to support ERC165 detection.
  */
 interface IAccessControlEnumerable {
-    function getRoleMember(bytes32 role, uint256 index) external view returns (address);
+    function getRoleMember(bytes32 role, uint256 index)
+        external
+        view
+        returns (address);
+
     function getRoleMemberCount(bytes32 role) external view returns (uint256);
 }
 
 /**
  * @dev Extension of {AccessControl} that allows enumerating the members of each role.
  */
-abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessControl {
+abstract contract AccessControlEnumerable is
+    IAccessControlEnumerable,
+    AccessControl
+{
     using EnumerableSet for EnumerableSet.AddressSet;
 
-    mapping (bytes32 => EnumerableSet.AddressSet) private _roleMembers;
+    mapping(bytes32 => EnumerableSet.AddressSet) private _roleMembers;
 
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(IAccessControlEnumerable).interfaceId
-            || super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
+        return
+            interfaceId == type(IAccessControlEnumerable).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 
     /**
@@ -1044,7 +1136,12 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
      * https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post]
      * for more information.
      */
-    function getRoleMember(bytes32 role, uint256 index) public view override returns (address) {
+    function getRoleMember(bytes32 role, uint256 index)
+        public
+        view
+        override
+        returns (address)
+    {
         return _roleMembers[role].at(index);
     }
 
@@ -1052,7 +1149,12 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
      * @dev Returns the number of accounts that have `role`. Can be used
      * together with {getRoleMember} to enumerate all bearers of a role.
      */
-    function getRoleMemberCount(bytes32 role) public view override returns (uint256) {
+    function getRoleMemberCount(bytes32 role)
+        public
+        view
+        override
+        returns (uint256)
+    {
         return _roleMembers[role].length();
     }
 
@@ -1075,7 +1177,11 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
     /**
      * @dev Overload {renounceRole} to track enumerable memberships
      */
-    function renounceRole(bytes32 role, address account) public virtual override {
+    function renounceRole(bytes32 role, address account)
+        public
+        virtual
+        override
+    {
         super.renounceRole(role, account);
         _roleMembers[role].remove(account);
     }
@@ -1083,83 +1189,81 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
     /**
      * @dev Overload {_setupRole} to track enumerable memberships
      */
-    function _setupRole(bytes32 role, address account) internal virtual override {
+    function _setupRole(bytes32 role, address account)
+        internal
+        virtual
+        override
+    {
         super._setupRole(role, account);
         _roleMembers[role].add(account);
     }
 }
 
-
-
-
 contract PresaleContract is AccessControlEnumerable {
-    
     struct Investor {
         address investorAddr;
         address referralAddr;
-        
-        uint wethValue;
+        uint256 wethValue;
     }
-    
+
     struct Referral {
         address referralAddr;
-        
-        uint earnings;
+        uint256 earnings;
     }
-    
+
     struct Tokenomics {
         address tokenomicsAddr;
         string tokenomicsName;
-        uint tokenomicsPercentage;
-        uint tokenomicsLockedForXSeconds;
-        uint tokenomicsVestedForXSeconds;
+        uint256 tokenomicsPercentage;
+        uint256 tokenomicsLockedForXSeconds;
+        uint256 tokenomicsVestedForXSeconds;
     }
-    
+
     struct Vesting {
         address vestingAddr;
-        uint tokensReserved;
-        uint tokensClaimed;
-        uint lockedUntilTimestamp;
-        uint vestedUntilTimestamp;
+        uint256 tokensReserved;
+        uint256 tokensClaimed;
+        uint256 lockedUntilTimestamp;
+        uint256 vestedUntilTimestamp;
     }
-    
-    enum States { 
-        AcceptingPayments, 
-        ReachedGoal, 
-        PreparedAddLiqudity, 
-        CreatedPair, 
-        AddedLiquidity, 
-        SetVestingForTokenomicsTokens, 
+
+    enum States {
+        AcceptingPayments,
+        ReachedGoal,
+        PreparedAddLiqudity,
+        CreatedPair,
+        AddedLiquidity,
+        SetVestingForTokenomicsTokens,
         SetVestingForInvestorsAndReferralsTokens,
         Refunded
     }
     States public state;
-    
-    mapping(address => uint) public cachedIndexInvestors;
+
+    mapping(address => uint256) public cachedIndexInvestors;
     Investor[] public investors;
-    
-    mapping(address => uint) public cachedIndexVesting;
+
+    mapping(address => uint256) public cachedIndexVesting;
     Vesting[] public vesting;
-    
-    mapping(address => uint) public cachedIndexReferrals;
+
+    mapping(address => uint256) public cachedIndexReferrals;
     Referral[] public referrals;
-    
-    mapping(address => uint) public cachedIndexTokenomics;
+
+    mapping(address => uint256) public cachedIndexTokenomics;
     Tokenomics[] public tokenomics;
-    
-    uint public refPercent = 5e4; // 5%
-    uint constant PERCENT_DENORM = 1e6;
-    
-    uint totalInvestedWeth;
-    uint maxWethCap = 5e18;
-    uint perWalletMinWeth = 1e10;
-    uint perWalletMaxWeth = 50e20;
-    
-    uint public amountOfTokensForInvestors;
-    uint public totalTokenSupply;
-    
-    uint public fixedPriceInUsd = 1e12; // 1e-6 usd
-    
+
+    uint256 public refPercent = 5e4; // 5%
+    uint256 constant PERCENT_DENORM = 1e6;
+
+    uint256 totalInvestedWeth;
+    uint256 maxWethCap = 5e18;
+    uint256 perWalletMinWeth = 1e10;
+    uint256 perWalletMaxWeth = 50e20;
+
+    uint256 public amountOfTokensForInvestors;
+    uint256 public totalTokenSupply;
+
+    uint256 public fixedPriceInUsd = 1e12; // 1e-6 usd
+
     address public tokenAddress;
     address public TEAM_FINANCE_ADDRESS;
     address public WETH_TOKEN_ADDRESS;
@@ -1167,48 +1271,49 @@ contract PresaleContract is AccessControlEnumerable {
     address public UNISWAP_V2_FACTORY_ADDRESS;
     address public UNISWAP_V2_ROUTER_ADDRESS;
     address public wethAndTokenPairContract;
-    
-    uint constant ETH_MAINNET_CHAIN_ID = 1;
-    uint constant ETH_ROPSTEN_CHAIN_ID = 3;
-    uint constant ETH_KOVAN_CHAIN_ID = 42;
-    uint constant BSC_MAINNET_CHAIN_ID = 56;
-    uint constant BSC_TESTNET_CHAIN_ID = 97;
-    
-    uint constant TOKEN_DECIMALS = 18;
-    uint constant WETH_DECIMALS = 18;
-    uint USDT_DECIMALS;
-    
-    address constant DEFAULT_REFERRAL_ADDRESS = 0xC427a912E0B19f082840A0045E430dE5b8cB1f65;
-    
+
+    uint256 constant ETH_MAINNET_CHAIN_ID = 1;
+    uint256 constant ETH_ROPSTEN_CHAIN_ID = 3;
+    uint256 constant ETH_KOVAN_CHAIN_ID = 42;
+    uint256 constant BSC_MAINNET_CHAIN_ID = 56;
+    uint256 constant BSC_TESTNET_CHAIN_ID = 97;
+
+    uint256 constant TOKEN_DECIMALS = 18;
+    uint256 constant WETH_DECIMALS = 18;
+    uint256 USDT_DECIMALS;
+
+    address constant DEFAULT_REFERRAL_ADDRESS =
+        0xC427a912E0B19f082840A0045E430dE5b8cB1f65;
+
     address public constant BURN_ADDRESS = address(0x0);
-    
+
     string public website;
     string public telegram;
-    
+
     string public presaleName;
-    uint public uniswapLiquidityLockedFor;
-    uint public presaleLockedFor;
-    uint public presaleVestedFor;
-    uint public referralsLockedFor;
-    uint public referralsVestedFor;
-    
+    uint256 public uniswapLiquidityLockedFor;
+    uint256 public presaleLockedFor;
+    uint256 public presaleVestedFor;
+    uint256 public referralsLockedFor;
+    uint256 public referralsVestedFor;
+
     event StateChanged(States newState);
-    
+
     /* Referral wallet for tests: 0xDc15Ca882F975c33D8f20AB3669D27195B8D87a6 */
-    
+
     constructor() {
         _setupRole(ROLE_ADMIN, _msgSender());
-        
+
         presaleName = "Lambo Token Presale";
         website = "https://lambo.defifactory.finance";
         telegram = "https://t.me/LamboTokenOwners";
-        
+
         uniswapLiquidityLockedFor = 36500 days;
         presaleLockedFor = 0;
         presaleVestedFor = 1 minutes;
         referralsLockedFor = 30 seconds;
         referralsVestedFor = 2 minutes;
-        
+
         addTokenomics(
             0x1111BEe701Ef814A2B6A3EDD4B1652cB9cc5aA6f,
             "Development",
@@ -1230,35 +1335,31 @@ contract PresaleContract is AccessControlEnumerable {
             3 minutes,
             30 minutes
         );
-        
-        if (block.chainid == ETH_MAINNET_CHAIN_ID)
-        {
+
+        if (block.chainid == ETH_MAINNET_CHAIN_ID) {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             UNISWAP_V2_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
             USDT_TOKEN_ADDRESS = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
             WETH_TOKEN_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
             USDT_DECIMALS = 6;
             TEAM_FINANCE_ADDRESS = 0xC77aab3c6D7dAb46248F3CC3033C856171878BD5;
-        } else if (block.chainid == BSC_MAINNET_CHAIN_ID)
-        {
+        } else if (block.chainid == BSC_MAINNET_CHAIN_ID) {
             UNISWAP_V2_FACTORY_ADDRESS = 0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73;
             UNISWAP_V2_ROUTER_ADDRESS = 0x10ED43C718714eb63d5aA57B78B54704E256024E;
             USDT_TOKEN_ADDRESS = 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56;
             WETH_TOKEN_ADDRESS = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
             USDT_DECIMALS = 18;
             TEAM_FINANCE_ADDRESS = 0x7536592bb74b5d62eB82e8b93b17eed4eed9A85c;
-        } else if (block.chainid == ETH_KOVAN_CHAIN_ID)
-        {
+        } else if (block.chainid == ETH_KOVAN_CHAIN_ID) {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             UNISWAP_V2_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
             USDT_TOKEN_ADDRESS = 0x2F375e94FC336Cdec2Dc0cCB5277FE59CBf1cAe5;
             WETH_TOKEN_ADDRESS = 0xd0A1E359811322d97991E03f863a0C30C2cF029C;
             USDT_DECIMALS = 6;
             TEAM_FINANCE_ADDRESS = BURN_ADDRESS;
-            
+
             tokenAddress = 0x94fFFf5EAe20544c00D4709918Ae07D2FB672a52; // TODO: set token address for debug
-        } else if (block.chainid == ETH_ROPSTEN_CHAIN_ID)
-        {
+        } else if (block.chainid == ETH_ROPSTEN_CHAIN_ID) {
             UNISWAP_V2_FACTORY_ADDRESS = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
             UNISWAP_V2_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
             USDT_TOKEN_ADDRESS = 0x07865c6E87B9F70255377e024ace6630C1Eaa37F;
@@ -1266,81 +1367,75 @@ contract PresaleContract is AccessControlEnumerable {
             USDT_DECIMALS = 6;
             TEAM_FINANCE_ADDRESS = 0x8733CAA60eDa1597336c0337EfdE27c1335F7530;
         }
-        
+
         changeState(States.AcceptingPayments);
     }
 
-    receive() external payable {
-    }
-    
-    function getUniswapSupplyPercent()
-        public
-        view
-        returns(uint)
-    {
-        uint totalTeamPercent;
-        for(uint i; i<tokenomics.length; i++)
-        {
+    receive() external payable {}
+
+    function getUniswapSupplyPercent() public view returns (uint256) {
+        uint256 totalTeamPercent;
+        for (uint256 i; i < tokenomics.length; i++) {
             totalTeamPercent += tokenomics[i].tokenomicsPercentage;
         }
-        return (PERCENT_DENORM*(PERCENT_DENORM - totalTeamPercent)) / (2*PERCENT_DENORM + refPercent);
+        return
+            (PERCENT_DENORM * (PERCENT_DENORM - totalTeamPercent)) /
+            (2 * PERCENT_DENORM + refPercent);
     }
-    
+
     function getTotalInvestmentsStatistics()
         external
         view
-        returns(uint, uint)
+        returns (uint256, uint256)
     {
         return (totalInvestedWeth, maxWethCap);
     }
-    
+
     function getWalletStatistics(address addr)
         external
         view
-        returns(uint, uint, uint, uint)
+        returns (
+            uint256,
+            uint256,
+            uint256,
+            uint256
+        )
     {
         return (
-            investors[cachedIndexInvestors[addr] - 1].wethValue, 
+            investors[cachedIndexInvestors[addr] - 1].wethValue,
             referrals[cachedIndexReferrals[addr] - 1].earnings,
-            perWalletMinWeth, 
+            perWalletMinWeth,
             perWalletMaxWeth
         );
     }
-    
+
     function getAvailableVestingTokens(address addr)
         public
         view
-        returns(uint)
+        returns (uint256)
     {
         Vesting memory vest = vesting[cachedIndexVesting[addr] - 1];
-        if  (
-                block.timestamp <= vest.lockedUntilTimestamp ||
-                vest.lockedUntilTimestamp > vest.vestedUntilTimestamp
-            )
-        {
+        if (
+            block.timestamp <= vest.lockedUntilTimestamp ||
+            vest.lockedUntilTimestamp > vest.vestedUntilTimestamp
+        ) {
             return 0;
         }
-        
-        if  (
-                block.timestamp >= vest.vestedUntilTimestamp
-            )
-        {
+
+        if (block.timestamp >= vest.vestedUntilTimestamp) {
             return vest.tokensReserved - vest.tokensClaimed;
         }
-    
-        
-        uint availableByFormula = 
-            (vest.tokensReserved * (block.timestamp - vest.lockedUntilTimestamp)) / (vest.vestedUntilTimestamp - vest.lockedUntilTimestamp);
-        if (availableByFormula <= vest.tokensClaimed)
-        {
+
+        uint256 availableByFormula = (vest.tokensReserved *
+            (block.timestamp - vest.lockedUntilTimestamp)) /
+            (vest.vestedUntilTimestamp - vest.lockedUntilTimestamp);
+        if (availableByFormula <= vest.tokensClaimed) {
             return 0;
         }
         return availableByFormula - vest.tokensClaimed;
     }
-    
-    function claimVesting()
-        public
-    {
+
+    function claimVesting() public {
         Vesting memory vest = vesting[cachedIndexVesting[msg.sender] - 1];
         require(
             block.timestamp >= vest.lockedUntilTimestamp,
@@ -1350,104 +1445,104 @@ contract PresaleContract is AccessControlEnumerable {
             vest.tokensClaimed < vest.tokensReserved,
             "PR: You have already received 100% tokens"
         );
-        
-        uint availableTokens = getAvailableVestingTokens(msg.sender);
+
+        uint256 availableTokens = getAvailableVestingTokens(msg.sender);
         require(
             availableTokens > 0,
             "PR: There are 0 tokens available to claim right now"
         );
-        
-        vesting[cachedIndexVesting[msg.sender] - 1].tokensClaimed += availableTokens;
-        IDefiFactoryToken(tokenAddress).mintHumanAddress(msg.sender, availableTokens);
+
+        vesting[cachedIndexVesting[msg.sender] - 1]
+            .tokensClaimed += availableTokens;
+        IDefiFactoryToken(tokenAddress).mintHumanAddress(
+            msg.sender,
+            availableTokens
+        );
     }
-    
-    function invest(address referralAddr)
-        external
-        payable
-    {
-        require(state == States.AcceptingPayments, "PR: Accepting payments has been stopped!");
+
+    function invest(address referralAddr) external payable {
+        require(
+            state == States.AcceptingPayments,
+            "PR: Accepting payments has been stopped!"
+        );
         require(totalInvestedWeth <= maxWethCap, "PR: Max cap reached!");
-        require(msg.value >= perWalletMinWeth, "PR: Amount is below minimum permitted");
-        require(msg.value <= perWalletMaxWeth, "PR: Amount is above maximum permitted");
-        require(cachedIndexTokenomics[msg.sender]  == 0, "PR: Team is not allowed to invest");
-        require(cachedIndexReferrals[referralAddr] == 0, "PR: Please use different referral link");
-        require(msg.sender != referralAddr, "PR: Self-ref isn't allowed. Please use different referral link");
-        
-        if (referralAddr == BURN_ADDRESS)
-        {
+        require(
+            msg.value >= perWalletMinWeth,
+            "PR: Amount is below minimum permitted"
+        );
+        require(
+            msg.value <= perWalletMaxWeth,
+            "PR: Amount is above maximum permitted"
+        );
+        require(
+            cachedIndexTokenomics[msg.sender] == 0,
+            "PR: Team is not allowed to invest"
+        );
+        require(
+            cachedIndexReferrals[referralAddr] == 0,
+            "PR: Please use different referral link"
+        );
+        require(
+            msg.sender != referralAddr,
+            "PR: Self-ref isn't allowed. Please use different referral link"
+        );
+
+        if (referralAddr == BURN_ADDRESS) {
             referralAddr = DEFAULT_REFERRAL_ADDRESS;
         }
-        
+
         addInvestor(msg.sender, referralAddr, msg.value);
-        
-        addReferral(
-            referralAddr, 
-            (msg.value * refPercent) / PERCENT_DENORM
-        );
-        
+
+        addReferral(referralAddr, (msg.value * refPercent) / PERCENT_DENORM);
+
         // TODO: check for hard cap and mark goal as reached
     }
 
-    function addInvestor(address investorAddr, address referralAddr, uint wethValue)
-        internal
-    {
-        if (cachedIndexInvestors[investorAddr] == 0)
-        {
-            investors.push(
-                Investor(
-                    investorAddr, 
-                    referralAddr, 
-                    wethValue
-                )
-            );
+    function addInvestor(
+        address investorAddr,
+        address referralAddr,
+        uint256 wethValue
+    ) internal {
+        if (cachedIndexInvestors[investorAddr] == 0) {
+            investors.push(Investor(investorAddr, referralAddr, wethValue));
             cachedIndexInvestors[investorAddr] = investors.length;
-        } else
-        {
-            uint updatedWethValue = investors[cachedIndexInvestors[investorAddr] - 1].wethValue + wethValue;
-            require(updatedWethValue <= perWalletMaxWeth, "PR: Max cap per wallet exceeded");
-            
-            investors[cachedIndexInvestors[investorAddr] - 1].wethValue = updatedWethValue;
+        } else {
+            uint256 updatedWethValue = investors[
+                cachedIndexInvestors[investorAddr] - 1
+            ].wethValue + wethValue;
+            require(
+                updatedWethValue <= perWalletMaxWeth,
+                "PR: Max cap per wallet exceeded"
+            );
+
+            investors[cachedIndexInvestors[investorAddr] - 1]
+                .wethValue = updatedWethValue;
         }
         totalInvestedWeth += wethValue;
-        
-        createVestingIfDoesNotExist(
-              investorAddr
-        );
+
+        createVestingIfDoesNotExist(investorAddr);
     }
 
-    function addReferral(address referralAddr, uint earnings)
-        internal
-    {
-        if (cachedIndexReferrals[referralAddr] == 0)
-        {
-            referrals.push(
-                Referral(
-                    referralAddr, 
-                    earnings
-                )
-            );
+    function addReferral(address referralAddr, uint256 earnings) internal {
+        if (cachedIndexReferrals[referralAddr] == 0) {
+            referrals.push(Referral(referralAddr, earnings));
             cachedIndexReferrals[referralAddr] = referrals.length;
-        } else
-        {
-            referrals[cachedIndexReferrals[referralAddr] - 1].earnings += earnings;
+        } else {
+            referrals[cachedIndexReferrals[referralAddr] - 1]
+                .earnings += earnings;
         }
-        
-        createVestingIfDoesNotExist(
-              referralAddr
-        );
+
+        createVestingIfDoesNotExist(referralAddr);
     }
-    
+
     function addTokenomics(
         address tokenomicsAddr,
         string memory tokenomicsName,
-        uint tokenomicsPercentage,
-        uint tokenomicsLockedForXSeconds,
-        uint tokenomicsVestedForXSeconds
-    )
-        internal
-    {
-        if (cachedIndexTokenomics[tokenomicsAddr] == 0)
-        {
+        uint256 tokenomicsPercentage,
+        uint256 tokenomicsLockedForXSeconds,
+        uint256 tokenomicsVestedForXSeconds
+    ) internal {
+        if (cachedIndexTokenomics[tokenomicsAddr] == 0) {
             tokenomics.push(
                 Tokenomics(
                     tokenomicsAddr,
@@ -1458,31 +1553,21 @@ contract PresaleContract is AccessControlEnumerable {
                 )
             );
             cachedIndexTokenomics[tokenomicsAddr] = referrals.length;
-        } else
-        {
-            tokenomics[cachedIndexTokenomics[tokenomicsAddr] - 1].tokenomicsName = tokenomicsName;
-            tokenomics[cachedIndexTokenomics[tokenomicsAddr] - 1].tokenomicsPercentage = tokenomicsPercentage;
-            tokenomics[cachedIndexTokenomics[tokenomicsAddr] - 1].tokenomicsLockedForXSeconds = tokenomicsLockedForXSeconds;
-            tokenomics[cachedIndexTokenomics[tokenomicsAddr] - 1].tokenomicsVestedForXSeconds = tokenomicsVestedForXSeconds;
+        } else {
+            tokenomics[cachedIndexTokenomics[tokenomicsAddr] - 1]
+                .tokenomicsName = tokenomicsName;
+            tokenomics[cachedIndexTokenomics[tokenomicsAddr] - 1]
+                .tokenomicsPercentage = tokenomicsPercentage;
+            tokenomics[cachedIndexTokenomics[tokenomicsAddr] - 1]
+                .tokenomicsLockedForXSeconds = tokenomicsLockedForXSeconds;
+            tokenomics[cachedIndexTokenomics[tokenomicsAddr] - 1]
+                .tokenomicsVestedForXSeconds = tokenomicsVestedForXSeconds;
         }
     }
 
-    function createVestingIfDoesNotExist(
-        address vestingAddr
-    )
-        internal
-    {
-        if (cachedIndexVesting[vestingAddr] == 0)
-        {
-            vesting.push(
-                Vesting(
-                    vestingAddr,
-                    1,
-                    1,
-                    1,
-                    1
-                )
-            );
+    function createVestingIfDoesNotExist(address vestingAddr) internal {
+        if (cachedIndexVesting[vestingAddr] == 0) {
+            vesting.push(Vesting(vestingAddr, 1, 1, 1, 1));
             cachedIndexVesting[vestingAddr] = vesting.length;
         }
     }
@@ -1492,20 +1577,15 @@ contract PresaleContract is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
     {
         // TODO: only during investment state
-        
+
         delete tokenomics;
-        for(uint i; i<_tokenomics.length; i++)
-        {
+        for (uint256 i; i < _tokenomics.length; i++) {
             tokenomics.push(_tokenomics[i]);
         }
     }
-    
-    function getTokenomics()
-        public
-        view
-        returns(Tokenomics[] memory)
-    {
-        uint uniswapSupplyPercent = getUniswapSupplyPercent();
+
+    function getTokenomics() public view returns (Tokenomics[] memory) {
+        uint256 uniswapSupplyPercent = getUniswapSupplyPercent();
         Tokenomics[] memory output = new Tokenomics[](3 + tokenomics.length);
         output[0] = Tokenomics(
             address(0x1),
@@ -1528,194 +1608,203 @@ contract PresaleContract is AccessControlEnumerable {
             referralsLockedFor,
             referralsVestedFor
         );
-        
-        for(uint i; i<tokenomics.length; i++)
-        {
+
+        for (uint256 i; i < tokenomics.length; i++) {
             output[i + 3] = tokenomics[i];
         }
         return (tokenomics);
     }
-    
-    function updateRefPercent(uint _value)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
+
+    function updateRefPercent(uint256 _value) public onlyRole(ROLE_ADMIN) {
         refPercent = _value;
     }
-    
-    function updateFixedPriceInUsd(uint _value)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
+
+    function updateFixedPriceInUsd(uint256 _value) public onlyRole(ROLE_ADMIN) {
         fixedPriceInUsd = _value;
     }
-    
-    function updateCaps(uint _maxWethCap, uint _perWalletMinWeth, uint _perWalletMaxWeth)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
+
+    function updateCaps(
+        uint256 _maxWethCap,
+        uint256 _perWalletMinWeth,
+        uint256 _perWalletMaxWeth
+    ) public onlyRole(ROLE_ADMIN) {
         maxWethCap = _maxWethCap;
         perWalletMinWeth = _perWalletMinWeth;
         perWalletMaxWeth = _perWalletMaxWeth;
     }
-    
-    function updateTokenContract(address _value)
-        public
-        onlyRole(ROLE_ADMIN)
-    {
+
+    function updateTokenContract(address _value) public onlyRole(ROLE_ADMIN) {
         tokenAddress = _value;
     }
-    
-    function changeState(States _value)
-        private
-    {
+
+    function changeState(States _value) private {
         state = _value;
         emit StateChanged(_value);
     }
-    
-    function skipSteps1()
-        public
-    {
+
+    function skipSteps1() public {
         markGoalAsReached();
         prepareAddLiqudity();
         checkIfPairIsCreated();
     }
-    
-    function skipSteps2(uint limit)
-        public
-    {
+
+    function skipSteps2(uint256 limit) public {
         addLiquidityOnUniswapV2();
-        
+
         setVestingForTokenomicsTokens();
-        
-        limit = limit == 0? investors.length: limit;
+
+        limit = limit == 0 ? investors.length : limit;
         setVestingForInvestorsTokens(0, limit);
-        
-        limit = limit == 0? investors.length: limit;
+
+        limit = limit == 0 ? investors.length : limit;
         setVestingForReferralsTokens(0, limit);
     }
-    
-    function markGoalAsReached()
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        require(state == States.AcceptingPayments, "PR: Goal is already reached!");
-        
+
+    function markGoalAsReached() public onlyRole(ROLE_ADMIN) {
+        require(
+            state == States.AcceptingPayments,
+            "PR: Goal is already reached!"
+        );
+
         changeState(States.ReachedGoal);
     }
-    
-    function prepareAddLiqudity()
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        require(state == States.ReachedGoal, "PR: Preparing add liquidity is completed!");
-        require(address(this).balance > 0, "PR: Ether balance must be larger than zero!");
-        
+
+    function prepareAddLiqudity() public onlyRole(ROLE_ADMIN) {
+        require(
+            state == States.ReachedGoal,
+            "PR: Preparing add liquidity is completed!"
+        );
+        require(
+            address(this).balance > 0,
+            "PR: Ether balance must be larger than zero!"
+        );
+
         IWeth iWeth = IWeth(WETH_TOKEN_ADDRESS);
-        iWeth.deposit{ value: address(this).balance }();
-        
+        iWeth.deposit{value: address(this).balance}();
+
         changeState(States.PreparedAddLiqudity);
     }
-    
-    function checkIfPairIsCreated()
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        require(state == States.PreparedAddLiqudity, "PR: Pair is already created!");
-        require(tokenAddress != BURN_ADDRESS, "PR: Token address was not initialized yet!");
 
-        wethAndTokenPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
-            getPair(tokenAddress, WETH_TOKEN_ADDRESS);
-        
-        if (wethAndTokenPairContract == BURN_ADDRESS)
-        {
-            wethAndTokenPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
-                createPair(tokenAddress, WETH_TOKEN_ADDRESS);
+    function checkIfPairIsCreated() public onlyRole(ROLE_ADMIN) {
+        require(
+            state == States.PreparedAddLiqudity,
+            "PR: Pair is already created!"
+        );
+        require(
+            tokenAddress != BURN_ADDRESS,
+            "PR: Token address was not initialized yet!"
+        );
+
+        wethAndTokenPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS)
+            .getPair(tokenAddress, WETH_TOKEN_ADDRESS);
+
+        if (wethAndTokenPairContract == BURN_ADDRESS) {
+            wethAndTokenPairContract = IUniswapV2Factory(
+                UNISWAP_V2_FACTORY_ADDRESS
+            ).createPair(tokenAddress, WETH_TOKEN_ADDRESS);
         }
-        
+
         changeState(States.CreatedPair);
     }
-    
-    function addLiquidityOnUniswapV2()
-        public
-        onlyRole(ROLE_ADMIN)
-    {
+
+    function addLiquidityOnUniswapV2() public onlyRole(ROLE_ADMIN) {
         require(state == States.CreatedPair, "PR: Liquidity is already added!");
-        
-        address wethAndUsdtPairContract = IUniswapV2Factory(UNISWAP_V2_FACTORY_ADDRESS).
-            getPair(USDT_TOKEN_ADDRESS, WETH_TOKEN_ADDRESS);
-        (uint usdtBalance, uint wethBalance1, ) = IUniswapV2Pair(wethAndUsdtPairContract).getReserves();
-        if (USDT_TOKEN_ADDRESS > WETH_TOKEN_ADDRESS)
-        {
+
+        address wethAndUsdtPairContract = IUniswapV2Factory(
+            UNISWAP_V2_FACTORY_ADDRESS
+        ).getPair(USDT_TOKEN_ADDRESS, WETH_TOKEN_ADDRESS);
+        (uint256 usdtBalance, uint256 wethBalance1, ) = IUniswapV2Pair(
+            wethAndUsdtPairContract
+        ).getReserves();
+        if (USDT_TOKEN_ADDRESS > WETH_TOKEN_ADDRESS) {
             (usdtBalance, wethBalance1) = (wethBalance1, usdtBalance);
         }
-        
-        totalTokenSupply = (usdtBalance * totalInvestedWeth * 10**(36-USDT_DECIMALS)) / (fixedPriceInUsd * wethBalance1);
-        uint amountOfTokensForUniswap = (totalTokenSupply * getUniswapSupplyPercent()) / PERCENT_DENORM;
+
+        totalTokenSupply =
+            (usdtBalance * totalInvestedWeth * 10**(36 - USDT_DECIMALS)) /
+            (fixedPriceInUsd * wethBalance1);
+        uint256 amountOfTokensForUniswap = (totalTokenSupply *
+            getUniswapSupplyPercent()) / PERCENT_DENORM;
         amountOfTokensForInvestors = amountOfTokensForUniswap;
-        
+
         IWeth iWeth = IWeth(WETH_TOKEN_ADDRESS);
         iWeth.transfer(
-                wethAndTokenPairContract, 
-                iWeth.balanceOf(address(this))
-            );
-        
-        IDefiFactoryToken(tokenAddress).mintHumanAddress(wethAndTokenPairContract, amountOfTokensForUniswap);
-        
+            wethAndTokenPairContract,
+            iWeth.balanceOf(address(this))
+        );
+
+        IDefiFactoryToken(tokenAddress).mintHumanAddress(
+            wethAndTokenPairContract,
+            amountOfTokensForUniswap
+        );
+
         IUniswapV2Pair iPair = IUniswapV2Pair(wethAndTokenPairContract);
         iPair.mint(address(this));
-        
-        if (TEAM_FINANCE_ADDRESS != BURN_ADDRESS)
-        {
-            IWeth(wethAndTokenPairContract).approve(TEAM_FINANCE_ADDRESS, type(uint).max);
-            ITeamFinance(TEAM_FINANCE_ADDRESS).
-                lockTokens(
-                        wethAndTokenPairContract, 
-                        _msgSender(), 
-                        IWeth(wethAndTokenPairContract).balanceOf(address(this)), 
-                        block.timestamp + uniswapLiquidityLockedFor
-                    );
+
+        if (TEAM_FINANCE_ADDRESS != BURN_ADDRESS) {
+            IWeth(wethAndTokenPairContract).approve(
+                TEAM_FINANCE_ADDRESS,
+                type(uint256).max
+            );
+            ITeamFinance(TEAM_FINANCE_ADDRESS).lockTokens(
+                wethAndTokenPairContract,
+                _msgSender(),
+                IWeth(wethAndTokenPairContract).balanceOf(address(this)),
+                block.timestamp + uniswapLiquidityLockedFor
+            );
         }
-        
-        IDefiFactoryToken(tokenAddress).mintHumanAddress(address(this), totalTokenSupply - amountOfTokensForUniswap);
-    
+
+        IDefiFactoryToken(tokenAddress).mintHumanAddress(
+            address(this),
+            totalTokenSupply - amountOfTokensForUniswap
+        );
+
         changeState(States.AddedLiquidity);
     }
 
-    function setVestingForTokenomicsTokens()
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        require(state == States.AddedLiquidity, "PR: Tokenomics tokens have already been distributed!");
-        
-        for(uint i = 0; i < tokenomics.length; i++)
-        {
+    function setVestingForTokenomicsTokens() public onlyRole(ROLE_ADMIN) {
+        require(
+            state == States.AddedLiquidity,
+            "PR: Tokenomics tokens have already been distributed!"
+        );
+
+        for (uint256 i = 0; i < tokenomics.length; i++) {
             vesting.push(
                 Vesting(
                     tokenomics[i].tokenomicsAddr,
-                    (totalTokenSupply * tokenomics[i].tokenomicsPercentage ) / PERCENT_DENORM,
+                    (totalTokenSupply * tokenomics[i].tokenomicsPercentage) /
+                        PERCENT_DENORM,
                     0,
                     block.timestamp + tokenomics[i].tokenomicsLockedForXSeconds,
-                    block.timestamp + tokenomics[i].tokenomicsLockedForXSeconds + tokenomics[i].tokenomicsVestedForXSeconds
+                    block.timestamp +
+                        tokenomics[i].tokenomicsLockedForXSeconds +
+                        tokenomics[i].tokenomicsVestedForXSeconds
                 )
             );
         }
     }
 
-    function setVestingForInvestorsTokens(uint offset, uint limit)
+    function setVestingForInvestorsTokens(uint256 offset, uint256 limit)
         public
         onlyRole(ROLE_ADMIN)
     {
-        require(state == States.AddedLiquidity, "PR: Investors tokens have already been distributed!");
-        
+        require(
+            state == States.AddedLiquidity,
+            "PR: Investors tokens have already been distributed!"
+        );
+
         Investor[] memory investorsList = listInvestors(offset, limit);
-        for(uint i = 0; i < investorsList.length; i++)
-        {
-            if (vesting[cachedIndexVesting[investorsList[i].investorAddr] - 1].tokensReserved <= 1)
-            {
-                vesting[cachedIndexVesting[investorsList[i].investorAddr] - 1] = Vesting(
+        for (uint256 i = 0; i < investorsList.length; i++) {
+            if (
+                vesting[cachedIndexVesting[investorsList[i].investorAddr] - 1]
+                    .tokensReserved <= 1
+            ) {
+                vesting[
+                    cachedIndexVesting[investorsList[i].investorAddr] - 1
+                ] = Vesting(
                     investorsList[i].investorAddr,
-                    (amountOfTokensForInvestors * investorsList[i].wethValue ) / totalInvestedWeth,
+                    (amountOfTokensForInvestors * investorsList[i].wethValue) /
+                        totalInvestedWeth,
                     0,
                     block.timestamp + presaleLockedFor,
                     block.timestamp + presaleLockedFor + presaleVestedFor
@@ -1723,21 +1812,28 @@ contract PresaleContract is AccessControlEnumerable {
             }
         }
     }
-    
-    function setVestingForReferralsTokens(uint offset, uint limit)
+
+    function setVestingForReferralsTokens(uint256 offset, uint256 limit)
         public
         onlyRole(ROLE_ADMIN)
     {
-        require(state == States.AddedLiquidity, "PR: Referrals tokens have already been distributed!");
-        
+        require(
+            state == States.AddedLiquidity,
+            "PR: Referrals tokens have already been distributed!"
+        );
+
         Referral[] memory referralsList = listReferrals(offset, limit);
-        for(uint i = 0; i < referralsList.length; i++)
-        {
-            if (vesting[cachedIndexVesting[referralsList[i].referralAddr] - 1].tokensReserved <= 1)
-            {
-                vesting[cachedIndexVesting[referralsList[i].referralAddr] - 1] = Vesting(
+        for (uint256 i = 0; i < referralsList.length; i++) {
+            if (
+                vesting[cachedIndexVesting[referralsList[i].referralAddr] - 1]
+                    .tokensReserved <= 1
+            ) {
+                vesting[
+                    cachedIndexVesting[referralsList[i].referralAddr] - 1
+                ] = Vesting(
                     referralsList[i].referralAddr,
-                    (referralsList[i].earnings * amountOfTokensForInvestors) / totalInvestedWeth,
+                    (referralsList[i].earnings * amountOfTokensForInvestors) /
+                        totalInvestedWeth,
                     0,
                     block.timestamp + referralsLockedFor,
                     block.timestamp + referralsLockedFor + referralsVestedFor
@@ -1745,163 +1841,147 @@ contract PresaleContract is AccessControlEnumerable {
             }
         }
     }
-    
-    function checkIfAllVestingWasSet()
-        public
-        view
-        returns (bool)
-    {
-        for(uint i = 0; i<referrals.length; i++)
-        {
-            if (vesting[cachedIndexVesting[referrals[i].referralAddr] - 1].tokensReserved <= 1)
-            {
+
+    function checkIfAllVestingWasSet() public view returns (bool) {
+        for (uint256 i = 0; i < referrals.length; i++) {
+            if (
+                vesting[cachedIndexVesting[referrals[i].referralAddr] - 1]
+                    .tokensReserved <= 1
+            ) {
                 return false;
             }
         }
-        
-        for(uint i = 0; i<investors.length; i++)
-        {
-            if (vesting[cachedIndexVesting[investors[i].investorAddr] - 1].tokensReserved <= 1)
-            {
+
+        for (uint256 i = 0; i < investors.length; i++) {
+            if (
+                vesting[cachedIndexVesting[investors[i].investorAddr] - 1]
+                    .tokensReserved <= 1
+            ) {
                 return false;
             }
         }
-        
+
         return true;
     }
-    
-    function changeStateIfAllVestingWasSet()
-        public
-        onlyRole(ROLE_ADMIN)
-    {
-        for(uint i = 0; i<referrals.length; i++)
-        {
+
+    function changeStateIfAllVestingWasSet() public onlyRole(ROLE_ADMIN) {
+        for (uint256 i = 0; i < referrals.length; i++) {
             require(
-                vesting[cachedIndexVesting[referrals[i].referralAddr] - 1].tokensReserved > 1, 
+                vesting[cachedIndexVesting[referrals[i].referralAddr] - 1]
+                    .tokensReserved > 1,
                 "PR: Not all investor's vesting was set!"
             );
         }
-        
-        for(uint i = 0; i<investors.length; i++)
-        {
+
+        for (uint256 i = 0; i < investors.length; i++) {
             require(
-                vesting[cachedIndexVesting[investors[i].investorAddr] - 1].tokensReserved > 1, 
+                vesting[cachedIndexVesting[investors[i].investorAddr] - 1]
+                    .tokensReserved > 1,
                 "PR: Not all investor's vesting was set!"
             );
         }
-        
+
         changeState(States.SetVestingForInvestorsAndReferralsTokens);
     }
-    
-    
-    function emergencyRefund(uint offset, uint limit)
+
+    function emergencyRefund(uint256 offset, uint256 limit)
         public
         onlyRole(ROLE_ADMIN)
     {
-        uint wethBalance = IWeth(WETH_TOKEN_ADDRESS).balanceOf(address(this));
-        if (wethBalance > 0)
-        {
+        uint256 wethBalance = IWeth(WETH_TOKEN_ADDRESS).balanceOf(
+            address(this)
+        );
+        if (wethBalance > 0) {
             IWeth(WETH_TOKEN_ADDRESS).withdraw(wethBalance);
         }
-        
+
         Investor[] memory investorsList = listInvestors(offset, limit);
-        for(uint i = 0; i < investorsList.length; i++)
-        {
-            uint amountToTransfer = investorsList[i].wethValue;
+        for (uint256 i = 0; i < investorsList.length; i++) {
+            uint256 amountToTransfer = investorsList[i].wethValue;
             investorsList[i].wethValue = 0;
             payable(investorsList[i].investorAddr).transfer(amountToTransfer);
         }
-        
+
         changeState(States.Refunded);
     }
-    
+
     // --------------------------------------
-    
-    function getInvestorsCount()
-        public
-        view
-        returns(uint)
-    {
+
+    function getInvestorsCount() public view returns (uint256) {
         return investors.length;
     }
-    
+
     function getInvestorByAddr(address addr)
         public
         view
-        returns(Investor memory)
+        returns (Investor memory)
     {
         return investors[cachedIndexInvestors[addr] - 1];
     }
-    
-    function getInvestorByPos(uint pos)
+
+    function getInvestorByPos(uint256 pos)
         public
         view
-        returns(Investor memory)
+        returns (Investor memory)
     {
         return investors[pos];
     }
-    
-    function listInvestors(uint offset, uint limit)
+
+    function listInvestors(uint256 offset, uint256 limit)
         public
         view
-        returns(Investor[] memory)
+        returns (Investor[] memory)
     {
-        uint start = offset;
-        uint end = offset + limit;
-        end = (end > investors.length)? investors.length: end;
-        uint numItems = (end > start)? end - start: 0;
-        
+        uint256 start = offset;
+        uint256 end = offset + limit;
+        end = (end > investors.length) ? investors.length : end;
+        uint256 numItems = (end > start) ? end - start : 0;
+
         Investor[] memory listOfInvestors = new Investor[](numItems);
-        for(uint i = start; i < end; i++)
-        {
+        for (uint256 i = start; i < end; i++) {
             listOfInvestors[i - start] = investors[i];
         }
-        
+
         return listOfInvestors;
     }
-    
+
     // --------------------------------------
-    
-    function getReferralsCount()
-        public
-        view
-        returns(uint)
-    {
+
+    function getReferralsCount() public view returns (uint256) {
         return referrals.length;
     }
-    
+
     function getReferralByAddr(address addr)
         public
         view
-        returns(Referral memory)
+        returns (Referral memory)
     {
         return referrals[cachedIndexReferrals[addr] - 1];
     }
-    
-    function getReferralByPos(uint pos)
+
+    function getReferralByPos(uint256 pos)
         public
         view
-        returns(Referral memory)
+        returns (Referral memory)
     {
         return referrals[pos];
     }
-    
-    function listReferrals(uint offset, uint limit)
+
+    function listReferrals(uint256 offset, uint256 limit)
         public
         view
-        returns(Referral[] memory)
+        returns (Referral[] memory)
     {
-        uint start = offset;
-        uint end = offset + limit;
-        end = (end > referrals.length)? referrals.length: end;
-        uint numItems = (end > start)? end - start: 0;
-        
+        uint256 start = offset;
+        uint256 end = offset + limit;
+        end = (end > referrals.length) ? referrals.length : end;
+        uint256 numItems = (end > start) ? end - start : 0;
+
         Referral[] memory listOfReferrals = new Referral[](numItems);
-        for(uint i = start; i < end; i++)
-        {
+        for (uint256 i = start; i < end; i++) {
             listOfReferrals[i - start] = referrals[i];
         }
-        
+
         return listOfReferrals;
     }
 }
