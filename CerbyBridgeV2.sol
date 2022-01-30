@@ -8,16 +8,20 @@ import "./interfaces/ICerbySwapV1.sol";
 contract CerbyBridgeV2 is AccessControlEnumerable {
     struct Proof {
         bytes32 burnProofHash;
-        bytes burnGenericToken;
         bytes burnGenericCaller;
+        uint64 burnNonce;
+        bytes mintGenericCaller;
+        uint256 mintAmount;
+        Allowance allowance;
+    }
+
+    struct Allowance {
+        bytes burnGenericToken;
         uint8 burnChainType;
         uint32 burnChainId;
-        uint64 burnNonce;
         bytes mintGenericToken;
-        bytes mintGenericCaller;
         uint8 mintChainType;
         uint32 mintChainId;
-        uint256 mintAmount;
     }
 
     event ProofOfBurnOrMint(
@@ -42,7 +46,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         Radix
     }
 
-    enum Allowance {
+    enum AllowanceStatus {
         Undefined,
         Allowed,
         Blocked
@@ -66,7 +70,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     // also it can be splitted in two storages (burn and mint)
     mapping(bytes32 => States) public burnProofStorage;
     mapping(address => uint32) public burnNonceByToken;
-    mapping(bytes32 => Allowance) public allowances;
+    mapping(bytes32 => AllowanceStatus) public allowances;
 
     mapping(bytes32 => uint256) public chainToFee;
     uint256 constant DEFAULT_FEE = 5e18; // 5 cerUSD fee
@@ -133,47 +137,47 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         return mintAmount - substractAmountInTokens;
     }
 
-    function setAllowancesBulk(Proof[] memory proofs, Allowance status)
+    function setAllowancesBulk(Allowance[] memory _allowances, AllowanceStatus _status)
         external
         onlyRole(ROLE_ADMIN)
     {
-        uint256 proofsLength = proofs.length;
+        uint256 allowancesLength = _allowances.length;
 
-        for (uint256 i; i < proofsLength; i++) {
+        for (uint256 i; i < allowancesLength; i++) {
             if (
-                _currentBridgeChainType == proofs[i].mintChainType &&
-                _currentBridgeChainId == proofs[i].mintChainId
+                _currentBridgeChainType == _allowances[i].mintChainType &&
+                _currentBridgeChainId == _allowances[i].mintChainId
             ) {
                 continue;
             }
 
-            bytes32 allowanceHash = getAllowanceHashCurrent2Mint(proofs[i]);
+            bytes32 allowanceHash = getAllowanceHashCurrent2Mint(_allowances[i]);
 
-            if (allowances[allowanceHash] != status) {
-                allowances[allowanceHash] = status;
+            if (allowances[allowanceHash] != _status) {
+                allowances[allowanceHash] = _status;
             }
         }
     }
 
-    function getAllowanceHashCurrent2Mint(Proof memory proof)
-        public
+    function getAllowanceHashCurrent2Mint(Allowance memory _allowance)
+        private
         view
         returns (bytes32)
     {
         return
             sha256(
                 abi.encodePacked(
-                    proof.burnGenericToken,
+                    _allowance.burnGenericToken,
                     _currentBridgeChainType,
                     _currentBridgeChainId,
-                    proof.mintGenericToken,
-                    proof.mintChainType,
-                    proof.mintChainId
+                    _allowance.mintGenericToken,
+                    _allowance.mintChainType,
+                    _allowance.mintChainId
                 )
             );
     }
 
-    function getAllowanceHashBurn2Mint(Proof memory proof)
+    function getAllowanceHashBurn2Mint(Allowance memory _allowance)
         private
         pure
         returns (bytes32)
@@ -181,47 +185,46 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         return
             sha256(
                 abi.encodePacked(
-                    proof.burnGenericToken, // поменял порядок
-                    proof.burnChainType,
-                    proof.burnChainId,
-                    proof.mintGenericToken,
-                    proof.mintChainType,
-                    proof.mintChainId
+                    _allowance.burnGenericToken, // поменял порядок
+                    _allowance.burnChainType,
+                    _allowance.burnChainId,
+                    _allowance.mintGenericToken,
+                    _allowance.mintChainType,
+                    _allowance.mintChainId
                 )
             );
     }
 
-    function getAllowanceHashMint2Burn(Proof memory proof)
-        private
+    function getAllowanceHashMint2Burn(Allowance memory _allowance)
+        public
         pure
         returns (bytes32)
     {
         return
             sha256(
                 abi.encodePacked(
-                    proof.mintGenericToken,
-                    proof.mintChainType,
-                    proof.mintChainId,
-                    HASH_SEPARATOR,
-                    proof.burnGenericToken,
-                    proof.burnChainType,
-                    proof.burnChainId
+                    _allowance.mintGenericToken,
+                    _allowance.mintChainType,
+                    _allowance.mintChainId,
+                    _allowance.burnGenericToken,
+                    _allowance.burnChainType,
+                    _allowance.burnChainId
                 )
             );
     }
 
-    function checkAllowanceHashBurn2Mint(Proof memory proof) private view {
-        bytes32 allowanceHash = getAllowanceHashBurn2Mint(proof);
+    function checkAllowanceHashBurn2Mint(Allowance memory _allowance) private view {
+        bytes32 allowanceHash = getAllowanceHashBurn2Mint(_allowance);
 
-        if (allowances[allowanceHash] != Allowance.Allowed) {
+        if (allowances[allowanceHash] != AllowanceStatus.Allowed) {
             revert CerbyBridgeV2_DirectionAllowanceWasNotFound();
         }
     }
 
-    function checkAllowanceHashMint2Burn(Proof memory proof) private view {
-        bytes32 allowanceHash = getAllowanceHashMint2Burn(proof);
+    function checkAllowanceHashMint2Burn(Allowance memory _allowance) private view {
+        bytes32 allowanceHash = getAllowanceHashMint2Burn(_allowance);
 
-        if (allowances[allowanceHash] != Allowance.Allowed) {
+        if (allowances[allowanceHash] != AllowanceStatus.Allowed) {
             revert CerbyBridgeV2_DirectionAllowanceWasNotFound();
         }
     }
@@ -232,16 +235,16 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         returns (bytes32)
     {
         bytes memory packed = abi.encodePacked(
-            proof.burnGenericToken, // 40 = bytes40
+            proof.allowance.burnGenericToken, // 40 = bytes40
             proof.burnGenericCaller, // 40 = bytes40
-            proof.burnChainType, // 1 = uint8
-            proof.burnChainId, // 4 = uint32
+            proof.allowance.burnChainType, // 1 = uint8
+            proof.allowance.burnChainId, // 4 = uint32
             proof.burnNonce, // 8 = uint64
             HASH_SEPARATOR, // 4 = bytes4
-            proof.mintGenericToken, // 40 = bytes40
+            proof.allowance.mintGenericToken, // 40 = bytes40
             proof.mintGenericCaller, // 40 = bytes40
-            proof.mintChainType, // 1 = uint8
-            proof.mintChainId, // 4 = uint32
+            proof.allowance.mintChainType, // 1 = uint8
+            proof.allowance.mintChainId, // 4 = uint32
             proof.mintAmount // 32 = uint256
         );
 
@@ -270,24 +273,29 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
             revert CerbyBridgeV2_InvalidGenericTokenLength();
         }
 
+        // creating allowance object from current chain to mint
+        Allowance memory allowance = Allowance(
+            getGenericAddress(burnToken), // burnGenericToken;
+            _currentBridgeChainType, // burnChainType;
+            _currentBridgeChainId, // burnChainId;
+            mintGenericToken, // mintGenericToken;
+            mintChainType, // mintChainType;
+            mintChainId // mintChainId;
+        );
+
         // creating proof object from current chain to mint
         Proof memory proof = Proof(
             "", // burnProofHash;
-            getGenericAddress(burnToken), // burnGenericToken;
             getGenericAddress(msg.sender), // burnGenericCaller;
-            _currentBridgeChainType, // burnChainType;
-            _currentBridgeChainId, // burnChainId;
             uint64(burnNonceByToken[burnToken]), // burnNonce;
-            mintGenericToken, // mintGenericToken;
             mintGenericCaller, // mintGenericCaller;
-            mintChainType, // mintChainType;
-            mintChainId, // mintChainId;
             getReducedMintAmount(
                 burnToken,
                 burnAmount,
                 mintChainType,
                 mintChainId
-            ) // mintAmount;
+            ), // mintAmount;
+            allowance // allowance
         );
 
         // EVM --> EVM bridge is allowed only for the same wallet
@@ -299,7 +307,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         }
 
         // checking burn --> mint allowance
-        checkAllowanceHashBurn2Mint(proof);
+        checkAllowanceHashBurn2Mint(allowance);
 
         // generating burn burn hash
         proof.burnProofHash = computeBurnHash(proof);
@@ -342,19 +350,24 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
             revert CerbyBridgeV2_InvalidGenericTokenLength();
         }
 
+        // creating allowance object from current chain to mint
+        Allowance memory allowance = Allowance(
+            burnGenericToken, // burnGenericToken;
+            burnChainType, // burnChainType;
+            burnChainId, // burnChainId;
+            getGenericAddress(mintToken), // mintGenericToken;
+            _currentBridgeChainType, // mintChainType;
+            _currentBridgeChainId // mintChainId;
+        );
+
         // creating proof object from burn to current chain
         Proof memory proof = Proof(
             burnProofHash, // burnProofHash;
-            burnGenericToken, // burnGenericToken;
             burnGenericCaller, // burnGenericCaller;
-            burnChainType, // burnChainType;
-            burnChainId, // burnChainId;
             burnNonce, // burnNonce;
-            getGenericAddress(mintToken), // mintGenericToken;
             getGenericAddress(msg.sender), // mintGenericCaller;
-            _currentBridgeChainType, // mintChainType;
-            _currentBridgeChainId, // mintChainId;
-            mintAmount // mintAmount;
+            mintAmount, // mintAmount;
+            allowance // allowance
         );
 
         // EVM --> EVM bridge is allowed only for the same wallet
@@ -367,7 +380,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
 
         // checking opposite direction allowance
         // if current chain (mint) --> burn allowed then burn --> current chain (mint) is allowed as well
-        checkAllowanceHashMint2Burn(proof);
+        checkAllowanceHashMint2Burn(allowance);
 
         if (burnProofStorage[burnProofHash] != States.Approved) {
             revert CerbyBridgeV2_ProofIsNotApprovedOrAlreadyExecuted();

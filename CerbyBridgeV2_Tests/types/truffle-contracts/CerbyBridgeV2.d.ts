@@ -24,30 +24,34 @@ export interface ProofOfBurnOrMint {
     isBurn: boolean;
     proof: {
       burnProofHash: string;
-      burnGenericToken: string;
       burnGenericCaller: string;
-      burnChainType: BN;
-      burnChainId: BN;
       burnNonce: BN;
-      mintGenericToken: string;
       mintGenericCaller: string;
-      mintChainType: BN;
-      mintChainId: BN;
       mintAmount: BN;
+      allowance: {
+        burnGenericToken: string;
+        burnChainType: BN;
+        burnChainId: BN;
+        mintGenericToken: string;
+        mintChainType: BN;
+        mintChainId: BN;
+      };
     };
     0: boolean;
     1: {
       burnProofHash: string;
-      burnGenericToken: string;
       burnGenericCaller: string;
-      burnChainType: BN;
-      burnChainId: BN;
       burnNonce: BN;
-      mintGenericToken: string;
       mintGenericCaller: string;
-      mintChainType: BN;
-      mintChainId: BN;
       mintAmount: BN;
+      allowance: {
+        burnGenericToken: string;
+        burnChainType: BN;
+        burnChainId: BN;
+        mintGenericToken: string;
+        mintChainType: BN;
+        mintChainId: BN;
+      };
     };
   };
 }
@@ -172,18 +176,25 @@ export interface CerbyBridgeV2Instance extends Truffle.ContractInstance {
   chainToFee(arg0: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
   getAllowanceHashCurrent2Mint(
-    proof: {
-      burnProofHash: string;
+    _allowance: {
       burnGenericToken: string;
-      burnGenericCaller: string;
       burnChainType: number | BN | string;
       burnChainId: number | BN | string;
-      burnNonce: number | BN | string;
       mintGenericToken: string;
-      mintGenericCaller: string;
       mintChainType: number | BN | string;
       mintChainId: number | BN | string;
-      mintAmount: number | BN | string;
+    },
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string>;
+
+  getAllowanceHashMint2Burn(
+    _allowance: {
+      burnGenericToken: string;
+      burnChainType: number | BN | string;
+      burnChainId: number | BN | string;
+      mintGenericToken: string;
+      mintChainType: number | BN | string;
+      mintChainId: number | BN | string;
     },
     txDetails?: Truffle.TransactionDetails
   ): Promise<string>;
@@ -353,71 +364,51 @@ export interface CerbyBridgeV2Instance extends Truffle.ContractInstance {
 
   setAllowancesBulk: {
     (
-      proofs: {
-        burnProofHash: string;
+      _allowances: {
         burnGenericToken: string;
-        burnGenericCaller: string;
         burnChainType: number | BN | string;
         burnChainId: number | BN | string;
-        burnNonce: number | BN | string;
         mintGenericToken: string;
-        mintGenericCaller: string;
         mintChainType: number | BN | string;
         mintChainId: number | BN | string;
-        mintAmount: number | BN | string;
       }[],
-      status: number | BN | string,
+      _status: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
-      proofs: {
-        burnProofHash: string;
+      _allowances: {
         burnGenericToken: string;
-        burnGenericCaller: string;
         burnChainType: number | BN | string;
         burnChainId: number | BN | string;
-        burnNonce: number | BN | string;
         mintGenericToken: string;
-        mintGenericCaller: string;
         mintChainType: number | BN | string;
         mintChainId: number | BN | string;
-        mintAmount: number | BN | string;
       }[],
-      status: number | BN | string,
+      _status: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
-      proofs: {
-        burnProofHash: string;
+      _allowances: {
         burnGenericToken: string;
-        burnGenericCaller: string;
         burnChainType: number | BN | string;
         burnChainId: number | BN | string;
-        burnNonce: number | BN | string;
         mintGenericToken: string;
-        mintGenericCaller: string;
         mintChainType: number | BN | string;
         mintChainId: number | BN | string;
-        mintAmount: number | BN | string;
       }[],
-      status: number | BN | string,
+      _status: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
-      proofs: {
-        burnProofHash: string;
+      _allowances: {
         burnGenericToken: string;
-        burnGenericCaller: string;
         burnChainType: number | BN | string;
         burnChainId: number | BN | string;
-        burnNonce: number | BN | string;
         mintGenericToken: string;
-        mintGenericCaller: string;
         mintChainType: number | BN | string;
         mintChainId: number | BN | string;
-        mintAmount: number | BN | string;
       }[],
-      status: number | BN | string,
+      _status: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -533,18 +524,25 @@ export interface CerbyBridgeV2Instance extends Truffle.ContractInstance {
     ): Promise<BN>;
 
     getAllowanceHashCurrent2Mint(
-      proof: {
-        burnProofHash: string;
+      _allowance: {
         burnGenericToken: string;
-        burnGenericCaller: string;
         burnChainType: number | BN | string;
         burnChainId: number | BN | string;
-        burnNonce: number | BN | string;
         mintGenericToken: string;
-        mintGenericCaller: string;
         mintChainType: number | BN | string;
         mintChainId: number | BN | string;
-        mintAmount: number | BN | string;
+      },
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+
+    getAllowanceHashMint2Burn(
+      _allowance: {
+        burnGenericToken: string;
+        burnChainType: number | BN | string;
+        burnChainId: number | BN | string;
+        mintGenericToken: string;
+        mintChainType: number | BN | string;
+        mintChainId: number | BN | string;
       },
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
@@ -714,71 +712,51 @@ export interface CerbyBridgeV2Instance extends Truffle.ContractInstance {
 
     setAllowancesBulk: {
       (
-        proofs: {
-          burnProofHash: string;
+        _allowances: {
           burnGenericToken: string;
-          burnGenericCaller: string;
           burnChainType: number | BN | string;
           burnChainId: number | BN | string;
-          burnNonce: number | BN | string;
           mintGenericToken: string;
-          mintGenericCaller: string;
           mintChainType: number | BN | string;
           mintChainId: number | BN | string;
-          mintAmount: number | BN | string;
         }[],
-        status: number | BN | string,
+        _status: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
-        proofs: {
-          burnProofHash: string;
+        _allowances: {
           burnGenericToken: string;
-          burnGenericCaller: string;
           burnChainType: number | BN | string;
           burnChainId: number | BN | string;
-          burnNonce: number | BN | string;
           mintGenericToken: string;
-          mintGenericCaller: string;
           mintChainType: number | BN | string;
           mintChainId: number | BN | string;
-          mintAmount: number | BN | string;
         }[],
-        status: number | BN | string,
+        _status: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
-        proofs: {
-          burnProofHash: string;
+        _allowances: {
           burnGenericToken: string;
-          burnGenericCaller: string;
           burnChainType: number | BN | string;
           burnChainId: number | BN | string;
-          burnNonce: number | BN | string;
           mintGenericToken: string;
-          mintGenericCaller: string;
           mintChainType: number | BN | string;
           mintChainId: number | BN | string;
-          mintAmount: number | BN | string;
         }[],
-        status: number | BN | string,
+        _status: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
-        proofs: {
-          burnProofHash: string;
+        _allowances: {
           burnGenericToken: string;
-          burnGenericCaller: string;
           burnChainType: number | BN | string;
           burnChainId: number | BN | string;
-          burnNonce: number | BN | string;
           mintGenericToken: string;
-          mintGenericCaller: string;
           mintChainType: number | BN | string;
           mintChainId: number | BN | string;
-          mintAmount: number | BN | string;
         }[],
-        status: number | BN | string,
+        _status: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

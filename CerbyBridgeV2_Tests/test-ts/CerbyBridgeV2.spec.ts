@@ -36,45 +36,49 @@ contract("CerbyBridgeV2", () => {
     console.log(deployed);
   });
 
-  it("set allowances", async () => {
-    const bridge = await CerbyBridgeV2.at(bridgeAddress);
+  it.only("set allowances", async () => {
+    const bridge = await CerbyBridgeV2.deployed();
 
-    const evmTokens = [
-      "0xfF06B30A102A80d3d3C82C091317D1e82Bb4aCF5", // cerCSPR
-      "0xB58FcB5D931AC11919462c3A7A812aFdb4c89D28", // cerETH
-      "0xe2129472461b1b28ABcA079f72E3529eC24031cD", // cerUSDC
-    ];
+    const evmCerCsprToken = "0xfF06B30A102A80d3d3C82C091317D1e82Bb4aCF5";
+    const evmCerEthToken = "0xB58FcB5D931AC11919462c3A7A812aFdb4c89D28";
+    const evmCerUsdcToken = "0xe2129472461b1b28ABcA079f72E3529eC24031cD";
+
+    const casperCerCsprToken = "0x378bDF003f218b28dfCcFe5f21D7AA6b818D1D79aC4156eDE3F1c107d323f4ad";
+    const casperCerEthToken = "0x4D292244FcF091aB7B15c4B62d86ed1f40C93Ef38CF9280725370aa99Fa700c";
+    const casperCerUsdcToken = "0xaC1E4705239368F33B142fD19Aec51F73d57dEb398dF5D095A14c01AbE6Cb59B";
+
+    const _20bytes = "0000000000000000000000000000000000000000";
+    const evmCerCsprGenericToken = "0x" + _20bytes + evmCerCsprToken.substring(2);
+    const evmCerEthGenericToken = "0x" + _20bytes + evmCerEthToken.substring(2);
+    const evmCerUsdcGenericToken = "0x" + _20bytes + evmCerUsdcToken.substring(2);
+    console.log(evmCerCsprGenericToken);
 
     const _8bytes = "0000000000000000";
+    const casperCerCsprGenericToken = "0x" + _8bytes + casperCerCsprToken.substring(2);
+    const casperCerEthGenericToken = "0x" + _8bytes + casperCerEthToken.substring(2);
+    const casperCerUsdcGenericToken = "0x" + _8bytes + casperCerUsdcToken.substring(2);
+    console.log(casperCerUsdcGenericToken);
 
     const casperChainId = 1010;
-    const casperTokens = [
-      "0x" +
-        _8bytes +
-        "378bDF003f218b28dfCcFe5f21D7AA6b818D1D79aC4156eDE3F1c107d323f4ad", // cerCSPR
-      "0x" +
-        _8bytes +
-        "04D292244FcF091aB7B15c4B62d86ed1f40C93Ef38CF9280725370aa99Fa700c", // cerETH
-      "0x" +
-        _8bytes +
-        "aC1E4705239368F33B142fD19Aec51F73d57dEb398dF5D095A14c01AbE6Cb59B", // cerUSDC
-    ];
+    const evmChainIdFrom = 123;
+    const evmChainIdTo = 1337;
+    const evmChainType = 1;
 
-    // 3 combos
-    // set allowance only for those tokens that are similar
-    const combos = evmTokens.map(
-      (evmToken, i) => [evmToken, casperTokens[i]] as const
-    );
+    const allowanceAllowed = 1;
+    const evmAllowance = {
+      burnGenericToken: evmCerCsprGenericToken,
+      burnChainType: evmChainType,
+      burnChainId: evmChainIdFrom,
+      mintGenericToken: evmCerCsprGenericToken,
+      mintChainType: evmChainType,
+      mintChainId: evmChainIdTo
+    };
+    await bridge.setAllowancesBulk([
+      evmAllowance
+    ], allowanceAllowed);
 
-    const deploys = await Promise.all(
-      combos.map(([evmToken, casperToken]) => {
-        return bridge.setAllowance(
-          evmToken,
-          casperToken,
-          2, // casper
-          casperChainId
-        );
-      })
-    );
+    const evmAllowanceHash = await bridge.getAllowanceHashMint2Burn(evmAllowance);
+    console.log(evmAllowance);
+
   });
 });
