@@ -80,6 +80,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     bytes4 constant HASH_SEPARATOR = 0xc0de0001;
 
     constructor() {
+        _setupRole(ROLE_ADMIN, msg.sender);
         _setupRole(ROLE_APPROVER, msg.sender);
         _setupRole(ROLE_APPROVER, bridgeFeesBeneficiary);
 
@@ -128,6 +129,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         }*/
 
         if (mintAmount <= substractAmountInTokens) {
+            revert("J");
             revert CerbyBridgeV2_AmountIsLessThanBridgeFees();
         }
 
@@ -150,6 +152,21 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
 
             _allowances[i].burnChainType = _currentBridgeChainType;
             _allowances[i].burnChainId = _currentBridgeChainId;
+            bytes32 allowanceHash = getAllowanceHash(_allowances[i]);
+
+            if (allowances[allowanceHash] != _status) {
+                allowances[allowanceHash] = _status;
+            }
+        }
+    }
+
+    function testSetAllowancesBulk(
+        Allowance[] memory _allowances,
+        AllowanceStatus _status
+    ) external onlyRole(ROLE_ADMIN) {
+        uint256 allowancesLength = _allowances.length;
+
+        for (uint256 i; i < allowancesLength; i++) {
             bytes32 allowanceHash = getAllowanceHash(_allowances[i]);
 
             if (allowances[allowanceHash] != _status) {
@@ -202,12 +219,13 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         bytes32 allowanceHash = getAllowanceHash(_allowance);
 
         if (allowances[allowanceHash] != AllowanceStatus.Allowed) {
+            revert("I");
             revert CerbyBridgeV2_DirectionAllowanceWasNotFound();
         }
     }
 
     function computeBurnHash(Proof memory proof)
-        private
+        public
         pure
         returns (bytes32)
     {
@@ -228,6 +246,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         if (
             packed.length != 214 // 214 = 40 + 40 + 1 + 4 + 8 + 4 + 40 + 40 + 1 + 4 + 32
         ) {
+            revert("H");
             revert CerbyBridgeV2_InvalidPackageLength();
         }
 
@@ -244,9 +263,11 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         uint32 mintChainId
     ) external {
         if (mintGenericToken.length != 40) {
+            revert("G");
             revert CerbyBridgeV2_InvalidGenericCallerLength();
         }
         if (mintGenericToken.length != 40) {
+            revert("F");
             revert CerbyBridgeV2_InvalidGenericTokenLength();
         }
 
@@ -280,6 +301,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
             _currentBridgeChainType == mintChainType &&
             sha256(proof.burnGenericCaller) == sha256(mintGenericCaller)
         ) {
+            revert("E");
             revert CerbyBridgeV2_TokenAndCallerMustBeEqualForEvmBridging();
         }
 
@@ -352,6 +374,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
             burnChainType == _currentBridgeChainType &&
             sha256(burnGenericCaller) == sha256(proof.mintGenericCaller)
         ) {
+            revert("A");
             revert CerbyBridgeV2_TokenAndCallerMustBeEqualForEvmBridging();
         }
 
@@ -360,6 +383,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         checkAllowanceHash(allowance);
 
         if (burnProofStorage[burnProofHash] != States.Approved) {
+            revert("B");
             revert CerbyBridgeV2_ProofIsNotApprovedOrAlreadyExecuted();
         }
 
@@ -368,6 +392,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
 
         // making sure burn hash is valid
         if (burnProofHash != burnProofHashComputed) {
+            revert("C");
             revert CerbyBridgeV2_ProvidedHashIsInvalid();
         }
 
@@ -391,6 +416,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         onlyRole(ROLE_APPROVER)
     {
         if (burnProofStorage[proofHash] != States.DefaultValue) {
+            revert("D");
             revert CerbyBridgeV2_AlreadyApproved();
         }
 

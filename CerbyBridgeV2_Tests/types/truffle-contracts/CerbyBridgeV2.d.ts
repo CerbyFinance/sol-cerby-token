@@ -175,19 +175,26 @@ export interface CerbyBridgeV2Instance extends Truffle.ContractInstance {
 
   chainToFee(arg0: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
-  getAllowanceHashCurrent2Mint(
-    _allowance: {
-      burnGenericToken: string;
-      burnChainType: number | BN | string;
-      burnChainId: number | BN | string;
-      mintGenericToken: string;
-      mintChainType: number | BN | string;
-      mintChainId: number | BN | string;
+  computeBurnHash(
+    proof: {
+      burnProofHash: string;
+      burnGenericCaller: string;
+      burnNonce: number | BN | string;
+      mintGenericCaller: string;
+      mintAmount: number | BN | string;
+      allowance: {
+        burnGenericToken: string;
+        burnChainType: number | BN | string;
+        burnChainId: number | BN | string;
+        mintGenericToken: string;
+        mintChainType: number | BN | string;
+        mintChainId: number | BN | string;
+      };
     },
     txDetails?: Truffle.TransactionDetails
   ): Promise<string>;
 
-  getAllowanceHashMint2Burn(
+  getAllowanceHash(
     _allowance: {
       burnGenericToken: string;
       burnChainType: number | BN | string;
@@ -415,22 +422,22 @@ export interface CerbyBridgeV2Instance extends Truffle.ContractInstance {
 
   setChainsToFee: {
     (
-      chainsTo: string[],
+      chainsHashes: string[],
       fee: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
-      chainsTo: string[],
+      chainsHashes: string[],
       fee: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
-      chainsTo: string[],
+      chainsHashes: string[],
       fee: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
-      chainsTo: string[],
+      chainsHashes: string[],
       fee: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
@@ -440,6 +447,57 @@ export interface CerbyBridgeV2Instance extends Truffle.ContractInstance {
     interfaceId: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<boolean>;
+
+  testSetAllowancesBulk: {
+    (
+      _allowances: {
+        burnGenericToken: string;
+        burnChainType: number | BN | string;
+        burnChainId: number | BN | string;
+        mintGenericToken: string;
+        mintChainType: number | BN | string;
+        mintChainId: number | BN | string;
+      }[],
+      _status: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      _allowances: {
+        burnGenericToken: string;
+        burnChainType: number | BN | string;
+        burnChainId: number | BN | string;
+        mintGenericToken: string;
+        mintChainType: number | BN | string;
+        mintChainId: number | BN | string;
+      }[],
+      _status: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _allowances: {
+        burnGenericToken: string;
+        burnChainType: number | BN | string;
+        burnChainId: number | BN | string;
+        mintGenericToken: string;
+        mintChainType: number | BN | string;
+        mintChainId: number | BN | string;
+      }[],
+      _status: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _allowances: {
+        burnGenericToken: string;
+        burnChainType: number | BN | string;
+        burnChainId: number | BN | string;
+        mintGenericToken: string;
+        mintChainType: number | BN | string;
+        mintChainId: number | BN | string;
+      }[],
+      _status: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
 
   methods: {
     ROLE_ADMIN(txDetails?: Truffle.TransactionDetails): Promise<string>;
@@ -523,19 +581,26 @@ export interface CerbyBridgeV2Instance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
-    getAllowanceHashCurrent2Mint(
-      _allowance: {
-        burnGenericToken: string;
-        burnChainType: number | BN | string;
-        burnChainId: number | BN | string;
-        mintGenericToken: string;
-        mintChainType: number | BN | string;
-        mintChainId: number | BN | string;
+    computeBurnHash(
+      proof: {
+        burnProofHash: string;
+        burnGenericCaller: string;
+        burnNonce: number | BN | string;
+        mintGenericCaller: string;
+        mintAmount: number | BN | string;
+        allowance: {
+          burnGenericToken: string;
+          burnChainType: number | BN | string;
+          burnChainId: number | BN | string;
+          mintGenericToken: string;
+          mintChainType: number | BN | string;
+          mintChainId: number | BN | string;
+        };
       },
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
 
-    getAllowanceHashMint2Burn(
+    getAllowanceHash(
       _allowance: {
         burnGenericToken: string;
         burnChainType: number | BN | string;
@@ -763,22 +828,22 @@ export interface CerbyBridgeV2Instance extends Truffle.ContractInstance {
 
     setChainsToFee: {
       (
-        chainsTo: string[],
+        chainsHashes: string[],
         fee: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
-        chainsTo: string[],
+        chainsHashes: string[],
         fee: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
-        chainsTo: string[],
+        chainsHashes: string[],
         fee: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
-        chainsTo: string[],
+        chainsHashes: string[],
         fee: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
@@ -788,6 +853,57 @@ export interface CerbyBridgeV2Instance extends Truffle.ContractInstance {
       interfaceId: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<boolean>;
+
+    testSetAllowancesBulk: {
+      (
+        _allowances: {
+          burnGenericToken: string;
+          burnChainType: number | BN | string;
+          burnChainId: number | BN | string;
+          mintGenericToken: string;
+          mintChainType: number | BN | string;
+          mintChainId: number | BN | string;
+        }[],
+        _status: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        _allowances: {
+          burnGenericToken: string;
+          burnChainType: number | BN | string;
+          burnChainId: number | BN | string;
+          mintGenericToken: string;
+          mintChainType: number | BN | string;
+          mintChainId: number | BN | string;
+        }[],
+        _status: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _allowances: {
+          burnGenericToken: string;
+          burnChainType: number | BN | string;
+          burnChainId: number | BN | string;
+          mintGenericToken: string;
+          mintChainType: number | BN | string;
+          mintChainId: number | BN | string;
+        }[],
+        _status: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _allowances: {
+          burnGenericToken: string;
+          burnChainType: number | BN | string;
+          burnChainId: number | BN | string;
+          mintGenericToken: string;
+          mintChainType: number | BN | string;
+          mintChainId: number | BN | string;
+        }[],
+        _status: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
   };
 
   getPastEvents(event: string): Promise<EventData[]>;
