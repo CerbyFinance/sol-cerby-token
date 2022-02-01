@@ -172,7 +172,7 @@ contract("CerbyBridgeV2", () => {
       burnGenericCaller: evmGenericCaller,
       burnNonce: burnNonce,
       mintGenericCaller: evmGenericCaller,
-      mintAmount: new BN(1000),
+      mintAmount: new BN(1000000).toString(),
       allowance: evmAllowance
     };
     let evmBurnProofHash = await bridge.computeBurnHash(evmProof);
@@ -223,7 +223,7 @@ contract("CerbyBridgeV2", () => {
       burnGenericCaller: evmGenericCaller,
       burnNonce: burnNonce,
       mintGenericCaller: evmGenericCaller,
-      mintAmount: new BN(1000),
+      mintAmount: new BN(1000000).toString(),
       allowance: evmAllowance
     };
     let evmBurnProofHash = await bridge.computeBurnHash(evmProof);
