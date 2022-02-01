@@ -13,30 +13,29 @@ interface IMintableBurnableToken {
 
 contract CrossChainBridgeV2_Test is AccessControlEnumerable {
     event ProofOfBurn(
-        bytes srcToken,
-        bytes destToken,
-        bytes srcCaller,
-        bytes destCaller,
-        uint256 srcAmount,
-        uint256 srcNonce,
-        ChainType srcChainType,
-        uint32 srcChainId,
-        ChainType destChainType,
-        uint32 destChainId,
+        bytes mintToken,
+        bytes burnToken,
+        bytes mintCaller,
+        bytes burnCaller,
+        uint256 burnAmount,
+        uint256 burnNonce,
+        ChainType mintChainType,
+        uint32 mintChainId,
+        ChainType burnChainType,
+        uint32 burnChainId,
         bytes32 burnProofHash
     );
 
     event ProofOfMint(
-        bytes srcToken,
-        bytes destToken,
-        bytes srcCaller,
-        bytes destCaller,
-        uint256 destAmount,
-        // destNonce ?
-        ChainType srcChainType,
-        uint32 srcChainId,
-        ChainType destChainType,
-        uint32 destChainId,
+        bytes mintToken,
+        bytes burnToken,
+        bytes mintCaller,
+        bytes burnCaller,
+        uint256 burnAmount,
+        ChainType mintChainType,
+        uint32 mintChainId,
+        ChainType burnChainType,
+        uint32 burnChainId,
         bytes32 burnProofHash
     );
 
@@ -63,51 +62,62 @@ contract CrossChainBridgeV2_Test is AccessControlEnumerable {
         Blocked
     }
 
-    ChainType _srcChainType;
+    ChainType thisChainType;
 
     // it's common storage for all chains (evm, casper, solana etc)
     // also it can be splitted in two storages (src and dest)
     mapping(bytes32 => States) public burnProofStorage;
-    mapping(address => uint32) public srcNonceByToken;
+    mapping(address => uint32) public nonceByToken;
     mapping(bytes32 => Allowance) public allowances;
 
     constructor() {
-        _srcChainType = ChainType.Evm;
+        thisChainType = ChainType.Evm;
     }
 
     function setAllowance(
-        address srcToken,
-        bytes memory destToken,
-        ChainType destChainType,
-        uint32 destChainId
+        bytes memory mintGenericToken,
+        bytes memory burnGenericToken,
+        ChainType mintChainType,
+        uint32 mintChainId,
+        ChainType burnChainType,
+        uint32 burnChainId
     ) external {
         bytes32 allowanceHash = getAllowanceHash(
-            destChainType,
-            destChainId,
-            genericAddress(srcToken),
-            destToken
+            mintGenericToken,
+            burnGenericToken,
+            mintChainType,
+            mintChainId,
+            burnChainType,
+            burnChainId
         );
 
         allowances[allowanceHash] = Allowance.Allowed;
     }
 
     function getAllowanceHash(
-        ChainType destChainType,
-        uint32 destChainId,
-        bytes memory srcToken,
-        bytes memory destToken
+        bytes memory mintGenericToken,
+        bytes memory burnGenericToken,
+        ChainType mintChainType,
+        uint32 mintChainId,
+        ChainType burnChainType,
+        uint32 burnChainId
     ) private view returns (bytes32) {
-        return
-            sha256(
-                abi.encodePacked(
-                    uint8(_srcChainType),
-                    uint32(block.chainid),
-                    uint8(destChainType),
-                    destChainId,
-                    srcToken,
-                    destToken
-                )
-            );
+        bytes memory mintBytes = abi.encodePacked(
+            mintGenericToken,
+            mintChainType,
+            mintChainId
+        );
+        bytes memory burnBytes = abi.encodePacked(
+            burnGenericToken,
+            burnChainType,
+            burnChainId
+        );
+
+        if (sha256(mintBytes) > sha256(burnBytes)) {
+            return sha256(abi.encodePacked(mintBytes, burnBytes));
+        }
+
+        return sha256(abi.encodePacked(burnBytes, mintBytes));
     }
 
     // 40 bytes
@@ -129,27 +139,29 @@ contract CrossChainBridgeV2_Test is AccessControlEnumerable {
     }
 
     function mintWithBurnProof(
-        address _srcToken,
-        bytes memory destToken,
-        bytes memory destCaller,
-        uint8 destChainType,
-        uint32 destChainId,
-        bytes32 destBurnProofHash,
-        uint256 destAmount,
-        uint256 destNonce
+        address mintToken,
+        bytes memory burnGenericToken,
+        bytes memory burnGenericCaller,
+        uint8 burnChainType,
+        uint32 burnChainId,
+        uint256 burnAmount,
+        uint256 burnNonce,
+        bytes32 burnProofHash
     ) external {
-        require(destCaller.length == 40, "invalid caller length");
-        require(destToken.length == 40, "invalid token length");
+        require(burnGenericToken.length == 40, "invalid caller length");
+        require(burnGenericCaller.length == 40, "invalid token length");
 
-        bytes memory srcCaller = genericAddress(msg.sender);
-        bytes memory srcToken = genericAddress(_srcToken);
+        bytes memory mintGenericCaller = genericAddress(msg.sender);
+        bytes memory mintGenericToken = genericAddress(mintToken);
 
         {
             bytes32 allowanceHash = getAllowanceHash(
-                ChainType(destChainType),
-                destChainId,
-                srcToken,
-                destToken
+                mintGenericToken,
+                burnGenericToken,
+                thisChainType,
+                uint32(block.chainid),
+                ChainType(burnChainType),
+                burnChainId
             );
 
             require(
@@ -159,79 +171,77 @@ contract CrossChainBridgeV2_Test is AccessControlEnumerable {
         }
 
         require(
-            burnProofStorage[destBurnProofHash] == States.Approved,
+            burnProofStorage[burnProofHash] == States.Approved,
             "CCB: Proof is not approved or already executed"
         );
 
+        // prettier-ignore
         bytes memory packed = abi.encodePacked(
-            srcToken,
-            destToken,
-            srcCaller,
-            destCaller,
-            destAmount,
-            uint8(_srcChainType),
-            uint32(block.chainid), // srcChainType, srcChainId
-            destChainType,
-            destChainId,
-            destNonce
+            mintGenericCaller, burnGenericCaller,
+            mintGenericToken, burnGenericToken,
+            burnAmount,
+            uint8(thisChainType), uint32(block.chainid),
+            burnChainType, burnChainId,
+            burnNonce
         );
 
         require(
-            packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32,
+            packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 4 + 1 + 4 + 32,
             "package is invalid"
         );
 
         bytes32 computedBurnProofHash = sha256(packed);
 
         require(
-            computedBurnProofHash == destBurnProofHash,
+            computedBurnProofHash == burnProofHash,
             "CCB: Provided hash is invalid"
         );
 
-        burnProofStorage[destBurnProofHash] = States.Executed;
+        burnProofStorage[burnProofHash] = States.Executed;
 
-        IMintableBurnableToken(_srcToken).mintByBridge(msg.sender, destAmount);
+        IMintableBurnableToken(mintToken).mintByBridge(msg.sender, burnAmount);
 
         {
-            ChainType _destChainType = ChainType(destChainType);
-            uint32 _destChainId = destChainId;
+            ChainType _burnChainType = ChainType(burnChainType);
+            uint32 _burnChainId = burnChainId;
             emit ProofOfMint(
-                srcToken,
-                destToken,
-                srcCaller,
-                destCaller,
-                destAmount,
-                // destNonce ?
-                _srcChainType,
+                mintGenericToken,
+                burnGenericToken,
+                mintGenericCaller,
+                burnGenericCaller,
+                burnAmount,
+                thisChainType,
                 uint32(block.chainid),
-                _destChainType,
-                _destChainId,
+                _burnChainType,
+                _burnChainId,
                 computedBurnProofHash
             );
         }
     }
 
     function burnAndCreateProof(
-        address _srcToken,
-        bytes memory destToken,
-        bytes memory destCaller,
-        uint256 srcAmount,
-        uint8 destChainType,
-        uint32 destChainId
+        address burnToken,
+        bytes memory mintGenericToken,
+        bytes memory mintGenericCaller,
+        uint256 burnAmount,
+        uint8 mintChainType,
+        uint32 mintChainId
     ) external {
-        require(destCaller.length == 40, "invalid caller length");
-        require(destToken.length == 40, "invalid token length");
+        require(mintGenericCaller.length == 40, "invalid caller length");
+        require(mintGenericToken.length == 40, "invalid token length");
 
-        bytes memory srcCaller = genericAddress(msg.sender);
-        bytes memory srcToken = genericAddress(_srcToken);
+        bytes memory burnGenericCaller = genericAddress(msg.sender);
+        bytes memory burnGenericToken = genericAddress(burnToken);
 
         // stack to deep fix
         {
             bytes32 allowanceHash = getAllowanceHash(
-                ChainType(destChainType),
-                destChainId,
-                srcToken,
-                destToken
+                mintGenericToken,
+                burnGenericToken,
+                ChainType(mintChainType),
+                mintChainId,
+                ChainType(thisChainType),
+                uint32(block.chainid)
             );
 
             require(
@@ -241,28 +251,25 @@ contract CrossChainBridgeV2_Test is AccessControlEnumerable {
         }
 
         require(
-            srcAmount <=
-                IMintableBurnableToken(_srcToken).balanceOf(msg.sender),
+            burnAmount <=
+                IMintableBurnableToken(burnToken).balanceOf(msg.sender),
             "CCB: Amount must not exceed available balance. Try reducing the amount."
         );
 
-        uint256 srcNonce = srcNonceByToken[_srcToken];
+        uint256 burnNonce = nonceByToken[burnToken];
 
+        // prettier-ignore
         bytes memory packed = abi.encodePacked(
-            srcToken,
-            destToken,
-            srcCaller,
-            destCaller,
-            srcAmount,
-            uint8(_srcChainType),
-            uint32(block.chainid), // srcChainType, srcChainId
-            destChainType,
-            destChainId,
-            srcNonce
+            mintGenericCaller, burnGenericCaller,
+            mintGenericToken, burnGenericToken,
+            burnAmount,
+            mintChainType, mintChainId,
+            uint8(thisChainType), uint32(block.chainid),
+            burnNonce
         );
 
         require(
-            packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 2 + 1 + 2 + 32,
+            packed.length == 40 + 40 + 40 + 40 + 32 + 1 + 4 + 1 + 4 + 32,
             "package is invalid"
         );
 
@@ -270,23 +277,23 @@ contract CrossChainBridgeV2_Test is AccessControlEnumerable {
 
         burnProofStorage[computedBurnProofHash] = States.Burned;
 
-        IMintableBurnableToken(_srcToken).burnByBridge(msg.sender, srcAmount);
+        IMintableBurnableToken(burnToken).burnByBridge(msg.sender, burnAmount);
 
         emit ProofOfBurn(
-            srcToken,
-            destToken,
-            srcCaller,
-            destCaller,
-            srcAmount,
-            srcNonce,
-            _srcChainType,
+            mintGenericToken,
+            burnGenericToken,
+            mintGenericCaller,
+            burnGenericToken,
+            burnAmount,
+            burnNonce,
+            ChainType(mintChainType),
+            mintChainId,
+            thisChainType,
             uint32(block.chainid),
-            ChainType(destChainType),
-            destChainId,
             computedBurnProofHash
         );
 
-        srcNonceByToken[_srcToken]++;
+        nonceByToken[burnToken]++;
 
         // return computedBurnProofHash;
     }
