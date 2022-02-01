@@ -445,6 +445,108 @@
 						"type": "tuple"
 					}
 				],
+				"name": "getAllowanceHash1",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bytes",
+								"name": "burnGenericToken",
+								"type": "bytes"
+							},
+							{
+								"internalType": "uint8",
+								"name": "burnChainType",
+								"type": "uint8"
+							},
+							{
+								"internalType": "uint32",
+								"name": "burnChainId",
+								"type": "uint32"
+							},
+							{
+								"internalType": "bytes",
+								"name": "mintGenericToken",
+								"type": "bytes"
+							},
+							{
+								"internalType": "uint8",
+								"name": "mintChainType",
+								"type": "uint8"
+							},
+							{
+								"internalType": "uint32",
+								"name": "mintChainId",
+								"type": "uint32"
+							}
+						],
+						"internalType": "struct CerbyBridgeV2.Allowance",
+						"name": "_allowance",
+						"type": "tuple"
+					}
+				],
+				"name": "getAllowanceHash2",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bytes",
+								"name": "burnGenericToken",
+								"type": "bytes"
+							},
+							{
+								"internalType": "uint8",
+								"name": "burnChainType",
+								"type": "uint8"
+							},
+							{
+								"internalType": "uint32",
+								"name": "burnChainId",
+								"type": "uint32"
+							},
+							{
+								"internalType": "bytes",
+								"name": "mintGenericToken",
+								"type": "bytes"
+							},
+							{
+								"internalType": "uint8",
+								"name": "mintChainType",
+								"type": "uint8"
+							},
+							{
+								"internalType": "uint32",
+								"name": "mintChainId",
+								"type": "uint32"
+							}
+						],
+						"internalType": "struct CerbyBridgeV2.Allowance",
+						"name": "_allowance",
+						"type": "tuple"
+					}
+				],
 				"name": "getAllowanceHashMint2Burn",
 				"outputs": [
 					{
@@ -779,6 +881,19 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "isFirst",
+						"type": "bool"
+					}
+				],
+				"name": "test",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -834,11 +949,11 @@
 	},
 	"sources": {
 		"sol-defifactory-token/CerbyBridgeV2.sol": {
-			"keccak256": "0xa45d7435929beebc5ef9d91c1f25815a7ab906ce73e1d8c89f9443fb2c8103af",
+			"keccak256": "0xee021c70e5c20a52564f3bf26b88784266a9b4e1a5090d5d478bef166b91d2de",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://f951ea2eb17cb0ef53357670dbb8a18d49bdf7be70d6ae46b9d003e1a1343e3b",
-				"dweb:/ipfs/QmYZ4oZc78Q5hh8mgKfN54R87WKkR4LGbpKj4cwLka8oJ5"
+				"bzz-raw://d68e283055cc49a4498cadbd164dd646d97020bd776065b22d982b655fd61bd7",
+				"dweb:/ipfs/QmerS6L7DDpEezwzvawo7MT7PEafnGwW5oA18wPxBYVx8g"
 			]
 		},
 		"sol-defifactory-token/interfaces/ICerbySwapV1.sol": {

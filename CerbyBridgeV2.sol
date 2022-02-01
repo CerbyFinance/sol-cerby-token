@@ -24,10 +24,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         uint32 mintChainId;
     }
 
-    event ProofOfBurnOrMint(
-        bool isBurn, // поменял порядок
-        Proof proof
-    );
+    event ProofOfBurnOrMint(bool isBurn, Proof proof);
 
     event ApprovedBurnProofHash(bytes32 burnProofHash);
 
@@ -137,10 +134,10 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         return mintAmount - substractAmountInTokens;
     }
 
-    function setAllowancesBulk(Allowance[] memory _allowances, AllowanceStatus _status)
-        external
-        onlyRole(ROLE_ADMIN)
-    {
+    function setAllowancesBulk(
+        Allowance[] memory _allowances,
+        AllowanceStatus _status
+    ) external onlyRole(ROLE_ADMIN) {
         uint256 allowancesLength = _allowances.length;
 
         for (uint256 i; i < allowancesLength; i++) {
@@ -151,7 +148,9 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
                 continue;
             }
 
-            bytes32 allowanceHash = getAllowanceHashCurrent2Mint(_allowances[i]);
+            _allowances[i].burnChainType = _currentBridgeChainType;
+            _allowances[i].burnChainId = _currentBridgeChainId;
+            bytes32 allowanceHash = getAllowanceHash(_allowances[i]);
 
             if (allowances[allowanceHash] != _status) {
                 allowances[allowanceHash] = _status;
@@ -159,33 +158,37 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         }
     }
 
-    function getAllowanceHashCurrent2Mint(Allowance memory _allowance)
-        private
-        view
+    function getAllowanceHash(Allowance memory _allowance)
+        public
+        pure
         returns (bytes32)
     {
+        if (
+            sha256(_allowance.burnGenericToken) >
+            sha256(_allowance.mintGenericToken)
+        ) {
+            (_allowance.burnGenericToken, _allowance.mintGenericToken) = (
+                _allowance.mintGenericToken,
+                _allowance.burnGenericToken
+            );
+        }
+        if (_allowance.burnChainType > _allowance.mintChainType) {
+            (_allowance.burnChainType, _allowance.mintChainType) = (
+                _allowance.mintChainType,
+                _allowance.burnChainType
+            );
+        }
+        if (_allowance.burnChainId > _allowance.mintChainId) {
+            (_allowance.burnChainId, _allowance.mintChainId) = (
+                _allowance.mintChainId,
+                _allowance.burnChainId
+            );
+        }
+
         return
             sha256(
                 abi.encodePacked(
                     _allowance.burnGenericToken,
-                    _currentBridgeChainType,
-                    _currentBridgeChainId,
-                    _allowance.mintGenericToken,
-                    _allowance.mintChainType,
-                    _allowance.mintChainId
-                )
-            );
-    }
-
-    function getAllowanceHashBurn2Mint(Allowance memory _allowance)
-        private
-        pure
-        returns (bytes32)
-    {
-        return
-            sha256(
-                abi.encodePacked(
-                    _allowance.burnGenericToken, // поменял порядок
                     _allowance.burnChainType,
                     _allowance.burnChainId,
                     _allowance.mintGenericToken,
@@ -195,34 +198,8 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
             );
     }
 
-    function getAllowanceHashMint2Burn(Allowance memory _allowance)
-        public
-        pure
-        returns (bytes32)
-    {
-        return
-            sha256(
-                abi.encodePacked(
-                    _allowance.mintGenericToken,
-                    _allowance.mintChainType,
-                    _allowance.mintChainId,
-                    _allowance.burnGenericToken,
-                    _allowance.burnChainType,
-                    _allowance.burnChainId
-                )
-            );
-    }
-
-    function checkAllowanceHashBurn2Mint(Allowance memory _allowance) private view {
-        bytes32 allowanceHash = getAllowanceHashBurn2Mint(_allowance);
-
-        if (allowances[allowanceHash] != AllowanceStatus.Allowed) {
-            revert CerbyBridgeV2_DirectionAllowanceWasNotFound();
-        }
-    }
-
-    function checkAllowanceHashMint2Burn(Allowance memory _allowance) private view {
-        bytes32 allowanceHash = getAllowanceHashMint2Burn(_allowance);
+    function checkAllowanceHash(Allowance memory _allowance) private view {
+        bytes32 allowanceHash = getAllowanceHash(_allowance);
 
         if (allowances[allowanceHash] != AllowanceStatus.Allowed) {
             revert CerbyBridgeV2_DirectionAllowanceWasNotFound();
@@ -259,7 +236,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     }
 
     function burnAndCreateProof(
-        uint256 burnAmount, // поменял порядок
+        uint256 burnAmount,
         address burnToken,
         bytes memory mintGenericToken,
         bytes memory mintGenericCaller,
@@ -307,7 +284,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         }
 
         // checking burn --> mint allowance
-        checkAllowanceHashBurn2Mint(allowance);
+        checkAllowanceHash(allowance);
 
         // generating burn burn hash
         proof.burnProofHash = computeBurnHash(proof);
@@ -334,7 +311,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
     }
 
     function mintWithBurnProof(
-        bytes memory burnGenericToken, // поменял порядок
+        bytes memory burnGenericToken,
         bytes memory burnGenericCaller,
         uint8 burnChainType,
         uint32 burnChainId,
@@ -380,7 +357,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
 
         // checking opposite direction allowance
         // if current chain (mint) --> burn allowed then burn --> current chain (mint) is allowed as well
-        checkAllowanceHashMint2Burn(allowance);
+        checkAllowanceHash(allowance);
 
         if (burnProofStorage[burnProofHash] != States.Approved) {
             revert CerbyBridgeV2_ProofIsNotApprovedOrAlreadyExecuted();
@@ -429,13 +406,13 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         return sha256(abi.encodePacked(chainType, chainId));
     }
 
-    function setChainsToFee(bytes32[] calldata chainsTo, uint256 fee)
+    function setChainsToFee(bytes32[] calldata chainsHashes, uint256 fee)
         public
         onlyRole(ROLE_ADMIN)
     {
-        uint256 chainsToLength = chainsTo.length;
+        uint256 chainsToLength = chainsHashes.length;
         for (uint256 i; i < chainsToLength; i++) {
-            chainToFee[chainsTo[i]] = fee;
+            chainToFee[chainsHashes[i]] = fee;
         }
     }
 }

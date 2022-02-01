@@ -249,7 +249,9 @@ contract PresaleBSC is AccessControlEnumerable {
     function balancePairPrice(
         uint256 normedDeftPriceInUSD,
         uint256 PRICE_DENORM
-    ) public onlyRole(ROLE_ADMIN) /*view
+    )
+        public
+        onlyRole(ROLE_ADMIN) /*view
         returns(uint,uint,uint,uint)*/
     {
         //uint normedDeftPriceInUSD = 1e12; uint PRICE_DENORM = 1e18;

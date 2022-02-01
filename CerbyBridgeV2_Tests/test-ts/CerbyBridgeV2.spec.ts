@@ -51,13 +51,11 @@ contract("CerbyBridgeV2", () => {
     const evmCerCsprGenericToken = "0x" + _20bytes + evmCerCsprToken.substring(2);
     const evmCerEthGenericToken = "0x" + _20bytes + evmCerEthToken.substring(2);
     const evmCerUsdcGenericToken = "0x" + _20bytes + evmCerUsdcToken.substring(2);
-    console.log(evmCerCsprGenericToken);
 
     const _8bytes = "0000000000000000";
     const casperCerCsprGenericToken = "0x" + _8bytes + casperCerCsprToken.substring(2);
     const casperCerEthGenericToken = "0x" + _8bytes + casperCerEthToken.substring(2);
     const casperCerUsdcGenericToken = "0x" + _8bytes + casperCerUsdcToken.substring(2);
-    console.log(casperCerUsdcGenericToken);
 
     const casperChainId = 1010;
     const evmChainIdFrom = 123;
