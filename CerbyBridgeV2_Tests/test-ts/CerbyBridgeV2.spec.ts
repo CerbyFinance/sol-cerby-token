@@ -8,6 +8,7 @@ const CerbyBridgeV2 = artifacts.require("CerbyBridgeV2");
 const TestNamedToken = artifacts.require("TestNamedToken");
 
 const now = () => Math.floor(+new Date() / 1000);
+const bn1e18 = new BN((1e18).toString());
 
 let evmCerCsprToken = "0xfF06B30A102A80d3d3C82C091317D1e82Bb4aCF5";
 let evmCerEthToken = "0xB58FcB5D931AC11919462c3A7A812aFdb4c89D28";
@@ -166,13 +167,14 @@ contract("CerbyBridgeV2", () => {
       mintChainType: evmChainType,
       mintChainId: evmChainIdTo
     };
+    let mintAmount = new BN(1000).mul(bn1e18).toString();
     let burnNonce = await bridge.burnNonceByToken(evmCerCsprToken);
     let evmProof = {
       burnProofHash: nullBurnProofHash,
       burnGenericCaller: evmGenericCaller,
       burnNonce: burnNonce,
       mintGenericCaller: evmGenericCaller,
-      mintAmount: new BN(1000000).toString(),
+      mintAmount: mintAmount,
       allowance: evmAllowance
     };
     let evmBurnProofHash = await bridge.computeBurnHash(evmProof);
@@ -207,7 +209,7 @@ contract("CerbyBridgeV2", () => {
     const evmChainIdTo = (await web3.eth.getChainId()).toString();
     const evmChainType = 1;
 
-    // checking cerCSPR approval set
+    // minting cerCSPR
     const hashBurned = 2;
     let evmAllowance = {
       burnGenericToken: evmCerCsprGenericToken,
@@ -217,13 +219,14 @@ contract("CerbyBridgeV2", () => {
       mintChainType: evmChainType,
       mintChainId: evmChainIdTo
     };
+    let mintAmount = new BN(1000).mul(bn1e18).toString();
     let burnNonce = await bridge.burnNonceByToken(evmCerCsprToken);
     let evmProof = {
       burnProofHash: nullBurnProofHash,
       burnGenericCaller: evmGenericCaller,
       burnNonce: burnNonce,
       mintGenericCaller: evmGenericCaller,
-      mintAmount: new BN(1000000).toString(),
+      mintAmount: mintAmount,
       allowance: evmAllowance
     };
     let evmBurnProofHash = await bridge.computeBurnHash(evmProof);
