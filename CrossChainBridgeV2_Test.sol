@@ -283,7 +283,7 @@ contract CrossChainBridgeV2_Test is AccessControlEnumerable {
             mintGenericToken,
             burnGenericToken,
             mintGenericCaller,
-            burnGenericToken,
+            burnGenericCaller,
             burnAmount,
             burnNonce,
             ChainType(mintChainType),
