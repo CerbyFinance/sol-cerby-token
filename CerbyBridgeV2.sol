@@ -299,7 +299,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         // EVM --> EVM bridge is allowed only for the same wallet
         if (
             _currentBridgeChainType == mintChainType &&
-            sha256(proof.burnGenericCaller) == sha256(mintGenericCaller)
+            sha256(proof.burnGenericCaller) != sha256(mintGenericCaller)
         ) {
             revert("E");
             revert CerbyBridgeV2_TokenAndCallerMustBeEqualForEvmBridging();
@@ -372,7 +372,7 @@ contract CerbyBridgeV2 is AccessControlEnumerable {
         // EVM --> EVM bridge is allowed only for the same wallet
         if (
             burnChainType == _currentBridgeChainType &&
-            sha256(burnGenericCaller) == sha256(proof.mintGenericCaller)
+            sha256(burnGenericCaller) != sha256(proof.mintGenericCaller)
         ) {
             revert("A");
             revert CerbyBridgeV2_TokenAndCallerMustBeEqualForEvmBridging();
