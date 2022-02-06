@@ -39,7 +39,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
     address constant STAKING_CONTRACT =
         address(0x8888888AC6aa2482265e5346832CDd963c70A0D1);
     address constant BURN_ADDRESS = address(0x0);
-    uint256 constant DEFAULT_SELL_COOLDOWN = 0 seconds;
+    uint256 constant DEFAULT_SELL_COOLDOWN = 30 seconds;
 
     uint256 constant ETH_MAINNET_CHAIN_ID = 1;
     uint256 constant BSC_MAINNET_CHAIN_ID = 56;

@@ -4,8 +4,8 @@ https://software.valar-solutions.com/Hosting/screenshots/2022-01-17_14-26-18.png
 2) tokenOut.balanceOf(msg.sender)
 3) tokenOut per tokenIn (afterSwapPrice)
 afterSwapPrice = amountTokensOut / amountTokensIn
-считаем currentPrice = getOutputExactTokensForTokens(tokenIn, tokenOut, 1e4) / 1e4
-где 1e4 в wei
+считаем currentPrice = getOutputExactTokensForTokens(tokenIn, tokenOut, 1e9) / 1e9
+где 1e9 в wei
 priceImpactPercent = Math.abs(currentPrice - afterSwapPrice) / currentPrice
 path - путь который снизу выводится для юзера для инфы
 - tokenIn --> cerUsd (tokenIn != cerUsd, tokenOut == cerUsd)

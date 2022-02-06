@@ -1,945 +1,945 @@
 {
-  "compiler": {
-    "version": "0.8.11+commit.d7f03943"
-  },
-  "language": "Solidity",
-  "output": {
-    "abi": [
-      {
-        "inputs": [],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          }
-        ],
-        "name": "AccountIsMissingRole",
-        "type": "error"
-      },
-      {
-        "inputs": [],
-        "name": "CanOnlyRenounceRoleForSelf",
-        "type": "error"
-      },
-      {
-        "inputs": [],
-        "name": "CerbyBotDetection_TransfersAreTemporarilyDisabled",
-        "type": "error"
-      },
-      {
-        "anonymous": false,
-        "inputs": [
-          {
-            "indexed": true,
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "indexed": true,
-            "internalType": "bytes32",
-            "name": "previousAdminRole",
-            "type": "bytes32"
-          },
-          {
-            "indexed": true,
-            "internalType": "bytes32",
-            "name": "newAdminRole",
-            "type": "bytes32"
-          }
-        ],
-        "name": "RoleAdminChanged",
-        "type": "event"
-      },
-      {
-        "anonymous": false,
-        "inputs": [
-          {
-            "indexed": true,
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "indexed": true,
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          },
-          {
-            "indexed": true,
-            "internalType": "address",
-            "name": "sender",
-            "type": "address"
-          }
-        ],
-        "name": "RoleGranted",
-        "type": "event"
-      },
-      {
-        "anonymous": false,
-        "inputs": [
-          {
-            "indexed": true,
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "indexed": true,
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          },
-          {
-            "indexed": true,
-            "internalType": "address",
-            "name": "sender",
-            "type": "address"
-          }
-        ],
-        "name": "RoleRevoked",
-        "type": "event"
-      },
-      {
-        "inputs": [],
-        "name": "ROLE_ADMIN",
-        "outputs": [
-          {
-            "internalType": "bytes32",
-            "name": "",
-            "type": "bytes32"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address[]",
-            "name": "addrs",
-            "type": "address[]"
-          }
-        ],
-        "name": "bulkMarkAddressAsBot",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address[]",
-            "name": "addrs",
-            "type": "address[]"
-          },
-          {
-            "internalType": "bool",
-            "name": "value",
-            "type": "bool"
-          }
-        ],
-        "name": "bulkMarkAddressAsBotBool",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address[]",
-            "name": "addrs",
-            "type": "address[]"
-          },
-          {
-            "internalType": "bool",
-            "name": "value",
-            "type": "bool"
-          }
-        ],
-        "name": "bulkMarkAddressAsHuman",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address[]",
-            "name": "addrs",
-            "type": "address[]"
-          },
-          {
-            "internalType": "uint256",
-            "name": "value",
-            "type": "uint256"
-          }
-        ],
-        "name": "bulkMarkAsUniswapPair",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "tokenAddr",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "sender",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "recipient",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "recipientBalance",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "transferAmount",
-            "type": "uint256"
-          }
-        ],
-        "name": "checkTransactionInfo",
-        "outputs": [
-          {
-            "components": [
-              {
-                "internalType": "bool",
-                "name": "isBuy",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "isSell",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct TransactionInfo",
-            "name": "output",
-            "type": "tuple"
-          }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "name": "cronJobs",
-        "outputs": [
-          {
-            "internalType": "address",
-            "name": "targetContract",
-            "type": "address"
-          },
-          {
-            "internalType": "bytes4",
-            "name": "signature",
-            "type": "bytes4"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "tokenAddr",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "detectBotTransaction",
-        "outputs": [
-          {
-            "internalType": "bool",
-            "name": "",
-            "type": "bool"
-          }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [],
-        "name": "executeCronJobs",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "tokenAddr",
-            "type": "address"
-          }
-        ],
-        "name": "getCooldownPeriodSell",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [],
-        "name": "getCronJobsLength",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "tokenAddr",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "getReceiveTimestamp",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          }
-        ],
-        "name": "getRoleAdmin",
-        "outputs": [
-          {
-            "internalType": "bytes32",
-            "name": "",
-            "type": "bytes32"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "uint256",
-            "name": "index",
-            "type": "uint256"
-          }
-        ],
-        "name": "getRoleMember",
-        "outputs": [
-          {
-            "internalType": "address",
-            "name": "",
-            "type": "address"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          }
-        ],
-        "name": "getRoleMemberCount",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "components": [
-              {
-                "internalType": "bytes32",
-                "name": "role",
-                "type": "bytes32"
-              },
-              {
-                "internalType": "address",
-                "name": "addr",
-                "type": "address"
-              }
-            ],
-            "internalType": "struct RoleAccess[]",
-            "name": "roles",
-            "type": "tuple[]"
-          }
-        ],
-        "name": "grantRolesBulk",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "hasRole",
-        "outputs": [
-          {
-            "internalType": "bool",
-            "name": "",
-            "type": "bool"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "isBotAddress",
-        "outputs": [
-          {
-            "internalType": "bool",
-            "name": "",
-            "type": "bool"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "isContract",
-        "outputs": [
-          {
-            "internalType": "bool",
-            "name": "",
-            "type": "bool"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "isMarkedAsBotStorage",
-        "outputs": [
-          {
-            "internalType": "bool",
-            "name": "",
-            "type": "bool"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address[]",
-            "name": "addrs",
-            "type": "address[]"
-          }
-        ],
-        "name": "isMarkedAsBotStorageBulk",
-        "outputs": [
-          {
-            "internalType": "address[]",
-            "name": "",
-            "type": "address[]"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "isMarkedAsHumanStorage",
-        "outputs": [
-          {
-            "internalType": "bool",
-            "name": "",
-            "type": "bool"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address[]",
-            "name": "addrs",
-            "type": "address[]"
-          }
-        ],
-        "name": "isMarkedAsHumanStorageBulk",
-        "outputs": [
-          {
-            "internalType": "address[]",
-            "name": "",
-            "type": "address[]"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "isUniswapPair",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "markAddressAsBot",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "addr",
-            "type": "address"
-          },
-          {
-            "internalType": "bool",
-            "name": "value",
-            "type": "bool"
-          }
-        ],
-        "name": "markAddressAsHuman",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "markAddressAsNotBot",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "addr",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "value",
-            "type": "uint256"
-          }
-        ],
-        "name": "markAsUniswapPair",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "targetContract",
-            "type": "address"
-          },
-          {
-            "internalType": "string",
-            "name": "abiCall",
-            "type": "string"
-          }
-        ],
-        "name": "registerJob",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "tokenAddr",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "registerTransaction",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "targetContract",
-            "type": "address"
-          }
-        ],
-        "name": "removeJobs",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "renounceRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "revokeRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "bytes4",
-            "name": "interfaceId",
-            "type": "bytes4"
-          }
-        ],
-        "name": "supportsInterface",
-        "outputs": [
-          {
-            "internalType": "bool",
-            "name": "",
-            "type": "bool"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "tokenAddr",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "newCooldownSellPeriod",
-            "type": "uint256"
-          }
-        ],
-        "name": "updateCooldownPeriodSell",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      }
-    ],
-    "devdoc": {
-      "kind": "dev",
-      "methods": {
-        "getRoleAdmin(bytes32)": {
-          "details": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}."
-        },
-        "getRoleMember(bytes32,uint256)": {
-          "details": "Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information."
-        },
-        "getRoleMemberCount(bytes32)": {
-          "details": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role."
-        },
-        "grantRole(bytes32,address)": {
-          "details": "Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role."
-        },
-        "hasRole(bytes32,address)": {
-          "details": "Returns `true` if `account` has been granted `role`."
-        },
-        "renounceRole(bytes32,address)": {
-          "details": "Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been revoked `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`."
-        },
-        "revokeRole(bytes32,address)": {
-          "details": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role."
-        },
-        "supportsInterface(bytes4)": {
-          "details": "See {IERC165-supportsInterface}."
-        }
-      },
-      "version": 1
-    },
-    "userdoc": {
-      "kind": "user",
-      "methods": {},
-      "version": 1
-    }
-  },
-  "settings": {
-    "compilationTarget": {
-      "sol-defifactory-token/CerbyBotDetection.sol": "CerbyBotDetection"
-    },
-    "evmVersion": "london",
-    "libraries": {},
-    "metadata": {
-      "bytecodeHash": "ipfs"
-    },
-    "optimizer": {
-      "enabled": false,
-      "runs": 200
-    },
-    "remappings": []
-  },
-  "sources": {
-    "sol-defifactory-token/CerbyBotDetection.sol": {
-      "keccak256": "0xac4b1bbd4f74b125454c1fb62302d002c7106fed6328843d9aecfdf61ea408df",
-      "license": "BUSL-1.1",
-      "urls": [
-        "bzz-raw://d43618224b61750b550f8cf43246d5fb7f6614f40e59d59ff7c7ad2831b71153",
-        "dweb:/ipfs/QmV7JVHy6j6QMpuy4hagqxniR8RRjAmKLq2nGnzeJzW74q"
-      ]
-    },
-    "sol-defifactory-token/interfaces/IERC20.sol": {
-      "keccak256": "0xa019774b5fa41b9bb839ad7bc75bd3ded2ae58bce9f2d83e7dd307fa943e5bab",
-      "license": "MIT",
-      "urls": [
-        "bzz-raw://37b1999e95af73767b49405c9c669b97f952c227197dfd17836326f11654c66d",
-        "dweb:/ipfs/QmaHk8vnZY9ZaWAVWCufr8UN4Fw1Kr2MX44czPyxCGFPWh"
-      ]
-    },
-    "sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
-      "keccak256": "0x3793fd2148a8ba3d983b8bfde834a061e27558b04383cc2fe44a5937965323a3",
-      "license": "MIT",
-      "urls": [
-        "bzz-raw://2d1ffef4a176abb59234ea8c6d98f165cfa9b3f9dd13cf74151a2b3aa7e63c65",
-        "dweb:/ipfs/QmZiM4bGZXC51JFqWPPAujyHTYKxUFccyQtyZkBahdnrDu"
-      ]
-    },
-    "sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {
-      "keccak256": "0x93f84d056eaa14bd53e5dfa45f5eee2c5edd655b605db83b3cab4f210e45a8fa",
-      "license": "MIT",
-      "urls": [
-        "bzz-raw://36e86559fa39fbaba3f48eb8e7483e9607a60908d42c28538da7a37247500f86",
-        "dweb:/ipfs/QmSTgL2JxiQGUSkiQkaUMZ3LM5pJf3JRXHA8tHFjHF436r"
-      ]
-    },
-    "sol-defifactory-token/openzeppelin/access/IAccessControl.sol": {
-      "keccak256": "0x59ce320a585d7e1f163cd70390a0ef2ff9cec832e2aa544293a00692465a7a57",
-      "license": "MIT",
-      "urls": [
-        "bzz-raw://bb2c137c343ef0c4c7ce7b18c1d108afdc9d315a04e48307288d2d05adcbde3a",
-        "dweb:/ipfs/QmUxhrAQM3MM3FF5j7AtcXLXguWCJBHJ14BRdVtuoQc8Fh"
-      ]
-    },
-    "sol-defifactory-token/openzeppelin/access/IAccessControlEnumerable.sol": {
-      "keccak256": "0xba4459ab871dfa300f5212c6c30178b63898c03533a1ede28436f11546626676",
-      "license": "MIT",
-      "urls": [
-        "bzz-raw://3dcc7b09bfa6e18aab262ca372f4a9b1fc82e294b430706a4e1378cf58e6a276",
-        "dweb:/ipfs/QmT8oSAcesdctR15HMLhr2a1HRpXymxdjTfdtfTYJcj2N2"
-      ]
-    },
-    "sol-defifactory-token/openzeppelin/utils/Context.sol": {
-      "keccak256": "0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7",
-      "license": "MIT",
-      "urls": [
-        "bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92",
-        "dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3"
-      ]
-    },
-    "sol-defifactory-token/openzeppelin/utils/Strings.sol": {
-      "keccak256": "0x32c202bd28995dd20c4347b7c6467a6d3241c74c8ad3edcbb610cd9205916c45",
-      "license": "MIT",
-      "urls": [
-        "bzz-raw://8179c356adb19e70d6b31a1eedc8c5c7f0c00e669e2540f4099e3844c6074d30",
-        "dweb:/ipfs/QmWFbivarEobbqhS1go64ootVuHfVohBseerYy9FTEd1W2"
-      ]
-    },
-    "sol-defifactory-token/openzeppelin/utils/introspection/ERC165.sol": {
-      "keccak256": "0xd10975de010d89fd1c78dc5e8a9a7e7f496198085c151648f20cba166b32582b",
-      "license": "MIT",
-      "urls": [
-        "bzz-raw://fb0048dee081f6fffa5f74afc3fb328483c2a30504e94a0ddd2a5114d731ec4d",
-        "dweb:/ipfs/QmZptt1nmYoA5SgjwnSgWqgUSDgm4q52Yos3xhnMv3MV43"
-      ]
-    },
-    "sol-defifactory-token/openzeppelin/utils/introspection/IERC165.sol": {
-      "keccak256": "0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1",
-      "license": "MIT",
-      "urls": [
-        "bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f",
-        "dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
-      ]
-    },
-    "sol-defifactory-token/openzeppelin/utils/structs/EnumerableSet.sol": {
-      "keccak256": "0x9772845c886f87a3aab315f8d6b68aa599027c20f441b131cd4afaf65b588900",
-      "license": "MIT",
-      "urls": [
-        "bzz-raw://ad2f29a9c17a4f746416c9e254e17671f43c409dbfa6e4d7d76c3e4a83212d31",
-        "dweb:/ipfs/QmTqU65L6iu6yqmXKzcNLPioR8etzKPWycpDJCm17ifVdS"
-      ]
-    }
-  },
-  "version": 1
+	"compiler": {
+		"version": "0.8.11+commit.d7f03943"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					}
+				],
+				"name": "AccountIsMissingRole",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CanOnlyRenounceRoleForSelf",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "CerbyBotDetection_TransfersAreTemporarilyDisabled",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "previousAdminRole",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "newAdminRole",
+						"type": "bytes32"
+					}
+				],
+				"name": "RoleAdminChanged",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					}
+				],
+				"name": "RoleGranted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					}
+				],
+				"name": "RoleRevoked",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "ROLE_ADMIN",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					}
+				],
+				"name": "bulkMarkAddressAsBot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					},
+					{
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "bulkMarkAddressAsBotBool",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					},
+					{
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "bulkMarkAddressAsHuman",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "bulkMarkAsUniswapPair",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "recipientBalance",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "transferAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "checkTransactionInfo",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "bool",
+								"name": "isBuy",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "isSell",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct TransactionInfo",
+						"name": "output",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "cronJobs",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "targetContract",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes4",
+						"name": "signature",
+						"type": "bytes4"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "detectBotTransaction",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "executeCronJobs",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					}
+				],
+				"name": "getCooldownPeriodSell",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getCronJobsLength",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getReceiveTimestamp",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					}
+				],
+				"name": "getRoleAdmin",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					}
+				],
+				"name": "getRoleMember",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					}
+				],
+				"name": "getRoleMemberCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "grantRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "role",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "address",
+								"name": "addr",
+								"type": "address"
+							}
+						],
+						"internalType": "struct RoleAccess[]",
+						"name": "roles",
+						"type": "tuple[]"
+					}
+				],
+				"name": "grantRolesBulk",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "hasRole",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isBotAddress",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isContract",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isMarkedAsBotStorage",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					}
+				],
+				"name": "isMarkedAsBotStorageBulk",
+				"outputs": [
+					{
+						"internalType": "address[]",
+						"name": "",
+						"type": "address[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isMarkedAsHumanStorage",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "addrs",
+						"type": "address[]"
+					}
+				],
+				"name": "isMarkedAsHumanStorageBulk",
+				"outputs": [
+					{
+						"internalType": "address[]",
+						"name": "",
+						"type": "address[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "isUniswapPair",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "markAddressAsBot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "value",
+						"type": "bool"
+					}
+				],
+				"name": "markAddressAsHuman",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "markAddressAsNotBot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "markAsUniswapPair",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "targetContract",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "abiCall",
+						"type": "string"
+					}
+				],
+				"name": "registerJob",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "registerTransaction",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "targetContract",
+						"type": "address"
+					}
+				],
+				"name": "removeJobs",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "renounceRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "revokeRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes4",
+						"name": "interfaceId",
+						"type": "bytes4"
+					}
+				],
+				"name": "supportsInterface",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "newCooldownSellPeriod",
+						"type": "uint256"
+					}
+				],
+				"name": "updateCooldownPeriodSell",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"getRoleAdmin(bytes32)": {
+					"details": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}."
+				},
+				"getRoleMember(bytes32,uint256)": {
+					"details": "Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information."
+				},
+				"getRoleMemberCount(bytes32)": {
+					"details": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role."
+				},
+				"grantRole(bytes32,address)": {
+					"details": "Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role."
+				},
+				"hasRole(bytes32,address)": {
+					"details": "Returns `true` if `account` has been granted `role`."
+				},
+				"renounceRole(bytes32,address)": {
+					"details": "Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been revoked `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`."
+				},
+				"revokeRole(bytes32,address)": {
+					"details": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role."
+				},
+				"supportsInterface(bytes4)": {
+					"details": "See {IERC165-supportsInterface}."
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"sol-defifactory-token/CerbyBotDetection.sol": "CerbyBotDetection"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"sol-defifactory-token/CerbyBotDetection.sol": {
+			"keccak256": "0x91a20ae8f800ffeeca799a953fa5bb5e882c2e4fabd9c75d20397ea0c198b99e",
+			"license": "BUSL-1.1",
+			"urls": [
+				"bzz-raw://9201b28ee4fa07ebba2417c0bcd5c979a5551054e0a3c0e63c318891f1f90ec0",
+				"dweb:/ipfs/QmZ6bFM9wHDiz8KFkrDEPz5FQS47bFWiRBZ1nT4Mod6c1A"
+			]
+		},
+		"sol-defifactory-token/interfaces/IERC20.sol": {
+			"keccak256": "0xc4e165d9bee5094c42ab4f2da3022c3e246973abf08856f0e9bc8e7245dbeb84",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ca5bf2dfdda6c9adac678cb2a17f58d5796f38790ec7c9cf71cb551ad6b4f436",
+				"dweb:/ipfs/QmYqfyEaD9W43mdxLdQPKEqJwu7vELomxDCWvuHwiceMNb"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
+			"keccak256": "0x7e251d1731d996d5bdb10933452752cf227986b46f442f924f78ff6c8529e1b4",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2146c03c51ea415cd9ca211329ec9c7ba78da92e7a9c28d3487a0a7f3ea3907e",
+				"dweb:/ipfs/QmUehehA3SFUGkeuSXo7TVvtx7S5NJXSmbnQqM7qp9YYZN"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {
+			"keccak256": "0x400e79893c3e86fe147ce1e6916987d8f90351136496bb9fa7d0c33ecf194378",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6f3c9ea28f53c46abce10f71c3a61720a435ff0667414d48b4a94d590c8fca8e",
+				"dweb:/ipfs/QmTcBSf9QJh4Q5QbLewHquxcZ8kcWe1pBCVZvxuMaqP28F"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/access/IAccessControl.sol": {
+			"keccak256": "0x877d384529229341c5fed501f100c735612a03c91e11106ac162fff0ca40ffa0",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8dafdd87105f533ba5506a008923b5095e05351800fe2197f1284834127814b7",
+				"dweb:/ipfs/QmTyxcBSwKRue8LNEqURiJEv7tnvBCQCoz9Ack36tzh33U"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/access/IAccessControlEnumerable.sol": {
+			"keccak256": "0xaac4e60985b08b34f95df096f9f7818586ae2157f426e6aa30abeceee47a7090",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2649ee0862526030b38cd15c65a8d0d61614d6d3f526de8b1b48ccbdf8672cd4",
+				"dweb:/ipfs/QmPwCik5omsKx4zkwyS8hYT9NwQMvpZ84cS8XawRNXspuJ"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/utils/Context.sol": {
+			"keccak256": "0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92",
+				"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/utils/Strings.sol": {
+			"keccak256": "0x02018f8b309ced925726ae517b3c46238bca0dad3be97489f61791f8bc4ba63c",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5025c50c98a5b0783badbd683b03e8b75c65860dcc4d165e7ffae49b33cf49c5",
+				"dweb:/ipfs/QmYth2o8MrwXVkWVy16qnTLj9TbcrA3zP7gMD6JoqidxF2"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/utils/introspection/ERC165.sol": {
+			"keccak256": "0x80cff4f25810ab85caa3f5839b7cb5b7683a9540da82268e2b9f422e0d4d58e6",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1858a5438e273c2f48db04bfa9e49e5a5bbf5ccb36b1c666756647aacfca2a04",
+				"dweb:/ipfs/QmR1bYQhYWtRLLXMyRJYtZRaEmXkbFGWHcd6a59VKrFgMR"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/utils/introspection/IERC165.sol": {
+			"keccak256": "0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f",
+				"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
+			]
+		},
+		"sol-defifactory-token/openzeppelin/utils/structs/EnumerableSet.sol": {
+			"keccak256": "0x8acb4b6655fa152ff8fc79cd0682c2862d56512547bcaa591c5bcc2657e6b86a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://39a93fe24137aa2e913b16f2bec6746d59696dc9cf2b62065366357b68d5689d",
+				"dweb:/ipfs/Qmb9pgaSpvASizwM5CaRqtA1x1RRd74PQCahvXTuZZMx2V"
+			]
+		}
+	},
+	"version": 1
 }
