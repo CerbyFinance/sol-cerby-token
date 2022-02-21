@@ -1,15 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity ^0.8.11;
+pragma solidity ^0.8.12;
 
-import "./interfaces/ICerbyToken.sol";
-import "./interfaces/ICerbyBotDetection.sol";
-import "./openzeppelin/access/AccessControlEnumerable.sol";
-import "./openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol";
-import "./CerbyCronJobsExecution.sol";
+import "../sol-cerby-swap-v1/openzeppelin/access/AccessControlEnumerable.sol";
+import "../sol-cerby-swap-v1/openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol";
+import "../sol-cerby-swap-v1/contracts/CerbyCronJobsExecution.sol";
 
 contract CerbyBasedToken is
-    Context,
     AccessControlEnumerable,
     ERC20,
     ERC20Permit,
@@ -20,55 +17,54 @@ contract CerbyBasedToken is
     bytes32 public constant ROLE_TRANSFERER = keccak256("ROLE_TRANSFERER");
     bytes32 public constant ROLE_MODERATOR = keccak256("ROLE_MODERATOR");
 
-    address constant BURN_ADDRESS = address(0x0);
-
     bool public isPaused;
-    bool isInitialized;
 
-    event TransferCustom(address sender, address recipient, uint256 amount);
-    event MintHumanAddress(address recipient, uint256 amount);
-    event BurnHumanAddress(address sender, uint256 amount);
+    event TransferCustom(
+        address _sender, 
+        address _recipient, 
+        uint256 _amount
+    );
+    event MintHumanAddress(
+        address _recipient, 
+        uint256 _amount
+    );
+    event BurnHumanAddress(
+        address _sender, 
+        uint256 _amount
+    );
 
     error CerbyBasedToken_AlreadyInitialized();
     error CerbyBasedToken_ContractIsPaused();
     error CerbyBasedToken_ContractIsNotPaused();
-    error CerbyBasedToken_RecipientIsBurnAddress();
-    error CerbyBasedToken_DecreasedAllowanceBelowZero();
-    error CerbyBasedToken_TransferAmountExceedsAllowance();
-    error CerbyBasedToken_TransferAmountExceedsBalance();
 
-    constructor(string memory name, string memory symbol)
-        ERC20(name, symbol)
-        ERC20Permit(name)
-    {}
-
-    function initializeOwner(address owner) internal {
-        if (isInitialized) {
-            revert CerbyBasedToken_AlreadyInitialized();
-        }
-
-        isInitialized = true;
-        _setupRole(ROLE_ADMIN, owner);
-        _setupRole(ROLE_MINTER, owner);
-        _setupRole(ROLE_BURNER, owner);
-        _setupRole(ROLE_TRANSFERER, owner);
-        _setupRole(ROLE_MODERATOR, owner);
+    constructor(
+        string memory _name, 
+        string memory _symbol
+    )
+        ERC20(_name, _symbol)
+        ERC20Permit(_name)
+    {
+        _setupRole(ROLE_ADMIN, msg.sender);
+        _setupRole(ROLE_MINTER, msg.sender);
+        _setupRole(ROLE_BURNER, msg.sender);
+        _setupRole(ROLE_TRANSFERER, msg.sender);
+        _setupRole(ROLE_MODERATOR, msg.sender);
     }
 
     modifier checkTransaction(
-        address sender,
-        address recipient,
-        uint256 transferAmount
+        address _from,
+        address _to,
+        uint256 _amount
     ) {
         ICerbyBotDetection iCerbyBotDetection = ICerbyBotDetection(
             getUtilsContractAtPos(CERBY_BOT_DETECTION_CONTRACT_ID)
         );
         iCerbyBotDetection.checkTransactionInfo(
-            CERBY_TOKEN_CONTRACT_ADDRESS,
-            sender,
-            recipient,
-            _balances[recipient],
-            transferAmount
+            address(this),
+            _from,
+            _to,
+            erc20Balances[_to],
+            _amount
         );
         _;
     }
@@ -87,204 +83,190 @@ contract CerbyBasedToken is
         _;
     }
 
-    modifier recipientIsNotBurnAddress(address recipient) {
-        if (recipient == BURN_ADDRESS) {
-            revert CerbyBasedToken_RecipientIsBurnAddress();
-        }
-
-        _;
-    }
-
     function updateNameAndSymbol(
-        string calldata __name,
-        string calldata __symbol
-    ) external onlyRole(ROLE_ADMIN) {
-        _name = __name;
-        _symbol = __symbol;
+        string calldata _name,
+        string calldata _symbol
+    ) 
+        external 
+        onlyRole(ROLE_ADMIN) 
+    {
+        erc20Name = _name;
+        erc20Symbol = _symbol;
     }
 
-    function pauseContract() external notPausedContract onlyRole(ROLE_ADMIN) {
+    function pauseContract() 
+        external 
+        notPausedContract 
+        onlyRole(ROLE_ADMIN) 
+    {
         isPaused = true;
     }
 
-    function resumeContract() external pausedContract onlyRole(ROLE_ADMIN) {
+    function resumeContract() 
+        external 
+        pausedContract 
+        onlyRole(ROLE_ADMIN)
+    {
         isPaused = false;
     }
 
-    function approve(address spender, uint256 amount)
-        public
-        virtual
-        override
-        notPausedContract
-        checkForBotsAndExecuteCronJobs(msg.sender)
-        returns (bool)
-    {
-        _approve(_msgSender(), spender, amount);
-        return true;
-    }
-
-    function increaseAllowance(address spender, uint256 addedValue)
-        public
-        virtual
-        override
-        notPausedContract
-        checkForBotsAndExecuteCronJobs(msg.sender)
-        returns (bool)
-    {
-        _approve(
-            _msgSender(),
-            spender,
-            _allowances[_msgSender()][spender] + addedValue
-        );
-        return true;
-    }
-
-    function decreaseAllowance(address spender, uint256 subtractedValue)
-        public
-        virtual
-        override
-        notPausedContract
-        checkForBotsAndExecuteCronJobs(msg.sender)
-        returns (bool)
-    {
-        uint256 currentAllowance = _allowances[_msgSender()][spender];
-        if (currentAllowance < subtractedValue) {
-            revert CerbyBasedToken_DecreasedAllowanceBelowZero();
-        }
-
-        unchecked {
-            _approve(_msgSender(), spender, currentAllowance - subtractedValue);
-        }
-
-        return true;
-    }
-
-    function transfer(address recipient, uint256 amount)
-        public
-        virtual
-        override
-        notPausedContract
-        returns (bool)
-    {
-        _transfer(_msgSender(), recipient, amount);
-        return true;
-    }
-
-    function transferFrom(
-        address sender,
-        address recipient,
-        uint256 amount
+    function approve(
+        address _spender, 
+        uint256 _amount
     )
         public
         virtual
         override
         notPausedContract
-        recipientIsNotBurnAddress(recipient)
+        checkForBotsAndExecuteCronJobsAfter(msg.sender)
         returns (bool)
     {
-        _transfer(sender, recipient, amount);
+        _approve(msg.sender, _spender, _amount);
+        return true;
+    }
 
-        uint256 currentAllowance = _allowances[sender][_msgSender()];
-        if (currentAllowance < amount) {
-            revert CerbyBasedToken_TransferAmountExceedsAllowance();
+    function increaseAllowance(
+        address _spender, 
+        uint256 _addedValue
+    )
+        public
+        virtual
+        override
+        notPausedContract
+        checkForBotsAndExecuteCronJobsAfter(msg.sender)
+        returns (bool)
+    {
+        _approve(
+            msg.sender,
+            _spender,
+            erc20Allowances[msg.sender][_spender] + _addedValue
+        );
+        return true;
+    }
+
+    function decreaseAllowance(
+        address _spender, 
+        uint256 _subtractedValue
+    )
+        public
+        virtual
+        override
+        notPausedContract
+        checkForBotsAndExecuteCronJobsAfter(msg.sender)
+        returns (bool)
+    {  
+        _approve(
+            msg.sender, 
+            _spender, 
+            erc20Allowances[msg.sender][_spender] - _subtractedValue
+        );
+
+        return true;
+    }
+
+    function transfer(
+        address _recipient, 
+        uint256 _amount
+    )
+        public
+        virtual
+        override
+        notPausedContract
+        returns (bool)
+    {
+        _transfer(msg.sender, _recipient, _amount);
+        return true;
+    }
+
+    function transferFrom(
+        address _sender,
+        address _recipient,
+        uint256 _amount
+    )
+        public
+        virtual
+        override
+        notPausedContract
+        returns (bool)
+    {
+        // do not update allowance if it is set to max
+        if (erc20Allowances[_sender][msg.sender] != type(uint256).max) {
+            erc20Allowances[_sender][msg.sender] -= _amount;
         }
-        _approve(sender, _msgSender(), currentAllowance - amount);
+
+        _transfer(_sender, _recipient, _amount);
 
         return true;
     }
 
     function moderatorTransferFromWhilePaused(
-        address sender,
-        address recipient,
-        uint256 amount
+        address _sender,
+        address _recipient,
+        uint256 _amount
     )
         external
         pausedContract
         onlyRole(ROLE_MODERATOR)
-        recipientIsNotBurnAddress(recipient)
         returns (bool)
     {
-        _transfer(sender, recipient, amount);
+        _transfer(_sender, _recipient, _amount);
 
         return true;
     }
 
     function transferCustom(
-        address sender,
-        address recipient,
-        uint256 amount
+        address _sender,
+        address _recipient,
+        uint256 _amount
     )
         external
         notPausedContract
         onlyRole(ROLE_TRANSFERER)
-        recipientIsNotBurnAddress(recipient)
     {
-        _transfer(sender, recipient, amount);
+        _transfer(_sender, _recipient, _amount);
 
-        emit TransferCustom(sender, recipient, amount);
+        emit TransferCustom(_sender, _recipient, _amount);
     }
 
     function _transfer(
-        address sender,
-        address recipient,
-        uint256 transferAmount
+        address _sender,
+        address _recipient,
+        uint256 _amount
     )
         internal
         virtual
         override
-        recipientIsNotBurnAddress(recipient)
-        checkTransaction(sender, recipient, transferAmount)
+        checkTransaction(_sender, _recipient, _amount)
     {
-        uint256 senderBalance = _balances[sender];
-        if (senderBalance < transferAmount) {
-            revert CerbyBasedToken_TransferAmountExceedsBalance();
-        }
+        erc20Balances[_sender] -= _amount;
         unchecked {
-            _balances[sender] = senderBalance - transferAmount;
+            erc20Balances[_recipient] += _amount; // user can't posess _amount larger than total supply => can't overflow
         }
-        _balances[recipient] += transferAmount;
 
-        emit Transfer(sender, recipient, transferAmount);
+        emit Transfer(_sender, _recipient, _amount);
     }
 
-    function mintHumanAddress(address to, uint256 desiredAmountToMint)
+    function mintHumanAddress(
+        address _to, 
+        uint256 _amount
+    )
         external
         notPausedContract
         onlyRole(ROLE_MINTER)
     {
-        _mintHumanAddress(to, desiredAmountToMint);
-        emit MintHumanAddress(to, desiredAmountToMint);
+        _mint(_to, _amount);
+        emit MintHumanAddress(_to, _amount);
     }
 
-    function _mintHumanAddress(address to, uint256 desiredAmountToMint)
-        private
-        recipientIsNotBurnAddress(to)
-    {
-        _balances[to] += desiredAmountToMint;
-        _totalSupply += desiredAmountToMint;
-
-        emit Transfer(BURN_ADDRESS, to, desiredAmountToMint);
-    }
-
-    function burnHumanAddress(address from, uint256 desiredAmountToBurn)
+    function burnHumanAddress(
+        address _from, 
+        uint256 _amount
+    )
         external
         notPausedContract
         onlyRole(ROLE_BURNER)
     {
-        _burnHumanAddress(from, desiredAmountToBurn);
-        emit BurnHumanAddress(from, desiredAmountToBurn);
-    }
-
-    function _burnHumanAddress(address from, uint256 desiredAmountToBurn)
-        private
-    {
-        _balances[from] -= desiredAmountToBurn;
-        _totalSupply -= desiredAmountToBurn;
-
-        emit Transfer(from, BURN_ADDRESS, desiredAmountToBurn);
-    }
-
-    function getChainId() external view returns (uint256) {
-        return block.chainid;
+        _burn(_from, _amount);
+        emit BurnHumanAddress(_from, _amount);
     }
 }
