@@ -38,8 +38,8 @@ contract CerbyBotDetection is AccessControlEnumerable {
         address(0x00000000fFFFffffffFfFfFFffFfFffFFFfFffff);
     address constant STAKING_CONTRACT =
         address(0x8888888AC6aa2482265e5346832CDd963c70A0D1);
-    address constant BURN_ADDRESS;
-    uint256 constant DEFAULT_SELL_COOLDOWN; // 0 seconds
+    address constant BURN_ADDRESS = address(0);
+    uint256 constant DEFAULT_SELL_COOLDOWN = 0 seconds;
 
     uint256 constant ETH_MAINNET_CHAIN_ID = 1;
     uint256 constant BSC_MAINNET_CHAIN_ID = 56;
@@ -161,7 +161,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
 
         lastCronJobExecutionBlock = block.number;
 
-        CrobJob memory cj;
+        CronJob memory cj;
         for (uint256 i; i < cronJobs.length; i++) {
             cj = cronJobs[i];
             if (cj.targetContract != BURN_ADDRESS) {
@@ -225,14 +225,14 @@ contract CerbyBotDetection is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
         returns (bool)
     {
-        uint256 defaultSellCooldown = cooldownPeriodSellStorage[tokenAddr] > 0
-            ? cooldownPeriodSellStorage[tokenAddr]
+        uint256 defaultSellCooldown = cooldownPeriodSellStorage[_tokenAddr] > 0
+            ? cooldownPeriodSellStorage[_tokenAddr]
             : DEFAULT_SELL_COOLDOWN;
         bool isBot = 
-            receiveTimestampStorage[tokenAddr][addr] + defaultSellCooldown >= block.timestamp ||
-            ((isContract(addr) || isBotStorage[addr]) &&
-                !isHumanStorage[addr] &&
-                !isUniswapPairChecker(addr, tokenAddr));
+            receiveTimestampStorage[_tokenAddr][_addr] + defaultSellCooldown >= block.timestamp ||
+            ((isContract(_addr) || isBotStorage[_addr]) &&
+                !isHumanStorage[_addr] &&
+                !isUniswapPairChecker(_addr, _tokenAddr));
         return isBot;
     }
 
@@ -242,7 +242,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
         onlyRole(ROLE_ADMIN)
         returns (bool)
     {
-        return isBotStorage[addr] && !isHumanStorage[addr];
+        return isBotStorage[_addr] && !isHumanStorage[_addr];
     }
 
     function checkTransactionInfo( // used in NoBotsTechV3, CerbyToken (avax, fantom) contract
@@ -257,13 +257,13 @@ contract CerbyBotDetection is AccessControlEnumerable {
         returns (TransactionInfo memory output) 
     {
         if (
-            _from < EIGHT_LEADING_ZEROS_TO_COMPARE // address starts from 8 zeros
+            _sender < EIGHT_LEADING_ZEROS_TO_COMPARE // address starts from 8 zeros
         ) {
             revert CerbyBotDetection_TransfersAreTemporarilyDisabled();
         }
 
         output.isSell = isUniswapPairChecker(_recipient, _tokenAddr);
-        output.isBuy = isUniswapPairChecker(_from, _tokenAddr);
+        output.isBuy = isUniswapPairChecker(_sender, _tokenAddr);
 
         uint256 defaultSellCooldown = cooldownPeriodSellStorage[_tokenAddr] > 0
             ? cooldownPeriodSellStorage[_tokenAddr]
@@ -279,11 +279,11 @@ contract CerbyBotDetection is AccessControlEnumerable {
         ) {
             isBotStorage[_recipient] = true; // allow user to buy but mark as bot
         } else if (
-            !isHumanStorage[_from] && // skipping whitelisted wallets/contracts
+            !isHumanStorage[_sender] && // skipping whitelisted wallets/contracts
             !output.isBuy && // isSell or isTransfer
-            (isContract(_from) || // contracts aren't welcome
-                isBotStorage[_from] || // is Blacklisted Sender
-                receiveTimestampStorage[_tokenAddr][_from] +
+            (isContract(_sender) || // contracts aren't welcome
+                isBotStorage[_sender] || // is Blacklisted Sender
+                receiveTimestampStorage[_tokenAddr][_sender] +
                     defaultSellCooldown >=
                 block.timestamp)
             // don't allow instant transfer/sell after receiving
@@ -292,7 +292,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
         }
 
         if (
-            _from != STAKING_CONTRACT && // hack to allow scraping stakes
+            _sender != STAKING_CONTRACT && // hack to allow scraping stakes
             _recipient != BURN_ADDRESS
         ) {
             /*
@@ -425,7 +425,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
         public
         onlyRole(ROLE_ADMIN)
     {
-        isHumanStorage[addr] = value;
+        isHumanStorage[_addr] = _value;
     }
 
     function bulkMarkAddressAsHuman(

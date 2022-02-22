@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.11+commit.d7f03943"
+		"version": "0.8.12+commit.f00d7308"
 	},
 	"language": "Solidity",
 	"output": {
@@ -128,7 +128,7 @@
 				"inputs": [
 					{
 						"internalType": "address[]",
-						"name": "addrs",
+						"name": "_addrs",
 						"type": "address[]"
 					}
 				],
@@ -141,12 +141,12 @@
 				"inputs": [
 					{
 						"internalType": "address[]",
-						"name": "addrs",
+						"name": "_addrs",
 						"type": "address[]"
 					},
 					{
 						"internalType": "bool",
-						"name": "value",
+						"name": "_value",
 						"type": "bool"
 					}
 				],
@@ -159,12 +159,12 @@
 				"inputs": [
 					{
 						"internalType": "address[]",
-						"name": "addrs",
+						"name": "_addrs",
 						"type": "address[]"
 					},
 					{
 						"internalType": "bool",
-						"name": "value",
+						"name": "_value",
 						"type": "bool"
 					}
 				],
@@ -177,12 +177,12 @@
 				"inputs": [
 					{
 						"internalType": "address[]",
-						"name": "addrs",
+						"name": "_addrs",
 						"type": "address[]"
 					},
 					{
 						"internalType": "uint256",
-						"name": "value",
+						"name": "_value",
 						"type": "uint256"
 					}
 				],
@@ -195,27 +195,27 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenAddr",
+						"name": "_tokenAddr",
 						"type": "address"
 					},
 					{
 						"internalType": "address",
-						"name": "sender",
+						"name": "_sender",
 						"type": "address"
 					},
 					{
 						"internalType": "address",
-						"name": "recipient",
+						"name": "_recipient",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "recipientBalance",
+						"name": "_recipientBalance",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "transferAmount",
+						"name": "_transferAmount",
 						"type": "uint256"
 					}
 				],
@@ -270,12 +270,12 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenAddr",
+						"name": "_tokenAddr",
 						"type": "address"
 					},
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "_addr",
 						"type": "address"
 					}
 				],
@@ -301,7 +301,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenAddr",
+						"name": "_tokenAddr",
 						"type": "address"
 					}
 				],
@@ -333,12 +333,12 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenAddr",
+						"name": "_tokenAddr",
 						"type": "address"
 					},
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "_addr",
 						"type": "address"
 					}
 				],
@@ -486,7 +486,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "_addr",
 						"type": "address"
 					}
 				],
@@ -505,26 +505,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					}
-				],
-				"name": "isContract",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
+						"name": "_addr",
 						"type": "address"
 					}
 				],
@@ -543,7 +524,7 @@
 				"inputs": [
 					{
 						"internalType": "address[]",
-						"name": "addrs",
+						"name": "_addrs",
 						"type": "address[]"
 					}
 				],
@@ -562,7 +543,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "_addr",
 						"type": "address"
 					}
 				],
@@ -581,7 +562,7 @@
 				"inputs": [
 					{
 						"internalType": "address[]",
-						"name": "addrs",
+						"name": "_addrs",
 						"type": "address[]"
 					}
 				],
@@ -600,7 +581,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "_addr",
 						"type": "address"
 					}
 				],
@@ -619,7 +600,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "_addr",
 						"type": "address"
 					}
 				],
@@ -632,12 +613,12 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "_addr",
 						"type": "address"
 					},
 					{
 						"internalType": "bool",
-						"name": "value",
+						"name": "_value",
 						"type": "bool"
 					}
 				],
@@ -650,7 +631,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "_addr",
 						"type": "address"
 					}
 				],
@@ -663,12 +644,12 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "_addr",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "value",
+						"name": "_value",
 						"type": "uint256"
 					}
 				],
@@ -681,12 +662,12 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "targetContract",
+						"name": "_targetContract",
 						"type": "address"
 					},
 					{
 						"internalType": "string",
-						"name": "abiCall",
+						"name": "_abiCall",
 						"type": "string"
 					}
 				],
@@ -699,12 +680,12 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenAddr",
+						"name": "_tokenAddr",
 						"type": "address"
 					},
 					{
 						"internalType": "address",
-						"name": "addr",
+						"name": "_addr",
 						"type": "address"
 					}
 				],
@@ -717,7 +698,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "targetContract",
+						"name": "_targetContract",
 						"type": "address"
 					}
 				],
@@ -785,12 +766,12 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "tokenAddr",
+						"name": "_tokenAddr",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "newCooldownSellPeriod",
+						"name": "_newCooldownSellPeriod",
 						"type": "uint256"
 					}
 				],
@@ -846,18 +827,90 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
+		"sol-cerby-swap-v1/openzeppelin/access/AccessControl.sol": {
+			"keccak256": "0x625f544696a4c39ea49999e0a17846a97f67f1c86f9baec4e408e4d7088a0081",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://cf5daee5cf45dcd95d749efaab6154f725e9e4c6da6cd4ef294e0e919eaf82af",
+				"dweb:/ipfs/QmW3M3YzDBTcbYVpEmWKWssyd37QsWD9S4zrsWaq5bRN4E"
+			]
+		},
+		"sol-cerby-swap-v1/openzeppelin/access/AccessControlEnumerable.sol": {
+			"keccak256": "0x400e79893c3e86fe147ce1e6916987d8f90351136496bb9fa7d0c33ecf194378",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6f3c9ea28f53c46abce10f71c3a61720a435ff0667414d48b4a94d590c8fca8e",
+				"dweb:/ipfs/QmTcBSf9QJh4Q5QbLewHquxcZ8kcWe1pBCVZvxuMaqP28F"
+			]
+		},
+		"sol-cerby-swap-v1/openzeppelin/access/IAccessControl.sol": {
+			"keccak256": "0x39cf384e5d33ace3043a89089ab368b4c3a93e8b209c928b194f02dc037213b4",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2e843a398bf56fa1bc11580bc539f6452ec3c317a161d7bc70d6a1205763e8f9",
+				"dweb:/ipfs/QmToa4vPGpg6S5n29MGEbACXS42euGLWcvBixo7txkrcdD"
+			]
+		},
+		"sol-cerby-swap-v1/openzeppelin/access/IAccessControlEnumerable.sol": {
+			"keccak256": "0xaac4e60985b08b34f95df096f9f7818586ae2157f426e6aa30abeceee47a7090",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2649ee0862526030b38cd15c65a8d0d61614d6d3f526de8b1b48ccbdf8672cd4",
+				"dweb:/ipfs/QmPwCik5omsKx4zkwyS8hYT9NwQMvpZ84cS8XawRNXspuJ"
+			]
+		},
+		"sol-cerby-swap-v1/openzeppelin/utils/Context.sol": {
+			"keccak256": "0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92",
+				"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3"
+			]
+		},
+		"sol-cerby-swap-v1/openzeppelin/utils/Strings.sol": {
+			"keccak256": "0x301f818a468d58adca752b80f0c0332628a61227e726bb1b04020805868e3806",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d4053cc4d0a627c22c85f1f26b8332220d1f08d2978efa5e4e069b7e706639ba",
+				"dweb:/ipfs/QmQSu9Z5SmAE1gSibNJSmyHDbQQwFtbdF3Pn9JkCKLGw4n"
+			]
+		},
+		"sol-cerby-swap-v1/openzeppelin/utils/introspection/ERC165.sol": {
+			"keccak256": "0x80cff4f25810ab85caa3f5839b7cb5b7683a9540da82268e2b9f422e0d4d58e6",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1858a5438e273c2f48db04bfa9e49e5a5bbf5ccb36b1c666756647aacfca2a04",
+				"dweb:/ipfs/QmR1bYQhYWtRLLXMyRJYtZRaEmXkbFGWHcd6a59VKrFgMR"
+			]
+		},
+		"sol-cerby-swap-v1/openzeppelin/utils/introspection/IERC165.sol": {
+			"keccak256": "0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f",
+				"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
+			]
+		},
+		"sol-cerby-swap-v1/openzeppelin/utils/structs/EnumerableSet.sol": {
+			"keccak256": "0x8acb4b6655fa152ff8fc79cd0682c2862d56512547bcaa591c5bcc2657e6b86a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://39a93fe24137aa2e913b16f2bec6746d59696dc9cf2b62065366357b68d5689d",
+				"dweb:/ipfs/Qmb9pgaSpvASizwM5CaRqtA1x1RRd74PQCahvXTuZZMx2V"
+			]
+		},
 		"sol-defifactory-token/CerbyBotDetection.sol": {
-			"keccak256": "0x91a20ae8f800ffeeca799a953fa5bb5e882c2e4fabd9c75d20397ea0c198b99e",
+			"keccak256": "0xff22f0a1f7c4a9ab2c6028310db72e120768a3e6aacd7f57724f467e0d283d3e",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://9201b28ee4fa07ebba2417c0bcd5c979a5551054e0a3c0e63c318891f1f90ec0",
-				"dweb:/ipfs/QmZ6bFM9wHDiz8KFkrDEPz5FQS47bFWiRBZ1nT4Mod6c1A"
+				"bzz-raw://e9eaa6f957b06be961ad8875559bdcbeff40a29b781bf6485cfd8870ae9ab783",
+				"dweb:/ipfs/QmYoJxhMZTd41Qa5x2WqrSjSYvTBi6BySfaYt6Vx8MdV6t"
 			]
 		},
 		"sol-defifactory-token/interfaces/IERC20.sol": {
@@ -866,78 +919,6 @@
 			"urls": [
 				"bzz-raw://ca5bf2dfdda6c9adac678cb2a17f58d5796f38790ec7c9cf71cb551ad6b4f436",
 				"dweb:/ipfs/QmYqfyEaD9W43mdxLdQPKEqJwu7vELomxDCWvuHwiceMNb"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/access/AccessControl.sol": {
-			"keccak256": "0x7e251d1731d996d5bdb10933452752cf227986b46f442f924f78ff6c8529e1b4",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://2146c03c51ea415cd9ca211329ec9c7ba78da92e7a9c28d3487a0a7f3ea3907e",
-				"dweb:/ipfs/QmUehehA3SFUGkeuSXo7TVvtx7S5NJXSmbnQqM7qp9YYZN"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/access/AccessControlEnumerable.sol": {
-			"keccak256": "0x400e79893c3e86fe147ce1e6916987d8f90351136496bb9fa7d0c33ecf194378",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://6f3c9ea28f53c46abce10f71c3a61720a435ff0667414d48b4a94d590c8fca8e",
-				"dweb:/ipfs/QmTcBSf9QJh4Q5QbLewHquxcZ8kcWe1pBCVZvxuMaqP28F"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/access/IAccessControl.sol": {
-			"keccak256": "0x877d384529229341c5fed501f100c735612a03c91e11106ac162fff0ca40ffa0",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://8dafdd87105f533ba5506a008923b5095e05351800fe2197f1284834127814b7",
-				"dweb:/ipfs/QmTyxcBSwKRue8LNEqURiJEv7tnvBCQCoz9Ack36tzh33U"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/access/IAccessControlEnumerable.sol": {
-			"keccak256": "0xaac4e60985b08b34f95df096f9f7818586ae2157f426e6aa30abeceee47a7090",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://2649ee0862526030b38cd15c65a8d0d61614d6d3f526de8b1b48ccbdf8672cd4",
-				"dweb:/ipfs/QmPwCik5omsKx4zkwyS8hYT9NwQMvpZ84cS8XawRNXspuJ"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/utils/Context.sol": {
-			"keccak256": "0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92",
-				"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/utils/Strings.sol": {
-			"keccak256": "0x02018f8b309ced925726ae517b3c46238bca0dad3be97489f61791f8bc4ba63c",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://5025c50c98a5b0783badbd683b03e8b75c65860dcc4d165e7ffae49b33cf49c5",
-				"dweb:/ipfs/QmYth2o8MrwXVkWVy16qnTLj9TbcrA3zP7gMD6JoqidxF2"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/utils/introspection/ERC165.sol": {
-			"keccak256": "0x80cff4f25810ab85caa3f5839b7cb5b7683a9540da82268e2b9f422e0d4d58e6",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://1858a5438e273c2f48db04bfa9e49e5a5bbf5ccb36b1c666756647aacfca2a04",
-				"dweb:/ipfs/QmR1bYQhYWtRLLXMyRJYtZRaEmXkbFGWHcd6a59VKrFgMR"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/utils/introspection/IERC165.sol": {
-			"keccak256": "0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f",
-				"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
-			]
-		},
-		"sol-defifactory-token/openzeppelin/utils/structs/EnumerableSet.sol": {
-			"keccak256": "0x8acb4b6655fa152ff8fc79cd0682c2862d56512547bcaa591c5bcc2657e6b86a",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://39a93fe24137aa2e913b16f2bec6746d59696dc9cf2b62065366357b68d5689d",
-				"dweb:/ipfs/Qmb9pgaSpvASizwM5CaRqtA1x1RRd74PQCahvXTuZZMx2V"
 			]
 		}
 	},
