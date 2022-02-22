@@ -6,6 +6,7 @@ import "./CerbyBasedToken.sol";
 
 contract CerbyUsdToken is CerbyBasedToken {
 
+    // deploy 22 Feb 2022
     constructor() 
         CerbyBasedToken("Cerby USD Token", "cerUSD") 
     {
