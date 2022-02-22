@@ -39,7 +39,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
     address constant STAKING_CONTRACT =
         address(0x8888888AC6aa2482265e5346832CDd963c70A0D1);
     address constant BURN_ADDRESS;
-    uint256 constant DEFAULT_SELL_COOLDOWN = 0 seconds;
+    uint256 constant DEFAULT_SELL_COOLDOWN; // 0 seconds
 
     uint256 constant ETH_MAINNET_CHAIN_ID = 1;
     uint256 constant BSC_MAINNET_CHAIN_ID = 56;
@@ -154,17 +154,19 @@ contract CerbyBotDetection is AccessControlEnumerable {
     {
         if (
             lastCronJobExecutionBlock == block.number &&
-            tx.gas > 0
+            tx.gasprice > 0
         ) {
             return;
         }
 
         lastCronJobExecutionBlock = block.number;
 
+        CrobJob memory cj;
         for (uint256 i; i < cronJobs.length; i++) {
-            if (cronJobs[i].targetContract != BURN_ADDRESS) {
-                address(cronJobs[i].targetContract).call(
-                    abi.encodePacked(cronJobs[i].signature)
+            cj = cronJobs[i];
+            if (cj.targetContract != BURN_ADDRESS) {
+                address(cj.targetContract).call(
+                    abi.encodePacked(cj.signature)
                 );
             }
         }
@@ -319,31 +321,34 @@ contract CerbyBotDetection is AccessControlEnumerable {
         private
         returns (bool)
     {
-        if (isUniswapPairStorage[_addr] == IS_UNSET_VALUE) {
-            (, bytes memory token0Bytes) = address(_addr).staticcall(
-                TOKEN0_SIGNATURE
-            );
-            (, bytes memory token1Bytes) = address(_addr).staticcall(
-                TOKEN1_SIGNATURE
-            );
-
-            address token0 = token0Bytes.length >= 20
-                ? abi.decode(token0Bytes, (address))
-                : BURN_ADDRESS;
-            address token1 = token1Bytes.length >= 20
-                ? abi.decode(token1Bytes, (address))
-                : BURN_ADDRESS;
-            if (
-                (token0 == _tokenAddr && token1 != BURN_ADDRESS) ||
-                (token0 != BURN_ADDRESS && token1 == _tokenAddr)
-            ) {
-                isUniswapPairStorage[_addr] = IS_UNISWAP_PAIR;
-            } else {
-                isUniswapPairStorage[_addr] = IS_NORMAL_WALLET;
-            }
+        if (isUniswapPairStorage[_addr] != IS_UNSET_VALUE) {
+            return isUniswapPairStorage[_addr] == IS_UNISWAP_PAIR;
         }
 
-        return isUniswapPairStorage[_addr] == IS_UNISWAP_PAIR;
+        // if (isUniswapPairStorage[_addr] == IS_UNSET_VALUE)
+        (, bytes memory token0Bytes) = address(_addr).staticcall(
+            TOKEN0_SIGNATURE
+        );
+        (, bytes memory token1Bytes) = address(_addr).staticcall(
+            TOKEN1_SIGNATURE
+        );
+
+        address token0 = token0Bytes.length >= 20
+            ? abi.decode(token0Bytes, (address))
+            : BURN_ADDRESS;
+        address token1 = token1Bytes.length >= 20
+            ? abi.decode(token1Bytes, (address))
+            : BURN_ADDRESS;
+        if (
+            (token0 == _tokenAddr && token1 != BURN_ADDRESS) ||
+            (token0 != BURN_ADDRESS && token1 == _tokenAddr)
+        ) {
+            isUniswapPairStorage[_addr] = IS_UNISWAP_PAIR;
+            return true;
+        }
+
+        //if isUniswapPairStorage[_addr] == IS_NORMAL_WALLET
+        return false;
     }
 
     function isContract(address _addr) 
