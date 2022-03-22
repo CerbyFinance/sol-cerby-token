@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.12+commit.f00d7308"
+		"version": "0.8.13+commit.abaa5c0e"
 	},
 	"language": "Solidity",
 	"output": {
@@ -906,11 +906,11 @@
 			]
 		},
 		"sol-defifactory-token/CerbyBotDetection.sol": {
-			"keccak256": "0xff22f0a1f7c4a9ab2c6028310db72e120768a3e6aacd7f57724f467e0d283d3e",
+			"keccak256": "0x7ab2d4b1e6d29d3f49cd442e43752ac425177f72ce0abef4b58e61389199c143",
 			"license": "BUSL-1.1",
 			"urls": [
-				"bzz-raw://e9eaa6f957b06be961ad8875559bdcbeff40a29b781bf6485cfd8870ae9ab783",
-				"dweb:/ipfs/QmYoJxhMZTd41Qa5x2WqrSjSYvTBi6BySfaYt6Vx8MdV6t"
+				"bzz-raw://49ae8fa1225f0b9ae86604e04b467b4d3f1c9f003432f7f996994687d45ab508",
+				"dweb:/ipfs/QmSt9rqSceSacYjV4YnqtrS2PJB3HxkvrcXKH1AJdVQLbN"
 			]
 		},
 		"sol-defifactory-token/interfaces/IERC20.sol": {

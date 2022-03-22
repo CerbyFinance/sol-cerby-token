@@ -5,8 +5,8 @@ import "./interfaces/IWeth.sol";
 import "./interfaces/ICerbyToken.sol";
 import "./interfaces/ICerbySwapLP1155V1.sol";
 import "./interfaces/ICerbySwapV1.sol";
-import "./openzeppelin/access/AccessControlEnumerable.sol";
-import "./openzeppelin/token/ERC1155/utils/ERC1155Holder.sol";
+import "../sol-cerby-swap-v1/openzeppelin/access/AccessControlEnumerable.sol";
+import "../sol-cerby-swap-v1/openzeppelin/token/ERC1155/utils/ERC1155Holder.sol";
 
 contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
     address constant usdcToken = 0x7412F2cD820d1E63bd130B0FFEBe44c4E5A47d71; // TODO: update
@@ -23,7 +23,7 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
     uint256 constant PERCENTAGE_DENORM = 10000;
 
     uint256 lastBalancedAt = block.timestamp;
-    uint256 secondsBetweenBalancing = 0;
+    uint256 secondsBetweenBalancing = 60;
 
     uint256 constant NUMBER_OF_TRADE_PERIODS = 8;
 
@@ -32,7 +32,7 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
         IWeth(cerUsdToken).approve(cerbySwapContract, type(uint256).max);
     }
 
-    function supportsInterface(bytes4 interfaceId)
+    function supportsInterface(bytes4 _interfaceId)
         public
         view
         virtual
@@ -40,33 +40,36 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
         returns (bool)
     {
         return
-            interfaceId == type(IERC1155Receiver).interfaceId ||
-            super.supportsInterface(interfaceId);
+            _interfaceId == type(IERC1155Receiver).interfaceId ||
+            super.supportsInterface(_interfaceId);
     }
 
-    function addLiquidity(uint256 amountUsdcIn, bool isMint)
+    function addLiquidity(uint256 _amountUsdcIn, bool _isMint)
         public
         returns (uint256)
     {
-        if (isMint) {
+        if (_isMint) {
             ICerbyToken(usdcToken).mintHumanAddress(
                 address(this),
-                amountUsdcIn
+                _amountUsdcIn
             );
         }
 
         return
             ICerbySwapV1(cerbySwapContract).addTokenLiquidity(
                 usdcToken,
-                amountUsdcIn,
+                _amountUsdcIn,
                 block.timestamp + 86400,
                 address(this)
             );
     }
 
-    function removeLiquidity(uint256 percent) public returns (uint256) {
+    function removeLiquidity(uint256 _percent) 
+        public 
+        returns (uint256) 
+    {
         uint256 amountLpTokensToBurn = (ICerbySwapLP1155V1(cerbySwapContract)
-            .balanceOf(address(this), poolId) * percent) / FEE_DENORM;
+            .balanceOf(address(this), poolId) * _percent) / FEE_DENORM;
 
         return
             ICerbySwapV1(cerbySwapContract).removeTokenLiquidity(
@@ -77,44 +80,51 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
             );
     }
 
-    function buyUsdc(uint256 amountCerUsdIn) public returns (uint256, uint256) {
+    function buyUsdc(uint256 _amountCerUsdIn) 
+        public 
+        returns (uint256, uint256) 
+    {
         ICerbyToken(cerUsdToken).mintHumanAddress(
             address(this),
-            amountCerUsdIn
+            _amountCerUsdIn
         );
         return
             ICerbySwapV1(cerbySwapContract).swapExactTokensForTokens(
                 cerUsdToken,
                 usdcToken,
-                amountCerUsdIn,
+                _amountCerUsdIn,
                 0,
                 block.timestamp + 8640000,
                 address(this)
             );
     }
 
-    function sellUsdc(uint256 amountUsdcIn, bool isMint)
+    function sellUsdc(uint256 _amountUsdcIn, bool _isMint)
         public
         returns (uint256, uint256)
     {
-        if (isMint) {
+        if (_isMint) {
             ICerbyToken(usdcToken).mintHumanAddress(
                 address(this),
-                amountUsdcIn
+                _amountUsdcIn
             );
         }
         return
             ICerbySwapV1(cerbySwapContract).swapExactTokensForTokens(
                 usdcToken,
                 cerUsdToken,
-                amountUsdcIn,
+                _amountUsdcIn,
                 0,
                 block.timestamp + 8640000,
                 address(this)
             );
     }
 
-    function getUsdcPool() public view returns (uint256, uint256) {
+    function getUsdcPool() 
+        public 
+        view 
+        returns (uint256, uint256) 
+    {
         address[] memory tokens = new address[](1);
         tokens[0] = usdcToken;
         Pool memory pool = ICerbySwapV1(cerbySwapContract).getPoolsByTokens(
@@ -123,7 +133,9 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
         return (uint256(pool.balanceToken), uint256(pool.balanceCerUsd));
     }
 
-    function balancePrice() public {
+    function balancePrice() 
+        public 
+    {
         if (
             tx.gasprice > 0 &&
             lastBalancedAt + secondsBetweenBalancing > block.timestamp
@@ -183,21 +195,24 @@ contract StableCoinBalancer is ERC1155Holder, AccessControlEnumerable {
         }
     }
 
-    function withdrawTokens(address[] calldata tokens)
+    function withdrawTokens(address[] calldata _tokens)
         public
         onlyRole(ROLE_ADMIN)
     {
         uint256 tokenBalance;
 
-        for (uint256 i; i < tokens.length; i++) {
-            tokenBalance = IWeth(tokens[i]).balanceOf(address(this));
+        for (uint256 i; i < _tokens.length; i++) {
+            tokenBalance = IWeth(_tokens[i]).balanceOf(address(this));
             if (tokenBalance > 0) {
-                IWeth(tokens[i]).transfer(msg.sender, tokenBalance);
+                IWeth(_tokens[i]).transfer(msg.sender, tokenBalance);
             }
         }
     }
 
-    function withdrawLP(uint256 _poolId) public onlyRole(ROLE_ADMIN) {
+    function withdrawLP(uint256 _poolId) 
+        public 
+        onlyRole(ROLE_ADMIN) 
+    {
         uint256 lpBalance = ICerbySwapLP1155V1(cerbySwapContract).balanceOf(
             address(this),
             _poolId

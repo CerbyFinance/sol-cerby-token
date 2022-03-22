@@ -15,40 +15,40 @@ Eth:
 [
     [false, false, false, false, true, "0x543a000a9FBE139ff783b2F8EbdF8869452Dc21D"],
     [true, true, true, false, false, "0x8888888AC6aa2482265e5346832CDd963c70A0D1"],
-    [true, true, false, false, false, "0xEf038429e3BAaF784e1DE93075070df2A43D4278"],
-    [false, false, false, false, false, "0x5970d195DAbf5ff66cEfdA9754cA9BE61E6A1Ca9"]
+    [true, true, false, false, false, "0x6dd9bCaeeBB515cc6a921E1004450cdc7277dA4A"],
+    [false, false, false, false, false, "0x1CEEF38c8C523A543686bDC6742c5c2a9127B63F"]
 ]
 
 Bsc:
 [
     [false, false, false, false, true, "0x543a000a9FBE139ff783b2F8EbdF8869452Dc21D"],
     [true, true, true, false, false, "0x8888888AC6aa2482265e5346832CDd963c70A0D1"],
-    [true, true, false, false, false, "0xEf038429e3BAaF784e1DE93075070df2A43D4278"],
-    [false, false, false, false, false, "0x5970d195DAbf5ff66cEfdA9754cA9BE61E6A1Ca9"]
+    [true, true, false, false, false, "0x6dd9bCaeeBB515cc6a921E1004450cdc7277dA4A"],
+    [false, false, false, false, false, "0x1CEEF38c8C523A543686bDC6742c5c2a9127B63F"]
 ]
 
 Poly:
 [
     [false, false, false, false, true, "0x543a000a9FBE139ff783b2F8EbdF8869452Dc21D"],
     [true, true, true, false, false, "0x8888888AC6aa2482265e5346832CDd963c70A0D1"],
-    [true, true, false, false, false, "0xEf038429e3BAaF784e1DE93075070df2A43D4278"],
-    [false, false, false, false, false, "0x5970d195DAbf5ff66cEfdA9754cA9BE61E6A1Ca9"]
+    [true, true, false, false, false, "0x6dd9bCaeeBB515cc6a921E1004450cdc7277dA4A"],
+    [false, false, false, false, false, "0x1CEEF38c8C523A543686bDC6742c5c2a9127B63F"]
 ]
 
 Avalanche:
 [
     [false, false, false, false, true, "0x543a000a9FBE139ff783b2F8EbdF8869452Dc21D"],
     [true, true, true, false, false, "0x8888888AC6aa2482265e5346832CDd963c70A0D1"],
-    [true, true, false, false, false, "0xEf038429e3BAaF784e1DE93075070df2A43D4278"],
-    [false, false, false, false, false, "0x5970d195DAbf5ff66cEfdA9754cA9BE61E6A1Ca9"]
+    [true, true, false, false, false, "0x6dd9bCaeeBB515cc6a921E1004450cdc7277dA4A"],
+    [false, false, false, false, false, "0x1CEEF38c8C523A543686bDC6742c5c2a9127B63F"]
 ]
 
 Fantom:
 [
     [false, false, false, false, true, "0x543a000a9FBE139ff783b2F8EbdF8869452Dc21D"],
     [true, true, true, false, false, "0x8888888AC6aa2482265e5346832CDd963c70A0D1"],
-    [true, true, false, false, false, "0xEf038429e3BAaF784e1DE93075070df2A43D4278"],
-    [false, false, false, false, false, "0x5970d195DAbf5ff66cEfdA9754cA9BE61E6A1Ca9"]
+    [true, true, false, false, false, "0x6dd9bCaeeBB515cc6a921E1004450cdc7277dA4A"],
+    [false, false, false, false, false, "0x1CEEF38c8C523A543686bDC6742c5c2a9127B63F"]
 ]
 
 
