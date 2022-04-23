@@ -58,4 +58,3 @@ Thumbs.db
 *.bin
 
 # solidity artifacts
-artifacts/
