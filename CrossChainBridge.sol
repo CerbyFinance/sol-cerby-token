@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.13;
 
-import "./openzeppelin/access/AccessControlEnumerable.sol";
-import "./CerbyCronJobsExecution.sol";
+import "../sol-cerby-swap-v1/openzeppelin/access/AccessControlEnumerable.sol";
+import "../sol-cerby-swap-v1/contracts/CerbyCronJobsExecution.sol";
+import "../sol-cerby-swap-v1/contracts/interfaces/ICerbyTokenMinterBurner.sol";
 
 struct BulkFeeDependingOnDestinationChainId {
     address token;
@@ -78,16 +79,17 @@ contract CrossChainBridge is AccessControlEnumerable, CerbyCronJobsExecution {
     mapping(address => mapping(uint256 => uint256)) feeDependingOnDestinationChainId;
 
     uint256 constant ETH_MAINNET_CHAIN_ID = 1;
-    uint256 constant ETH_ROPSTEN_CHAIN_ID = 3;
-    uint256 constant ETH_KOVAN_CHAIN_ID = 42;
+    //uint256 constant ETH_ROPSTEN_CHAIN_ID = 3;
+    //uint256 constant ETH_KOVAN_CHAIN_ID = 42;
     uint256 constant BSC_MAINNET_CHAIN_ID = 56;
-    uint256 constant BSC_TESTNET_CHAIN_ID = 97;
+    //uint256 constant BSC_TESTNET_CHAIN_ID = 97;
     uint256 constant MATIC_MAINNET_CHAIN_ID = 137;
     uint256 constant AVALANCHE_MAINNET_CHAIN_ID = 43114;
     uint256 constant FANTOM_MAINNET_CHAIN_ID = 250;
 
-    address constant APPROVER_WALLET =
-        0xdEF78a28c78A461598d948bc0c689ce88f812AD8;
+    address constant APPROVER_WALLET = 0x9980a0447456b5cdce209D7dC94820FF15600022;
+
+    address constant CERBY_TOKEN_CONTRACT_ADDRESS = 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840;
 
     struct SourceProofOfBurn {
         uint256 amountToBridge;
@@ -292,7 +294,7 @@ contract CrossChainBridge is AccessControlEnumerable, CerbyCronJobsExecution {
 
     function mintWithBurnProof(SourceProofOfBurn memory sourceProofOfBurn)
         external
-        checkForBotsAndExecuteCronJobs(msg.sender)
+        checkForBotsAndExecuteCronJobsAfter(msg.sender)
     {
         require(
             transactionStorage[sourceProofOfBurn.transactionHash] ==
@@ -333,7 +335,7 @@ contract CrossChainBridge is AccessControlEnumerable, CerbyCronJobsExecution {
         uint256 amountAsFee = sourceProofOfBurn.amountAsFee;
         uint256 finalAmount = sourceProofOfBurn.amountToBridge - amountAsFee;
 
-        ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).mintHumanAddress(
+        ICerbyTokenMinterBurner(CERBY_TOKEN_CONTRACT_ADDRESS).mintHumanAddress(
             msg.sender,
             finalAmount
         );
@@ -351,7 +353,7 @@ contract CrossChainBridge is AccessControlEnumerable, CerbyCronJobsExecution {
         address token,
         uint256 amount,
         uint256 destinationChainId
-    ) external checkForBotsAndExecuteCronJobs(msg.sender) {
+    ) external checkForBotsAndExecuteCronJobsAfter(msg.sender) {
         require(
             amount <=
                 ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).balanceOf(msg.sender),
@@ -385,11 +387,11 @@ contract CrossChainBridge is AccessControlEnumerable, CerbyCronJobsExecution {
 
         transactionStorage[transactionHash] = States.Burned;
 
-        ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).burnHumanAddress(
+        ICerbyTokenMinterBurner(CERBY_TOKEN_CONTRACT_ADDRESS).burnHumanAddress(
             msg.sender,
             amount
         );
-        ICerbyToken(CERBY_TOKEN_CONTRACT_ADDRESS).mintHumanAddress(
+        ICerbyTokenMinterBurner(CERBY_TOKEN_CONTRACT_ADDRESS).mintHumanAddress(
             beneficiaryAddress,
             amountAsFee
         );
