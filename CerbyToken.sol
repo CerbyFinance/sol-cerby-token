@@ -10,7 +10,6 @@ contract CerbyToken is CerbyBasedToken {
     event UpdatedUtilsContracts(AccessSettings[] accessSettings);
 
     constructor() CerbyBasedToken("Cerby Token", "CERBY") {
-        initializeOwner(msg.sender);
     }
 
     // ----------------------

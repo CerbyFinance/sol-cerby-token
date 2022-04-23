@@ -59,6 +59,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
         _setupRole(ROLE_ADMIN, 0xEf038429e3BAaF784e1DE93075070df2A43D4278); // Cross Chain Bridge Contract
         _setupRole(ROLE_ADMIN, 0xdef1fac7Bf08f173D286BbBDcBeeADe695129840); // Cerby Token Contract
         _setupRole(ROLE_ADMIN, 0x333333f9E4ba7303f1ac0BF8fE1F47d582629194); // Cerby USD Contract
+        _setupRole(ROLE_ADMIN, 0x777777C4e9f6E52bC71e15b7C87a85431D956F2D); // CerbySwapV1 Contract
 
         markAddressAsHuman(STAKING_CONTRACT, true); // Staking contract
         markAddressAsHuman(0xdEF78a28c78A461598d948bc0c689ce88f812AD8, true); // Cross Chain Bridge Wallet
@@ -348,6 +349,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
         }
 
         //if isUniswapPairStorage[_addr] == IS_NORMAL_WALLET
+        isUniswapPairStorage[_addr] = IS_NORMAL_WALLET;
         return false;
     }
 
