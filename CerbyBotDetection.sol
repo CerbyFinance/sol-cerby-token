@@ -353,6 +353,7 @@ contract CerbyBotDetection is AccessControlEnumerable {
         }
 
         //if isUniswapPairStorage[_addr] == IS_NORMAL_WALLET
+        isUniswapPairStorage[_addr] = IS_NORMAL_WALLET;
         return false;
     }
 
